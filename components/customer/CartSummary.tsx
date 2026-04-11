@@ -12,35 +12,35 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
   const total = subtotal + gst + delivery;
 
   return (
-    <div className="rounded-xl border border-anga-border bg-white p-6 sticky top-36">
-      <h3 className="text-base font-semibold text-anga-text mb-4">
+    <div className="rounded-xl border border-[#E5E0D8] bg-white p-6 sticky top-36">
+      <h3 className="text-base font-semibold text-[#1C1917] mb-4">
         Order Summary
       </h3>
 
       <div className="space-y-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-anga-text-secondary">Subtotal</span>
-          <span className="font-medium text-anga-text">
+          <span className="text-[#78716C]">Subtotal</span>
+          <span className="font-medium text-[#1C1917]">
             {formatINR(subtotal)}
           </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-anga-text-secondary">GST (18%)</span>
-          <span className="font-medium text-anga-text">{formatINR(gst)}</span>
+          <span className="text-[#78716C]">GST (18%)</span>
+          <span className="font-medium text-[#1C1917]">{formatINR(gst)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-anga-text-secondary">Delivery</span>
-          <span className="font-medium text-anga-text">
+          <span className="text-[#78716C]">Delivery</span>
+          <span className="font-medium text-[#1C1917]">
             {delivery === 0 ? "Free" : formatINR(delivery)}
           </span>
         </div>
 
-        <div className="border-t border-anga-border pt-3">
+        <div className="border-t border-[#E5E0D8] pt-3">
           <div className="flex justify-between">
-            <span className="text-base font-semibold text-anga-text">
+            <span className="text-base font-semibold text-[#1C1917]">
               Total
             </span>
-            <span className="text-xl font-bold text-[#6C47FF]">
+            <span className="text-xl font-medium text-[#1C1917]">
               {formatINR(total)}
             </span>
           </div>
@@ -48,16 +48,16 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       </div>
 
       {delivery === 0 && (
-        <p className="mt-3 text-xs text-[#22C55E] font-medium">
+        <p className="mt-3 text-xs text-[#0F6E56] font-medium">
           Free delivery on orders above {"\u20B9"}10,000
         </p>
       )}
 
-      <button className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#6C47FF] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#5835DB] active:translate-y-px">
+      <button className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#C4873A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#B37530] active:translate-y-px">
         Proceed to Checkout
       </button>
 
-      <p className="mt-3 text-center text-[11px] text-anga-text-secondary">
+      <p className="mt-3 text-center text-[11px] text-[#A8A09A]">
         Prices are exclusive of GST. Business verification required.
       </p>
     </div>

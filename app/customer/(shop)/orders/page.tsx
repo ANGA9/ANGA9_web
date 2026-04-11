@@ -14,7 +14,7 @@ const orders = [
     qty: 10,
     amount: 87500,
     status: "Processing",
-    color: "#7C3AED",
+    color: "#C8C1B5",
     trackable: true,
   },
   {
@@ -24,7 +24,7 @@ const orders = [
     qty: 20,
     amount: 225000,
     status: "Shipped",
-    color: "#6C47FF",
+    color: "#C8C1B5",
     trackable: true,
   },
   {
@@ -34,7 +34,7 @@ const orders = [
     qty: 4,
     amount: 27200,
     status: "Delivered",
-    color: "#EF4444",
+    color: "#C8C1B5",
     trackable: false,
   },
   {
@@ -44,17 +44,17 @@ const orders = [
     qty: 12,
     amount: 37800,
     status: "Delivered",
-    color: "#14B8A6",
+    color: "#C8C1B5",
     trackable: false,
   },
   {
     id: "ORD-8385",
     date: "Apr 01, 2025",
-    product: "Modular Workstation Unit — 4-Seater",
+    product: "Modular Workstation Unit \u2014 4-Seater",
     qty: 2,
     amount: 54400,
     status: "Cancelled",
-    color: "#7C3AED",
+    color: "#C8C1B5",
     trackable: false,
   },
   {
@@ -64,16 +64,16 @@ const orders = [
     qty: 5,
     amount: 72000,
     status: "Delivered",
-    color: "#7C3AED",
+    color: "#C8C1B5",
     trackable: false,
   },
 ];
 
 const statusStyles: Record<string, string> = {
-  Processing: "bg-[#F59E0B]/10 text-[#F59E0B]",
-  Shipped: "bg-[#6C47FF]/10 text-[#6C47FF]",
-  Delivered: "bg-[#22C55E]/10 text-[#22C55E]",
-  Cancelled: "bg-[#EF4444]/10 text-[#EF4444]",
+  Processing: "bg-[#FDF3E7] text-[#7C4F1A]",
+  Shipped: "bg-[#EAF3FB] text-[#185FA5]",
+  Delivered: "bg-[#E1F5EE] text-[#0F6E56]",
+  Cancelled: "bg-[#F2EFE9] text-[#78716C]",
 };
 
 const tabFilter: Record<string, string[]> = {
@@ -98,8 +98,8 @@ export default function CustomerOrdersPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-      <h1 className="text-xl font-bold text-anga-text mb-1">My Orders</h1>
-      <p className="text-sm text-anga-text-secondary mb-6">
+      <h1 className="text-xl font-bold text-[#1C1917] mb-1">My Orders</h1>
+      <p className="text-sm text-[#78716C] mb-6">
         Track and manage your wholesale orders
       </p>
 
@@ -112,8 +112,8 @@ export default function CustomerOrdersPage() {
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
               activeTab === tab
-                ? "bg-[#6C47FF] text-white"
-                : "border border-anga-border bg-white text-anga-text-secondary hover:bg-anga-bg"
+                ? "bg-[#2C2825] text-white"
+                : "border border-[#C8C1B5] bg-transparent text-[#1C1917] hover:bg-[#F2EFE9]"
             )}
           >
             {tab}
@@ -126,36 +126,30 @@ export default function CustomerOrdersPage() {
         {filtered.map((order) => (
           <div
             key={order.id}
-            className="rounded-xl border border-anga-border bg-white p-5 transition-shadow hover:shadow-sm"
+            className="rounded-xl border border-[#E5E0D8] bg-white p-5 transition-shadow hover:shadow-sm"
           >
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               {/* Thumbnail placeholder */}
-              <div
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold opacity-20"
-                style={{
-                  backgroundColor: `${order.color}12`,
-                  color: order.color,
-                }}
-              >
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-[#F2EFE9] text-2xl font-bold text-[#C8C1B5]">
                 {order.product.charAt(0)}
               </div>
 
               {/* Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-anga-text-secondary">
+                  <span className="text-xs font-medium text-[#78716C]">
                     {order.id}
                   </span>
-                  <span className="text-xs text-anga-text-secondary">
+                  <span className="text-xs text-[#A8A09A]">
                     &middot; {order.date}
                   </span>
                 </div>
-                <h3 className="text-sm font-semibold text-anga-text truncate">
+                <h3 className="text-sm font-semibold text-[#1C1917] truncate">
                   {order.product}
                 </h3>
-                <p className="text-xs text-anga-text-secondary mt-0.5">
+                <p className="text-xs text-[#78716C] mt-0.5">
                   Qty: {order.qty} &middot;{" "}
-                  <span className="font-medium text-anga-text">
+                  <span className="font-medium text-[#1C1917]">
                     {formatINR(order.amount)}
                   </span>
                 </p>
@@ -173,14 +167,14 @@ export default function CustomerOrdersPage() {
                 </span>
 
                 {order.trackable && (
-                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-[#6C47FF] px-3 py-1.5 text-xs font-semibold text-[#6C47FF] hover:bg-[#6C47FF]/5 transition-colors">
+                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-[#C8C1B5] px-3 py-1.5 text-xs font-semibold text-[#1C1917] hover:bg-[#F2EFE9] transition-colors">
                     <Truck className="h-3.5 w-3.5" />
                     Track
                   </button>
                 )}
 
                 {order.status === "Delivered" && (
-                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-anga-border px-3 py-1.5 text-xs font-semibold text-anga-text-secondary hover:bg-anga-bg transition-colors">
+                  <button className="inline-flex items-center gap-1.5 rounded-lg bg-[#C4873A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#B37530] transition-colors">
                     <RotateCcw className="h-3.5 w-3.5" />
                     Reorder
                   </button>
@@ -192,13 +186,13 @@ export default function CustomerOrdersPage() {
 
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-anga-bg">
-              <Package className="h-8 w-8 text-anga-text-secondary" />
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F2EFE9]">
+              <Package className="h-8 w-8 text-[#78716C]" />
             </div>
-            <h3 className="text-base font-semibold text-anga-text">
+            <h3 className="text-base font-semibold text-[#1C1917]">
               No orders found
             </h3>
-            <p className="mt-1 text-sm text-anga-text-secondary">
+            <p className="mt-1 text-sm text-[#78716C]">
               Orders matching this filter will appear here.
             </p>
           </div>

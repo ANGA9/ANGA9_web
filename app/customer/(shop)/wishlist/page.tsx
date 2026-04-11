@@ -4,10 +4,10 @@ import { Heart } from "lucide-react";
 const savedProducts: Product[] = [
   {
     id: "w1",
-    name: "Ergonomic Mesh Office Chair — Lumbar Support, Adjustable Arms",
+    name: "Ergonomic Mesh Office Chair \u2014 Lumbar Support, Adjustable Arms",
     seller: "Prestige Interiors",
     category: "Furniture",
-    categoryColor: "#7C3AED",
+    categoryColor: "#78716C",
     originalPrice: 12500,
     price: 8750,
     minOrder: 10,
@@ -16,10 +16,10 @@ const savedProducts: Product[] = [
   },
   {
     id: "w2",
-    name: "3-Tier Steel Storage Rack — Heavy Duty, 500kg Capacity",
+    name: "3-Tier Steel Storage Rack \u2014 Heavy Duty, 500kg Capacity",
     seller: "Metro Industrial",
     category: "Industrial",
-    categoryColor: "#EF4444",
+    categoryColor: "#78716C",
     originalPrice: 8500,
     price: 6800,
     minOrder: 4,
@@ -27,10 +27,10 @@ const savedProducts: Product[] = [
   },
   {
     id: "w3",
-    name: "LED Panel Light 60x60cm — 40W, Daylight, Box of 20",
+    name: "LED Panel Light 60x60cm \u2014 40W, Daylight, Box of 20",
     seller: "Sharma Electricals",
     category: "Electronics",
-    categoryColor: "#6C47FF",
+    categoryColor: "#78716C",
     originalPrice: 15000,
     price: 11250,
     minOrder: 20,
@@ -38,10 +38,10 @@ const savedProducts: Product[] = [
   },
   {
     id: "w4",
-    name: "Indoor Ceramic Planter Set — 6 Piece, Matte Finish, Assorted",
+    name: "Indoor Ceramic Planter Set \u2014 6 Piece, Matte Finish, Assorted",
     seller: "Green Decor Co",
     category: "Home Decor",
-    categoryColor: "#14B8A6",
+    categoryColor: "#78716C",
     originalPrice: 4200,
     price: 3150,
     minOrder: 12,
@@ -54,10 +54,10 @@ export default function CustomerWishlistPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
       <div className="flex items-center gap-2 mb-1">
-        <Heart className="h-5 w-5 text-[#EF4444]" fill="#EF4444" />
-        <h1 className="text-xl font-bold text-anga-text">Saved Items</h1>
+        <Heart className="h-5 w-5 text-[#C4873A]" fill="#C4873A" />
+        <h1 className="text-xl font-bold text-[#1C1917]">Saved Items</h1>
       </div>
-      <p className="text-sm text-anga-text-secondary mb-6">
+      <p className="text-sm text-[#78716C] mb-6">
         {savedProducts.length} products saved for later
       </p>
 

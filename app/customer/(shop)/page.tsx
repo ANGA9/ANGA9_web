@@ -10,21 +10,21 @@ import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 
 const categories = [
-  { name: "Home Decor", icon: Sofa, color: "#14B8A6" },
-  { name: "Electronics", icon: Monitor, color: "#6C47FF" },
-  { name: "Retail", icon: ShoppingBag, color: "#F59E0B" },
-  { name: "Industrial", icon: HardHat, color: "#EF4444" },
-  { name: "Furniture", icon: Armchair, color: "#7C3AED" },
-  { name: "Office Essentials", icon: Briefcase, color: "#0F6E56" },
+  { name: "Home Decor", icon: Sofa, color: "#78716C" },
+  { name: "Electronics", icon: Monitor, color: "#78716C" },
+  { name: "Retail", icon: ShoppingBag, color: "#78716C" },
+  { name: "Industrial", icon: HardHat, color: "#78716C" },
+  { name: "Furniture", icon: Armchair, color: "#78716C" },
+  { name: "Office Essentials", icon: Briefcase, color: "#78716C" },
 ];
 
 const products: Product[] = [
   {
     id: "p1",
-    name: "Ergonomic Mesh Office Chair — Lumbar Support, Adjustable Arms",
+    name: "Ergonomic Mesh Office Chair \u2014 Lumbar Support, Adjustable Arms",
     seller: "Prestige Interiors",
     category: "Furniture",
-    categoryColor: "#7C3AED",
+    categoryColor: "#78716C",
     originalPrice: 12500,
     price: 8750,
     minOrder: 10,
@@ -32,10 +32,10 @@ const products: Product[] = [
   },
   {
     id: "p2",
-    name: "Modular Workstation Unit — 4-Seater with Cable Management",
+    name: "Modular Workstation Unit \u2014 4-Seater with Cable Management",
     seller: "Office World India",
     category: "Furniture",
-    categoryColor: "#7C3AED",
+    categoryColor: "#78716C",
     originalPrice: 34000,
     price: 27200,
     minOrder: 2,
@@ -43,20 +43,20 @@ const products: Product[] = [
   },
   {
     id: "p3",
-    name: "Executive High-Back Chair — Premium Leather, 180° Recline",
+    name: "Executive High-Back Chair \u2014 Premium Leather, 180\u00B0 Recline",
     seller: "Prestige Interiors",
     category: "Furniture",
-    categoryColor: "#7C3AED",
+    categoryColor: "#78716C",
     originalPrice: 18000,
     price: 14400,
     minOrder: 5,
   },
   {
     id: "p4",
-    name: "3-Tier Steel Storage Rack — Heavy Duty, 500kg Capacity",
+    name: "3-Tier Steel Storage Rack \u2014 Heavy Duty, 500kg Capacity",
     seller: "Metro Industrial",
     category: "Industrial",
-    categoryColor: "#EF4444",
+    categoryColor: "#78716C",
     originalPrice: 8500,
     price: 6800,
     minOrder: 4,
@@ -64,20 +64,20 @@ const products: Product[] = [
   },
   {
     id: "p5",
-    name: "LED Panel Light 60x60cm — 40W, Daylight, Box of 20",
+    name: "LED Panel Light 60x60cm \u2014 40W, Daylight, Box of 20",
     seller: "Sharma Electricals",
     category: "Electronics",
-    categoryColor: "#6C47FF",
+    categoryColor: "#44403C",
     originalPrice: 15000,
     price: 11250,
     minOrder: 20,
   },
   {
     id: "p6",
-    name: "Indoor Ceramic Planter Set — 6 Piece, Matte Finish, Assorted",
+    name: "Indoor Ceramic Planter Set \u2014 6 Piece, Matte Finish, Assorted",
     seller: "Green Decor Co",
     category: "Home Decor",
-    categoryColor: "#14B8A6",
+    categoryColor: "#78716C",
     originalPrice: 4200,
     price: 3150,
     minOrder: 12,
@@ -93,22 +93,19 @@ export default function CustomerHomePage() {
 
       {/* Shop by Category */}
       <section>
-        <h2 className="text-lg font-semibold text-anga-text mb-4">
+        <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
           Shop by Category
         </h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {categories.map((cat) => (
             <button
               key={cat.name}
-              className="flex flex-col items-center gap-2 rounded-xl border border-anga-border bg-white p-4 transition-all hover:shadow-md hover:-translate-y-0.5"
+              className="flex flex-col items-center gap-2 rounded-xl border border-[#E5E0D8] bg-white p-4 transition-all hover:shadow-md hover:-translate-y-0.5"
             >
-              <div
-                className="flex h-12 w-12 items-center justify-center rounded-xl"
-                style={{ backgroundColor: `${cat.color}15` }}
-              >
-                <cat.icon className="h-6 w-6" style={{ color: cat.color }} />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F2EFE9]">
+                <cat.icon className="h-6 w-6 text-[#44403C]" />
               </div>
-              <span className="text-xs font-medium text-anga-text text-center leading-tight">
+              <span className="text-xs font-medium text-[#1C1917] text-center leading-tight">
                 {cat.name}
               </span>
             </button>
@@ -119,10 +116,10 @@ export default function CustomerHomePage() {
       {/* Discover Products */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-anga-text">
+          <h2 className="text-lg font-semibold text-[#1C1917]">
             Discover Products for You
           </h2>
-          <button className="text-sm font-medium text-[#6C47FF] hover:underline">
+          <button className="text-sm font-medium text-[#44403C] hover:underline">
             View All
           </button>
         </div>

@@ -17,7 +17,7 @@ export default function CategoryStrip() {
   const [active, setActive] = useState("All");
 
   return (
-    <div className="sticky top-16 z-30 border-b border-anga-border bg-white">
+    <div className="sticky top-16 z-30 border-b border-[#E5E0D8] bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
           {categories.map((cat) => (
@@ -25,10 +25,10 @@ export default function CategoryStrip() {
               key={cat}
               onClick={() => setActive(cat)}
               className={cn(
-                "shrink-0 px-4 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+                "shrink-0 px-4 py-3 text-sm transition-colors border-b-2 whitespace-nowrap",
                 active === cat
-                  ? "border-[#6C47FF] text-[#6C47FF]"
-                  : "border-transparent text-anga-text-secondary hover:text-anga-text hover:border-anga-border"
+                  ? "border-[#2C2825] text-[#2C2825] font-medium"
+                  : "border-transparent text-[#78716C] font-normal hover:text-[#1C1917] hover:border-[#E5E0D8]"
               )}
             >
               {cat}

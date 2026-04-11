@@ -13,34 +13,34 @@ export default function CustomerLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-anga-bg px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#FAF8F5] px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#6C47FF] text-white font-bold text-2xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2C2825] text-white font-bold text-2xl">
             A
           </div>
-          <h1 className="text-2xl font-bold text-anga-text tracking-tight">
+          <h1 className="text-2xl font-bold text-[#1C1917] tracking-tight">
             ANGA
           </h1>
-          <p className="mt-1 text-sm text-anga-text-secondary">
+          <p className="mt-1 text-sm text-[#78716C]">
             B2B Wholesale Marketplace
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="rounded-xl border border-anga-border bg-white p-8 shadow-sm">
-          <h2 className="mb-1 text-lg font-semibold text-anga-text">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-8 shadow-sm">
+          <h2 className="mb-1 text-lg font-semibold text-[#1C1917]">
             Welcome to ANGA
           </h2>
-          <p className="mb-6 text-sm text-anga-text-secondary">
+          <p className="mb-6 text-sm text-[#78716C]">
             Sign in to browse wholesale products
           </p>
 
           {/* Google Sign-In (UI only) */}
           <button
             type="button"
-            className="mb-4 flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-anga-border bg-white text-sm font-medium text-anga-text transition-colors hover:bg-anga-bg"
+            className="mb-4 flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#C8C1B5] bg-transparent text-sm font-medium text-[#1C1917] transition-colors hover:bg-[#F2EFE9]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -65,10 +65,10 @@ export default function CustomerLoginPage() {
 
           <div className="relative mb-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-anga-border" />
+              <div className="w-full border-t border-[#E5E0D8]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-anga-text-secondary">
+              <span className="bg-white px-3 text-[#A8A09A]">
                 or sign in with email
               </span>
             </div>
@@ -76,19 +76,19 @@ export default function CustomerLoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-anga-text">
+              <label className="mb-1.5 block text-sm font-medium text-[#1C1917]">
                 Email address
               </label>
               <input
                 type="email"
                 placeholder="you@business.com"
                 defaultValue="buyer@metro.in"
-                className="h-11 w-full rounded-lg border border-anga-border bg-anga-bg px-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                className="h-11 w-full rounded-lg border border-[#E5E0D8] bg-[#F2EFE9] px-4 text-sm text-[#1C1917] placeholder:text-[#A8A09A] focus:border-[#C4873A] focus:outline-none focus:ring-2 focus:ring-[#C4873A]/20 transition-colors"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-anga-text">
+              <label className="mb-1.5 block text-sm font-medium text-[#1C1917]">
                 Password
               </label>
               <div className="relative">
@@ -96,12 +96,12 @@ export default function CustomerLoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   defaultValue="buyer123"
-                  className="h-11 w-full rounded-lg border border-anga-border bg-anga-bg px-4 pr-11 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                  className="h-11 w-full rounded-lg border border-[#E5E0D8] bg-[#F2EFE9] px-4 pr-11 text-sm text-[#1C1917] placeholder:text-[#A8A09A] focus:border-[#C4873A] focus:outline-none focus:ring-2 focus:ring-[#C4873A]/20 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-anga-text-secondary hover:text-anga-text transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A8A09A] hover:text-[#1C1917] transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -113,17 +113,17 @@ export default function CustomerLoginPage() {
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-anga-text-secondary">
+              <label className="flex items-center gap-2 text-sm text-[#78716C]">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 rounded border-anga-border accent-[#6C47FF]"
+                  className="h-4 w-4 rounded border-[#E5E0D8] accent-[#C4873A]"
                 />
                 Remember me
               </label>
               <button
                 type="button"
-                className="text-sm font-medium text-[#6C47FF] hover:underline"
+                className="text-sm font-medium text-[#44403C] hover:underline"
               >
                 Forgot password?
               </button>
@@ -131,23 +131,23 @@ export default function CustomerLoginPage() {
 
             <button
               type="submit"
-              className="h-11 w-full rounded-lg bg-[#6C47FF] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#5835DB] active:translate-y-px"
+              className="h-11 w-full rounded-lg bg-[#2C2825] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#44403C] active:translate-y-px"
             >
               Sign in to Shop
             </button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-anga-text-secondary">
+          <p className="mt-6 text-center text-xs text-[#A8A09A]">
             New to ANGA?{" "}
-            <button className="font-medium text-[#6C47FF] hover:underline">
+            <button className="font-medium text-[#44403C] hover:underline">
               Register your business
             </button>
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-anga-text-secondary">
+        <p className="mt-6 text-center text-xs text-[#A8A09A]">
           Back to{" "}
-          <a href="/" className="font-medium text-[#6C47FF] hover:underline">
+          <a href="/" className="font-medium text-[#44403C] hover:underline">
             Portal Selection
           </a>
         </p>

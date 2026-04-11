@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ANGA - Wholesale Marketplace Admin",
-  description: "B2B e-commerce admin dashboard for verified businesses in India",
+  title: "ANGA - India's B2B Wholesale Marketplace",
+  description: "B2B e-commerce platform for verified businesses in India",
 };
 
 export default function RootLayout({

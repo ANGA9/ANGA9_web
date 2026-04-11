@@ -114,9 +114,9 @@ export default function SellerLoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-anga-text-secondary">
-          Admin portal?{" "}
-          <a href="/" className="font-medium text-anga-purple hover:underline">
-            Go to Admin Dashboard
+          Back to{" "}
+          <a href="/" className="font-medium text-[#6C47FF] hover:underline">
+            Portal Selection
           </a>
         </p>
       </div>

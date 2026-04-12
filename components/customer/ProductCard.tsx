@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,14 +39,20 @@ export default function ProductCard({
   product,
   showWishlistRemove,
 }: ProductCardProps) {
+  const [isWishlisted, setIsWishlisted] = useState(
+    product.inWishlist ?? false
+  );
+
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
   );
 
   const bgColor = categoryBg[product.category] ?? "#F3F4F6";
 
+  const toggleWishlist = () => setIsWishlisted((prev) => !prev);
+
   return (
-    <div className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 hover:bg-[#F9FAFB]">
+    <div className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5">
       {/* Image placeholder */}
       <div
         className="relative h-48 flex items-center justify-center"
@@ -76,18 +83,18 @@ export default function ProductCard({
           </span>
         )}
 
-        {/* Wishlist heart */}
+        {/* Hover-reveal wishlist heart (top-right, Myntra-style) */}
         <button
+          onClick={toggleWishlist}
           className={cn(
-            "absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-colors",
-            showWishlistRemove
-              ? "text-[#FF8C00] hover:bg-[#FFF7ED]"
-              : "text-[#6B7280] hover:text-[#FF8C00]"
+            "absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white border border-[#E5E3FF] shadow-sm transition-all",
+            "opacity-0 group-hover:opacity-100",
+            isWishlisted && "opacity-100"
           )}
         >
           <Heart
-            className="h-4 w-4"
-            fill={showWishlistRemove ? "currentColor" : "none"}
+            className="h-4 w-4 text-[#E24B4A]"
+            fill={isWishlisted ? "#E24B4A" : "none"}
           />
         </button>
       </div>
@@ -117,11 +124,29 @@ export default function ProductCard({
           Min order: {product.minOrder} units
         </p>
 
-        {/* Add to Cart */}
-        <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFD814] px-4 py-2.5 text-sm font-semibold text-[#0F1111] transition-colors hover:bg-[#F7CA00] focus:outline-none focus:ring-2 focus:ring-[#F7CA00] active:translate-y-px">
-          <ShoppingCart className="h-4 w-4" />
-          Add to Cart
-        </button>
+        {/* Button row: Add to Cart | Wishlist */}
+        <div className="flex gap-2">
+          <button className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#6C47FF] px-3 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-[#5538DD] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/40 active:translate-y-px">
+            <ShoppingCart className="h-4 w-4" />
+            Add to Cart
+          </button>
+
+          <button
+            onClick={toggleWishlist}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-colors active:translate-y-px",
+              isWishlisted
+                ? "bg-[#FFF5F5] border-[1.5px] border-[#E24B4A] text-[#1A1A2E]"
+                : "bg-white border-[1.5px] border-[#1A1A2E] text-[#1A1A2E] hover:bg-[#FFF5F5] hover:border-[#E24B4A]"
+            )}
+          >
+            <Heart
+              className="h-[15px] w-[15px] text-[#E24B4A]"
+              fill={isWishlisted ? "#E24B4A" : "none"}
+            />
+            {isWishlisted ? "Wishlisted" : "Wishlist"}
+          </button>
+        </div>
       </div>
     </div>
   );

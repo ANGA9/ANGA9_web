@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const categories = [
   "All",
@@ -17,23 +17,38 @@ export default function CategoryStrip() {
   const [active, setActive] = useState("All");
 
   return (
-    <div className="sticky top-16 z-30 border-b border-[#E5E7EB] bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex gap-1 overflow-x-auto scrollbar-hide -mb-px">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActive(cat)}
-              className={cn(
-                "shrink-0 px-4 py-3 text-sm transition-colors border-b-2 whitespace-nowrap",
-                active === cat
-                  ? "border-[#146EB4] text-[#146EB4] font-medium"
-                  : "border-transparent text-[#6B7280] font-normal hover:text-[#1F2937] hover:border-[#E5E7EB]"
-              )}
-            >
-              {cat}
-            </button>
-          ))}
+    <div
+      className="sticky top-16 z-30 border-b"
+      style={{ background: t.bgCard, borderColor: t.border }}
+    >
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2.5 -mb-px">
+          {categories.map((cat) => {
+            const isActive = active === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActive(cat)}
+                className="shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors whitespace-nowrap"
+                style={{
+                  background: isActive ? t.bluePrimary : "transparent",
+                  color: isActive ? "#FFFFFF" : t.textSecondary,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive)
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      t.bluePrimary;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive)
+                    (e.currentTarget as HTMLButtonElement).style.color =
+                      t.textSecondary;
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

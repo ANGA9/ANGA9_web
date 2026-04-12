@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full font-sans" style={{ fontFamily: "var(--font-gilroy)" }}>
+      <body className="min-h-full font-sans" style={{ fontFamily: '"DM Sans", -apple-system, BlinkMacSystemFont, sans-serif' }}>
         <TooltipProvider>
           {children}
         </TooltipProvider>

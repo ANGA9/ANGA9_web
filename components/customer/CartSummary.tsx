@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
 }
@@ -12,35 +15,49 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
   const total = subtotal + gst + delivery;
 
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white p-6 sticky top-36">
-      <h3 className="text-base font-semibold text-[#1F2937] mb-4">
+    <div
+      className="rounded-[14px] border p-5 sticky top-28"
+      style={{ background: t.bgCard, borderColor: t.border }}
+    >
+      <h3
+        className="text-base font-semibold mb-4"
+        style={{ color: t.textPrimary }}
+      >
         Order Summary
       </h3>
 
       <div className="space-y-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-[#6B7280]">Subtotal</span>
-          <span className="font-medium text-[#1F2937]">
+          <span style={{ color: t.textSecondary }}>Subtotal</span>
+          <span className="font-medium" style={{ color: t.textPrimary }}>
             {formatINR(subtotal)}
           </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-[#6B7280]">GST (18%)</span>
-          <span className="font-medium text-[#1F2937]">{formatINR(gst)}</span>
+          <span style={{ color: t.textSecondary }}>GST (18%)</span>
+          <span className="font-medium" style={{ color: t.textPrimary }}>
+            {formatINR(gst)}
+          </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-[#6B7280]">Delivery</span>
-          <span className="font-medium text-[#1F2937]">
+          <span style={{ color: t.textSecondary }}>Delivery</span>
+          <span className="font-medium" style={{ color: t.textPrimary }}>
             {delivery === 0 ? "Free" : formatINR(delivery)}
           </span>
         </div>
 
-        <div className="border-t border-[#E5E7EB] pt-3">
+        <div className="border-t pt-3" style={{ borderColor: t.border }}>
           <div className="flex justify-between">
-            <span className="text-base font-semibold text-[#1F2937]">
+            <span
+              className="text-base font-semibold"
+              style={{ color: t.textPrimary }}
+            >
               Total
             </span>
-            <span className="text-xl font-medium text-[#1F2937]">
+            <span
+              className="text-xl font-bold"
+              style={{ color: t.textPrimary }}
+            >
               {formatINR(total)}
             </span>
           </div>
@@ -48,18 +65,28 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       </div>
 
       {delivery === 0 && (
-        <p className="mt-3 text-xs text-[#0F6E56] font-medium">
-          Free delivery on orders above {"\u20B9"}10,000
+        <p
+          className="mt-3 text-xs font-medium"
+          style={{ color: t.inStock }}
+        >
+          Free delivery on orders above ₹10,000
         </p>
       )}
 
-      <button className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#FF8C00] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#E67E00] focus:outline-none focus:ring-2 focus:ring-[#FF8C00] active:translate-y-px">
+      <button
+        className="mt-5 flex w-full items-center justify-center rounded-[10px] py-3.5 text-[15px] font-bold transition-opacity hover:opacity-90"
+        style={{ background: t.yellowCta, color: t.ctaText }}
+      >
         Proceed to Checkout
       </button>
 
-      <p className="mt-3 text-center text-[11px] text-[#6B7280]">
-        Prices are exclusive of GST. Business verification required.
-      </p>
+      <Link
+        href="/customer"
+        className="mt-3 block text-center text-[13px] font-medium transition-opacity hover:opacity-80"
+        style={{ color: t.bluePrimary }}
+      >
+        Continue Shopping
+      </Link>
     </div>
   );
 }

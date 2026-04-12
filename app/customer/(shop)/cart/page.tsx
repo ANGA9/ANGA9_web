@@ -1,33 +1,31 @@
 "use client";
 
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, PackageOpen, ShoppingBag } from "lucide-react";
 import CartSummary from "@/components/customer/CartSummary";
 import Link from "next/link";
+import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const cartItems = [
   {
     id: "c1",
-    name: "Ergonomic Mesh Office Chair \u2014 Lumbar Support",
-    seller: "Prestige Interiors",
-    price: 8750,
-    qty: 10,
-    color: "#9CA3AF",
+    name: "Premium Mesh Office Chair",
+    seller: "Rajesh Furniture",
+    price: 12499,
+    qty: 5,
   },
   {
     id: "c2",
-    name: "LED Panel Light 60x60cm \u2014 40W, Daylight",
-    seller: "Sharma Electricals",
-    price: 11250,
-    qty: 20,
-    color: "#9CA3AF",
+    name: "LED Panel Light 40W",
+    seller: "Bright Solutions",
+    price: 3299,
+    qty: 10,
   },
   {
     id: "c3",
-    name: "Indoor Ceramic Planter Set \u2014 6 Piece",
-    seller: "Green Decor Co",
-    price: 3150,
-    qty: 12,
-    color: "#9CA3AF",
+    name: "Wireless Keyboard + Mouse Combo",
+    seller: "TechNest India",
+    price: 2199,
+    qty: 5,
   },
 ];
 
@@ -42,94 +40,121 @@ export default function CustomerCartPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-bold text-[#1F2937]">Shopping Cart</h1>
-          <p className="text-sm text-[#6B7280]">
-            {cartItems.length} items in your cart
-          </p>
-        </div>
-        <Link
-          href="/customer"
-          className="text-sm font-medium text-[#146EB4] hover:underline"
-        >
-          Continue Shopping
-        </Link>
-      </div>
+    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
+      <h1
+        className="text-xl font-bold mb-1"
+        style={{ color: t.textPrimary }}
+      >
+        Shopping Cart
+      </h1>
+      <p className="text-sm mb-6" style={{ color: t.textSecondary }}>
+        {cartItems.length} items in your cart
+      </p>
 
       <div className="grid grid-cols-12 gap-6">
         {/* Cart items */}
-        <div className="col-span-12 xl:col-span-8 space-y-4">
+        <div className="col-span-12 xl:col-span-8 space-y-3">
           {cartItems.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl border border-[#E5E7EB] bg-white p-5"
+              className="flex items-center gap-4 rounded-xl border p-3.5"
+              style={{ background: t.bgCard, borderColor: t.border }}
             >
-              <div className="flex gap-4">
-                {/* Thumbnail */}
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[#F3F4F6] text-3xl font-bold text-[#9CA3AF]">
-                  {item.name.charAt(0)}
-                </div>
-
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium text-[#6B7280]">
-                    {item.seller}
-                  </p>
-                  <h3 className="text-sm font-semibold text-[#1F2937] mt-0.5 truncate">
-                    {item.name}
-                  </h3>
-                  <p className="text-sm font-medium text-[#1F2937] mt-1">
-                    {formatINR(item.price)}{" "}
-                    <span className="text-xs text-[#6B7280] font-normal">
-                      / unit
-                    </span>
-                  </p>
-                </div>
-
-                {/* Qty + Subtotal */}
-                <div className="flex flex-col items-end gap-3 shrink-0">
-                  {/* Quantity stepper */}
-                  <div className="flex items-center rounded-lg border border-[#E5E7EB]">
-                    <button className="flex h-8 w-8 items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] transition-colors rounded-l-lg">
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="flex h-8 w-10 items-center justify-center border-x border-[#E5E7EB] text-sm font-medium text-[#1F2937]">
-                      {item.qty}
-                    </span>
-                    <button className="flex h-8 w-8 items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] transition-colors rounded-r-lg">
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-
-                  {/* Subtotal */}
-                  <p className="text-sm font-semibold text-[#1F2937]">
-                    {formatINR(item.price * item.qty)}
-                  </p>
-
-                  {/* Remove */}
-                  <button className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#1F2937] transition-colors">
-                    <Trash2 className="h-3.5 w-3.5" />
-                    Remove
-                  </button>
-                </div>
+              {/* Thumbnail */}
+              <div
+                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: t.bgBlueTint }}
+              >
+                <PackageOpen
+                  className="h-6 w-6"
+                  style={{ color: t.bluePrimary }}
+                />
               </div>
+
+              {/* Details */}
+              <div className="flex-1 min-w-0">
+                <h3
+                  className="text-sm font-semibold truncate"
+                  style={{ color: t.textPrimary }}
+                >
+                  {item.name}
+                </h3>
+                <p className="text-[11px] mt-0.5" style={{ color: t.textMuted }}>
+                  {item.seller}
+                </p>
+                <p
+                  className="text-sm font-medium mt-1"
+                  style={{ color: t.textPrimary }}
+                >
+                  {formatINR(item.price)}
+                  <span className="text-xs font-normal ml-1" style={{ color: t.textMuted }}>
+                    / unit
+                  </span>
+                </p>
+              </div>
+
+              {/* Qty stepper */}
+              <div className="flex items-center rounded-lg overflow-hidden shrink-0">
+                <button
+                  className="flex h-8 w-8 items-center justify-center text-sm font-medium transition-colors rounded-md"
+                  style={{ background: t.bgBlueTint, color: t.bluePrimary }}
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span
+                  className="flex h-8 w-10 items-center justify-center text-sm font-medium"
+                  style={{ color: t.textPrimary }}
+                >
+                  {item.qty}
+                </span>
+                <button
+                  className="flex h-8 w-8 items-center justify-center text-sm font-medium transition-colors rounded-md"
+                  style={{ background: t.bgBlueTint, color: t.bluePrimary }}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              {/* Subtotal */}
+              <p
+                className="text-sm font-bold shrink-0 w-24 text-right"
+                style={{ color: t.textPrimary }}
+              >
+                {formatINR(item.price * item.qty)}
+              </p>
+
+              {/* Remove */}
+              <button
+                className="shrink-0 transition-opacity hover:opacity-80"
+                style={{ color: t.outOfStock }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
             </div>
           ))}
 
           {cartItems.length === 0 && (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-[#E5E7EB] bg-white py-16">
-              <ShoppingBag className="h-12 w-12 text-[#9CA3AF] mb-4" />
-              <h3 className="text-base font-semibold text-[#1F2937]">
+            <div
+              className="flex flex-col items-center justify-center rounded-xl border py-16"
+              style={{ background: t.bgCard, borderColor: t.border }}
+            >
+              <ShoppingBag
+                className="h-12 w-12 mb-4"
+                style={{ color: t.textMuted }}
+              />
+              <h3
+                className="text-base font-semibold"
+                style={{ color: t.textPrimary }}
+              >
                 Your cart is empty
               </h3>
-              <p className="mt-1 text-sm text-[#6B7280]">
+              <p className="mt-1 text-sm" style={{ color: t.textSecondary }}>
                 Browse products and add them to your cart.
               </p>
               <Link
                 href="/customer"
-                className="mt-4 rounded-lg bg-[#FF8C00] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#E67E00] transition-colors"
+                className="mt-4 rounded-[10px] px-5 py-2.5 text-sm font-bold transition-opacity hover:opacity-90"
+                style={{ background: t.yellowCta, color: t.ctaText }}
               >
                 Start Shopping
               </Link>

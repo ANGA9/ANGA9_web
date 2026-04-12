@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -113,7 +114,7 @@
 }
 
 :root {
-  --font-gilroy: "Gilroy", "Inter", system-ui, -apple-system, sans-serif;
+  --font-gilroy: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --background: #F7F7F8;
   --foreground: #111111;
   --card: #ffffff;

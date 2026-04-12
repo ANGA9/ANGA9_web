@@ -6,35 +6,35 @@ const sellers = [
     initials: "SE",
     category: "Electronics",
     revenue: 1245000,
-    color: "#6C47FF",
+    color: "#111111",
   },
   {
     name: "Gupta Textiles",
     initials: "GT",
     category: "Home Decor",
     revenue: 980000,
-    color: "#14B8A6",
+    color: "#374151",
   },
   {
     name: "Metro Mart",
     initials: "MM",
     category: "Retail",
     revenue: 875000,
-    color: "#F59E0B",
+    color: "#6B7280",
   },
   {
     name: "Prestige Interiors",
     initials: "PI",
     category: "Furniture",
     revenue: 720000,
-    color: "#7C3AED",
+    color: "#4B5563",
   },
   {
     name: "SafeHands India",
     initials: "SI",
     category: "Industrial",
     revenue: 650000,
-    color: "#EF4444",
+    color: "#9CA3AF",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function TopSellersList() {
     <div className="rounded-xl border border-anga-border bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-base font-semibold text-anga-text">Top Sellers</h3>
-        <button className="text-sm font-medium text-[#6C47FF] hover:underline">
+        <button className="text-sm font-medium text-[#111111] hover:underline">
           View All
         </button>
       </div>

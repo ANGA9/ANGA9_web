@@ -14,7 +14,7 @@ const orders = [
     qty: 10,
     amount: 87500,
     status: "Processing",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: true,
   },
   {
@@ -24,7 +24,7 @@ const orders = [
     qty: 20,
     amount: 225000,
     status: "Shipped",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: true,
   },
   {
@@ -34,7 +34,7 @@ const orders = [
     qty: 4,
     amount: 27200,
     status: "Delivered",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: false,
   },
   {
@@ -44,7 +44,7 @@ const orders = [
     qty: 12,
     amount: 37800,
     status: "Delivered",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: false,
   },
   {
@@ -54,7 +54,7 @@ const orders = [
     qty: 2,
     amount: 54400,
     status: "Cancelled",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: false,
   },
   {
@@ -64,16 +64,16 @@ const orders = [
     qty: 5,
     amount: 72000,
     status: "Delivered",
-    color: "#C8C1B5",
+    color: "#9CA3AF",
     trackable: false,
   },
 ];
 
 const statusStyles: Record<string, string> = {
-  Processing: "bg-[#FDF3E7] text-[#7C4F1A]",
-  Shipped: "bg-[#EAF3FB] text-[#185FA5]",
+  Processing: "bg-[#FFF7ED] text-[#FF8C00]",
+  Shipped: "bg-[#EAF3FB] text-[#146EB4]",
   Delivered: "bg-[#E1F5EE] text-[#0F6E56]",
-  Cancelled: "bg-[#F2EFE9] text-[#78716C]",
+  Cancelled: "bg-[#F3F4F6] text-[#6B7280]",
 };
 
 const tabFilter: Record<string, string[]> = {
@@ -98,8 +98,8 @@ export default function CustomerOrdersPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
-      <h1 className="text-xl font-bold text-[#1C1917] mb-1">My Orders</h1>
-      <p className="text-sm text-[#78716C] mb-6">
+      <h1 className="text-xl font-bold text-[#1F2937] mb-1">My Orders</h1>
+      <p className="text-sm text-[#6B7280] mb-6">
         Track and manage your wholesale orders
       </p>
 
@@ -112,8 +112,8 @@ export default function CustomerOrdersPage() {
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
               activeTab === tab
-                ? "bg-[#2C2825] text-white"
-                : "border border-[#C8C1B5] bg-transparent text-[#1C1917] hover:bg-[#F2EFE9]"
+                ? "bg-[#146EB4] text-white"
+                : "border border-[#E5E7EB] bg-transparent text-[#1F2937] hover:bg-[#F3F4F6]"
             )}
           >
             {tab}
@@ -126,30 +126,30 @@ export default function CustomerOrdersPage() {
         {filtered.map((order) => (
           <div
             key={order.id}
-            className="rounded-xl border border-[#E5E0D8] bg-white p-5 transition-shadow hover:shadow-sm"
+            className="rounded-xl border border-[#E5E7EB] bg-white p-5 transition-shadow hover:shadow-sm"
           >
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               {/* Thumbnail placeholder */}
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-[#F2EFE9] text-2xl font-bold text-[#C8C1B5]">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-[#F3F4F6] text-2xl font-bold text-[#9CA3AF]">
                 {order.product.charAt(0)}
               </div>
 
               {/* Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-[#78716C]">
+                  <span className="text-xs font-medium text-[#6B7280]">
                     {order.id}
                   </span>
-                  <span className="text-xs text-[#A8A09A]">
+                  <span className="text-xs text-[#6B7280]">
                     &middot; {order.date}
                   </span>
                 </div>
-                <h3 className="text-sm font-semibold text-[#1C1917] truncate">
+                <h3 className="text-sm font-semibold text-[#1F2937] truncate">
                   {order.product}
                 </h3>
-                <p className="text-xs text-[#78716C] mt-0.5">
+                <p className="text-xs text-[#6B7280] mt-0.5">
                   Qty: {order.qty} &middot;{" "}
-                  <span className="font-medium text-[#1C1917]">
+                  <span className="font-medium text-[#1F2937]">
                     {formatINR(order.amount)}
                   </span>
                 </p>
@@ -167,14 +167,14 @@ export default function CustomerOrdersPage() {
                 </span>
 
                 {order.trackable && (
-                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-[#C8C1B5] px-3 py-1.5 text-xs font-semibold text-[#1C1917] hover:bg-[#F2EFE9] transition-colors">
+                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-[#E5E7EB] px-3 py-1.5 text-xs font-semibold text-[#1F2937] hover:bg-[#F3F4F6] transition-colors">
                     <Truck className="h-3.5 w-3.5" />
                     Track
                   </button>
                 )}
 
                 {order.status === "Delivered" && (
-                  <button className="inline-flex items-center gap-1.5 rounded-lg bg-[#C4873A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#B37530] transition-colors">
+                  <button className="inline-flex items-center gap-1.5 rounded-lg bg-[#FF8C00] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#E67E00] transition-colors">
                     <RotateCcw className="h-3.5 w-3.5" />
                     Reorder
                   </button>
@@ -186,13 +186,13 @@ export default function CustomerOrdersPage() {
 
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F2EFE9]">
-              <Package className="h-8 w-8 text-[#78716C]" />
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F3F4F6]">
+              <Package className="h-8 w-8 text-[#6B7280]" />
             </div>
-            <h3 className="text-base font-semibold text-[#1C1917]">
+            <h3 className="text-base font-semibold text-[#1F2937]">
               No orders found
             </h3>
-            <p className="mt-1 text-sm text-[#78716C]">
+            <p className="mt-1 text-sm text-[#6B7280]">
               Orders matching this filter will appear here.
             </p>
           </div>

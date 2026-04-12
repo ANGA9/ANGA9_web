@@ -11,7 +11,7 @@ const cartItems = [
     seller: "Prestige Interiors",
     price: 8750,
     qty: 10,
-    color: "#C8C1B5",
+    color: "#9CA3AF",
   },
   {
     id: "c2",
@@ -19,7 +19,7 @@ const cartItems = [
     seller: "Sharma Electricals",
     price: 11250,
     qty: 20,
-    color: "#C8C1B5",
+    color: "#9CA3AF",
   },
   {
     id: "c3",
@@ -27,7 +27,7 @@ const cartItems = [
     seller: "Green Decor Co",
     price: 3150,
     qty: 12,
-    color: "#C8C1B5",
+    color: "#9CA3AF",
   },
 ];
 
@@ -45,14 +45,14 @@ export default function CustomerCartPage() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-[#1C1917]">Shopping Cart</h1>
-          <p className="text-sm text-[#78716C]">
+          <h1 className="text-xl font-bold text-[#1F2937]">Shopping Cart</h1>
+          <p className="text-sm text-[#6B7280]">
             {cartItems.length} items in your cart
           </p>
         </div>
         <Link
           href="/customer"
-          className="text-sm font-medium text-[#44403C] hover:underline"
+          className="text-sm font-medium text-[#146EB4] hover:underline"
         >
           Continue Shopping
         </Link>
@@ -64,25 +64,25 @@ export default function CustomerCartPage() {
           {cartItems.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl border border-[#E5E0D8] bg-white p-5"
+              className="rounded-xl border border-[#E5E7EB] bg-white p-5"
             >
               <div className="flex gap-4">
                 {/* Thumbnail */}
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[#F2EFE9] text-3xl font-bold text-[#C8C1B5]">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[#F3F4F6] text-3xl font-bold text-[#9CA3AF]">
                   {item.name.charAt(0)}
                 </div>
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium text-[#A8A09A]">
+                  <p className="text-[11px] font-medium text-[#6B7280]">
                     {item.seller}
                   </p>
-                  <h3 className="text-sm font-semibold text-[#1C1917] mt-0.5 truncate">
+                  <h3 className="text-sm font-semibold text-[#1F2937] mt-0.5 truncate">
                     {item.name}
                   </h3>
-                  <p className="text-sm font-medium text-[#1C1917] mt-1">
+                  <p className="text-sm font-medium text-[#1F2937] mt-1">
                     {formatINR(item.price)}{" "}
-                    <span className="text-xs text-[#A8A09A] font-normal">
+                    <span className="text-xs text-[#6B7280] font-normal">
                       / unit
                     </span>
                   </p>
@@ -91,25 +91,25 @@ export default function CustomerCartPage() {
                 {/* Qty + Subtotal */}
                 <div className="flex flex-col items-end gap-3 shrink-0">
                   {/* Quantity stepper */}
-                  <div className="flex items-center rounded-lg border border-[#E5E0D8]">
-                    <button className="flex h-8 w-8 items-center justify-center text-[#78716C] hover:bg-[#F2EFE9] transition-colors rounded-l-lg">
+                  <div className="flex items-center rounded-lg border border-[#E5E7EB]">
+                    <button className="flex h-8 w-8 items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] transition-colors rounded-l-lg">
                       <Minus className="h-3.5 w-3.5" />
                     </button>
-                    <span className="flex h-8 w-10 items-center justify-center border-x border-[#E5E0D8] text-sm font-medium text-[#1C1917]">
+                    <span className="flex h-8 w-10 items-center justify-center border-x border-[#E5E7EB] text-sm font-medium text-[#1F2937]">
                       {item.qty}
                     </span>
-                    <button className="flex h-8 w-8 items-center justify-center text-[#78716C] hover:bg-[#F2EFE9] transition-colors rounded-r-lg">
+                    <button className="flex h-8 w-8 items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] transition-colors rounded-r-lg">
                       <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
                   {/* Subtotal */}
-                  <p className="text-sm font-semibold text-[#1C1917]">
+                  <p className="text-sm font-semibold text-[#1F2937]">
                     {formatINR(item.price * item.qty)}
                   </p>
 
                   {/* Remove */}
-                  <button className="flex items-center gap-1 text-xs text-[#A8A09A] hover:text-[#1C1917] transition-colors">
+                  <button className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#1F2937] transition-colors">
                     <Trash2 className="h-3.5 w-3.5" />
                     Remove
                   </button>
@@ -119,17 +119,17 @@ export default function CustomerCartPage() {
           ))}
 
           {cartItems.length === 0 && (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-[#E5E0D8] bg-white py-16">
-              <ShoppingBag className="h-12 w-12 text-[#C8C1B5] mb-4" />
-              <h3 className="text-base font-semibold text-[#1C1917]">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-[#E5E7EB] bg-white py-16">
+              <ShoppingBag className="h-12 w-12 text-[#9CA3AF] mb-4" />
+              <h3 className="text-base font-semibold text-[#1F2937]">
                 Your cart is empty
               </h3>
-              <p className="mt-1 text-sm text-[#78716C]">
+              <p className="mt-1 text-sm text-[#6B7280]">
                 Browse products and add them to your cart.
               </p>
               <Link
                 href="/customer"
-                className="mt-4 rounded-lg bg-[#C4873A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#B37530] transition-colors"
+                className="mt-4 rounded-lg bg-[#FF8C00] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#E67E00] transition-colors"
               >
                 Start Shopping
               </Link>

@@ -7,7 +7,7 @@ export default function CustomerShopLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-[#FFFFFF]">
       <CustomerTopNav />
       <CategoryStrip />
       <main>{children}</main>

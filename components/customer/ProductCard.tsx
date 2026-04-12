@@ -17,12 +17,12 @@ export interface Product {
 }
 
 const categoryBg: Record<string, string> = {
-  Furniture: "#F5F0EB",
-  Electronics: "#F0F4F8",
-  "Home Decor": "#FDF3E7",
-  Industrial: "#EAF3EE",
-  Retail: "#F2EFE9",
-  "Office Essentials": "#F2EFE9",
+  Furniture: "#F3F4F6",
+  Electronics: "#F3F4F6",
+  "Home Decor": "#F3F4F6",
+  Industrial: "#F3F4F6",
+  Retail: "#F3F4F6",
+  "Office Essentials": "#F3F4F6",
 };
 
 function formatINR(value: number) {
@@ -42,16 +42,16 @@ export default function ProductCard({
     ((product.originalPrice - product.price) / product.originalPrice) * 100
   );
 
-  const bgColor = categoryBg[product.category] ?? "#F2EFE9";
+  const bgColor = categoryBg[product.category] ?? "#F3F4F6";
 
   return (
-    <div className="group rounded-xl border border-[#E5E0D8] bg-white overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5">
+    <div className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 hover:bg-[#F9FAFB]">
       {/* Image placeholder */}
       <div
         className="relative h-48 flex items-center justify-center"
         style={{ backgroundColor: bgColor }}
       >
-        <span className="text-4xl font-bold text-[#C8C1B5] opacity-40">
+        <span className="text-4xl font-bold text-[#9CA3AF] opacity-40">
           {product.category.charAt(0)}
         </span>
 
@@ -61,8 +61,8 @@ export default function ProductCard({
             className={cn(
               "absolute top-3 left-3 rounded-full px-2.5 py-0.5 text-[10px] font-semibold",
               product.badge === "TOP RATED"
-                ? "bg-[#F2EFE9] text-[#44403C]"
-                : "bg-[#FDF3E7] text-[#7C4F1A]"
+                ? "bg-[#F3F4F6] text-[#1F2937]"
+                : "bg-[#FF8C00] text-white"
             )}
           >
             {product.badge}
@@ -71,7 +71,7 @@ export default function ProductCard({
 
         {/* Discount */}
         {discount > 0 && (
-          <span className="absolute top-3 right-3 rounded-full bg-[#C4873A] px-2 py-0.5 text-[10px] font-bold text-white">
+          <span className="absolute top-3 right-3 rounded-full bg-[#FF8C00] px-2 py-0.5 text-[10px] font-bold text-white">
             -{discount}%
           </span>
         )}
@@ -81,8 +81,8 @@ export default function ProductCard({
           className={cn(
             "absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-colors",
             showWishlistRemove
-              ? "text-[#C4873A] hover:bg-[#FDF3E7]"
-              : "text-[#A8A09A] hover:text-[#C4873A]"
+              ? "text-[#FF8C00] hover:bg-[#FFF7ED]"
+              : "text-[#6B7280] hover:text-[#FF8C00]"
           )}
         >
           <Heart
@@ -94,31 +94,31 @@ export default function ProductCard({
 
       {/* Content */}
       <div className="p-4">
-        <p className="text-[11px] font-medium text-[#A8A09A] mb-1">
+        <p className="text-[11px] font-medium text-[#6B7280] mb-1">
           {product.seller}
         </p>
-        <h3 className="text-sm font-medium text-[#1C1917] leading-snug mb-2 line-clamp-2">
+        <h3 className="text-sm font-medium text-[#1F2937] leading-snug mb-2 line-clamp-2">
           {product.name}
         </h3>
 
         {/* Pricing */}
         <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-lg font-medium text-[#1C1917]">
+          <span className="text-lg font-medium text-[#1F2937]">
             {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
-            <span className="text-xs text-[#A8A09A] line-through">
+            <span className="text-xs text-[#6B7280] line-through">
               {formatINR(product.originalPrice)}
             </span>
           )}
         </div>
 
-        <p className="text-[11px] text-[#A8A09A] mb-3">
+        <p className="text-[11px] text-[#6B7280] mb-3">
           Min order: {product.minOrder} units
         </p>
 
         {/* Add to Cart */}
-        <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#C4873A] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#B37530] active:translate-y-px">
+        <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFD814] px-4 py-2.5 text-sm font-semibold text-[#0F1111] transition-colors hover:bg-[#F7CA00] focus:outline-none focus:ring-2 focus:ring-[#F7CA00] active:translate-y-px">
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
         </button>

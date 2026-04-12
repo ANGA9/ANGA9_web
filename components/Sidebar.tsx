@@ -63,7 +63,7 @@ export default function Sidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6C47FF] text-white font-bold text-lg shrink-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#111111] text-white font-bold text-lg shrink-0">
               A
             </div>
             {!collapsed && (
@@ -89,7 +89,7 @@ export default function Sidebar() {
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 item.active
-                  ? "bg-[#6C47FF] text-white shadow-sm"
+                  ? "bg-[#111111] text-white shadow-sm"
                   : "text-anga-text-secondary hover:bg-anga-bg hover:text-anga-text"
               )}
             >
@@ -115,7 +115,7 @@ export default function Sidebar() {
         <div className="border-t border-anga-border p-3">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9 shrink-0">
-              <AvatarFallback className="bg-[#6C47FF]/10 text-[#6C47FF] font-semibold text-sm">
+              <AvatarFallback className="bg-[#F3F4F6] text-[#374151] font-semibold text-sm">
                 RK
               </AvatarFallback>
             </Avatar>

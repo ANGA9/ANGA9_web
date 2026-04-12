@@ -13,7 +13,7 @@ const orders = [
     id: "ORD-7291",
     product: "LED Panel Lights (Box of 50)",
     category: "Electronics",
-    categoryColor: "#6C47FF",
+    categoryColor: "#111111",
     buyer: "Sharma Electricals",
     amount: 48500,
     status: "Delivered",
@@ -23,7 +23,7 @@ const orders = [
     id: "ORD-7290",
     product: "Cotton Bed Sheets (Set of 100)",
     category: "Home Decor",
-    categoryColor: "#14B8A6",
+    categoryColor: "#6B7280",
     buyer: "Gupta Textiles",
     amount: 125000,
     status: "Processing",
@@ -33,7 +33,7 @@ const orders = [
     id: "ORD-7289",
     product: "Stainless Steel Bottles (200 pcs)",
     category: "Retail",
-    categoryColor: "#F59E0B",
+    categoryColor: "#9CA3AF",
     buyer: "Metro Mart",
     amount: 36000,
     status: "Delivered",
@@ -43,7 +43,7 @@ const orders = [
     id: "ORD-7288",
     product: "Office Chairs (25 units)",
     category: "Furniture",
-    categoryColor: "#7C3AED",
+    categoryColor: "#374151",
     buyer: "Prestige Interiors",
     amount: 187500,
     status: "Cancelled",
@@ -63,7 +63,7 @@ const orders = [
     id: "ORD-7286",
     product: "Industrial Safety Gloves (1000 prs)",
     category: "Industrial",
-    categoryColor: "#EF4444",
+    categoryColor: "#4B5563",
     buyer: "SafeHands India",
     amount: 95000,
     status: "Delivered",
@@ -89,7 +89,7 @@ export default function RecentOrdersTable() {
           <h3 className="text-base font-semibold text-anga-text">Recent Orders</h3>
           <p className="text-sm text-anga-text-secondary">Latest marketplace transactions</p>
         </div>
-        <button className="text-sm font-medium text-[#6C47FF] hover:underline">
+        <button className="text-sm font-medium text-[#111111] hover:underline">
           View All
         </button>
       </div>

@@ -19,8 +19,8 @@ const stats = [
     delta: "18.2% this month",
     deltaType: "positive" as const,
     icon: IndianRupee,
-    iconColor: "#6C47FF",
-    iconBg: "#6C47FF15",
+    iconColor: "#111111",
+    iconBg: "#11111115",
   },
   {
     title: "Active Orders",
@@ -28,8 +28,8 @@ const stats = [
     delta: "6 today",
     deltaType: "positive" as const,
     icon: ShoppingCart,
-    iconColor: "#14B8A6",
-    iconBg: "#14B8A615",
+    iconColor: "#6B7280",
+    iconBg: "#6B728015",
   },
   {
     title: "Registered Sellers",
@@ -37,8 +37,8 @@ const stats = [
     delta: "12 this week",
     deltaType: "positive" as const,
     icon: Store,
-    iconColor: "#F59E0B",
-    iconBg: "#F59E0B15",
+    iconColor: "#9CA3AF",
+    iconBg: "#9CA3AF15",
   },
   {
     title: "Products Listed",
@@ -46,8 +46,8 @@ const stats = [
     delta: "34 this week",
     deltaType: "positive" as const,
     icon: Package,
-    iconColor: "#7C3AED",
-    iconBg: "#7C3AED15",
+    iconColor: "#374151",
+    iconBg: "#37415115",
   },
 ];
 

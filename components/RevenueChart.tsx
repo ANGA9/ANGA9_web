@@ -69,7 +69,7 @@ export default function RevenueChart() {
           <p className="text-sm text-anga-text-secondary">Monthly revenue trend</p>
         </div>
         <div className="flex gap-2">
-          <button className="rounded-lg bg-[#6C47FF] px-3 py-1.5 text-xs font-medium text-white">
+          <button className="rounded-lg bg-[#111111] px-3 py-1.5 text-xs font-medium text-white">
             Monthly
           </button>
           <button className="rounded-lg border border-anga-border px-3 py-1.5 text-xs font-medium text-anga-text-secondary hover:bg-anga-bg transition-colors">
@@ -81,11 +81,11 @@ export default function RevenueChart() {
         <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6C47FF" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="#6C47FF" stopOpacity={0} />
+              <stop offset="0%" stopColor="#111111" stopOpacity={0.1} />
+              <stop offset="100%" stopColor="#111111" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E5E3FF" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
           <XAxis
             dataKey="month"
             axisLine={false}
@@ -102,7 +102,7 @@ export default function RevenueChart() {
           <Area
             type="monotone"
             dataKey="revenue"
-            stroke="#6C47FF"
+            stroke="#111111"
             strokeWidth={2.5}
             fill="url(#revenueGradient)"
           />

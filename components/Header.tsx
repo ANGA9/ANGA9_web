@@ -12,7 +12,7 @@ export default function Header() {
         <input
           type="text"
           placeholder="Search products, orders, sellers..."
-          className="h-10 w-full rounded-lg border border-anga-border bg-anga-bg pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+          className="h-10 w-full rounded-lg border border-anga-border bg-anga-bg pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111]/10 transition-colors"
         />
       </div>
 
@@ -21,13 +21,13 @@ export default function Header() {
         {/* Notification bell */}
         <button className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-anga-border text-anga-text-secondary hover:bg-anga-bg hover:text-anga-text transition-colors">
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#EF4444] text-[10px] font-bold text-white">
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#111111] text-[10px] font-bold text-white">
             3
           </span>
         </button>
 
         {/* New Product CTA */}
-        <Button className="bg-[#6C47FF] hover:bg-[#5835DB] text-white gap-1.5 h-10 px-4 rounded-lg shadow-sm">
+        <Button className="bg-[#111111] hover:bg-[#333333] text-white gap-1.5 h-10 px-4 rounded-lg shadow-sm">
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">New Product</span>
         </Button>

@@ -2,22 +2,22 @@ import { ArrowRight } from "lucide-react";
 
 export default function HeroBanner() {
   return (
-    <div className="rounded-2xl bg-[#2C2825] p-8 sm:p-10 relative overflow-hidden">
+    <div className="rounded-2xl bg-[#146EB4] p-8 sm:p-10 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-white/5" />
       <div className="absolute -bottom-8 -right-4 h-24 w-24 rounded-xl bg-white/5 border border-white/10" />
 
       <div className="relative z-10 max-w-lg">
-        <span className="inline-block uppercase tracking-wider text-[#A8A09A] text-xs font-semibold mb-4">
+        <span className="inline-block uppercase tracking-wider text-white/60 text-xs font-semibold mb-4">
           B2B Exclusive
         </span>
-        <h2 className="text-2xl sm:text-3xl font-medium leading-tight mb-2 text-[#FAF8F5]">
+        <h2 className="text-2xl sm:text-3xl font-medium leading-tight mb-2 text-white">
           Bulk Discounts on Office Essentials
         </h2>
-        <p className="text-sm text-[#78716C] mb-6 leading-relaxed">
+        <p className="text-sm text-white/70 mb-6 leading-relaxed">
           Up to 40% off on furniture, stationery, and tech for your workspace. Verified suppliers only.
         </p>
-        <button className="inline-flex items-center gap-2 rounded-lg bg-[#C4873A] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#B37530]">
+        <button className="inline-flex items-center gap-2 rounded-lg bg-[#FF8C00] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#E67E00]">
           Shop Now
           <ArrowRight className="h-4 w-4" />
         </button>

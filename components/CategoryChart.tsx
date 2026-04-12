@@ -66,7 +66,7 @@ export default function CategoryChart() {
         >
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="#E5E3FF"
+            stroke="#E5E7EB"
             horizontal={false}
           />
           <XAxis
@@ -86,7 +86,7 @@ export default function CategoryChart() {
           <Tooltip content={<CustomTooltip />} />
           <Bar
             dataKey="orders"
-            fill="#6C47FF"
+            fill="#111111"
             radius={[0, 6, 6, 0]}
             barSize={28}
           />

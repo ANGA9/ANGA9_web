@@ -12,7 +12,7 @@ export const CUSTOMER_THEME = {
   textPrimary: "#1A1A2E",
 
   // Page background — barely blue-tinted white
-  bgPage: "#F7FAFF",
+  bgPage: "#FFFFFF",
 
   // Card surface — product cards, nav, panels
   bgCard: "#FFFFFF",

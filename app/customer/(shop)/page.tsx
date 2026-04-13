@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
-import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const categories = [
   { name: "Home Decor", icon: Home },
@@ -84,45 +83,58 @@ const products: Product[] = [
 
 export default function CustomerHomePage() {
   return (
-    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6 space-y-8">
+    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
       {/* Hero */}
       <HeroBanner />
 
       {/* Shop by Category */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
+      <section style={{ marginTop: 40 }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
           <h2
-            className="text-lg font-semibold"
-            style={{ color: t.textPrimary }}
+            className="font-bold"
+            style={{ color: "#1A1A2E", fontSize: 20 }}
           >
             Shop by category
           </h2>
           <button
-            className="text-sm font-medium transition-opacity hover:opacity-80"
-            style={{ color: t.bluePrimary }}
+            className="font-medium transition-opacity hover:opacity-80"
+            style={{ color: "#1A6FD4", fontSize: 13 }}
           >
             View All
           </button>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+        <div
+          className="grid grid-cols-3 sm:grid-cols-6"
+          style={{ gap: 12 }}
+        >
           {categories.map((cat) => (
             <button
               key={cat.name}
-              className="flex flex-col items-center gap-2.5 rounded-[14px] border p-5 transition-all hover:scale-[1.02] hover:border-[#1A6FD4]"
-              style={{ background: t.bgCard, borderColor: t.border }}
+              className="flex flex-col items-center border cursor-pointer transition-all duration-150 hover:border-[#1A6FD4] hover:scale-[1.03]"
+              style={{
+                background: "#FFFFFF",
+                borderColor: "#E8EEF4",
+                borderRadius: 16,
+                padding: "20px 12px",
+                textAlign: "center",
+              }}
             >
               <div
-                className="flex h-11 w-11 items-center justify-center rounded-full"
-                style={{ background: t.bgBlueTint }}
+                className="flex items-center justify-center rounded-full transition-colors duration-150"
+                style={{
+                  width: 52,
+                  height: 52,
+                  background: "#EAF2FF",
+                  marginBottom: 10,
+                }}
               >
                 <cat.icon
-                  className="h-4 w-4"
-                  style={{ color: t.bluePrimary }}
+                  style={{ width: 22, height: 22, color: "#1A6FD4" }}
                 />
               </div>
               <span
-                className="text-[13px] font-medium text-center leading-tight"
-                style={{ color: t.textPrimary }}
+                className="font-medium text-center leading-tight"
+                style={{ color: "#1A1A2E", fontSize: 13 }}
               >
                 {cat.name}
               </span>
@@ -132,13 +144,21 @@ export default function CustomerHomePage() {
       </section>
 
       {/* Discover Products */}
-      <section>
-        <h2
-          className="text-lg font-semibold mb-4"
-          style={{ color: t.textPrimary }}
-        >
-          Discover products for you
-        </h2>
+      <section style={{ marginTop: 48 }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
+          <h2
+            className="font-bold"
+            style={{ color: "#1A1A2E", fontSize: 20 }}
+          >
+            Discover products for you
+          </h2>
+          <button
+            className="font-medium transition-opacity hover:opacity-80"
+            style={{ color: "#1A6FD4", fontSize: 13 }}
+          >
+            View All
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />

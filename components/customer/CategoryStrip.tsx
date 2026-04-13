@@ -1,56 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import MegaDropdown from "./MegaDropdown";
 
-const categories = [
-  "All",
-  "Electronics",
-  "Home Decor",
-  "Furniture",
-  "Office Essentials",
-  "Industrial",
-  "Retail",
+const megaTabs = [
+  "FASHION",
+  "ACCESSORIES",
+  "BED & BATH LINEN",
+  "HOME DECOR & FLOORING",
 ];
 
 export default function CategoryStrip() {
-  const [active, setActive] = useState("All");
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+  const hideTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showDropdown = useCallback((tab: string) => {
+    if (hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+      hideTimeout.current = null;
+    }
+    setHoveredTab(tab);
+  }, []);
+
+  const scheduleHide = useCallback(() => {
+    hideTimeout.current = setTimeout(() => {
+      setHoveredTab(null);
+    }, 150);
+  }, []);
+
+  const cancelHide = useCallback(() => {
+    if (hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+      hideTimeout.current = null;
+    }
+  }, []);
 
   return (
-    <div
-      className="sticky top-16 z-30 border-b"
-      style={{ background: t.bgCard, borderColor: t.border }}
-    >
-      <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2.5 -mb-px">
-          {categories.map((cat) => {
-            const isActive = active === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActive(cat)}
-                className="shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors whitespace-nowrap"
-                style={{
-                  background: isActive ? t.bluePrimary : "transparent",
-                  color: isActive ? "#FFFFFF" : t.textSecondary,
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive)
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      t.bluePrimary;
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive)
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      t.textSecondary;
-                }}
-              >
-                {cat}
-              </button>
-            );
-          })}
+    <>
+      <div
+        className="sticky top-16 z-30 border-b relative"
+        style={{ background: t.bgCard, borderColor: t.border }}
+      >
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide -mb-px">
+            {/* Mega-menu tabs */}
+            {megaTabs.map((tab) => {
+              const isHovered = hoveredTab === tab;
+              return (
+                <button
+                  key={tab}
+                  onMouseEnter={() => showDropdown(tab)}
+                  onMouseLeave={scheduleHide}
+                  className="shrink-0 h-11 flex items-center px-4 text-sm font-medium transition-colors border-b-[3px] whitespace-nowrap"
+                  style={{
+                    borderColor: isHovered ? t.bluePrimary : "transparent",
+                    color: t.textPrimary,
+                    fontWeight: isHovered ? 600 : 500,
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* Mega dropdown */}
+        {hoveredTab && (
+          <MegaDropdown
+            tab={hoveredTab}
+            onMouseEnter={cancelHide}
+            onMouseLeave={scheduleHide}
+          />
+        )}
       </div>
-    </div>
+
+      {/* Dark overlay behind mega dropdown */}
+      {hoveredTab && (
+        <div
+          className="fixed inset-0 z-20"
+          style={{ background: "rgba(0,0,0,0.45)" }}
+          onMouseEnter={scheduleHide}
+        />
+      )}
+    </>
   );
 }

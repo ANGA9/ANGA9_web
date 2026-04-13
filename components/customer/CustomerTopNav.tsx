@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Bell, ShoppingCart } from "lucide-react";
+import { Search, Bell, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export default function CustomerTopNav() {
@@ -49,6 +49,15 @@ export default function CustomerTopNav() {
           >
             <Bell className="h-5 w-5" />
           </button>
+
+          {/* Wishlist */}
+          <Link
+            href="/customer/wishlist"
+            className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:text-[#DC2626]"
+            style={{ color: t.textSecondary }}
+          >
+            <Heart className="h-[22px] w-[22px]" />
+          </Link>
 
           {/* Cart */}
           <Link

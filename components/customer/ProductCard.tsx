@@ -1,6 +1,6 @@
 "use client";
 
-import { PackageOpen, Heart } from "lucide-react";
+import { PackageOpen, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export interface Product {
@@ -36,35 +36,45 @@ export default function ProductCard({
   return (
     <div
       className="group overflow-hidden rounded-[14px] border transition-colors hover:border-[#1A6FD4]"
-      style={{ background: t.bgCard, borderColor: t.border }}
+      style={{ background: "#FFFFFF", borderColor: "#E8EEF4" }}
     >
       {/* Image area */}
       <div
-        className="relative flex h-40 items-center justify-center"
-        style={{ background: t.bgBlueTint }}
+        className="relative flex h-[200px] flex-col items-center justify-center gap-2"
+        style={{ background: "#EAF2FF" }}
       >
-        <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary }} />
+        <PackageOpen
+          className="h-12 w-12"
+          style={{ color: "#1A6FD4", opacity: 0.35 }}
+        />
+        {/* Category pill */}
+        <span
+          className="rounded-full px-3 py-0.5 text-[10px] font-medium"
+          style={{ background: "rgba(26,111,212,0.1)", color: "#1A6FD4" }}
+        >
+          {product.category}
+        </span>
 
-        {/* Badge */}
+        {/* Badge — bottom-left */}
         {product.badge && (
           <span
-            className="absolute top-3 left-3 rounded-md px-2 py-0.5 text-[10px] font-bold"
+            className="absolute bottom-3 left-3 rounded-md px-2 py-0.5 text-[10px] font-bold"
             style={{
               background:
-                product.badge === "Top Rated" ? t.bgBlueTint : t.yellowCta,
+                product.badge === "Top Rated" ? "#EAF2FF" : "#FFCC00",
               color:
-                product.badge === "Top Rated" ? t.bluePrimary : t.ctaText,
+                product.badge === "Top Rated" ? "#1A6FD4" : "#1A1A2E",
             }}
           >
             {product.badge}
           </span>
         )}
 
-        {/* Discount badge */}
+        {/* Discount badge — top-right */}
         {discount > 0 && (
           <span
-            className="absolute top-3 right-3 rounded-md px-2 py-0.5 text-[10px] font-bold text-white"
-            style={{ background: t.bluePrimary }}
+            className="absolute top-3 right-3 rounded-[6px] text-[11px] font-bold text-white"
+            style={{ background: "#1A6FD4", padding: "3px 7px" }}
           >
             -{discount}%
           </span>
@@ -78,54 +88,81 @@ export default function ProductCard({
           >
             <Heart
               className="h-4 w-4"
-              style={{ color: t.outOfStock }}
-              fill={t.outOfStock}
+              style={{ color: "#DC2626" }}
+              fill="#DC2626"
             />
           </button>
         )}
       </div>
 
       {/* Body */}
-      <div className="px-3.5 py-3">
-        <p className="text-[11px] mb-0.5" style={{ color: t.textMuted }}>
+      <div style={{ padding: "14px 16px" }}>
+        <p className="text-[11px] mb-0.5" style={{ color: "#9CA3AF" }}>
           {product.seller}
         </p>
         <h3
-          className="text-sm font-semibold leading-snug mb-1.5 line-clamp-2"
-          style={{ color: t.textPrimary, lineHeight: 1.35 }}
+          className="font-semibold mb-1.5 overflow-hidden"
+          style={{
+            color: "#1A1A2E",
+            fontSize: 15,
+            lineHeight: 1.35,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
         >
           {product.name}
         </h3>
 
         {/* Price row */}
-        <div className="flex items-baseline gap-1.5 mb-1">
+        <div className="flex items-baseline mb-1">
           <span
-            className="text-lg font-bold"
-            style={{ color: t.textPrimary }}
+            className="font-bold"
+            style={{ color: "#1A1A2E", fontSize: 20 }}
           >
             {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
             <span
-              className="text-xs line-through"
-              style={{ color: t.textMuted }}
+              className="line-through"
+              style={{ color: "#9CA3AF", fontSize: 12, marginLeft: 8 }}
             >
               {formatINR(product.originalPrice)}
             </span>
           )}
         </div>
 
-        <p className="text-[11px] mb-2.5" style={{ color: "#6B7280" }}>
+        <p className="text-[11px]" style={{ color: "#6B7280", marginTop: 2 }}>
           Min order: {product.minOrder}
         </p>
 
-        {/* Add to Cart */}
-        <button
-          className="flex w-full items-center justify-center rounded-[10px] py-2.5 text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px"
-          style={{ background: t.yellowCta, color: t.ctaText }}
-        >
-          Add to Cart
-        </button>
+        {/* Button row */}
+        <div className="flex" style={{ gap: 8, marginTop: 12 }}>
+          <button
+            className="flex flex-1 items-center justify-center rounded-[10px] text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px"
+            style={{
+              background: "#FFCC00",
+              color: "#1A1A2E",
+              padding: "10px 0",
+              gap: 6,
+            }}
+          >
+            <ShoppingCart style={{ width: 15, height: 15 }} />
+            Add to Cart
+          </button>
+          <button
+            className="flex shrink-0 items-center justify-center rounded-[10px] border transition-colors hover:border-[#DC2626] hover:text-[#DC2626]"
+            style={{
+              width: 40,
+              height: 40,
+              borderColor: "#E8EEF4",
+              color: "#9CA3AF",
+              background: "#FFFFFF",
+            }}
+          >
+            <Heart style={{ width: 16, height: 16 }} />
+          </button>
+        </div>
       </div>
     </div>
   );

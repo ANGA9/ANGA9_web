@@ -1,89 +1,216 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, Heart, ShoppingCart } from "lucide-react";
+import {
+  Search,
+  Heart,
+  ShoppingCart,
+  MapPin,
+  ChevronDown,
+  Package,
+  Store,
+  Megaphone,
+  Download,
+  User,
+} from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export default function CustomerTopNav() {
-  return (
-    <header
-      className="sticky top-0 z-40 h-16 border-b flex items-center px-4 sm:px-6"
-      style={{ background: t.bgCard, borderColor: t.border }}
-    >
-      <div className="mx-auto flex w-full max-w-[1280px] items-center gap-4">
-        {/* Logo */}
-        <Link
-          href="/customer"
-          className="shrink-0 text-[22px] font-extrabold tracking-tight"
-          style={{ color: t.textPrimary }}
-        >
-          ANGA
-        </Link>
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
-        {/* Search */}
-        <div className="relative flex-1 max-w-xl mx-auto">
-          <input
-            type="text"
-            placeholder="Search products, sellers..."
-            className="h-10 w-full rounded-full pl-4 pr-11 text-sm outline-none transition-colors"
-            style={{
-              background: t.bgBlueTint,
-              border: `1px solid ${t.borderSearch}`,
-              color: t.textPrimary,
-            }}
-          />
-          <div
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-            style={{ color: t.bluePrimary }}
+  useEffect(() => {
+    if (!moreOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [moreOpen]);
+
+  return (
+    <header className="sticky top-0 z-40 w-full" style={{ background: t.bgCard }}>
+
+      {/* ── Row 1: full-width bg band ── */}
+      <div className="w-full border-b" style={{ borderColor: t.border }}>
+        {/* constrained content */}
+        <div
+          className="mx-auto flex items-center"
+          style={{ maxWidth: 1280, padding: "0 24px", height: 56 }}
+        >
+          {/* Logo */}
+          <Link
+            href="/customer"
+            className="shrink-0 text-[26px] font-extrabold tracking-tight"
+            style={{ color: t.textPrimary, minWidth: "fit-content" }}
           >
-            <Search className="h-[18px] w-[18px]" />
+            ANGA
+          </Link>
+
+          <div className="flex-1" />
+
+          {/* Login + Pincode */}
+          <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
+            <button
+              className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+              style={{ color: t.textPrimary, fontSize: 15 }}
+            >
+              <User style={{ width: 18, height: 18 }} />
+              Login
+            </button>
+            <button
+              className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+              style={{ color: t.textSecondary, fontSize: 15 }}
+            >
+              <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
+              Select Pincode
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Right icons */}
-        <div className="flex items-center gap-3 shrink-0">
-          {/* Bell */}
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-full hover:opacity-80 transition-opacity"
-            style={{ color: t.textSecondary }}
+      {/* ── Row 2: full-width bg band ── */}
+      <div className="w-full border-b" style={{ borderColor: t.border }}>
+        {/* constrained content */}
+        <div
+          className="mx-auto flex items-center"
+          style={{ maxWidth: 1280, padding: "0 24px", height: 72 }}
+        >
+          {/* Search bar — flex:1, max 700px */}
+          <div
+            className="relative"
+            style={{ flex: 1, maxWidth: 700 }}
           >
-            <Bell className="h-5 w-5" />
-          </button>
-
-          {/* Wishlist */}
-          <Link
-            href="/customer/wishlist"
-            className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:text-[#DC2626]"
-            style={{ color: t.textSecondary }}
-          >
-            <Heart className="h-[22px] w-[22px]" />
-          </Link>
-
-          {/* Cart */}
-          <Link
-            href="/customer/cart"
-            className="relative flex h-10 w-10 items-center justify-center rounded-full hover:opacity-80 transition-opacity"
-            style={{ color: t.textSecondary }}
-          >
-            <ShoppingCart className="h-5 w-5" />
-            <span
-              className="absolute -top-0.5 -right-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full text-[9px] font-bold"
-              style={{ background: t.yellowCta, color: t.ctaText }}
+            <input
+              type="text"
+              placeholder="Search products, sellers..."
+              className="w-full outline-none transition-colors"
+              style={{
+                background: "#FFFFFF",
+                border: `1.5px solid ${t.bluePrimary}`,
+                borderRadius: 4,
+                padding: "12px 48px 12px 16px",
+                fontSize: 15,
+                color: t.textPrimary,
+                lineHeight: "1.4",
+              }}
+            />
+            {/* Icon with left-border separator */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 flex items-center"
+              style={{
+                right: 0,
+                height: "100%",
+                paddingLeft: 10,
+                paddingRight: 12,
+                borderLeft: "1.5px solid #E8EEF4",
+                color: t.bluePrimary,
+              }}
             >
-              3
-            </span>
-          </Link>
+              <Search style={{ width: 20, height: 20 }} />
+            </div>
+          </div>
 
-          {/* Avatar */}
-          <Link
-            href="/customer/account"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white"
-            style={{ background: t.bluePrimary }}
+          {/* Right icons group */}
+          <div
+            className="flex items-center shrink-0"
+            style={{ marginLeft: 24, gap: 20, minWidth: "fit-content" }}
           >
-            RK
-          </Link>
+            {/* Wishlist */}
+            <Link
+              href="/customer/wishlist"
+              className="flex items-center gap-2 font-medium transition-colors hover:text-[#DC2626]"
+              style={{ color: t.textSecondary, fontSize: 15 }}
+            >
+              <Heart style={{ width: 20, height: 20 }} />
+              Wishlist
+            </Link>
+
+            {/* Cart */}
+            <Link
+              href="/customer/cart"
+              className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
+              style={{ color: t.textSecondary, fontSize: 15 }}
+            >
+              <div className="relative">
+                <ShoppingCart style={{ width: 20, height: 20 }} />
+                <span
+                  className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                  style={{ background: t.yellowCta, color: t.ctaText }}
+                >
+                  3
+                </span>
+              </div>
+              Cart
+            </Link>
+
+            {/* More */}
+            <div className="relative" ref={moreRef}>
+              <button
+                onClick={() => setMoreOpen((v) => !v)}
+                className="flex items-center gap-1.5 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+                style={{ color: t.textSecondary, fontSize: 15 }}
+              >
+                More
+                <ChevronDown style={{ width: 16, height: 16 }} />
+              </button>
+
+              {moreOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-52 rounded-lg border py-1.5"
+                  style={{
+                    background: "#FFFFFF",
+                    borderColor: t.border,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                    zIndex: 50,
+                  }}
+                >
+                  {[
+                    { icon: Package, label: "My Orders", href: "/customer/orders" },
+                    { icon: Store, label: "Become a Seller" },
+                    { icon: Megaphone, label: "Advertise on ANGA" },
+                    { icon: Download, label: "Download the App" },
+                  ].map((item) => {
+                    const inner = (
+                      <>
+                        <item.icon className="h-4 w-4" style={{ color: t.textSecondary }} />
+                        <span>{item.label}</span>
+                      </>
+                    );
+                    if (item.href) {
+                      return (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          className="flex items-center gap-2.5 px-4 py-2 text-[13px] transition-colors hover:bg-[#F3F4F6]"
+                          style={{ color: t.textPrimary }}
+                          onClick={() => setMoreOpen(false)}
+                        >
+                          {inner}
+                        </Link>
+                      );
+                    }
+                    return (
+                      <button
+                        key={item.label}
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-[13px] transition-colors hover:bg-[#F3F4F6] text-left"
+                        style={{ color: t.textPrimary }}
+                        onClick={() => setMoreOpen(false)}
+                      >
+                        {inner}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
     </header>
   );
 }

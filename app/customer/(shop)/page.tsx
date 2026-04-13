@@ -83,7 +83,7 @@ const products: Product[] = [
 
 export default function CustomerHomePage() {
   return (
-    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
+    <div className="py-6">
       {/* Hero */}
       <HeroBanner />
 

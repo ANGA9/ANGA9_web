@@ -11,7 +11,13 @@ export default function CustomerShopLayout({
     <div className="min-h-screen" style={{ background: t.bgPage }}>
       <CustomerTopNav />
       <CategoryStrip />
-      <main>{children}</main>
+      {/* constrained main content — same max-width & padding as nav rows */}
+      <main
+        className="mx-auto"
+        style={{ maxWidth: 1280, padding: "0 24px" }}
+      >
+        {children}
+      </main>
     </div>
   );
 }

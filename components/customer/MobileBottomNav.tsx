@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, User, ShoppingCart, Menu } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const tabs = [
-  { key: "home", label: "Home", icon: Home },
-  { key: "account", label: "Account", icon: User },
-  { key: "cart", label: "Cart", icon: ShoppingCart },
-  { key: "menu", label: "Menu", icon: Menu },
+  { key: "home", label: "Home", icon: Home, href: "/" },
+  { key: "account", label: "Account", icon: User, href: "/account" },
+  { key: "cart", label: "Cart", icon: ShoppingCart, href: "/cart" },
+  { key: "menu", label: "Menu", icon: Menu, href: "/menu" },
 ] as const;
 
 export default function MobileBottomNav() {
-  const [activeTab, setActiveTab] = useState<string>("home");
+  const pathname = usePathname();
 
   return (
     <nav
@@ -25,11 +26,18 @@ export default function MobileBottomNav() {
       }}
     >
       {tabs.map((tab) => {
-        const isActive = activeTab === tab.key;
+        // Evaluate active tab status
+        // Home tab is exactly '/'
+        // Other tabs match their path prefix
+        const isActive =
+          tab.href === "/"
+            ? pathname === "/"
+            : pathname?.startsWith(tab.href);
+
         return (
-          <button
+          <Link
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            href={tab.href}
             className="flex flex-col items-center justify-center flex-1 h-full transition-colors"
             style={{
               color: isActive ? t.bluePrimary : "#6B7280",
@@ -53,7 +61,7 @@ export default function MobileBottomNav() {
             >
               {tab.label}
             </span>
-          </button>
+          </Link>
         );
       })}
     </nav>

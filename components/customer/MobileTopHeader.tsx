@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { User, MapPin, ChevronDown, Search, Mic } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
@@ -12,6 +13,11 @@ const megaTabs = [
 ];
 
 export default function MobileTopHeader() {
+  const pathname = usePathname();
+
+  // Hide the home header completely on the account route
+  if (pathname === "/account") return null;
+
   // TODO: Replace with actual auth state
   const isLoggedIn = false;
   const userName = "Guest";

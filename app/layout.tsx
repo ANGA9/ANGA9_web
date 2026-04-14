@@ -3,7 +3,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
-  title: "ANGA - India's B2B Wholesale Marketplace",
+  title: "ANGA - Shop Wholesale",
   description: "B2B e-commerce platform for verified businesses in India",
 };
 

@@ -81,7 +81,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       </button>
 
       <Link
-        href="/customer"
+        href="/"
         className="mt-3 block text-center text-[13px] font-medium transition-opacity hover:opacity-80"
         style={{ color: t.bluePrimary }}
       >

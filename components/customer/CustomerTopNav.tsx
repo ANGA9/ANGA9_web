@@ -43,7 +43,7 @@ export default function CustomerTopNav() {
         >
           {/* Logo */}
           <Link
-            href="/customer"
+            href="/"
             className="shrink-0 text-[26px] font-extrabold tracking-tight"
             style={{ color: t.textPrimary, minWidth: "fit-content" }}
           >
@@ -117,11 +117,11 @@ export default function CustomerTopNav() {
           {/* Right icons group */}
           <div
             className="flex items-center shrink-0"
-            style={{ marginLeft: 24, gap: 20, minWidth: "fit-content" }}
+            style={{ marginLeft: 40, gap: 36, minWidth: "fit-content" }}
           >
             {/* Wishlist */}
             <Link
-              href="/customer/wishlist"
+              href="/wishlist"
               className="flex items-center gap-2 font-medium transition-colors hover:text-[#DC2626]"
               style={{ color: t.textSecondary, fontSize: 15 }}
             >
@@ -131,7 +131,7 @@ export default function CustomerTopNav() {
 
             {/* Cart */}
             <Link
-              href="/customer/cart"
+              href="/cart"
               className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
               style={{ color: t.textSecondary, fontSize: 15 }}
             >
@@ -148,9 +148,13 @@ export default function CustomerTopNav() {
             </Link>
 
             {/* More */}
-            <div className="relative" ref={moreRef}>
+            <div
+              className="relative"
+              ref={moreRef}
+              onMouseEnter={() => setMoreOpen(true)}
+              onMouseLeave={() => setMoreOpen(false)}
+            >
               <button
-                onClick={() => setMoreOpen((v) => !v)}
                 className="flex items-center gap-1.5 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
                 style={{ color: t.textSecondary, fontSize: 15 }}
               >
@@ -160,7 +164,7 @@ export default function CustomerTopNav() {
 
               {moreOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-52 rounded-lg border py-1.5"
+                  className="absolute right-0 top-full w-56 rounded-lg border py-1.5"
                   style={{
                     background: "#FFFFFF",
                     borderColor: t.border,
@@ -169,14 +173,14 @@ export default function CustomerTopNav() {
                   }}
                 >
                   {[
-                    { icon: Package, label: "My Orders", href: "/customer/orders" },
+                    { icon: Package, label: "My Orders", href: "/orders" },
                     { icon: Store, label: "Become a Seller" },
                     { icon: Megaphone, label: "Advertise on ANGA" },
                     { icon: Download, label: "Download the App" },
                   ].map((item) => {
                     const inner = (
                       <>
-                        <item.icon className="h-4 w-4" style={{ color: t.textSecondary }} />
+                        <item.icon style={{ width: 18, height: 18, color: t.textSecondary }} />
                         <span>{item.label}</span>
                       </>
                     );
@@ -185,9 +189,8 @@ export default function CustomerTopNav() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          className="flex items-center gap-2.5 px-4 py-2 text-[13px] transition-colors hover:bg-[#F3F4F6]"
-                          style={{ color: t.textPrimary }}
-                          onClick={() => setMoreOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 font-medium transition-colors hover:bg-[#F3F4F6]"
+                          style={{ color: t.textPrimary, fontSize: 15 }}
                         >
                           {inner}
                         </Link>
@@ -196,9 +199,8 @@ export default function CustomerTopNav() {
                     return (
                       <button
                         key={item.label}
-                        className="flex w-full items-center gap-2.5 px-4 py-2 text-[13px] transition-colors hover:bg-[#F3F4F6] text-left"
-                        style={{ color: t.textPrimary }}
-                        onClick={() => setMoreOpen(false)}
+                        className="flex w-full items-center gap-2.5 px-4 py-2.5 font-medium transition-colors hover:bg-[#F3F4F6] text-left"
+                        style={{ color: t.textPrimary, fontSize: 15 }}
                       >
                         {inner}
                       </button>

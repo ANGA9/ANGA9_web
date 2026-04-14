@@ -152,7 +152,7 @@ export default function CustomerCartPage() {
                 Browse products and add them to your cart.
               </p>
               <Link
-                href="/customer"
+                href="/"
                 className="mt-4 rounded-[10px] px-5 py-2.5 text-sm font-bold transition-opacity hover:opacity-90"
                 style={{ background: t.yellowCta, color: t.ctaText }}
               >

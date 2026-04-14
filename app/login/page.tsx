@@ -10,7 +10,7 @@ export default function CustomerLoginPage() {
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     document.cookie = "portal=customer; path=/; max-age=86400";
-    window.location.href = "/customer";
+    window.location.href = "/";
   }
 
   return (
@@ -129,23 +129,7 @@ export default function CustomerLoginPage() {
             Continue with Google
           </button>
 
-          <p className="mt-6 text-center text-sm" style={{ color: t.textSecondary }}>
-            New to ANGA?{" "}
-            <button
-              className="font-medium hover:underline"
-              style={{ color: t.bluePrimary }}
-            >
-              Register your business &rarr;
-            </button>
-          </p>
         </div>
-
-        <p className="mt-6 text-center text-xs" style={{ color: t.textMuted }}>
-          Back to{" "}
-          <a href="/" className="font-medium hover:underline" style={{ color: t.textSecondary }}>
-            Portal Selection
-          </a>
-        </p>
       </div>
     </div>
   );

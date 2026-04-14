@@ -19,7 +19,7 @@ export const BRAND = {
 export const PORTALS = {
   admin: "/admin",
   seller: "/seller",
-  customer: "/customer",
+  customer: "/",
 } as const;
 
 export const CATEGORIES = [

@@ -48,11 +48,8 @@ export default function MegaDropdown({
 
   return (
     <div
-      className="absolute left-0 right-0 top-full z-50 border-b"
+      className="absolute left-0 top-full z-50"
       style={{
-        background: "#FFFFFF",
-        borderColor: t.border,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.07)",
         animation: "megaFadeIn 150ms ease forwards",
       }}
       onMouseEnter={onMouseEnter}
@@ -66,7 +63,13 @@ export default function MegaDropdown({
       `}</style>
 
       <div
-        className="mx-auto flex max-w-[1280px] items-start gap-10 px-10 py-7"
+        className="flex items-start gap-10 rounded-b-xl border border-t-0 px-10 py-7"
+        style={{
+          background: "#FFFFFF",
+          borderColor: t.border,
+          boxShadow: "0 8px 24px rgba(0,0,0,0.07)",
+          width: "max-content",
+        }}
       >
         {columns.map((col) => (
           <div key={col.heading} className="min-w-[160px]">

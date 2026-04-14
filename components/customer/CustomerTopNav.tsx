@@ -189,7 +189,7 @@ export default function CustomerTopNav() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          className="flex items-center gap-2.5 px-4 py-2.5 font-medium transition-colors hover:bg-[#F3F4F6]"
+                          className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[#F3F4F6]"
                           style={{ color: t.textPrimary, fontSize: 15 }}
                         >
                           {inner}
@@ -199,7 +199,7 @@ export default function CustomerTopNav() {
                     return (
                       <button
                         key={item.label}
-                        className="flex w-full items-center gap-2.5 px-4 py-2.5 font-medium transition-colors hover:bg-[#F3F4F6] text-left"
+                        className="flex w-full items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[#F3F4F6] text-left"
                         style={{ color: t.textPrimary, fontSize: 15 }}
                       >
                         {inner}

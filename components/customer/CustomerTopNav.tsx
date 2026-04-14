@@ -18,7 +18,13 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export default function CustomerTopNav() {
   const [moreOpen, setMoreOpen] = useState(false);
+  const [showCallout, setShowCallout] = useState(true);
   const moreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowCallout(false), 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!moreOpen) return;
@@ -56,18 +62,65 @@ export default function CustomerTopNav() {
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
             <button
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-              style={{ color: t.textPrimary, fontSize: 15 }}
-            >
-              <User style={{ width: 18, height: 18 }} />
-              Login
-            </button>
-            <button
-              className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
               style={{ color: t.textSecondary, fontSize: 15 }}
             >
               <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
               Select Pincode
             </button>
+            <div className="relative">
+              <button
+                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+                style={{ color: t.textPrimary, fontSize: 15 }}
+              >
+                <User style={{ width: 18, height: 18 }} />
+                Login
+              </button>
+
+              {/* Callout tooltip */}
+              {showCallout && (
+                <>
+                  <style>{`
+                    @keyframes calloutJiggle {
+                      0%, 70% { transform: translateX(0); }
+                      74% { transform: translateX(-2px); }
+                      78% { transform: translateX(2px); }
+                      82% { transform: translateX(-2px); }
+                      86% { transform: translateX(2px); }
+                      90% { transform: translateX(-1px); }
+                      94% { transform: translateX(1px); }
+                      100% { transform: translateX(0); }
+                    }
+                  `}</style>
+                  <div
+                    className="absolute whitespace-nowrap rounded-lg flex items-center justify-center text-[17px] font-normal tracking-wide"
+                    style={{
+                      top: "calc(100% + 14px)",
+                      right: -10,
+                      height: 52,
+                      padding: "0 28px",
+                      background: t.bluePrimary,
+                      color: "#FFFFFF",
+                      zIndex: 50,
+                      animation: "calloutJiggle 2s ease-in-out infinite",
+                    }}
+                  >
+                    {/* Arrow pointing up */}
+                    <div
+                      className="absolute"
+                      style={{
+                        top: -5,
+                        right: 24,
+                        width: 10,
+                        height: 10,
+                        background: t.bluePrimary,
+                        transform: "rotate(45deg)",
+                      }}
+                    />
+                    Login for better offers
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

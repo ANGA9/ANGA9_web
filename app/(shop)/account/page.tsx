@@ -70,14 +70,10 @@ function MenuItem({
   return (
     <button className="flex items-center w-full bg-white px-4 py-3.5 hover:bg-gray-50 transition-colors relative">
       <Icon className="w-[22px] h-[22px] text-black" />
-      <span className="ml-4 text-[15px] font-medium text-gray-800 flex-1 text-left">
+      <span className="ml-4 text-[15px] font-normal text-gray-800 flex-1 text-left">
         {label}
       </span>
       <ChevronRight className="w-5 h-5 text-gray-400" />
-      {/* Decorative inner divider mimicking list style */}
-      {!isLast && (
-        <div className="absolute left-[52px] right-0 bottom-0 border-b border-gray-100 pointer-events-none" />
-      )}
     </button>
   );
 }
@@ -89,8 +85,11 @@ export default function CustomerAccountPage() {
   return (
     <div className="w-full relative">
       {/* ══════════ MOBILE VIEW ══════════ */}
-      <div className="block md:hidden w-full min-h-screen bg-[#f1f3f6]">
-        <div className="max-w-[390px] mx-auto bg-[#f1f3f6] min-h-screen relative shadow-sm">
+      <div
+        className="block md:hidden min-h-screen bg-[#f1f3f6]"
+        style={{ width: "calc(100% + 48px)", marginLeft: "-24px" }}
+      >
+        <div className="w-full bg-[#f1f3f6] min-h-screen relative shadow-sm">
           
           {/* 1. Header */}
           <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
@@ -103,7 +102,7 @@ export default function CustomerAccountPage() {
           {/* 2. Login Banner */}
           <div className="bg-white px-4 py-5 flex items-center justify-between mb-2">
             <span className="text-[15px] font-medium text-gray-900 w-2/3 leading-tight">
-              Log in to get exclusive offers
+              Log in for exclusive offers
             </span>
             <Link
               href="/login"
@@ -118,9 +117,9 @@ export default function CustomerAccountPage() {
           </div>
 
           {/* 3. Account Settings Section */}
-          <div className="bg-white mb-2">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <h2 className="text-[15px] font-bold text-gray-900">Account Settings</h2>
+          <div className="bg-white mb-2 pb-2">
+            <div className="px-4 py-4 pt-5">
+              <h2 className="text-[17px] font-bold text-gray-900">Account Settings</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={Bell} label="Notification Settings" />
@@ -128,20 +127,20 @@ export default function CustomerAccountPage() {
             </div>
           </div>
 
-          {/* 4. Earn with Flipkart Section */}
-          <div className="bg-white mb-2">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <h2 className="text-[15px] font-bold text-gray-900">Earn with Flipkart</h2>
+          {/* 4. Earn with ANGA Section */}
+          <div className="bg-white mb-2 pb-2">
+            <div className="px-4 py-4 pt-5">
+              <h2 className="text-[17px] font-bold text-gray-900">Earn with ANGA</h2>
             </div>
             <div className="flex flex-col">
-              <MenuItem icon={Store} label="Sell on Flipkart" isLast />
+              <MenuItem icon={Store} label="Sell on ANGA" isLast />
             </div>
           </div>
 
           {/* 5. Feedback & Information Section */}
-          <div className="bg-white mb-2 shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <h2 className="text-[15px] font-bold text-gray-900">Feedback & Information</h2>
+          <div className="bg-white mb-3 pb-2 shadow-sm">
+            <div className="px-4 py-4 pt-5">
+              <h2 className="text-[17px] font-bold text-gray-900">Feedback & Information</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={FileText} label="Terms, Policies and Licenses" />

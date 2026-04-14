@@ -15,8 +15,8 @@ const megaTabs = [
 export default function MobileTopHeader() {
   const pathname = usePathname();
 
-  // Hide the home header completely on the account route
-  if (pathname === "/account") return null;
+  // Hide the home header on dedicated sub-pages
+  if (pathname === "/account" || pathname === "/cart") return null;
 
   // TODO: Replace with actual auth state
   const isLoggedIn = false;

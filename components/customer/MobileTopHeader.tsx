@@ -4,22 +4,32 @@ import Link from "next/link";
 import { User, MapPin, ChevronDown, Search, Mic } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
+const megaTabs = [
+  "FASHION",
+  "ACCESSORIES",
+  "BED & BATH LINEN",
+  "HOME DECOR & FLOORING",
+];
+
 export default function MobileTopHeader() {
   // TODO: Replace with actual auth state
   const isLoggedIn = false;
   const userName = "Guest";
 
   return (
-    <div className="w-full" style={{ background: t.bgCard }}>
+    <div className="w-full">
       {/* ── Row 1: Logo + Login ── */}
       <div
         className="flex items-center justify-between"
-        style={{ padding: "12px 16px" }}
+        style={{
+          padding: "12px 16px",
+          background: t.bgCard,
+        }}
       >
         {/* Logo */}
         <Link
           href="/"
-          className="text-[22px] font-extrabold tracking-tight"
+          className="text-[26px] font-extrabold tracking-tight"
           style={{ color: t.textPrimary }}
         >
           ANGA
@@ -28,24 +38,29 @@ export default function MobileTopHeader() {
         {/* Login / User Greeting */}
         {isLoggedIn ? (
           <div className="text-right">
-            <p className="text-[11px]" style={{ color: t.textMuted }}>
-              Hello,
-            </p>
-            <p
-              className="text-[13px] font-bold leading-tight"
-              style={{ color: t.bluePrimary }}
-            >
+            <p className="text-[11px]" style={{ color: t.textMuted }}>Hello,</p>
+            <p className="text-[13px] font-bold leading-tight" style={{ color: t.bluePrimary }}>
               {userName}
             </p>
           </div>
         ) : (
           <Link
             href="/login"
-            className="flex items-center gap-1.5 font-medium"
-            style={{ color: t.bluePrimary, fontSize: 14 }}
+            className="flex items-center gap-2 cursor-pointer"
           >
-            <User style={{ width: 16, height: 16 }} />
-            Login
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 38,
+                height: 38,
+                background: "#EAF2FF",
+              }}
+            >
+              <User style={{ width: 18, height: 18, color: t.bluePrimary }} />
+            </div>
+            <span className="font-bold text-[14px] leading-none" style={{ color: t.bluePrimary }}>
+              Login
+            </span>
           </Link>
         )}
       </div>
@@ -61,30 +76,30 @@ export default function MobileTopHeader() {
       >
         <MapPin
           style={{
-            width: 18,
-            height: 18,
+            width: 16,
+            height: 16,
             color: t.bluePrimary,
             flexShrink: 0,
           }}
         />
-        <div className="flex flex-col items-start ml-2 flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 ml-2 flex-1 min-w-0">
           <span
-            className="text-[13px] font-semibold leading-tight"
+            className="text-[14px] font-semibold leading-tight"
             style={{ color: t.textPrimary }}
           >
             Location not set
           </span>
           <span
-            className="text-[11px] leading-tight"
-            style={{ color: t.textMuted }}
+            className="text-[14px] font-medium leading-tight"
+            style={{ color: t.bluePrimary }}
           >
             Select delivery location
           </span>
         </div>
         <ChevronDown
           style={{
-            width: 16,
-            height: 16,
+            width: 14,
+            height: 14,
             color: t.textMuted,
             flexShrink: 0,
           }}
@@ -92,20 +107,21 @@ export default function MobileTopHeader() {
       </button>
 
       {/* ── Row 3: Search Bar ── */}
-      <div style={{ padding: "10px 12px" }}>
+      <div style={{ padding: "10px 12px", background: t.bgCard }}>
         <div
           className="flex items-center gap-2.5"
           style={{
-            background: "#F3F4F6",
-            borderRadius: 999,
-            padding: "10px 16px",
+            background: "#FFFFFF",
+            borderRadius: 6,
+            padding: "10px 14px",
+            border: `1.5px solid ${t.bluePrimary}`,
           }}
         >
           <Search
             style={{
               width: 18,
               height: 18,
-              color: t.textMuted,
+              color: t.bluePrimary,
               flexShrink: 0,
             }}
           />
@@ -123,6 +139,30 @@ export default function MobileTopHeader() {
               flexShrink: 0,
             }}
           />
+        </div>
+      </div>
+
+      {/* ── Row 4: Category Tabs (static, no interaction) ── */}
+      <div
+        className="overflow-x-auto scrollbar-hide border-b"
+        style={{
+          background: t.bgCard,
+          borderColor: t.border,
+        }}
+      >
+        <div
+          className="flex items-center gap-0.5"
+          style={{ padding: "0 12px" }}
+        >
+          {megaTabs.map((tab) => (
+            <div
+              key={tab}
+              className="shrink-0 flex items-center h-10 px-3 text-[12px] font-medium whitespace-nowrap"
+              style={{ color: t.textPrimary }}
+            >
+              {tab}
+            </div>
+          ))}
         </div>
       </div>
     </div>

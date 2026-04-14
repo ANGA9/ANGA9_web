@@ -21,7 +21,7 @@ export default function MobileBottomNav() {
         height: 60,
         background: t.bgCard,
         borderColor: t.border,
-        boxShadow: "0 -2px 10px rgba(0,0,0,0.05)",
+        boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
       }}
     >
       {tabs.map((tab) => {
@@ -32,22 +32,23 @@ export default function MobileBottomNav() {
             onClick={() => setActiveTab(tab.key)}
             className="flex flex-col items-center justify-center flex-1 h-full transition-colors"
             style={{
-              color: isActive ? t.bluePrimary : t.textMuted,
+              color: isActive ? t.bluePrimary : "#6B7280",
             }}
           >
             <tab.icon
               style={{
                 width: 22,
                 height: 22,
-                strokeWidth: isActive ? 2.5 : 1.8,
+                strokeWidth: isActive ? 2.5 : 2,
               }}
             />
             <span
               className="mt-0.5"
               style={{
-                fontSize: 10,
-                fontWeight: isActive ? 700 : 500,
+                fontSize: 11,
+                fontWeight: isActive ? 700 : 600,
                 letterSpacing: "0.01em",
+                color: isActive ? t.bluePrimary : "#374151",
               }}
             >
               {tab.label}

@@ -83,7 +83,7 @@ export default function MobileTopHeader() {
               background: "#FFFFFF",
             }}
           >
-            <User style={{ width: 18, height: 18, color: t.textPrimary }} />
+            <HandHeart style={{ width: 18, height: 18, color: t.textPrimary }} />
           </Link>
         ) : (
           <Link

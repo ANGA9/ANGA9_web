@@ -3,8 +3,8 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
-  title: "ANGA - Shop Wholesale",
-  description: "B2B e-commerce platform for verified businesses in India",
+  title: "ANGA9 - India's Trusted B2B Wholesale Marketplace",
+  description: "Join ANGA9, India's premier B2B e-commerce platform. Shop wholesale for verified businesses and access exclusive prices on fashion, electronics, home decor, and industrial supplies.",
 };
 
 export default function RootLayout({

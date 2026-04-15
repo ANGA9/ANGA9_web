@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Search,
@@ -13,18 +14,33 @@ import {
   Megaphone,
   Download,
   User,
+  HandHeart,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
 export default function CustomerTopNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowCallout(false), 10000);
-    return () => clearTimeout(timer);
+    setIsLoggedIn(getCookie("customer_phone") !== null);
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) setShowCallout(false);
+    else {
+      const timer = setTimeout(() => setShowCallout(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!moreOpen) return;
@@ -50,10 +66,17 @@ export default function CustomerTopNav() {
           {/* Logo */}
           <Link
             href="/"
-            className="shrink-0 text-[26px] font-extrabold tracking-tight"
-            style={{ color: t.textPrimary, minWidth: "fit-content" }}
+            className="shrink-0"
+            style={{ minWidth: "fit-content" }}
           >
-            ANGA
+            <Image
+              src="/anga9-logo.png"
+              alt="ANGA"
+              width={100}
+              height={34}
+              priority
+              style={{ objectFit: "contain" }}
+            />
           </Link>
 
           <div className="flex-1" />
@@ -68,56 +91,70 @@ export default function CustomerTopNav() {
               Select Pincode
             </button>
             <div className="relative">
-              <button
-                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-                style={{ color: t.textPrimary, fontSize: 15 }}
-              >
-                <User style={{ width: 18, height: 18 }} />
-                Login
-              </button>
-
-              {/* Callout tooltip */}
-              {showCallout && (
+              {isLoggedIn ? (
+                <Link
+                  href="/account"
+                  className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:opacity-80"
+                  style={{ color: t.bluePrimary, fontSize: 15 }}
+                >
+                  <HandHeart style={{ width: 20, height: 20 }} />
+                  <span>Hii, Let&apos;s Shop</span>
+                </Link>
+              ) : (
                 <>
-                  <style>{`
-                    @keyframes calloutJiggle {
-                      0%, 70% { transform: translateX(0); }
-                      74% { transform: translateX(-2px); }
-                      78% { transform: translateX(2px); }
-                      82% { transform: translateX(-2px); }
-                      86% { transform: translateX(2px); }
-                      90% { transform: translateX(-1px); }
-                      94% { transform: translateX(1px); }
-                      100% { transform: translateX(0); }
-                    }
-                  `}</style>
-                  <div
-                    className="absolute whitespace-nowrap rounded-lg flex items-center justify-center text-[17px] font-normal tracking-wide"
-                    style={{
-                      top: "calc(100% + 14px)",
-                      right: -10,
-                      height: 52,
-                      padding: "0 28px",
-                      background: t.bluePrimary,
-                      color: "#FFFFFF",
-                      zIndex: 50,
-                      animation: "calloutJiggle 2s ease-in-out infinite",
-                    }}
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+                    style={{ color: t.textPrimary, fontSize: 15 }}
                   >
-                    {/* Arrow pointing up */}
-                    <div
-                      className="absolute"
-                      style={{
-                        top: -5,
-                        right: 24,
-                        width: 10,
-                        height: 10,
-                        background: t.bluePrimary,
-                        transform: "rotate(45deg)",
-                      }}
-                    />
-                    Login for better offers
-                  </div>
+                    <User style={{ width: 18, height: 18 }} />
+                    Login
+                  </Link>
+
+                  {/* Callout tooltip */}
+                  {showCallout && (
+                    <>
+                      <style>{`
+                        @keyframes calloutJiggle {
+                          0%, 70% { transform: translateX(0); }
+                          74% { transform: translateX(-2px); }
+                          78% { transform: translateX(2px); }
+                          82% { transform: translateX(-2px); }
+                          86% { transform: translateX(2px); }
+                          90% { transform: translateX(-1px); }
+                          94% { transform: translateX(1px); }
+                          100% { transform: translateX(0); }
+                        }
+                      `}</style>
+                      <div
+                        className="absolute whitespace-nowrap rounded-lg flex items-center justify-center text-[17px] font-normal tracking-wide"
+                        style={{
+                          top: "calc(100% + 14px)",
+                          right: -10,
+                          height: 52,
+                          padding: "0 28px",
+                          background: t.bluePrimary,
+                          color: "#FFFFFF",
+                          zIndex: 50,
+                          animation: "calloutJiggle 2s ease-in-out infinite",
+                        }}
+                      >
+                        {/* Arrow pointing up */}
+                        <div
+                          className="absolute"
+                          style={{
+                            top: -5,
+                            right: 24,
+                            width: 10,
+                            height: 10,
+                            background: t.bluePrimary,
+                            transform: "rotate(45deg)",
+                          }}
+                        />
+                        Login for better offers
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </div>

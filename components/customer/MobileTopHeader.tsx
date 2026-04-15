@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, MapPin, ChevronDown, Search, Mic } from "lucide-react";
+import { User, MapPin, ChevronDown, Search, Mic, HandHeart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const megaTabs = [
@@ -12,15 +14,22 @@ const megaTabs = [
   "HOME DECOR & FLOORING",
 ];
 
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 export default function MobileTopHeader() {
   const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(getCookie("customer_phone") !== null);
+  }, []);
 
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;
-
-  // TODO: Replace with actual auth state
-  const isLoggedIn = false;
-  const userName = "Guest";
 
   return (
     <div className="w-full">
@@ -33,22 +42,39 @@ export default function MobileTopHeader() {
         }}
       >
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-[26px] font-extrabold tracking-tight"
-          style={{ color: t.textPrimary }}
-        >
-          ANGA
+        <Link href="/">
+          <Image
+            src="/anga9-logo.png"
+            alt="ANGA"
+            width={90}
+            height={31}
+            priority
+            style={{ objectFit: "contain" }}
+          />
         </Link>
 
         {/* Login / User Greeting */}
         {isLoggedIn ? (
-          <div className="text-right">
-            <p className="text-[11px]" style={{ color: t.textMuted }}>Hello,</p>
-            <p className="text-[13px] font-bold leading-tight" style={{ color: t.bluePrimary }}>
-              {userName}
-            </p>
-          </div>
+          <Link
+            href="/account"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 38,
+                height: 38,
+                background: "#EAF2FF",
+              }}
+            >
+              <HandHeart style={{ width: 20, height: 20, color: t.bluePrimary }} />
+            </div>
+            <div className="text-right">
+              <p className="text-[13px] font-bold leading-tight" style={{ color: t.bluePrimary }}>
+                Hii, Let&apos;s Shop
+              </p>
+            </div>
+          </Link>
         ) : (
           <Link
             href="/login"

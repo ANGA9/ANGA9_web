@@ -26,17 +26,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Customer portal (root paths)
-  if (pathname === "/login") {
-    return NextResponse.next();
-  }
-
-  const portalCookie = request.cookies.get("portal");
-  if (!portalCookie || portalCookie.value !== "customer") {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // Customer portal — allow all root paths without auth
   return NextResponse.next();
 }
 

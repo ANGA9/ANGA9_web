@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -57,32 +57,32 @@ const BANNERS = [
 
 export default function HeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const length = BANNERS.length;
 
-  const nextBanner = () => setCurrentIndex((prev) => (prev + 1) % length);
-  const prevBanner = () =>
-    setCurrentIndex((prev) => (prev - 1 + length) % length);
+  const nextBanner = useCallback(
+    () => setCurrentIndex((p) => (p + 1) % length),
+    [length],
+  );
+  const prevBanner = useCallback(
+    () => setCurrentIndex((p) => (p - 1 + length) % length),
+    [length],
+  );
 
   useEffect(() => {
-    const interval = setInterval(nextBanner, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    const id = setInterval(nextBanner, 4000);
+    return () => clearInterval(id);
+  }, [nextBanner]);
 
+  /* ── desktop position classes (unchanged) ── */
   function getPositionClasses(index: number) {
     const diff = (index - currentIndex + length) % length;
-
     if (diff === 0) {
-      // CENTER ACTIVE
       return "z-10 opacity-100 scale-100 translate-x-0";
     } else if (diff === 1) {
-      // NEXT
       return "z-0 opacity-0 sm:opacity-50 scale-95 translate-x-[105%] sm:translate-x-[85%] md:translate-x-[90%] cursor-pointer pointer-events-auto sm:hover:opacity-75";
     } else if (diff === length - 1) {
-      // PREV
       return "z-0 opacity-0 sm:opacity-50 scale-95 -translate-x-[105%] sm:-translate-x-[85%] md:-translate-x-[90%] cursor-pointer pointer-events-auto sm:hover:opacity-75";
     } else {
-      // HIDDEN / FAR AWAY
       if (diff > 1 && diff <= Math.floor(length / 2)) {
         return "-z-10 opacity-0 scale-90 translate-x-[200%] pointer-events-none";
       }
@@ -92,72 +92,88 @@ export default function HeroBanner() {
 
   return (
     <div className="w-full pb-6 pt-2">
-      <div className="relative w-full h-[180px] sm:h-[260px] md:h-[280px] flex items-center justify-center overflow-hidden">
-        {BANNERS.map((b, i) => (
-          <div
-            key={b.id}
-            className={`absolute w-full sm:w-[75%] md:w-[70%] h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${getPositionClasses(i)}`}
-            onClick={() => {
-              const diff = (i - currentIndex + length) % length;
-              if (diff === 1) nextBanner();
-              if (diff === length - 1) prevBanner();
-            }}
-          >
-            {/* Desktop banner */}
+
+      {/* ══════ MOBILE (<md): simple fade + small arrow buttons ══════ */}
+      <div className="block md:hidden w-full px-5" style={{ position: "relative" }}>
+        <div className="relative w-full" style={{ aspectRatio: "16/7" }}>
+          {BANNERS.map((b, i) => (
             <Image
-              src={b.desktop}
-              alt={b.alt}
-              fill
-              sizes="(max-width: 640px) 100vw, 70vw"
-              className="rounded-2xl shadow-md object-cover object-center hidden md:block"
-              draggable={false}
-              priority={i === 0}
-              loading={i === 0 ? "eager" : "lazy"}
-              quality={75}
-            />
-            {/* Mobile banner */}
-            <Image
+              key={b.id}
               src={b.mobile}
               alt={b.alt}
               fill
               sizes="100vw"
-              className="rounded-2xl shadow-md object-cover object-center block md:hidden"
+              className="rounded-xl object-cover object-center transition-opacity duration-500"
+              style={{ opacity: i === currentIndex ? 1 : 0 }}
               draggable={false}
               priority={i === 0}
               loading={i === 0 ? "eager" : "lazy"}
               quality={75}
             />
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* Navigation Arrows (Desktop) */}
+        {/* Arrow buttons sit outside the image via negative offset */}
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            prevBanner();
-          }}
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2 sm:p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all hidden sm:flex border border-gray-100 items-center justify-center"
+          onClick={prevBanner}
+          className="absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center rounded-full bg-white active:bg-gray-100 shadow"
+          style={{ width: 26, height: 26, left: 4 }}
           aria-label="Previous banner"
         >
-          <ChevronLeft
-            className="w-5 h-5 sm:w-6 sm:h-6"
-            strokeWidth={2.5}
-          />
+          <ChevronLeft className="w-3.5 h-3.5 text-gray-700" strokeWidth={2.5} />
         </button>
-
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            nextBanner();
-          }}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2 sm:p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all hidden sm:flex border border-gray-100 items-center justify-center"
+          onClick={nextBanner}
+          className="absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center rounded-full bg-white active:bg-gray-100 shadow"
+          style={{ width: 26, height: 26, right: 4 }}
           aria-label="Next banner"
         >
-          <ChevronRight
-            className="w-5 h-5 sm:w-6 sm:h-6"
-            strokeWidth={2.5}
-          />
+          <ChevronRight className="w-3.5 h-3.5 text-gray-700" strokeWidth={2.5} />
         </button>
+      </div>
+
+      {/* ══════ DESKTOP (md+): 3D carousel ══════ */}
+      <div className="hidden md:block">
+        <div className="relative w-full h-[260px] md:h-[280px] flex items-center justify-center overflow-hidden">
+          {BANNERS.map((b, i) => (
+            <div
+              key={b.id}
+              className={`absolute w-[75%] md:w-[70%] h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${getPositionClasses(i)}`}
+              onClick={() => {
+                const diff = (i - currentIndex + length) % length;
+                if (diff === 1) nextBanner();
+                if (diff === length - 1) prevBanner();
+              }}
+            >
+              <Image
+                src={b.desktop}
+                alt={b.alt}
+                fill
+                sizes="70vw"
+                className="rounded-2xl shadow-md object-cover object-center"
+                draggable={false}
+                priority={i === 0}
+                loading={i === 0 ? "eager" : "lazy"}
+                quality={75}
+              />
+            </div>
+          ))}
+
+          <button
+            onClick={(e) => { e.stopPropagation(); prevBanner(); }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all flex border border-gray-100 items-center justify-center"
+            aria-label="Previous banner"
+          >
+            <ChevronLeft className="w-6 h-6" strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); nextBanner(); }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all flex border border-gray-100 items-center justify-center"
+            aria-label="Next banner"
+          >
+            <ChevronRight className="w-6 h-6" strokeWidth={2.5} />
+          </button>
+        </div>
       </div>
 
       {/* Dots Indicator */}

@@ -75,23 +75,15 @@ export default function MobileTopHeader() {
           {isLoggedIn ? (
           <Link
             href="/account"
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center justify-center rounded-full shrink-0 border"
+            style={{
+              width: 34,
+              height: 34,
+              borderColor: t.border,
+              background: "#FFFFFF",
+            }}
           >
-            <div
-              className="flex items-center justify-center rounded-full shrink-0"
-              style={{
-                width: 38,
-                height: 38,
-                background: "#EAF2FF",
-              }}
-            >
-              <HandHeart style={{ width: 20, height: 20, color: t.bluePrimary }} />
-            </div>
-            <div className="text-right">
-              <p className="text-[13px] font-bold leading-tight" style={{ color: t.bluePrimary }}>
-                Hii, Let&apos;s Shop
-              </p>
-            </div>
+            <User style={{ width: 18, height: 18, color: t.textPrimary }} />
           </Link>
         ) : (
           <Link

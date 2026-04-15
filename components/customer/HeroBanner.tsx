@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const BANNERS = [
@@ -102,20 +103,30 @@ export default function HeroBanner() {
               if (diff === length - 1) prevBanner();
             }}
           >
-            {/* Responsive image: desktop vs mobile via <picture> */}
-            <picture>
-              <source media="(min-width: 768px)" srcSet={b.desktop} />
-              <img
-                src={b.mobile}
-                alt={b.alt}
-                className="w-full h-full rounded-2xl shadow-md"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
-                draggable={false}
-              />
-            </picture>
+            {/* Desktop banner */}
+            <Image
+              src={b.desktop}
+              alt={b.alt}
+              fill
+              sizes="(max-width: 640px) 100vw, 70vw"
+              className="rounded-2xl shadow-md object-cover object-center hidden md:block"
+              draggable={false}
+              priority={i === 0}
+              loading={i === 0 ? "eager" : "lazy"}
+              quality={75}
+            />
+            {/* Mobile banner */}
+            <Image
+              src={b.mobile}
+              alt={b.alt}
+              fill
+              sizes="100vw"
+              className="rounded-2xl shadow-md object-cover object-center block md:hidden"
+              draggable={false}
+              priority={i === 0}
+              loading={i === 0 ? "eager" : "lazy"}
+              quality={75}
+            />
           </div>
         ))}
 

@@ -17,9 +17,10 @@ export default function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-[9999] flex items-center justify-around border-t md:hidden"
       style={{
-        height: 60,
+        height: "calc(60px + env(safe-area-inset-bottom, 0px))",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: t.bgCard,
         borderColor: t.border,
         boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
@@ -41,6 +42,8 @@ export default function MobileBottomNav() {
             className="flex flex-col items-center justify-center flex-1 h-full transition-colors"
             style={{
               color: isActive ? t.bluePrimary : "#6B7280",
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
             }}
           >
             <tab.icon

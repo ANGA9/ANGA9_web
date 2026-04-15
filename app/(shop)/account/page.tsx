@@ -86,7 +86,7 @@ export default function CustomerAccountPage() {
     <div className="w-full relative">
       {/* ══════════ MOBILE VIEW ══════════ */}
       <div
-        className="block md:hidden min-h-screen bg-[#f1f3f6]"
+        className="block md:hidden min-h-screen bg-[#f1f3f6] pb-[80px]"
         style={{ width: "calc(100% + 48px)", marginLeft: "-24px" }}
       >
         <div className="w-full bg-[#f1f3f6] min-h-screen relative shadow-sm">

@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, ShoppingCart, Menu } from "lucide-react";
+import { Home, User, Package, Menu } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const tabs = [
   { key: "home", label: "Home", icon: Home, href: "/" },
   { key: "account", label: "Account", icon: User, href: "/account" },
-  { key: "cart", label: "Cart", icon: ShoppingCart, href: "/cart" },
+  { key: "orders", label: "My Orders", icon: Package, href: "/orders" },
   { key: "menu", label: "Menu", icon: Menu, href: "/menu" },
 ] as const;
 

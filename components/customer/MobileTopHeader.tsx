@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, MapPin, ChevronDown, Search, Mic, HandHeart } from "lucide-react";
+import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 const megaTabs = [
@@ -53,8 +53,26 @@ export default function MobileTopHeader() {
           />
         </Link>
 
-        {/* Login / User Greeting */}
-        {isLoggedIn ? (
+        {/* Wishlist + Cart + Login */}
+        <div className="flex items-center gap-4">
+          {/* Wishlist */}
+          <Link href="/wishlist" className="relative">
+            <Heart style={{ width: 22, height: 22, color: t.textSecondary }} />
+          </Link>
+
+          {/* Cart */}
+          <Link href="/cart" className="relative">
+            <ShoppingCart style={{ width: 22, height: 22, color: t.textSecondary }} />
+            <span
+              className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+              style={{ background: t.yellowCta, color: t.ctaText }}
+            >
+              3
+            </span>
+          </Link>
+
+          {/* Login / User Greeting */}
+          {isLoggedIn ? (
           <Link
             href="/account"
             className="flex items-center gap-2 cursor-pointer"
@@ -95,6 +113,7 @@ export default function MobileTopHeader() {
             </span>
           </Link>
         )}
+        </div>
       </div>
 
       {/* ── Row 2: Delivery Location ── */}

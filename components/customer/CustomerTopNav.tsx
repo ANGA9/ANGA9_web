@@ -15,24 +15,17 @@ import {
   Download,
   User,
   HandHeart,
+  CircleUserRound,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
-
-function getCookie(name: string) {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
-  return match ? decodeURIComponent(match[1]) : null;
-}
+import { useAuth } from "@/lib/AuthContext";
 
 export default function CustomerTopNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, loading } = useAuth();
+  const isLoggedIn = !!user;
   const moreRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setIsLoggedIn(getCookie("customer_phone") !== null);
-  }, []);
 
   useEffect(() => {
     if (isLoggedIn) setShowCallout(false);
@@ -81,7 +74,7 @@ export default function CustomerTopNav() {
 
           <div className="flex-1" />
 
-          {/* Login + Pincode */}
+          {/* Pincode + Become a Seller + Login */}
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
             <button
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
@@ -90,8 +83,19 @@ export default function CustomerTopNav() {
               <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
               Select Pincode
             </button>
+
+            <Link
+              href="/seller/login"
+              className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+              style={{ color: t.textSecondary, fontSize: 15 }}
+            >
+              <Store style={{ width: 18, height: 18, color: t.bluePrimary }} />
+              Become a Seller
+            </Link>
             <div className="relative">
-              {isLoggedIn ? (
+              {loading ? (
+                <div className="w-20 h-6 bg-gray-200 animate-pulse rounded"></div>
+              ) : isLoggedIn ? (
                 <Link
                   href="/account"
                   className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:opacity-80"
@@ -236,6 +240,18 @@ export default function CustomerTopNav() {
               </div>
               Cart
             </Link>
+
+            {/* Profile Icon (when logged in) */}
+            {!loading && isLoggedIn && (
+              <Link
+                href="/account"
+                className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
+                style={{ color: t.textSecondary, fontSize: 15 }}
+              >
+                <CircleUserRound style={{ width: 20, height: 20 }} />
+                Profile
+              </Link>
+            )}
 
             {/* More */}
             <div

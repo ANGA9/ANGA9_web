@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 
 const megaTabs = [
   "FASHION",
@@ -23,6 +24,7 @@ function getCookie(name: string) {
 export default function MobileTopHeader() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { open: openLoginSheet } = useLoginSheet();
 
   useEffect(() => {
     setIsLoggedIn(getCookie("customer_phone") !== null);
@@ -86,8 +88,8 @@ export default function MobileTopHeader() {
             <HandHeart style={{ width: 18, height: 18, color: t.textPrimary }} />
           </Link>
         ) : (
-          <Link
-            href="/login"
+          <button
+            onClick={openLoginSheet}
             className="flex items-center gap-2 cursor-pointer"
           >
             <div
@@ -103,7 +105,7 @@ export default function MobileTopHeader() {
             <span className="font-bold text-[14px] leading-none" style={{ color: t.bluePrimary }}>
               Login
             </span>
-          </Link>
+          </button>
         )}
         </div>
       </div>

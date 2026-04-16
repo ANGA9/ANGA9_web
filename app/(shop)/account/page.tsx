@@ -18,9 +18,11 @@ import {
   Store,
   FileText,
   HelpCircle,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { useAuth } from "@/lib/AuthContext";
 
 const navItems = [
   { label: "Profile", icon: User },
@@ -80,6 +82,7 @@ function MenuItem({
 
 export default function CustomerAccountPage() {
   const [activeNav, setActiveNav] = useState("Profile");
+  const { user, logout } = useAuth();
   const accentBlue = "#2874f0";
 
   return (
@@ -148,6 +151,19 @@ export default function CustomerAccountPage() {
             </div>
           </div>
 
+          {/* Logout */}
+          {user && (
+            <div className="px-4 mb-4">
+              <button
+                onClick={logout}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-white py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Log Out
+              </button>
+            </div>
+          )}
+
         </div>
       </div>
 
@@ -181,6 +197,18 @@ export default function CustomerAccountPage() {
                   </button>
                 );
               })}
+
+              {/* Logout */}
+              {user && (
+                <button
+                  onClick={logout}
+                  className="flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium border-t transition-colors hover:bg-red-50"
+                  style={{ borderColor: t.border, color: "#EF4444" }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log Out
+                </button>
+              )}
             </div>
           </div>
 

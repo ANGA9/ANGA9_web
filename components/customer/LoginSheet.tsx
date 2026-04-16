@@ -112,18 +112,43 @@ export default function LoginSheet() {
   }
 
   function handleOtpChange(index: number, value: string) {
-    if (value.length > 1) value = value.slice(-1);
+    // Handle paste of full OTP
+    if (value.length > 1) {
+      const digits = value.replace(/\D/g, "").slice(0, 6).split("");
+      if (digits.length > 1) {
+        const next = [...otp];
+        digits.forEach((d, i) => {
+          if (index + i < 6) next[index + i] = d;
+        });
+        setOtp(next);
+        const focusIdx = Math.min(index + digits.length, 5);
+        document.getElementById(`sheet-otp-${focusIdx}`)?.focus();
+        return;
+      }
+      value = value.slice(-1);
+    }
     if (value && !/^\d$/.test(value)) return;
     const next = [...otp];
     next[index] = value;
     setOtp(next);
     if (value && index < 5) {
-      document.getElementById(`sheet-otp-${index + 1}`)?.focus();
+      const el = document.getElementById(`sheet-otp-${index + 1}`);
+      if (el) {
+        el.focus();
+        (el as HTMLInputElement).select();
+      }
     }
   }
 
   function handleOtpKeyDown(index: number, e: React.KeyboardEvent) {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
+      document.getElementById(`sheet-otp-${index - 1}`)?.focus();
+    }
+    // Arrow key navigation
+    if (e.key === "ArrowRight" && index < 5) {
+      document.getElementById(`sheet-otp-${index + 1}`)?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
       document.getElementById(`sheet-otp-${index - 1}`)?.focus();
     }
   }
@@ -283,10 +308,11 @@ export default function LoginSheet() {
                       id={`sheet-otp-${i}`}
                       type="text"
                       inputMode="numeric"
-                      maxLength={1}
+                      maxLength={6}
                       value={d}
                       onChange={(e) => handleOtpChange(i, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                      onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
                       className="h-11 w-10 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-lg font-bold text-[#1A1A2E] outline-none transition-all"
                     />

@@ -77,22 +77,58 @@ export default function CustomerLoginPage() {
     }
   }
 
-  function handleOtpChange(index: number, value: string) {
-    if (value.length > 1) value = value.slice(-1);
+  function handleOtpChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
+    let value = e.target.value;
+    // Handle paste of full OTP
+    if (value.length > 1) {
+      const digits = value.replace(/\D/g, "").slice(0, 6).split("");
+      if (digits.length > 1) {
+        const next = [...otp];
+        let maxIndex = index;
+        digits.forEach((d, i) => {
+          if (index + i < 6) {
+            next[index + i] = d;
+            maxIndex = index + i;
+          }
+        });
+        setOtp(next);
+        const parent = e.target.parentElement;
+        const targetInput = parent?.children[maxIndex] as HTMLInputElement;
+        targetInput?.focus();
+        return;
+      }
+      value = value.slice(-1);
+    }
     if (value && !/^\d$/.test(value)) return;
     const next = [...otp];
     next[index] = value;
     setOtp(next);
     if (value && index < 5) {
-      const el = document.getElementById(`otp-${index + 1}`);
-      el?.focus();
+      const parent = e.target.parentElement;
+      const nextInput = parent?.children[index + 1] as HTMLInputElement;
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+      }
     }
   }
 
-  function handleOtpKeyDown(index: number, e: React.KeyboardEvent) {
+  function handleOtpKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const el = document.getElementById(`otp-${index - 1}`);
-      el?.focus();
+      const parent = (e.currentTarget as HTMLElement).parentElement;
+      const prevInput = parent?.children[index - 1] as HTMLInputElement;
+      prevInput?.focus();
+    }
+    // Arrow key navigation
+    if (e.key === "ArrowRight" && index < 5) {
+      const parent = (e.currentTarget as HTMLElement).parentElement;
+      const nextInput = parent?.children[index + 1] as HTMLInputElement;
+      nextInput?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
+      const parent = (e.currentTarget as HTMLElement).parentElement;
+      const prevInput = parent?.children[index - 1] as HTMLInputElement;
+      prevInput?.focus();
     }
   }
 
@@ -214,10 +250,11 @@ export default function CustomerLoginPage() {
             id={`otp-${i}`}
             type="text"
             inputMode="numeric"
-            maxLength={1}
+            maxLength={6}
             value={d}
-            onChange={(e) => handleOtpChange(i, e.target.value)}
+            onChange={(e) => handleOtpChange(i, e)}
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
+            onFocus={(e) => e.target.select()}
             autoFocus={i === 0}
             className="h-12 w-11 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all"
           />

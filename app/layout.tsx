@@ -4,8 +4,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
-  title: "ANGA9 - India's Trusted B2B Wholesale Marketplace",
+  metadataBase: new URL('https://anga9.com'),
+  title: {
+    template: '%s | ANGA9',
+    default: "ANGA9 - India's Trusted B2B Wholesale Marketplace",
+  },
   description: "Join ANGA9, India's premier B2B e-commerce platform. Shop wholesale for verified businesses and access exclusive prices on fashion, electronics, home decor, and industrial supplies.",
+  alternates: {
+    canonical: '/',
+  },
 };
 
 export default function RootLayout({

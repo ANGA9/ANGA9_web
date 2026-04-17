@@ -2,7 +2,29 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, TrendingUp, IndianRupee, Zap, LayoutDashboard, Truck, ShieldCheck, Megaphone, Package, ShoppingBag } from "lucide-react";
+import {
+  CheckCircle2,
+  TrendingUp,
+  IndianRupee,
+  Zap,
+  LayoutDashboard,
+  Truck,
+  ShieldCheck,
+  Megaphone,
+  Package,
+  ShoppingBag,
+  Users,
+  MapPin,
+  Grid3X3,
+  Headphones,
+  Clock,
+  Globe,
+  Wallet,
+  Star,
+  ArrowRight,
+  BadgeCheck,
+  Layers,
+} from "lucide-react";
 
 export default function SellerLandingPage() {
   return (
@@ -17,6 +39,7 @@ export default function SellerLandingPage() {
               width={110}
               height={36}
               priority
+              unoptimized
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -38,83 +61,96 @@ export default function SellerLandingPage() {
         </div>
       </header>
 
-      {/* HERO SECTION - Edge-to-Edge sweeping background */}
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32 bg-[#FDFPFE]">
-        {/* Background Graphic (The sweeping curve like Meesho) */}
+      {/* HERO SECTION */}
+      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32 bg-white">
+        {/* Background Graphic */}
         <div className="absolute right-0 top-0 h-full w-[60%] lg:w-[65%] origin-top-right transform overflow-hidden -z-10">
           <div className="absolute inset-0 bg-[#DBEAFE] rounded-bl-[100%] scale-125 translate-x-[15%] -translate-y-[10%]"></div>
-          {/* A second curve for depth */}
           <div className="absolute inset-0 bg-[#BFDBFE] rounded-bl-[80%] scale-110 translate-x-[25%] opacity-50"></div>
-          
-          {/* This is where the Gemini generated seller photo goes (transparent png) */}
-          {/* <Image src="/transparent-seller-hero.png" fill style={{objectFit: 'cover', objectPosition: 'left bottom'}} alt="Seller" /> */}
-          <div className="absolute inset-0 flex items-end justify-center pb-8 border-4 border-dashed border-[#1A6FD4]/30 m-4 rounded-[4rem]">
-             <div className="text-center p-6 bg-white/80 backdrop-blur rounded-2xl max-w-sm mb-12 shadow-xl">
-               <Package className="w-12 h-12 text-[#1A6FD4] mx-auto mb-3" />
-               <p className="text-[#1A1A2E] font-bold text-lg mb-1">Upload your cut-out image here!</p>
-               <p className="text-[#6B7280] text-sm leading-relaxed">
-                 Use the transparent PNG of the seller standing. It will completely overlap the blue curve exactly like the reference.
-               </p>
-             </div>
-          </div>
+
+          {/* ============================================================
+              ILLUSTRATION SLOT #1 — HERO SELLER IMAGE
+              Place a transparent PNG here of a confident Indian seller/businessperson
+
+              GEMINI PROMPT:
+              "Create a full-body cutout illustration of a confident young Indian
+              man in a kurta or casual business shirt, standing with arms crossed
+              and smiling, with small floating icons around him — a package box,
+              a rupee coin, a delivery truck, and a mobile phone showing a graph
+              going up. Flat vector style, clean lines, warm friendly colors with
+              blue (#1A6FD4) as accent. Transparent PNG background, 1200x1400px."
+
+              Save as: /public/seller-hero-person.png
+              Uncomment the Image below once ready:
+          ============================================================ */}
+          <Image src="/seller-hero-person.png" fill unoptimized style={{objectFit: 'contain', objectPosition: 'center bottom'}} alt="Seller" className="p-8" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="grid items-center gap-16 lg:grid-cols-2">
-            {/* Hero Left Content */}
             <div className="max-w-xl py-10 lg:py-20 lg:pr-10 bg-white/40 backdrop-blur-3xl lg:backdrop-blur-none lg:bg-transparent rounded-3xl p-6 lg:p-0">
               <h1 className="mb-4 text-[42px] font-bold leading-[1.1] tracking-tight text-[#1A1A2E] md:text-5xl lg:text-6xl">
                 Sell online to Crores of Customers at{" "}
-                <span className="text-[#E11D48]">
+                <span className="text-[#1A6FD4]">
                   0% Commission
                 </span>
               </h1>
-              
+
               <p className="mb-6 text-[17px] text-[#4B5563] leading-relaxed">
                 Become an ANGA9 seller and grow your business across India
               </p>
-              
+
+              {/* Trust indicators row */}
+              <div className="mb-6 flex flex-wrap items-center gap-4 text-[14px] text-[#4B5563]">
+                <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> Free Registration</span>
+                <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> No Hidden Fees</span>
+                <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> 7-Day Payments</span>
+              </div>
+
               <div className="mb-8 flex items-center gap-3">
-                 <span className="bg-[#E11D48] text-white text-[11px] font-bold px-2 py-0.5 rounded-[4px]">NEW</span>
+                 <span className="bg-[#1A6FD4] text-white text-[11px] font-bold px-2 py-0.5 rounded-[4px]">NEW</span>
                  <p className="text-[14px] text-[#4B5563]">
-                   Don&apos;t have a GSTIN? You can still sell on ANGA9. <Link href="/seller/gst" className="text-[#E11D48] font-medium hover:underline">Know more</Link>
+                   Don&apos;t have a GSTIN? You can still sell on ANGA9. <Link href="/seller/gst" className="text-[#1A6FD4] font-medium hover:underline">Know more</Link>
                  </p>
               </div>
-              
+
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/seller/register"
-                  className="inline-flex h-14 items-center justify-center rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-lg shadow-[#FFCC00]/30 transition-all hover:bg-[#E6B800] hover:-translate-y-0.5"
+                  className="inline-flex h-14 items-center justify-center gap-2 rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-lg shadow-[#FFCC00]/30 transition-all hover:bg-[#E6B800] hover:-translate-y-0.5"
                 >
-                  Start Selling
+                  Start Selling <ArrowRight className="h-5 w-5" />
                 </Link>
               </div>
             </div>
-            
-            {/* Native spacing for layout structure */}
+
             <div className="hidden lg:block h-[500px]"></div>
           </div>
         </div>
       </section>
 
-      {/* STATS STRIP (Light Grey Tone) */}
+      {/* STATS STRIP */}
       <section className="bg-[#F8FBFF] py-12">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8 text-center">
             <div className="flex flex-col items-start p-6 bg-white rounded-xl shadow-sm border border-[#E8EEF4]">
-              <p className="mb-2 text-3xl font-extrabold text-[#E11D48]">Lakhs of</p>
+              <Users className="h-7 w-7 text-[#1A6FD4] mb-3" />
+              <p className="mb-1 text-3xl font-extrabold text-[#1A6FD4]">Lakhs of</p>
               <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">Sellers trust ANGA9 to sell online</p>
             </div>
             <div className="flex flex-col items-start p-6 bg-white rounded-xl shadow-sm border border-[#E8EEF4]">
-              <p className="mb-2 text-3xl font-extrabold text-[#E11D48]">Crores of</p>
+              <ShoppingBag className="h-7 w-7 text-[#1A6FD4] mb-3" />
+              <p className="mb-1 text-3xl font-extrabold text-[#1A6FD4]">Crores of</p>
               <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">Customers buying across India</p>
             </div>
             <div className="flex flex-col items-start p-6 bg-white rounded-xl shadow-sm border border-[#E8EEF4]">
-              <p className="mb-2 text-3xl font-extrabold text-[#E11D48]">Thousands of</p>
-              <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">Serviceable pincodes across India — we deliver everywhere.</p>
+              <MapPin className="h-7 w-7 text-[#1A6FD4] mb-3" />
+              <p className="mb-1 text-3xl font-extrabold text-[#1A6FD4]">Thousands of</p>
+              <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">Serviceable pincodes across India</p>
             </div>
             <div className="flex flex-col items-start p-6 bg-white rounded-xl shadow-sm border border-[#E8EEF4]">
-              <p className="mb-2 text-3xl font-extrabold text-[#E11D48]">Hundreds of</p>
+              <Grid3X3 className="h-7 w-7 text-[#1A6FD4] mb-3" />
+              <p className="mb-1 text-3xl font-extrabold text-[#1A6FD4]">Hundreds of</p>
               <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">Categories to sell online</p>
             </div>
           </div>
@@ -129,11 +165,29 @@ export default function SellerLandingPage() {
                <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-6 leading-tight">
                  Why Suppliers Love ANGA9
                </h2>
-               <p className="text-[#6B7280] text-[17px] leading-relaxed max-w-[400px]">
+               <p className="text-[#6B7280] text-[17px] leading-relaxed max-w-[400px] mb-8">
                  All the benefits that come with selling on ANGA9 are designed to help you sell more, and make it easier to grow your business.
                </p>
+
+               {/* ============================================================
+                   ILLUSTRATION SLOT #2 — WHY SELL SECTION GRAPHIC
+
+                   GEMINI PROMPT:
+                   "Create a flat vector illustration showing a small Indian shopkeeper
+                   happily looking at a laptop screen displaying a sales dashboard
+                   with an upward trending graph. Surround the scene with small
+                   floating icons: rupee symbol, package box, 5-star rating, and
+                   a shield with a checkmark. Soft blue (#1A6FD4) and white color
+                   palette with light blue (#DBEAFE) background accents. Clean
+                   modern style, no text. Transparent PNG, 800x600px."
+
+                   Save as: /public/seller-why-sell.png
+               ============================================================ */}
+               <div className="hidden lg:block relative rounded-2xl overflow-hidden h-[300px]">
+                  <Image src="/seller-why-sell.png" fill unoptimized style={{objectFit: 'contain'}} alt="Why sell on ANGA9" />
+               </div>
             </div>
-            
+
             <div className="lg:col-span-7 space-y-6">
               {/* Card 1 */}
               <div className="rounded-[1rem] border border-[#E8EEF4] bg-[#FDFDFD] p-8 shadow-sm">
@@ -154,7 +208,7 @@ export default function SellerLandingPage() {
               <div className="rounded-[1rem] border border-[#E8EEF4] bg-[#FDFDFD] p-8 shadow-sm">
                  <div className="flex flex-col gap-4">
                    <div className="flex items-center gap-3">
-                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#E11D48]/10 text-[#E11D48]">
+                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#1A6FD4]/10 text-[#1A6FD4]">
                        <ShieldCheck className="h-6 w-6" />
                      </div>
                      <h3 className="text-[20px] font-bold text-[#1A1A2E]">0 Penalty Charges</h3>
@@ -174,8 +228,38 @@ export default function SellerLandingPage() {
                      </div>
                      <h3 className="text-[20px] font-bold text-[#1A1A2E]">Growth for Every Supplier</h3>
                    </div>
-                   <p className="text-[#6B7280] text-[16px] leading-relaxed ml-[60px] max-md:ml-0 mb-2">
+                   <p className="text-[#6B7280] text-[16px] leading-relaxed ml-[60px] max-md:ml-0">
                      From small to large and unbranded to branded, ANGA9 fuels continuous growth for all suppliers globally.
+                   </p>
+                 </div>
+              </div>
+
+              {/* Card 4 — NEW */}
+              <div className="rounded-[1rem] border border-[#E8EEF4] bg-[#FDFDFD] p-8 shadow-sm">
+                 <div className="flex flex-col gap-4">
+                   <div className="flex items-center gap-3">
+                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#1A6FD4]/10 text-[#1A6FD4]">
+                       <Clock className="h-6 w-6" />
+                     </div>
+                     <h3 className="text-[20px] font-bold text-[#1A1A2E]">7-Day Payment Cycle</h3>
+                   </div>
+                   <p className="text-[#6B7280] text-[16px] leading-relaxed ml-[60px] max-md:ml-0">
+                     Receive your earnings within 7 days of dispatch, directly deposited to your bank account.
+                   </p>
+                 </div>
+              </div>
+
+              {/* Card 5 — NEW */}
+              <div className="rounded-[1rem] border border-[#E8EEF4] bg-[#FDFDFD] p-8 shadow-sm">
+                 <div className="flex flex-col gap-4">
+                   <div className="flex items-center gap-3">
+                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F59E0B]/10 text-[#F59E0B]">
+                       <Headphones className="h-6 w-6" />
+                     </div>
+                     <h3 className="text-[20px] font-bold text-[#1A1A2E]">24/7 Seller Support</h3>
+                   </div>
+                   <p className="text-[#6B7280] text-[16px] leading-relaxed ml-[60px] max-md:ml-0">
+                     Dedicated account managers and round-the-clock support to help you at every step.
                    </p>
                  </div>
               </div>
@@ -196,7 +280,7 @@ export default function SellerLandingPage() {
           <div className="relative pt-8">
              {/* Path line background */}
              <div className="hidden lg:block absolute top-[62px] left-[10%] right-[10%] h-[2px] bg-[#E8EEF4]"></div>
-             
+
              <div className="grid gap-12 lg:grid-cols-5 text-center relative z-10">
                {[
                  { step: 1, title: 'Create Account', desc: 'All you need is GSTIN and Bank Account', icon: LayoutDashboard },
@@ -206,9 +290,10 @@ export default function SellerLandingPage() {
                  { step: 5, title: 'Receive Payments', desc: 'Payments are deposited directly to your bank account safely.', icon: IndianRupee },
                ].map((item) => (
                  <div key={item.step} className="flex flex-col items-center">
-                   <div className="w-[60px] h-[60px] rounded-full bg-[#E11D48] text-white flex items-center justify-center text-xl font-bold shadow-lg mb-6 ring-[8px] ring-[#F8FBFF]">
-                      {item.step}
+                   <div className="w-[60px] h-[60px] rounded-full bg-[#1A6FD4] text-white flex items-center justify-center shadow-lg mb-4 ring-[8px] ring-[#F8FBFF]">
+                      <item.icon className="h-6 w-6" />
                    </div>
+                   <span className="text-[12px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-1">Step {item.step}</span>
                    <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-2">{item.title}</h4>
                    <p className="text-[14px] text-[#6B7280] leading-relaxed max-w-[200px] mx-auto">{item.desc}</p>
                  </div>
@@ -218,47 +303,175 @@ export default function SellerLandingPage() {
         </div>
       </section>
 
-      {/* GROW BUSINESS WITH ANGA9 */}
+      {/* SELLER DASHBOARD PREVIEW — ILLUSTRATION SLOT #3 */}
       <section className="py-20 lg:py-28 bg-white">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+          <div className="text-center mb-12">
+            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">Powerful Seller Dashboard</h2>
+            <p className="text-[#6B7280] text-[17px] max-w-[600px] mx-auto">Manage orders, track earnings, and grow your business — all from one intuitive dashboard.</p>
+          </div>
+
+          {/* ============================================================
+              ILLUSTRATION SLOT #3 — DASHBOARD MOCKUP SCREENSHOT
+
+              GEMINI PROMPT:
+              "Create a clean, modern UI mockup illustration of an e-commerce seller
+              dashboard displayed on a laptop screen, slightly angled in 3D perspective.
+              The dashboard should show: a sidebar with nav icons, a top stats row
+              with cards (Total Sales, Orders, Revenue with small graph sparklines),
+              a line chart showing sales trend, and a recent orders table. Use a
+              blue (#1A6FD4) and white color scheme with yellow (#FFCC00) accent
+              for CTA buttons. Soft drop shadow under the laptop. Light grey
+              (#F8FBFF) background. Flat clean vector style, no real text — use
+              placeholder bars for text. PNG, 1400x800px."
+
+              Save as: /public/seller-dashboard-preview.png
+          ============================================================ */}
+          <div className="relative max-w-4xl mx-auto h-[400px] lg:h-[500px] rounded-2xl overflow-hidden">
+            <Image src="/seller-dashboard-preview.png" fill unoptimized style={{objectFit: 'contain'}} alt="ANGA9 Seller Dashboard Preview" />
+          </div>
+        </div>
+      </section>
+
+      {/* GROW BUSINESS WITH ANGA9 — expanded to 4 cards */}
+      <section className="py-20 lg:py-28 bg-[#F8FBFF]">
          <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-            <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-               <div className="lg:col-span-5">
-                  <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-6 leading-tight">Grow Your Business With ANGA9</h2>
-                  <p className="text-[#6B7280] text-[17px] mb-8 max-w-[400px]">Access exclusive tools and insights tailored directly to boost your online enterprise effectively.</p>
+            <div className="text-center mb-16">
+              <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">Grow Your Business With ANGA9</h2>
+              <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">Access exclusive tools and insights tailored directly to boost your online enterprise.</p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+               {/* Card 1 */}
+               <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40 hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-6">
+                    <Zap className="h-6 w-6" />
+                  </div>
+                  <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Affordable Shipping</h4>
+                  <p className="text-[#6B7280] text-[15px] leading-relaxed">Deliver to 28,000+ pincodes with the most reliable and cost-effective shipping.</p>
                </div>
-               
-               <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
-                  {/* Card 1 */}
-                  <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40">
-                     <div className="w-12 h-12 rounded bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-6">
-                       <Zap className="h-6 w-6" />
-                     </div>
-                     <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Efficient & Affordable Shipping</h4>
-                     <p className="text-[#6B7280] text-[15px] leading-relaxed">Sell your products across India to over 28,000+ pincodes with reliable shipping mechanics.</p>
+               {/* Card 2 */}
+               <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40 hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-6">
+                    <Megaphone className="h-6 w-6" />
                   </div>
-                  {/* Card 2 */}
-                  <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40">
-                     <div className="w-12 h-12 rounded bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-6">
-                       <Megaphone className="h-6 w-6" />
-                     </div>
-                     <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Ads to grow more</h4>
-                     <p className="text-[#6B7280] text-[15px] leading-relaxed">Use selling tools like ANGA9 Ads to be more visible and sell more catalogs continuously.</p>
+                  <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">ANGA9 Ads</h4>
+                  <p className="text-[#6B7280] text-[15px] leading-relaxed">Boost visibility with targeted ad tools to sell more catalogs every day.</p>
+               </div>
+               {/* Card 3 — NEW */}
+               <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40 hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-[#22C55E]/10 text-[#22C55E] flex items-center justify-center mb-6">
+                    <Wallet className="h-6 w-6" />
                   </div>
+                  <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Instant Payouts</h4>
+                  <p className="text-[#6B7280] text-[15px] leading-relaxed">Get paid faster with instant payout options directly to your bank account.</p>
+               </div>
+               {/* Card 4 — NEW */}
+               <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40 hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center mb-6">
+                    <Globe className="h-6 w-6" />
+                  </div>
+                  <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Pan-India Reach</h4>
+                  <p className="text-[#6B7280] text-[15px] leading-relaxed">Sell to customers in every state — from metros to tier-3 towns and villages.</p>
                </div>
             </div>
          </div>
       </section>
 
-      {/* FOOTER CTA (Not Black - Gradient Dark Purple) */}
-      <section className="bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] py-20 lg:py-28 text-center text-white">
-         <div className="mx-auto max-w-3xl px-6">
+      {/* SELLER SUCCESS STORIES — ILLUSTRATION SLOT #4 */}
+      <section className="py-20 lg:py-28 bg-white">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+          <div className="text-center mb-16">
+            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">Seller Success Stories</h2>
+            <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">Real sellers, real growth. Here&apos;s what our top suppliers have to say.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Rajesh Kumar",
+                business: "Kumar Electronics, Delhi",
+                quote: "Within 3 months of joining ANGA9, my wholesale orders tripled. The 0% commission is a game-changer for my margins.",
+                growth: "3x orders",
+                avatar: "/seller-avatar-1.png",
+              },
+              {
+                name: "Priya Sharma",
+                business: "Sharma Textiles, Surat",
+                quote: "I was skeptical at first, but the dashboard analytics helped me understand which products to push. Revenue is up 200%.",
+                growth: "200% revenue",
+                avatar: "/seller-avatar-2.png",
+              },
+              {
+                name: "Anil Patel",
+                business: "Patel Agro Supplies, Ahmedabad",
+                quote: "The shipping network reaches even remote pincodes. My customer base expanded to states I never imagined selling to.",
+                growth: "12 new states",
+                avatar: "/seller-avatar-3.png",
+              },
+            ].map((story) => (
+              <div key={story.name} className="rounded-2xl border border-[#E8EEF4] bg-white p-8 shadow-sm flex flex-col">
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="w-14 h-14 rounded-full overflow-hidden bg-[#DBEAFE] shrink-0 relative">
+                    <Image src={story.avatar} fill unoptimized style={{objectFit: 'cover'}} alt={story.name} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#1A1A2E] text-[16px]">{story.name}</p>
+                    <p className="text-[13px] text-[#6B7280]">{story.business}</p>
+                  </div>
+                </div>
+                <p className="text-[#4B5563] text-[15px] leading-relaxed flex-1 mb-5">&ldquo;{story.quote}&rdquo;</p>
+                <div className="flex items-center gap-2 pt-4 border-t border-[#E8EEF4]">
+                  <TrendingUp className="h-4 w-4 text-[#22C55E]" />
+                  <span className="text-[13px] font-bold text-[#22C55E]">{story.growth}</span>
+                  <div className="ml-auto flex gap-0.5">
+                    {[1,2,3,4,5].map(s => <Star key={s} className="h-3.5 w-3.5 text-[#FFCC00] fill-[#FFCC00]" />)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST BADGES STRIP */}
+      <section className="bg-[#F8FBFF] py-12 border-y border-[#E8EEF4]">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-16 text-[#4B5563]">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="h-6 w-6 text-[#1A6FD4]" />
+              <span className="text-[15px] font-medium">Secure Payments</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <BadgeCheck className="h-6 w-6 text-[#1A6FD4]" />
+              <span className="text-[15px] font-medium">Verified Sellers</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Layers className="h-6 w-6 text-[#1A6FD4]" />
+              <span className="text-[15px] font-medium">Easy Catalog Upload</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Headphones className="h-6 w-6 text-[#1A6FD4]" />
+              <span className="text-[15px] font-medium">24/7 Support</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Truck className="h-6 w-6 text-[#1A6FD4]" />
+              <span className="text-[15px] font-medium">Pan-India Delivery</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER CTA */}
+      <section className="bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] py-20 lg:py-28 text-center text-white relative overflow-hidden" style={{backgroundImage: 'url(/seller-cta-pattern.png)', backgroundSize: '400px'}}>
+         <div className="mx-auto max-w-3xl px-6 relative z-10">
             <h2 className="text-[32px] lg:text-[40px] font-bold mb-6 tracking-tight">Ready to scale up your B2B wholesale orders?</h2>
             <p className="text-[#93C5FD] text-lg mb-10">Join thousands of sellers already generating crores in revenue on ANGA9.</p>
             <Link
               href="/seller/register"
-              className="inline-flex h-[52px] items-center justify-center rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-xl transition-all hover:scale-105 hover:bg-[#E6B800]"
+              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-xl transition-all hover:scale-105 hover:bg-[#E6B800]"
             >
-              Start Selling For Free
+              Start Selling For Free <ArrowRight className="h-5 w-5" />
             </Link>
          </div>
       </section>

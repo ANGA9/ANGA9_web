@@ -6,7 +6,7 @@ import { CheckCircle2, TrendingUp, IndianRupee, Zap, LayoutDashboard, Truck, Shi
 
 export default function SellerLandingPage() {
   return (
-    <div className="min-h-screen bg-white selection:bg-[#6C47FF]/20 selection:text-[#1A1A2E]">
+    <div className="min-h-screen bg-white selection:bg-[#1A6FD4]/20 selection:text-[#1A1A2E]" style={{ fontFamily: 'var(--font-gilroy)' }}>
       {/* HEADER */}
       <header className="sticky top-0 z-50 w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-6 lg:px-12">
@@ -24,13 +24,13 @@ export default function SellerLandingPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/seller/login"
-              className="hidden rounded-lg px-6 py-2.5 text-sm font-semibold text-[#6C47FF] transition-colors hover:bg-[#6C47FF]/10 sm:inline-flex"
+              className="hidden rounded-lg px-6 py-2.5 text-sm font-semibold text-[#1A6FD4] transition-colors hover:bg-[#1A6FD4]/10 sm:inline-flex"
             >
               Login
             </Link>
             <Link
               href="/seller/register"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-[#6C47FF] px-6 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
+              className="inline-flex h-11 items-center justify-center rounded-[10px] bg-[#FFCC00] px-6 text-sm font-semibold text-[#1A1A2E] shadow-[0_4px_12px_rgba(255,204,0,0.3)] transition-all hover:scale-[1.02] hover:bg-[#E6B800]"
             >
               Start Selling
             </Link>
@@ -42,18 +42,18 @@ export default function SellerLandingPage() {
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32 bg-[#FDFPFE]">
         {/* Background Graphic (The sweeping curve like Meesho) */}
         <div className="absolute right-0 top-0 h-full w-[60%] lg:w-[65%] origin-top-right transform overflow-hidden -z-10">
-          <div className="absolute inset-0 bg-[#F1EDFF] rounded-bl-[100%] scale-125 translate-x-[15%] -translate-y-[10%]"></div>
+          <div className="absolute inset-0 bg-[#DBEAFE] rounded-bl-[100%] scale-125 translate-x-[15%] -translate-y-[10%]"></div>
           {/* A second curve for depth */}
-          <div className="absolute inset-0 bg-[#E8E0FF] rounded-bl-[80%] scale-110 translate-x-[25%] opacity-50"></div>
+          <div className="absolute inset-0 bg-[#BFDBFE] rounded-bl-[80%] scale-110 translate-x-[25%] opacity-50"></div>
           
           {/* This is where the Gemini generated seller photo goes (transparent png) */}
           {/* <Image src="/transparent-seller-hero.png" fill style={{objectFit: 'cover', objectPosition: 'left bottom'}} alt="Seller" /> */}
-          <div className="absolute inset-0 flex items-end justify-center pb-8 border-4 border-dashed border-[#6C47FF]/30 m-4 rounded-[4rem]">
+          <div className="absolute inset-0 flex items-end justify-center pb-8 border-4 border-dashed border-[#1A6FD4]/30 m-4 rounded-[4rem]">
              <div className="text-center p-6 bg-white/80 backdrop-blur rounded-2xl max-w-sm mb-12 shadow-xl">
-               <Package className="w-12 h-12 text-[#6C47FF] mx-auto mb-3" />
+               <Package className="w-12 h-12 text-[#1A6FD4] mx-auto mb-3" />
                <p className="text-[#1A1A2E] font-bold text-lg mb-1">Upload your cut-out image here!</p>
                <p className="text-[#6B7280] text-sm leading-relaxed">
-                 Use the transparent PNG of the seller standing. It will completely overlap the purple curve exactly like the reference.
+                 Use the transparent PNG of the seller standing. It will completely overlap the blue curve exactly like the reference.
                </p>
              </div>
           </div>
@@ -84,7 +84,7 @@ export default function SellerLandingPage() {
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/seller/register"
-                  className="inline-flex h-14 items-center justify-center rounded bg-[#6C47FF] px-10 text-[16px] font-semibold text-white shadow-lg shadow-[#6C47FF]/30 transition-all hover:bg-[#5A3AE0] hover:-translate-y-0.5"
+                  className="inline-flex h-14 items-center justify-center rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-lg shadow-[#FFCC00]/30 transition-all hover:bg-[#E6B800] hover:-translate-y-0.5"
                 >
                   Start Selling
                 </Link>
@@ -139,7 +139,7 @@ export default function SellerLandingPage() {
               <div className="rounded-[1rem] border border-[#E8EEF4] bg-[#FDFDFD] p-8 shadow-sm">
                  <div className="flex flex-col gap-4">
                    <div className="flex items-center gap-3">
-                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#6C47FF]/10 text-[#6C47FF]">
+                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#1A6FD4]/10 text-[#1A6FD4]">
                        <IndianRupee className="h-6 w-6" />
                      </div>
                      <h3 className="text-[20px] font-bold text-[#1A1A2E]">0% Commission Fee</h3>
@@ -190,7 +190,7 @@ export default function SellerLandingPage() {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight uppercase">How It Works</h2>
-            <div className="h-1 w-16 bg-[#6C47FF] mx-auto mt-4 rounded-full"></div>
+            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mt-4 rounded-full"></div>
           </div>
 
           <div className="relative pt-8">
@@ -229,8 +229,8 @@ export default function SellerLandingPage() {
                
                <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
                   {/* Card 1 */}
-                  <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#6C47FF]/40">
-                     <div className="w-12 h-12 rounded bg-[#6C47FF]/10 text-[#6C47FF] flex items-center justify-center mb-6">
+                  <div className="bg-white p-8 rounded-2xl shadow-[0_4px_24px_rgba(30,41,59,0.05)] border border-[#E8EEF4] transition-all hover:border-[#1A6FD4]/40">
+                     <div className="w-12 h-12 rounded bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-6">
                        <Zap className="h-6 w-6" />
                      </div>
                      <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">Efficient & Affordable Shipping</h4>
@@ -250,13 +250,13 @@ export default function SellerLandingPage() {
       </section>
 
       {/* FOOTER CTA (Not Black - Gradient Dark Purple) */}
-      <section className="bg-gradient-to-br from-[#1A1A2E] to-[#2D1B69] py-20 lg:py-28 text-center text-white">
+      <section className="bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] py-20 lg:py-28 text-center text-white">
          <div className="mx-auto max-w-3xl px-6">
             <h2 className="text-[32px] lg:text-[40px] font-bold mb-6 tracking-tight">Ready to scale up your B2B wholesale orders?</h2>
-            <p className="text-[#A5B4FC] text-lg mb-10">Join thousands of sellers already generating crores in revenue on ANGA9.</p>
+            <p className="text-[#93C5FD] text-lg mb-10">Join thousands of sellers already generating crores in revenue on ANGA9.</p>
             <Link
               href="/seller/register"
-              className="inline-flex h-[52px] items-center justify-center rounded bg-white px-10 text-[16px] font-bold text-[#6C47FF] shadow-xl transition-all hover:scale-105"
+              className="inline-flex h-[52px] items-center justify-center rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-xl transition-all hover:scale-105 hover:bg-[#E6B800]"
             >
               Start Selling For Free
             </Link>

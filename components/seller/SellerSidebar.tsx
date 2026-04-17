@@ -74,7 +74,7 @@ export default function SellerSidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between px-4">
           <Link href="/seller/dashboard" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6C47FF] text-white font-bold text-lg shrink-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1A6FD4] text-white font-bold text-lg shrink-0">
               A
             </div>
             {!collapsed && (
@@ -82,7 +82,7 @@ export default function SellerSidebar() {
                 <span className="text-xl font-bold text-anga-text tracking-tight">
                   ANGA
                 </span>
-                <span className="ml-1.5 text-[10px] font-medium text-[#6C47FF] bg-[#6C47FF]/10 px-1.5 py-0.5 rounded">
+                <span className="ml-1.5 text-[10px] font-medium text-[#1A6FD4] bg-[#1A6FD4]/10 px-1.5 py-0.5 rounded">
                   Seller
                 </span>
               </div>
@@ -106,7 +106,7 @@ export default function SellerSidebar() {
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive(item.href)
-                  ? "bg-[#6C47FF] text-white shadow-sm"
+                  ? "bg-[#1A6FD4] text-white shadow-sm"
                   : "text-anga-text-secondary hover:bg-seller-bg hover:text-anga-text"
               )}
             >
@@ -132,7 +132,7 @@ export default function SellerSidebar() {
         <div className="border-t border-seller-border p-3">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9 shrink-0">
-              <AvatarFallback className="bg-[#6C47FF]/10 text-[#6C47FF] font-semibold text-sm">
+              <AvatarFallback className="bg-[#1A6FD4]/10 text-[#1A6FD4] font-semibold text-sm">
                 RE
               </AvatarFallback>
             </Avatar>
@@ -142,8 +142,8 @@ export default function SellerSidebar() {
                   Rajesh Electronics
                 </p>
                 <div className="flex items-center gap-1">
-                  <BadgeCheck className="h-3 w-3 text-[#6C47FF]" />
-                  <span className="text-[10px] font-medium text-[#6C47FF]">
+                  <BadgeCheck className="h-3 w-3 text-[#1A6FD4]" />
+                  <span className="text-[10px] font-medium text-[#1A6FD4]">
                     Verified Seller
                   </span>
                 </div>

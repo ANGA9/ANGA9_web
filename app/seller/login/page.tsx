@@ -18,7 +18,7 @@ export default function SellerLoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#6C47FF] text-white font-bold text-2xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1A6FD4] text-white font-bold text-2xl">
             A
           </div>
           <h1 className="text-2xl font-bold text-anga-text tracking-tight">
@@ -48,7 +48,7 @@ export default function SellerLoginPage() {
                 type="email"
                 placeholder="seller@business.com"
                 defaultValue="rajesh@electronics.in"
-                className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
               />
             </div>
 
@@ -62,7 +62,7 @@ export default function SellerLoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   defaultValue="password123"
-                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 pr-11 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 pr-11 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -84,13 +84,13 @@ export default function SellerLoginPage() {
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 rounded border-seller-border accent-[#6C47FF]"
+                  className="h-4 w-4 rounded border-seller-border accent-[#1A6FD4]"
                 />
                 Remember me
               </label>
               <button
                 type="button"
-                className="text-sm font-medium text-[#6C47FF] hover:underline"
+                className="text-sm font-medium text-[#1A6FD4] hover:underline"
               >
                 Forgot password?
               </button>
@@ -99,7 +99,7 @@ export default function SellerLoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="h-11 w-full rounded-lg bg-[#6C47FF] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#5835DB] active:translate-y-px"
+              className="h-11 w-full rounded-lg bg-[#1A6FD4] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1560B8] active:translate-y-px"
             >
               Sign in as Seller
             </button>
@@ -107,7 +107,7 @@ export default function SellerLoginPage() {
 
           <p className="mt-6 text-center text-xs text-anga-text-secondary">
             Not a seller yet?{" "}
-            <button className="font-medium text-[#6C47FF] hover:underline">
+            <button className="font-medium text-[#1A6FD4] hover:underline">
               Register your business
             </button>
           </p>
@@ -115,7 +115,7 @@ export default function SellerLoginPage() {
 
         <p className="mt-6 text-center text-xs text-anga-text-secondary">
           Back to{" "}
-          <a href="/" className="font-medium text-[#6C47FF] hover:underline">
+          <a href="/" className="font-medium text-[#1A6FD4] hover:underline">
             Portal Selection
           </a>
         </p>

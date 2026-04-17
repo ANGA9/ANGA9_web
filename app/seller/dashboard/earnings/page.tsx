@@ -39,8 +39,8 @@ export default function SellerEarningsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
           <div className="rounded-xl border border-seller-border bg-white p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#6C47FF]/10">
-                <IndianRupee className="h-5 w-5 text-[#6C47FF]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1A6FD4]/10">
+                <IndianRupee className="h-5 w-5 text-[#1A6FD4]" />
               </div>
               <span className="text-sm font-medium text-anga-text-secondary">Total Earnings</span>
             </div>

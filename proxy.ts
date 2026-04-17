@@ -13,7 +13,8 @@ export function proxy(request: NextRequest) {
   for (const [prefix, portalName] of Object.entries(PORTAL_CONFIG)) {
     if (!pathname.startsWith(prefix)) continue;
 
-    if (pathname === `${prefix}/login`) {
+    // Allow login page and seller landing page without auth
+    if (pathname === `${prefix}/login` || pathname === prefix) {
       return NextResponse.next();
     }
 

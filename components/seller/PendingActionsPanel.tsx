@@ -48,7 +48,7 @@ export default function PendingActionsPanel() {
               className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
                 action.urgent
                   ? "bg-[#EF4444]/10 text-[#EF4444]"
-                  : "bg-[#6C47FF]/10 text-[#6C47FF]"
+                  : "bg-[#1A6FD4]/10 text-[#1A6FD4]"
               }`}
             >
               <action.icon className="h-4 w-4" />
@@ -61,7 +61,7 @@ export default function PendingActionsPanel() {
                 {action.detail}
               </p>
             </div>
-            <button className="shrink-0 text-xs font-medium text-[#6C47FF] hover:underline mt-0.5">
+            <button className="shrink-0 text-xs font-medium text-[#1A6FD4] hover:underline mt-0.5">
               Resolve
             </button>
           </div>

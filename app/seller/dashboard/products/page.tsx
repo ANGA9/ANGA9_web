@@ -43,7 +43,7 @@ export default function SellerProductsPage() {
               Manage your product listings
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 rounded-lg bg-[#6C47FF] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-[#5835DB] transition-colors">
+          <button className="inline-flex items-center gap-2 rounded-lg bg-[#1A6FD4] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-[#1560B8] transition-colors">
             <Plus className="h-4 w-4" />
             Add Product
           </button>
@@ -56,7 +56,7 @@ export default function SellerProductsPage() {
             <input
               type="text"
               placeholder="Search products..."
-              className="h-10 w-full rounded-lg border border-seller-border bg-white pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+              className="h-10 w-full rounded-lg border border-seller-border bg-white pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
             />
           </div>
           <button className="inline-flex items-center gap-2 rounded-lg border border-seller-border bg-white px-4 py-2.5 text-sm font-medium text-anga-text-secondary hover:bg-seller-bg transition-colors">
@@ -93,7 +93,7 @@ export default function SellerProductsPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <button className="text-xs font-medium text-[#6C47FF] hover:underline">Edit</button>
+                    <button className="text-xs font-medium text-[#1A6FD4] hover:underline">Edit</button>
                   </TableCell>
                 </TableRow>
               ))}

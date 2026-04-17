@@ -27,7 +27,7 @@ const orders = [
 
 const statusStyles: Record<string, string> = {
   Pending: "bg-[#F59E0B]/10 text-[#F59E0B]",
-  Shipped: "bg-[#6C47FF]/10 text-[#6C47FF]",
+  Shipped: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
   Delivered: "bg-[#22C55E]/10 text-[#22C55E]",
 };
 
@@ -63,7 +63,7 @@ export default function SellerOrdersPage() {
               className={cn(
                 "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                 activeTab === tab
-                  ? "bg-[#6C47FF] text-white"
+                  ? "bg-[#1A6FD4] text-white"
                   : "border border-seller-border bg-white text-anga-text-secondary hover:bg-seller-bg"
               )}
             >

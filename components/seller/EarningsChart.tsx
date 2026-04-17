@@ -70,7 +70,7 @@ export default function EarningsChart() {
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="rounded-lg bg-[#6C47FF] px-3 py-1.5 text-xs font-medium text-white">
+          <button className="rounded-lg bg-[#1A6FD4] px-3 py-1.5 text-xs font-medium text-white">
             Monthly
           </button>
           <button className="rounded-lg border border-seller-border px-3 py-1.5 text-xs font-medium text-anga-text-secondary hover:bg-seller-bg transition-colors">
@@ -85,8 +85,8 @@ export default function EarningsChart() {
         >
           <defs>
             <linearGradient id="earningsGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6C47FF" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="#6C47FF" stopOpacity={0} />
+              <stop offset="0%" stopColor="#1A6FD4" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="#1A6FD4" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
@@ -110,7 +110,7 @@ export default function EarningsChart() {
           <Area
             type="monotone"
             dataKey="earnings"
-            stroke="#6C47FF"
+            stroke="#1A6FD4"
             strokeWidth={2.5}
             fill="url(#earningsGradient)"
           />

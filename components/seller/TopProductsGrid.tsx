@@ -4,7 +4,7 @@ const products = [
   {
     name: "Bluetooth Speaker X200",
     category: "Electronics",
-    categoryColor: "#6C47FF",
+    categoryColor: "#1A6FD4",
     unitsSold: 342,
     revenue: 273600,
     stock: "In Stock",
@@ -13,7 +13,7 @@ const products = [
   {
     name: "USB-C Hub 7-in-1",
     category: "Accessories",
-    categoryColor: "#6C47FF",
+    categoryColor: "#1A6FD4",
     unitsSold: 289,
     revenue: 202300,
     stock: "Low Stock",
@@ -31,7 +31,7 @@ const products = [
   {
     name: "Wireless Earbuds V3",
     category: "Electronics",
-    categoryColor: "#6C47FF",
+    categoryColor: "#1A6FD4",
     unitsSold: 198,
     revenue: 178200,
     stock: "Out of Stock",
@@ -56,7 +56,7 @@ export default function TopProductsGrid() {
         <h3 className="text-base font-semibold text-anga-text">
           Top Performing Products
         </h3>
-        <button className="text-sm font-medium text-[#6C47FF] hover:underline">
+        <button className="text-sm font-medium text-[#1A6FD4] hover:underline">
           View All
         </button>
       </div>

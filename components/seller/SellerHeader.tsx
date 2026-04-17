@@ -11,7 +11,7 @@ export default function SellerHeader() {
         <input
           type="text"
           placeholder="Search products, orders..."
-          className="h-10 w-full rounded-lg border border-seller-border bg-seller-bg pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+          className="h-10 w-full rounded-lg border border-seller-border bg-seller-bg pl-10 pr-4 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
         />
       </div>
 
@@ -26,7 +26,7 @@ export default function SellerHeader() {
         </button>
 
         {/* View Store */}
-        <button className="flex h-10 items-center gap-1.5 rounded-lg bg-[#6C47FF] px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#5835DB]">
+        <button className="flex h-10 items-center gap-1.5 rounded-lg bg-[#1A6FD4] px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#1560B8]">
           <Store className="h-4 w-4" />
           <span className="hidden sm:inline">View Store</span>
         </button>

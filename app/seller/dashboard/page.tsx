@@ -30,8 +30,8 @@ const stats = [
     delta: "+12.4% this month",
     deltaType: "positive",
     icon: IndianRupee,
-    iconColor: "#6C47FF",
-    iconBg: "#6C47FF15",
+    iconColor: "#1A6FD4",
+    iconBg: "#1A6FD415",
   },
   {
     title: "Active Listings",
@@ -39,8 +39,8 @@ const stats = [
     delta: "3 pending approval",
     deltaType: "neutral",
     icon: Package,
-    iconColor: "#6C47FF",
-    iconBg: "#6C47FF15",
+    iconColor: "#1A6FD4",
+    iconBg: "#1A6FD415",
   },
   {
     title: "Orders Today",
@@ -109,14 +109,14 @@ const recentOrders = [
 
 const statusStyles: Record<string, string> = {
   Processing: "bg-[#F59E0B]/10 text-[#F59E0B]",
-  Shipped: "bg-[#6C47FF]/10 text-[#6C47FF]",
+  Shipped: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
   Delivered: "bg-[#22C55E]/10 text-[#22C55E]",
   Cancelled: "bg-[#EF4444]/10 text-[#EF4444]",
 };
 
 const deltaStyles: Record<string, string> = {
   positive: "bg-[#22C55E]/10 text-[#22C55E]",
-  neutral: "bg-[#6C47FF]/10 text-[#6C47FF]",
+  neutral: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
   warning: "bg-[#F59E0B]/10 text-[#F59E0B]",
 };
 
@@ -137,7 +137,7 @@ export default function SellerDashboardPage() {
       <SellerHeader />
       <main className="p-6 xl:p-8">
         {/* Welcome Banner */}
-        <div className="mb-6 rounded-xl border border-seller-border bg-gradient-to-r from-[#6C47FF] to-[#8B6CFF] p-6 text-white">
+        <div className="mb-6 rounded-xl border border-seller-border bg-gradient-to-r from-[#1A6FD4] to-[#8B6CFF] p-6 text-white">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-xl font-bold">
@@ -211,7 +211,7 @@ export default function SellerDashboardPage() {
                 Your latest customer orders
               </p>
             </div>
-            <button className="text-sm font-medium text-[#6C47FF] hover:underline">
+            <button className="text-sm font-medium text-[#1A6FD4] hover:underline">
               View All
             </button>
           </div>
@@ -267,7 +267,7 @@ export default function SellerDashboardPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    <button className="text-xs font-medium text-[#6C47FF] hover:underline">
+                    <button className="text-xs font-medium text-[#1A6FD4] hover:underline">
                       View
                     </button>
                   </TableCell>
@@ -289,8 +289,8 @@ export default function SellerDashboardPage() {
           </h3>
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="flex items-center gap-4 flex-1">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#6C47FF]/10">
-                <Landmark className="h-6 w-6 text-[#6C47FF]" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1A6FD4]/10">
+                <Landmark className="h-6 w-6 text-[#1A6FD4]" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-anga-text tracking-tight">
@@ -312,7 +312,7 @@ export default function SellerDashboardPage() {
                 </p>
               </div>
             </div>
-            <button className="rounded-lg border-2 border-[#6C47FF] px-5 py-2.5 text-sm font-semibold text-[#6C47FF] hover:bg-[#6C47FF] hover:text-white transition-colors">
+            <button className="rounded-lg border-2 border-[#1A6FD4] px-5 py-2.5 text-sm font-semibold text-[#1A6FD4] hover:bg-[#1A6FD4] hover:text-white transition-colors">
               Request Early Payout
             </button>
           </div>

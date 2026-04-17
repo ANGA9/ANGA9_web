@@ -21,7 +21,7 @@ export default function SellerSettingsPage() {
               Store Logo
             </h3>
             <div className="flex items-center gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#6C47FF]/10 text-[#6C47FF] font-bold text-2xl">
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1A6FD4]/10 text-[#1A6FD4] font-bold text-2xl">
                 RE
               </div>
               <div>
@@ -49,7 +49,7 @@ export default function SellerSettingsPage() {
                 <input
                   type="text"
                   defaultValue="Rajesh Electronics"
-                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                 />
               </div>
               <div>
@@ -59,7 +59,7 @@ export default function SellerSettingsPage() {
                 <textarea
                   rows={3}
                   defaultValue="Premium electronics and accessories wholesale dealer based in Mumbai. Serving businesses since 2015."
-                  className="w-full rounded-lg border border-seller-border bg-seller-bg px-4 py-3 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors resize-none"
+                  className="w-full rounded-lg border border-seller-border bg-seller-bg px-4 py-3 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors resize-none"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -70,7 +70,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="email"
                     defaultValue="rajesh@electronics.in"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -80,7 +80,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="tel"
                     defaultValue="+91 98765 43210"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
               </div>
@@ -100,7 +100,7 @@ export default function SellerSettingsPage() {
                 <input
                   type="text"
                   defaultValue="27AABCU9603R1ZM"
-                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                  className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                 />
               </div>
               <Separator className="bg-seller-border" />
@@ -115,7 +115,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="text"
                     defaultValue="HDFC Bank"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -125,7 +125,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="text"
                     defaultValue="****4821"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -135,7 +135,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="text"
                     defaultValue="HDFC0001234"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export default function SellerSettingsPage() {
                   <input
                     type="text"
                     defaultValue="Rajesh Kumar"
-                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20 transition-colors"
+                    className="h-11 w-full rounded-lg border border-seller-border bg-seller-bg px-4 text-sm text-anga-text focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/20 transition-colors"
                   />
                 </div>
               </div>
@@ -154,7 +154,7 @@ export default function SellerSettingsPage() {
 
           {/* Save button */}
           <div className="flex justify-end">
-            <button className="rounded-lg bg-[#6C47FF] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#5835DB] transition-colors">
+            <button className="rounded-lg bg-[#1A6FD4] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#1560B8] transition-colors">
               Save Changes
             </button>
           </div>

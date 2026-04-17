@@ -6,12 +6,13 @@ const PORTAL_CONFIG: Record<string, string> = {
   "/seller": "seller",
 };
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Admin & Seller portals
   for (const [prefix, portalName] of Object.entries(PORTAL_CONFIG)) {
-    if (!pathname.startsWith(prefix)) continue;
+    // Only match if the path is exactly the prefix or starts with prefix + '/'
+    if (pathname !== prefix && !pathname.startsWith(`${prefix}/`)) continue;
 
     // Allow login page and seller landing page without auth
     if (pathname === `${prefix}/login` || pathname === prefix) {

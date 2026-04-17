@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,9 +25,22 @@ import {
   ArrowRight,
   BadgeCheck,
   Layers,
+  Menu,
+  X,
 } from "lucide-react";
 
 export default function SellerLandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navLinks = [
+    { name: "Sell Online", href: "#" },
+    { name: "How it works", href: "#how-it-works" },
+    { name: "Pricing & Commission", href: "#" },
+    { name: "Shipping & Returns", href: "#" },
+    { name: "Grow Business", href: "#" },
+    { name: "Don't have GST?", href: "/seller/gst" },
+  ];
+
   return (
     <div
       className="min-h-screen bg-white selection:bg-[#1A6FD4]/20 selection:text-[#1A1A2E]"
@@ -39,7 +53,6 @@ export default function SellerLandingPage() {
             href="/"
             className="shrink-0 transition-opacity hover:opacity-80"
           >
-            {/* FIX: Added width/height + style instead of fill for logo — logos are never fill */}
             <Image
               src="/anga9-logo.png"
               alt="ANGA9 Logo"
@@ -51,15 +64,9 @@ export default function SellerLandingPage() {
             />
           </Link>
 
+          {/* Desktop Nav */}
           <div className="hidden items-center gap-8 lg:flex">
-            {[
-              { name: "Sell Online", href: "#" },
-              { name: "How it works", href: "#how-it-works" },
-              { name: "Pricing & Commission", href: "#" },
-              { name: "Shipping & Returns", href: "#" },
-              { name: "Grow Business", href: "#" },
-              { name: "Don't have GST?", href: "/seller/gst" },
-            ].map((item) => (
+            {navLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -70,21 +77,55 @@ export default function SellerLandingPage() {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 lg:gap-4">
             <Link
               href="/seller/login"
-              className="hidden rounded-lg border border-[#1A6FD4] px-6 py-2.5 text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 sm:inline-flex"
+              className="rounded-lg border border-[#1A6FD4] px-5 lg:px-6 py-2 lg:py-2.5 text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex"
             >
               Login
             </Link>
             <Link
               href="/seller/register"
-              className="inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
+              className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
             >
               Start Selling
             </Link>
+            
+            {/* Mobile Menu Button */}
+            <button 
+              className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Nav Overlay */}
+        {isMenuOpen && (
+          <div className="fixed inset-0 z-40 bg-white lg:hidden pt-[72px] animate-in fade-in slide-in-from-top duration-300">
+            <div className="flex flex-col p-6 space-y-6">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-lg font-semibold text-[#1A1A2E] border-b border-[#F3F4F6] pb-4"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <Link
+                href="/seller/register"
+                className="inline-flex h-14 items-center justify-center rounded-xl bg-[#6C47FF] text-lg font-bold text-white shadow-lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Start Selling
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* HERO SECTION */}
@@ -109,7 +150,7 @@ export default function SellerLandingPage() {
             fill
             sizes="(max-width: 1024px) 55vw, 52vw"
             quality={75}
-            style={{ objectFit: "contain", objectPosition: "center bottom" }}
+            style={{ objectFit: "contain", objectPosition: "center" }}
             alt="Seller"
             className="p-8"
             priority
@@ -203,9 +244,10 @@ export default function SellerLandingPage() {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="grid gap-16 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-5 lg:sticky lg:top-32">
-              <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-6 leading-tight">
+              <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
                 Why Suppliers Love ANGA9
               </h2>
+              <div className="h-1 w-16 bg-[#1A6FD4] mb-8 rounded-full" />
               <p className="text-[#6B7280] text-[17px] leading-relaxed max-w-[400px] mb-8">
                 All the benefits that come with selling on ANGA9 are designed to
                 help you sell more, and make it easier to grow your business.
@@ -237,12 +279,6 @@ export default function SellerLandingPage() {
                   color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
                   title: "0% Commission Fee",
                   desc: "Suppliers selling on ANGA9 keep 100% of their profit by not paying any commission at all.",
-                },
-                {
-                  icon: ShieldCheck,
-                  color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
-                  title: "0 Penalty Charges",
-                  desc: "Sell online without the fear of order cancellation charges with 0 Penalty for late dispatch or cancellations.",
                 },
                 {
                   icon: TrendingUp,
@@ -333,6 +369,7 @@ export default function SellerLandingPage() {
             <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
               Grow Your Business With ANGA9
             </h2>
+            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
             <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">
               Access exclusive tools and insights tailored directly to boost your
               online enterprise.
@@ -388,6 +425,7 @@ export default function SellerLandingPage() {
             <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">
               Seller Success Stories
             </h2>
+            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
             <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">
               Real sellers, real growth. Here&apos;s what our top suppliers have
               to say.
@@ -465,9 +503,9 @@ export default function SellerLandingPage() {
       </section>
 
       {/* TRUST BADGES STRIP */}
-      <section className="bg-[#F8FBFF] py-12 border-y border-[#E8EEF4]">
+      <section className="bg-white py-16 border-y border-[#E8EEF4]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-16 text-[#4B5563]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12 items-center justify-items-center">
             {[
               { icon: ShieldCheck, label: "Secure Payments" },
               { icon: BadgeCheck, label: "Verified Sellers" },
@@ -475,9 +513,11 @@ export default function SellerLandingPage() {
               { icon: Headphones, label: "24/7 Support" },
               { icon: Truck, label: "Pan-India Delivery" },
             ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2.5">
-                <Icon className="h-6 w-6 text-[#1A6FD4]" />
-                <span className="text-[15px] font-medium">{label}</span>
+              <div key={label} className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-full bg-[#1A6FD4]/5 flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-[#1A6FD4] group-hover:text-white">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <span className="text-[14px] font-semibold text-[#4B5563] text-center whitespace-nowrap">{label}</span>
               </div>
             ))}
           </div>

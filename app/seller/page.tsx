@@ -183,9 +183,8 @@ export default function SellerLandingPage() {
 
                    Save as: /public/seller-why-sell.png
                ============================================================ */}
-               <div className="hidden lg:block relative rounded-2xl overflow-hidden h-[300px]">
-                  <Image src="/seller-why-sell.png" fill unoptimized style={{objectFit: 'contain'}} alt="Why sell on ANGA9" />
-               </div>
+               {/* eslint-disable-next-line @next/next/no-img-element */}
+               <img src="/seller-why-sell.png" className="hidden lg:block rounded-2xl h-[300px] w-full object-contain" alt="Why sell on ANGA9" />
             </div>
 
             <div className="lg:col-span-7 space-y-6">
@@ -303,38 +302,8 @@ export default function SellerLandingPage() {
         </div>
       </section>
 
-      {/* SELLER DASHBOARD PREVIEW — ILLUSTRATION SLOT #3 */}
-      <section className="py-20 lg:py-28 bg-white">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">Powerful Seller Dashboard</h2>
-            <p className="text-[#6B7280] text-[17px] max-w-[600px] mx-auto">Manage orders, track earnings, and grow your business — all from one intuitive dashboard.</p>
-          </div>
-
-          {/* ============================================================
-              ILLUSTRATION SLOT #3 — DASHBOARD MOCKUP SCREENSHOT
-
-              GEMINI PROMPT:
-              "Create a clean, modern UI mockup illustration of an e-commerce seller
-              dashboard displayed on a laptop screen, slightly angled in 3D perspective.
-              The dashboard should show: a sidebar with nav icons, a top stats row
-              with cards (Total Sales, Orders, Revenue with small graph sparklines),
-              a line chart showing sales trend, and a recent orders table. Use a
-              blue (#1A6FD4) and white color scheme with yellow (#FFCC00) accent
-              for CTA buttons. Soft drop shadow under the laptop. Light grey
-              (#F8FBFF) background. Flat clean vector style, no real text — use
-              placeholder bars for text. PNG, 1400x800px."
-
-              Save as: /public/seller-dashboard-preview.png
-          ============================================================ */}
-          <div className="relative max-w-4xl mx-auto h-[400px] lg:h-[500px] rounded-2xl overflow-hidden">
-            <Image src="/seller-dashboard-preview.png" fill unoptimized style={{objectFit: 'contain'}} alt="ANGA9 Seller Dashboard Preview" />
-          </div>
-        </div>
-      </section>
-
       {/* GROW BUSINESS WITH ANGA9 — expanded to 4 cards */}
-      <section className="py-20 lg:py-28 bg-[#F8FBFF]">
+      <section className="py-20 lg:py-28 bg-white border-t border-[#E8EEF4]">
          <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
             <div className="text-center mb-16">
               <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">Grow Your Business With ANGA9</h2>
@@ -378,8 +347,8 @@ export default function SellerLandingPage() {
          </div>
       </section>
 
-      {/* SELLER SUCCESS STORIES — ILLUSTRATION SLOT #4 */}
-      <section className="py-20 lg:py-28 bg-white">
+      {/* SELLER SUCCESS STORIES */}
+      <section className="py-20 lg:py-28 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">Seller Success Stories</h2>
@@ -412,9 +381,8 @@ export default function SellerLandingPage() {
             ].map((story) => (
               <div key={story.name} className="rounded-2xl border border-[#E8EEF4] bg-white p-8 shadow-sm flex flex-col">
                 <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-full overflow-hidden bg-[#DBEAFE] shrink-0 relative">
-                    <Image src={story.avatar} fill unoptimized style={{objectFit: 'cover'}} alt={story.name} />
-                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={story.avatar} className="w-14 h-14 rounded-full object-cover shrink-0 bg-[#DBEAFE] border border-[#E8EEF4]" alt={story.name} />
                   <div>
                     <p className="font-bold text-[#1A1A2E] text-[16px]">{story.name}</p>
                     <p className="text-[13px] text-[#6B7280]">{story.business}</p>
@@ -463,10 +431,10 @@ export default function SellerLandingPage() {
       </section>
 
       {/* FOOTER CTA */}
-      <section className="bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] py-20 lg:py-28 text-center text-white relative overflow-hidden" style={{backgroundImage: 'url(/seller-cta-pattern.png)', backgroundSize: '400px'}}>
+      <section className="bg-white py-20 lg:py-28 text-center relative overflow-hidden" style={{backgroundImage: 'url(/seller-cta-pattern.png)', backgroundSize: '400px'}}>
          <div className="mx-auto max-w-3xl px-6 relative z-10">
-            <h2 className="text-[32px] lg:text-[40px] font-bold mb-6 tracking-tight">Ready to scale up your B2B wholesale orders?</h2>
-            <p className="text-[#93C5FD] text-lg mb-10">Join thousands of sellers already generating crores in revenue on ANGA9.</p>
+            <h2 className="text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-6 tracking-tight">Ready to scale up your B2B wholesale orders?</h2>
+            <p className="text-[#1A6FD4] font-medium text-lg mb-10">Join thousands of sellers already generating crores in revenue on ANGA9.</p>
             <Link
               href="/seller/register"
               className="inline-flex h-[52px] items-center justify-center gap-2 rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-xl transition-all hover:scale-105 hover:bg-[#E6B800]"

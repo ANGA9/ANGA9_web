@@ -22,14 +22,14 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/seller" },
-  { icon: Package, label: "My Products", href: "/seller/products" },
-  { icon: ShoppingBag, label: "Orders", href: "/seller/orders" },
-  { icon: Layers, label: "Inventory", href: "/seller/inventory" },
-  { icon: IndianRupee, label: "Earnings", href: "/seller/earnings" },
-  { icon: Star, label: "Reviews", href: "/seller/reviews" },
-  { icon: Settings, label: "Store Settings", href: "/seller/settings" },
-  { icon: LifeBuoy, label: "Help & Support", href: "/seller/help" },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/seller/dashboard" },
+  { icon: Package, label: "My Products", href: "/seller/dashboard/products" },
+  { icon: ShoppingBag, label: "Orders", href: "/seller/dashboard/orders" },
+  { icon: Layers, label: "Inventory", href: "/seller/dashboard/inventory" },
+  { icon: IndianRupee, label: "Earnings", href: "/seller/dashboard/earnings" },
+  { icon: Star, label: "Reviews", href: "/seller/dashboard/reviews" },
+  { icon: Settings, label: "Store Settings", href: "/seller/dashboard/settings" },
+  { icon: LifeBuoy, label: "Help & Support", href: "/seller/dashboard/help" },
 ];
 
 export default function SellerSidebar() {
@@ -38,7 +38,7 @@ export default function SellerSidebar() {
   const pathname = usePathname();
 
   function isActive(href: string) {
-    if (href === "/seller") return pathname === "/seller";
+    if (href === "/seller/dashboard") return pathname === "/seller/dashboard";
     return pathname.startsWith(href);
   }
 
@@ -73,7 +73,7 @@ export default function SellerSidebar() {
       >
         {/* Logo */}
         <div className="flex h-16 items-center justify-between px-4">
-          <Link href="/seller" className="flex items-center gap-2">
+          <Link href="/seller/dashboard" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6C47FF] text-white font-bold text-lg shrink-0">
               A
             </div>

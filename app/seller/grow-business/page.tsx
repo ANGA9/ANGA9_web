@@ -28,8 +28,8 @@ export default function GrowBusinessPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Sell Online", href: "/seller/sell-online" },
-    { name: "How It Works", href: "/seller/how-it-works" },
+    { name: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+    { name: "How to Sell", href: "/seller/how-to-sell" },
     { name: "Shipping & Delivery", href: "/seller/shipping" },
     { name: "Grow Your Business", href: "/seller/grow-business" },
   ];
@@ -338,12 +338,10 @@ export default function GrowBusinessPage() {
               <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
               <ul className="space-y-4">
                 {[
-                  { label: "Sell Online", href: "/seller/sell-online" },
-                  { label: "How It Works", href: "/seller/how-it-works" },
+                  { label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+                  { label: "How to Sell", href: "/seller/how-to-sell" },
                   { label: "Shipping & Delivery", href: "/seller/shipping" },
                   { label: "Grow Your Business", href: "/seller/grow-business" },
-                  { label: "Seller Dashboard", href: "/seller/login" },
-                  { label: "Shop on ANGA9", href: "/" },
                 ].map((link) => (
                   <li key={link.label}>
                     <Link href={link.href} className="text-[15px] text-[#4B5563] transition-colors hover:text-[#1A6FD4]">{link.label}</Link>

@@ -85,12 +85,12 @@ export default function CustomerTopNav() {
             </button>
 
             <Link
-              href="/seller/sell-online"
+              href="/seller/sell-on-anga9"
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
               style={{ color: t.textSecondary, fontSize: 15 }}
             >
               <Store style={{ width: 18, height: 18, color: t.bluePrimary }} />
-              Sell Online
+              Sell on ANGA9
             </Link>
             <div className="relative">
               {loading ? (
@@ -280,8 +280,8 @@ export default function CustomerTopNav() {
                 >
                   {[
                     { icon: Package, label: "My Orders", href: "/orders" },
-                    { icon: Store, label: "Sell Online", href: "/seller/sell-online" },
-                    { icon: Megaphone, label: "Advertise on ANGA" },
+                    { icon: Store, label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+                    { icon: Megaphone, label: "Advertise on ANGA9" },
                     { icon: Download, label: "Download the App" },
                   ].map((item) => {
                     const inner = (

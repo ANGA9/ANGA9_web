@@ -27,14 +27,16 @@ import {
   Layers,
   Menu,
   X,
+  Instagram,
+  Mail,
 } from "lucide-react";
 
 export default function SellerLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Sell Online", href: "/seller/sell-online" },
-    { name: "How It Works", href: "/seller/how-it-works" },
+    { name: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+    { name: "How to Sell", href: "/seller/how-to-sell" },
     { name: "Shipping & Delivery", href: "/seller/shipping" },
     { name: "Grow Your Business", href: "/seller/grow-business" },
   ];
@@ -481,12 +483,10 @@ export default function SellerLandingPage() {
               </h4>
               <ul className="space-y-4">
                 {[
-                  { label: "Sell Online", href: "/seller/sell-online" },
-                  { label: "How It Works", href: "/seller/how-it-works" },
+                  { label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+                  { label: "How to Sell", href: "/seller/how-to-sell" },
                   { label: "Shipping & Delivery", href: "/seller/shipping" },
                   { label: "Grow Your Business", href: "/seller/grow-business" },
-                  { label: "Seller Dashboard", href: "/seller/login" },
-                  { label: "Shop on ANGA9", href: "/" },
                 ].map((link) => (
                   <li key={link.label}>
                     <Link
@@ -512,19 +512,21 @@ export default function SellerLandingPage() {
                 sell@anga9.com
               </Link>
               <div className="flex items-center gap-4">
-                {/* Social placeholders using circle backgrounds for now */}
-                {[
-                  { icon: "Ig", color: "bg-[#E1306C]" },
-                  { icon: "Fb", color: "bg-[#1877F2]" },
-                  { icon: "Yt", color: "bg-[#FF0000]" },
-                ].map((social) => (
-                  <div
-                    key={social.icon}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-[14px] font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}
-                  >
-                    {social.icon}
-                  </div>
-                ))}
+                <Link
+                  href="https://www.instagram.com/anga9shop/"
+                  target="_blank"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E1306C]/10 text-[#E1306C] transition-all hover:bg-[#E1306C] hover:text-white"
+                  title="Follow @anga9shop on Instagram"
+                >
+                  <Instagram size={20} />
+                </Link>
+                <Link
+                  href="mailto:sell@anga9.com"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1A6FD4]/10 text-[#1A6FD4] transition-all hover:bg-[#1A6FD4] hover:text-white"
+                  title="Email us"
+                >
+                  <Mail size={20} />
+                </Link>
               </div>
             </div>
           </div>

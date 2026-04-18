@@ -325,12 +325,12 @@ export default function CustomerLoginPage() {
           {logo}
           <div className="flex items-center gap-6">
             <a
-              href="/seller/sell-online"
+              href="/seller/sell-on-anga9"
               className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
               style={{ fontSize: 15 }}
             >
               <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
-              Sell Online
+              Sell on ANGA9
             </a>
             <a
               href="#"

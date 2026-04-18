@@ -33,12 +33,10 @@ export default function SellerLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Sell Online", href: "/seller/sell-online" },
-    { name: "How it works", href: "#how-it-works" },
-    { name: "Pricing & Commission", href: "#" },
-    { name: "Shipping & Returns", href: "#" },
-    { name: "Grow Business", href: "#" },
-    { name: "Don't have GST?", href: "/seller/gst" },
+    { name: "Become a Seller", href: "/seller/sell-online" },
+    { name: "How It Works", href: "/seller/how-it-works" },
+    { name: "Shipping & Delivery", href: "/seller/shipping" },
+    { name: "Grow Your Business", href: "/seller/grow-business" },
   ];
 
   return (
@@ -190,13 +188,7 @@ export default function SellerLandingPage() {
                   NEW
                 </span>
                 <p className="text-[14px] text-[#4B5563]">
-                  Don&apos;t have a GSTIN? You can still sell on ANGA9.{" "}
-                  <Link
-                    href="/seller/gst"
-                    className="text-[#1A6FD4] font-medium hover:underline"
-                  >
-                    Know more
-                  </Link>
+                  Join India&apos;s fastest growing B2B marketplace. List your products, reach bulk buyers, and scale your wholesale business.
                 </p>
               </div>
 
@@ -338,7 +330,7 @@ export default function SellerLandingPage() {
 
             <div className="grid gap-12 lg:grid-cols-5 text-center relative z-10">
               {[
-                { step: 1, title: "Create Account", desc: "All you need is GSTIN and Bank Account", icon: LayoutDashboard },
+                { step: 1, title: "Create Account", desc: "Register with your business details and bank account", icon: LayoutDashboard },
                 { step: 2, title: "List Products", desc: "List all the products you want to sell in your panel.", icon: Package },
                 { step: 3, title: "Get Orders", desc: "Start receiving orders from active customers directly.", icon: ShoppingBag },
                 { step: 4, title: "Affordable Shipping", desc: "Enjoy the most affordable shipping solutions across India.", icon: Truck },
@@ -559,21 +551,19 @@ export default function SellerLandingPage() {
               </h4>
               <ul className="space-y-4">
                 {[
-                  "Sell Online",
-                  "Pricing & Commission",
-                  "How it works",
-                  "Shipping & Returns",
-                  "Grow Your Business",
-                  "Learning Hub",
-                  "ANGA9 Ads",
-                  "Shop Online on ANGA9",
+                  { label: "Become a Seller", href: "/seller/sell-online" },
+                  { label: "How It Works", href: "/seller/how-it-works" },
+                  { label: "Shipping & Delivery", href: "/seller/shipping" },
+                  { label: "Grow Your Business", href: "/seller/grow-business" },
+                  { label: "Seller Dashboard", href: "/seller/login" },
+                  { label: "Shop on ANGA9", href: "/" },
                 ].map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <Link
-                      href="#"
+                      href={link.href}
                       className="text-[15px] text-[#4B5563] transition-colors hover:text-[#1A6FD4]"
                     >
-                      {link}
+                      {link.label}
                     </Link>
                   </li>
                 ))}

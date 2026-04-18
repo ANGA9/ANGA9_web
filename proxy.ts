@@ -14,8 +14,9 @@ export default function proxy(request: NextRequest) {
     // Only match if the path is exactly the prefix or starts with prefix + '/'
     if (pathname !== prefix && !pathname.startsWith(`${prefix}/`)) continue;
 
-    // Allow login page and seller landing page without auth
-    if (pathname === `${prefix}/login` || pathname === prefix) {
+    // Allow public seller pages without auth
+    const publicPaths = [`${prefix}/login`, prefix, `${prefix}/sell-online`, `${prefix}/how-it-works`, `${prefix}/shipping`, `${prefix}/grow-business`];
+    if (publicPaths.includes(pathname)) {
       return NextResponse.next();
     }
 

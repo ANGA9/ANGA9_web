@@ -46,79 +46,41 @@ export default function SellerLandingPage() {
     >
       {/* HEADER */}
       <header className="sticky top-0 z-50 w-full bg-white border-b border-[#E8EEF4]">
-        <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-6 lg:px-12">
-          <Link
-            href="/"
-            className="shrink-0 transition-opacity hover:opacity-80"
-          >
-            <Image
-              src="/anga9-logo.png"
-              alt="ANGA9 Logo"
-              width={110}
-              height={36}
-              priority
-              quality={75}
-              style={{ objectFit: "contain" }}
-            />
+        <div className="mx-auto flex h-[60px] sm:h-[72px] max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-12">
+          <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+            <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={110} height={36} priority quality={75} style={{ objectFit: "contain" }} />
           </Link>
 
-          {/* Desktop Nav */}
           <div className="hidden items-center gap-8 lg:flex">
             {navLinks.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-[15px] font-medium text-[#4B5563] transition-colors hover:text-[#1A6FD4]"
-              >
+              <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] transition-colors hover:text-[#1A6FD4]">
                 {item.name}
               </Link>
             ))}
           </div>
 
           <div className="flex items-center gap-3 lg:gap-4">
-            <Link
-              href="/seller/login"
-              className="rounded-lg border border-[#1A6FD4] px-5 lg:px-6 py-2 lg:py-2.5 text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex"
-            >
+            <Link href="/seller/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
               Login
             </Link>
-            <Link
-              href="/seller/register"
-              className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
-            >
+            <Link href="/seller/register" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]">
               Start Selling
             </Link>
-            
-            {/* Mobile Menu Button */}
-            <button 
-              className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
+            <button className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Nav Overlay */}
         {isMenuOpen && (
-          <div className="fixed inset-0 z-40 bg-white lg:hidden pt-[72px] animate-in fade-in slide-in-from-top duration-300">
+          <div className="fixed inset-0 z-40 bg-white lg:hidden pt-[60px] sm:pt-[72px]">
             <div className="flex flex-col p-6 space-y-6">
               {navLinks.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-lg font-semibold text-[#1A1A2E] border-b border-[#F3F4F6] pb-4"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <Link key={item.name} href={item.href} className="text-lg font-semibold text-[#1A1A2E] border-b border-[#F3F4F6] pb-4" onClick={() => setIsMenuOpen(false)}>
                   {item.name}
                 </Link>
               ))}
-              <Link
-                href="/seller/register"
-                className="inline-flex h-14 items-center justify-center rounded-xl bg-[#6C47FF] text-lg font-bold text-white shadow-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link href="/seller/register" className="inline-flex h-14 items-center justify-center rounded-xl bg-[#6C47FF] text-lg font-bold text-white shadow-lg" onClick={() => setIsMenuOpen(false)}>
                 Start Selling
               </Link>
             </div>
@@ -127,104 +89,72 @@ export default function SellerLandingPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32 bg-white">
-        {/* 
-          FIX: Background blob — changed to position:absolute with explicit dimensions.
-          The blob div itself doesn't need to hold the Image; we layer them separately.
-        */}
-        <div className="absolute right-0 top-0 h-full w-[60%] lg:w-[65%] -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[#DBEAFE] rounded-bl-[100%] scale-125 translate-x-[15%] -translate-y-[10%]" />
-          <div className="absolute inset-0 bg-[#BFDBFE] rounded-bl-[80%] scale-110 translate-x-[25%] opacity-50" />
-        </div>
-
-        {/*
-          FIX: Hero person image moved OUT of the -z-10 blob div into its own
-          absolutely-positioned container that is z-0 (above background, below text).
-          `fill` now works because the parent has explicit position:absolute + inset.
-        */}
-        <div className="absolute right-0 top-0 h-full w-[55%] lg:w-[52%] z-0 hidden lg:block">
-          <Image
-            src="/seller-why-sell.png"
-            fill
-            sizes="(max-width: 1024px) 55vw, 52vw"
-            quality={75}
-            style={{ objectFit: "contain", objectPosition: "center" }}
-            alt="Seller"
-            className="p-8"
-            priority
-            loading="eager"
-          />
-        </div>
-
-        <div className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-12">
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            <div className="max-w-xl py-10 lg:py-20 lg:pr-10 bg-white/40 backdrop-blur-3xl lg:backdrop-blur-none lg:bg-transparent rounded-3xl p-6 lg:p-0">
-              <h1 className="mb-4 text-[42px] font-bold leading-[1.1] tracking-tight text-[#1A1A2E] md:text-5xl lg:text-6xl">
+      <section className="relative overflow-hidden bg-[#F8FBFF] py-8 sm:py-12 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            <div>
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
+                India&apos;s Leading B2B Marketplace
+              </span>
+              <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-6xl font-bold leading-[1.15] text-[#1A1A2E]">
                 Sell online to Crores of Customers at{" "}
                 <span className="text-[#1A6FD4]">0% Commission</span>
               </h1>
 
-              <p className="mb-6 text-[17px] text-[#4B5563] leading-relaxed">
-                Become an ANGA9 seller and grow your business across India
+              <p className="mb-5 sm:mb-6 text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed max-w-lg">
+                Become an ANGA9 seller and grow your wholesale business across India. Reach bulk buyers, retailers, and resellers on the fastest growing B2B platform.
               </p>
 
-              <div className="mb-6 flex flex-wrap items-center gap-4 text-[14px] text-[#4B5563]">
+              <div className="mb-5 sm:mb-6 flex flex-wrap items-center gap-3 sm:gap-4 text-[13px] sm:text-[14px] text-[#4B5563]">
                 <span className="inline-flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> Free
-                  Registration
+                  <CheckCircle2 className="h-4 w-4 text-[#22C55E]" /> Free Registration
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> No Hidden
-                  Fees
+                  <CheckCircle2 className="h-4 w-4 text-[#22C55E]" /> No Hidden Fees
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#1A6FD4]" /> 7-Day
-                  Payments
+                  <CheckCircle2 className="h-4 w-4 text-[#22C55E]" /> 7-Day Payments
                 </span>
               </div>
 
-              <div className="mb-8 flex items-center gap-3">
-                <span className="bg-[#1A6FD4] text-white text-[11px] font-bold px-2 py-0.5 rounded-[4px]">
-                  NEW
-                </span>
-                <p className="text-[14px] text-[#4B5563]">
+              <div className="mb-6 sm:mb-8 flex items-start sm:items-center gap-3 bg-white p-3 rounded-xl border border-[#E8EEF4]">
+                <span className="bg-[#FF4D4D] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 sm:mt-0">NEW</span>
+                <p className="text-[12px] sm:text-[13px] text-[#4B5563]">
                   Join India&apos;s fastest growing B2B marketplace. List your products, reach bulk buyers, and scale your wholesale business.
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4">
-                <Link
-                  href="/seller/register"
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-[10px] bg-[#FFCC00] px-10 text-[16px] font-bold text-[#1A1A2E] shadow-lg shadow-[#FFCC00]/30 transition-all hover:bg-[#E6B800] hover:-translate-y-0.5"
-                >
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#6C47FF] text-white font-bold rounded-xl shadow-lg shadow-[#6C47FF]/25 hover:bg-[#5A3AE0] transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                   Start Selling <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link href="/seller/how-it-works" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center">
+                  How It Works
                 </Link>
               </div>
             </div>
 
-            {/* Spacer col so text stays left on desktop */}
-            <div className="hidden lg:block h-[500px]" />
+            <div className="relative h-[250px] sm:h-[350px] lg:h-[480px] w-full">
+              <Image src="/seller-why-sell.png" fill className="object-contain" alt="Sell on ANGA9" priority />
+            </div>
           </div>
         </div>
       </section>
 
       {/* STATS STRIP */}
-      <section className="bg-[#F8FBFF] py-12">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8 text-center">
+      <section className="bg-white py-10 sm:py-12 border-b border-[#E8EEF4]">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:gap-8">
             {[
-              { icon: Users, value: "Lakhs of", label: "Sellers trust ANGA9 to sell online" },
-              { icon: ShoppingBag, value: "Crores of", label: "Customers buying across India" },
-              { icon: MapPin, value: "Thousands of", label: "Serviceable pincodes across India" },
-              { icon: Grid3X3, value: "Hundreds of", label: "Categories to sell online" },
+              { icon: Users, value: "Lakhs of", label: "Sellers trust ANGA9" },
+              { icon: ShoppingBag, value: "Crores of", label: "Buyers across India" },
+              { icon: MapPin, value: "19,000+", label: "Serviceable pin codes" },
+              { icon: Grid3X3, value: "500+", label: "Product categories" },
             ].map(({ icon: Icon, value, label }) => (
-              <div
-                key={label}
-                className="flex flex-col items-start p-6 bg-white rounded-xl shadow-sm border border-[#E8EEF4]"
-              >
-                <Icon className="h-7 w-7 text-[#1A6FD4] mb-3" />
-                <p className="mb-1 text-3xl font-extrabold text-[#1A6FD4]">{value}</p>
-                <p className="text-[15px] font-medium text-[#1A1A2E] text-left leading-snug">{label}</p>
+              <div key={label} className="flex flex-col items-start p-4 sm:p-6 bg-[#F8FBFF] rounded-xl border border-[#E8EEF4]">
+                <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#1A6FD4] mb-2 sm:mb-3" />
+                <p className="mb-1 text-[22px] sm:text-[28px] font-extrabold text-[#1A6FD4]">{value}</p>
+                <p className="text-[13px] sm:text-[15px] font-medium text-[#1A1A2E] leading-snug">{label}</p>
               </div>
             ))}
           </div>

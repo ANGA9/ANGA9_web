@@ -28,7 +28,6 @@ export default function GrowBusinessPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Become a Seller", href: "/seller/sell-online" },
     { name: "How It Works", href: "/seller/how-it-works" },
     { name: "Shipping & Delivery", href: "/seller/shipping" },
     { name: "Grow Your Business", href: "/seller/grow-business" },
@@ -317,26 +316,6 @@ export default function GrowBusinessPage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="relative bg-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
-            <h2 className="relative z-10 text-[22px] sm:text-[32px] lg:text-[48px] font-bold mb-3 sm:mb-4">Start growing your business today</h2>
-            <p className="relative z-10 text-[14px] sm:text-[17px] text-white/80 mb-5 sm:mb-8 max-w-lg mx-auto">
-              Join thousands of suppliers scaling their wholesale business on ANGA9
-            </p>
-            <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#1A6FD4] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
-                Start Selling
-              </Link>
-              <Link href="/seller/sell-online" className="h-[48px] sm:h-[60px] px-8 sm:px-12 border-2 border-white text-white font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-white/10 transition-all hover:scale-105">
-                Become a Seller
-              </Link>
-            </div>
           </div>
         </div>
       </section>

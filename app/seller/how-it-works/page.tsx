@@ -22,7 +22,6 @@ export default function HowItWorksPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Become a Seller", href: "/seller/sell-online" },
     { name: "How It Works", href: "/seller/how-it-works" },
     { name: "Shipping & Delivery", href: "/seller/shipping" },
     { name: "Grow Your Business", href: "/seller/grow-business" },
@@ -110,17 +109,17 @@ export default function HowItWorksPage() {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 z-40 bg-white lg:hidden pt-[60px] sm:pt-[72px]">
-            <div className="flex flex-col p-6 space-y-6">
+          <div className="absolute top-full left-0 right-0 z-40 bg-white border-b border-[#E8EEF4] shadow-lg lg:hidden">
+            <nav className="flex flex-col px-4 py-3">
               {navLinks.map((item) => (
-                <Link key={item.name} href={item.href} className="text-lg font-semibold text-[#1A1A2E] border-b border-[#F3F4F6] pb-4" onClick={() => setIsMenuOpen(false)}>
+                <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   {item.name}
                 </Link>
               ))}
-              <Link href="/seller/register" className="inline-flex h-14 items-center justify-center rounded-xl bg-[#6C47FF] text-lg font-bold text-white shadow-lg" onClick={() => setIsMenuOpen(false)}>
-                Start Selling
+              <Link href="/seller/login" className="text-[15px] font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
+                Login
               </Link>
-            </div>
+            </nav>
           </div>
         )}
       </header>
@@ -255,26 +254,6 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="relative bg-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
-            <h2 className="relative z-10 text-[22px] sm:text-[32px] lg:text-[48px] font-bold mb-3 sm:mb-4">Ready to get started?</h2>
-            <p className="relative z-10 text-[14px] sm:text-[17px] text-white/80 mb-5 sm:mb-8 max-w-lg mx-auto">
-              Join thousands of sellers who are growing their business on ANGA9
-            </p>
-            <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#1A6FD4] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
-                Start Selling
-              </Link>
-              <Link href="/seller/login" className="h-[48px] sm:h-[60px] px-8 sm:px-12 border-2 border-white text-white font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-white/10 transition-all hover:scale-105">
-                Login
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FOOTER */}
       <footer className="bg-[#F8FBFF] pt-12 sm:pt-16 lg:pt-20 pb-8 sm:pb-10 border-t border-[#E8EEF4]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
@@ -292,7 +271,6 @@ export default function HowItWorksPage() {
               <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
               <ul className="space-y-4">
                 {[
-                  { label: "Become a Seller", href: "/seller/sell-online" },
                   { label: "How It Works", href: "/seller/how-it-works" },
                   { label: "Shipping & Delivery", href: "/seller/shipping" },
                   { label: "Grow Your Business", href: "/seller/grow-business" },

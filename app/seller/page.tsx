@@ -33,7 +33,7 @@ export default function SellerLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Sell Online", href: "#" },
+    { name: "Sell Online", href: "/seller/sell-online" },
     { name: "How it works", href: "#how-it-works" },
     { name: "Pricing & Commission", href: "#" },
     { name: "Shipping & Returns", href: "#" },

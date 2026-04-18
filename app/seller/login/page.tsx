@@ -10,7 +10,7 @@ export default function SellerLoginPage() {
     e.preventDefault();
     // Stub auth: set cookie and redirect
     document.cookie = "portal=seller; path=/; max-age=86400";
-    window.location.href = "/seller";
+    window.location.href = "/seller/dashboard";
   }
 
   return (

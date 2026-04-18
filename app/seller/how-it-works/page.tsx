@@ -22,6 +22,7 @@ export default function HowItWorksPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
+    { name: "Sell Online", href: "/seller/sell-online" },
     { name: "How It Works", href: "/seller/how-it-works" },
     { name: "Shipping & Delivery", href: "/seller/shipping" },
     { name: "Grow Your Business", href: "/seller/grow-business" },
@@ -271,6 +272,7 @@ export default function HowItWorksPage() {
               <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
               <ul className="space-y-4">
                 {[
+                  { label: "Sell Online", href: "/seller/sell-online" },
                   { label: "How It Works", href: "/seller/how-it-works" },
                   { label: "Shipping & Delivery", href: "/seller/shipping" },
                   { label: "Grow Your Business", href: "/seller/grow-business" },

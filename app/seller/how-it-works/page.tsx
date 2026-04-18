@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
       title: "List Your Product Catalog",
       desc: "Upload your products with images, descriptions, pricing, and inventory details. Use our bulk upload tool for large catalogs. Set wholesale pricing tiers for B2B buyers and configure minimum order quantities.",
       icon: PackagePlus,
-      color: "text-[#6C47FF] bg-[#6C47FF]/10",
+      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       highlights: ["Bulk catalog upload via CSV", "Set wholesale pricing tiers", "Configure minimum order quantities"],
     },
     {
@@ -87,8 +87,8 @@ export default function HowItWorksPage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-colors hover:text-[#1A6FD4] ${
-                  item.name === "How It Works" ? "text-[#1A6FD4]" : "text-[#4B5563]"
+                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                  item.name === "How It Works" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
                 {item.name}
@@ -135,7 +135,7 @@ export default function HowItWorksPage() {
               </span>
               <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
                 Start Selling on ANGA9 in{" "}
-                <span className="text-[#6C47FF]">Minutes</span>
+                <span className="text-[#1A6FD4]">Minutes</span>
               </h1>
               <p className="text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 From registration to your first order, our streamlined process gets your business online fast. Join thousands of suppliers already growing on India&apos;s B2B marketplace.
@@ -160,9 +160,10 @@ export default function HowItWorksPage() {
       {/* STEPS */}
       <section id="steps" className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Your Journey to Selling Online
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Follow these four simple steps to get your products in front of buyers across India
           </p>
@@ -207,9 +208,10 @@ export default function HowItWorksPage() {
       {/* REQUIREMENTS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             What You Need to Get Started
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Keep these documents and details ready for a smooth registration
           </p>
@@ -231,9 +233,10 @@ export default function HowItWorksPage() {
       {/* FAQ-STYLE QUICK ANSWERS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-10 sm:mb-16">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Common Questions
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-10 sm:mb-16 rounded-full" />
 
           <div className="space-y-4 sm:space-y-6">
             {[
@@ -255,13 +258,13 @@ export default function HowItWorksPage() {
       {/* CTA */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="relative bg-[#6C47FF] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
+          <div className="relative bg-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
             <h2 className="relative z-10 text-[22px] sm:text-[32px] lg:text-[48px] font-bold mb-3 sm:mb-4">Ready to get started?</h2>
             <p className="relative z-10 text-[14px] sm:text-[17px] text-white/80 mb-5 sm:mb-8 max-w-lg mx-auto">
               Join thousands of sellers who are growing their business on ANGA9
             </p>
             <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#6C47FF] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
+              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#1A6FD4] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
                 Start Selling
               </Link>
               <Link href="/seller/login" className="h-[48px] sm:h-[60px] px-8 sm:px-12 border-2 border-white text-white font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-white/10 transition-all hover:scale-105">

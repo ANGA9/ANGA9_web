@@ -41,7 +41,7 @@ export default function ShippingPage() {
       icon: Globe,
       title: "Pan-India Coverage",
       desc: "Deliver to 19,000+ pin codes across India. Reach buyers in metros, tier-2, tier-3 cities, and rural areas.",
-      color: "text-[#6C47FF] bg-[#6C47FF]/10",
+      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
     },
     {
       icon: IndianRupee,
@@ -111,8 +111,8 @@ export default function ShippingPage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-colors hover:text-[#1A6FD4] ${
-                  item.name === "Shipping & Delivery" ? "text-[#1A6FD4]" : "text-[#4B5563]"
+                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                  item.name === "Shipping & Delivery" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
                 {item.name}
@@ -188,9 +188,10 @@ export default function ShippingPage() {
       {/* SHIPPING FEATURES */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Shipping Made Simple
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Everything you need for smooth order fulfillment, built into the platform
           </p>
@@ -212,9 +213,10 @@ export default function ShippingPage() {
       {/* DELIVERY ZONES */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Delivery Zones & Timelines
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Transparent delivery timelines and shipping rates based on destination
           </p>
@@ -254,9 +256,10 @@ export default function ShippingPage() {
             </div>
 
             <div className="order-1 lg:order-2">
-              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-6 sm:mb-8">
+              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
                 How Order Fulfillment Works
               </h2>
+              <div className="h-1 w-16 bg-[#1A6FD4] mb-6 sm:mb-8 rounded-full" />
               <div className="space-y-4 sm:space-y-6">
                 {[
                   { step: "1", title: "Order Received", desc: "You get an instant notification when a buyer places an order. View order details in your dashboard." },
@@ -283,9 +286,10 @@ export default function ShippingPage() {
       {/* PACKAGING TIPS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Packaging Best Practices
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Proper packaging reduces returns and keeps your customers happy
           </p>
@@ -293,7 +297,7 @@ export default function ShippingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {packagingTips.map((tip, idx) => (
               <div key={idx} className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8EEF4]">
-                <div className="w-10 h-10 rounded-xl bg-[#6C47FF]/10 text-[#6C47FF] flex items-center justify-center mb-4 font-bold text-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-4 font-bold text-lg">
                   {idx + 1}
                 </div>
                 <h3 className="text-[15px] sm:text-[17px] font-bold text-[#1A1A2E] mb-2">{tip.title}</h3>
@@ -307,9 +311,10 @@ export default function ShippingPage() {
       {/* RETURNS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Returns & Reverse Logistics
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             We handle the reverse logistics so you can focus on your business
           </p>

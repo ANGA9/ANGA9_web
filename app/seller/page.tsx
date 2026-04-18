@@ -53,7 +53,7 @@ export default function SellerLandingPage() {
 
           <div className="hidden items-center gap-8 lg:flex">
             {navLinks.map((item) => (
-              <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] transition-colors hover:text-[#1A6FD4]">
+              <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] transition-all hover:text-[#1A6FD4] pb-1 border-b-2 border-transparent hover:border-[#1A6FD4]">
                 {item.name}
               </Link>
             ))}

@@ -70,8 +70,8 @@ export default function SellOnlinePage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-colors hover:text-[#1A6FD4] ${
-                  item.name === "Become a Seller" ? "text-[#1A6FD4]" : "text-[#4B5563]"
+                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                  item.name === "Become a Seller" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
                 {item.name}
@@ -128,12 +128,10 @@ export default function SellOnlinePage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-[#F8FBFF] pt-8 pb-12 sm:pt-10 sm:pb-16 lg:pt-16 lg:pb-24">
-        <div className="absolute right-0 top-0 h-full w-1/2 bg-[#1A6FD4]/5 -skew-x-12 translate-x-1/4 hidden sm:block" />
-
-        <div className="relative z-10 mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="max-w-2xl">
+      <section className="relative overflow-hidden bg-[#F8FBFF] py-12 sm:py-16 lg:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            <div>
               <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 sm:mb-4 block">
                 Learn How to Sell Online
               </span>
@@ -167,8 +165,7 @@ export default function SellOnlinePage() {
               </div>
             </div>
 
-            <div className="relative h-[280px] sm:h-[350px] lg:h-[500px] w-full">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#1A6FD4]/10 to-transparent rounded-full blur-3xl" />
+            <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
               <Image
                 src="/seller-why-sell.png"
                 fill
@@ -184,9 +181,10 @@ export default function SellOnlinePage() {
       {/* WHY SELL ON ANGA9 */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-10 sm:mb-16">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Why Sell Your Products On ANGA9?
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-10 sm:mb-16 rounded-full" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
             {[
@@ -212,7 +210,7 @@ export default function SellOnlinePage() {
                 title: "Affordable Shipping",
                 desc: "Sell your products across India with affordable shipping solutions.",
                 icon: Truck,
-                color: "text-[#6C47FF] bg-[#6C47FF]/10"
+                color: "text-[#1A6FD4] bg-[#1A6FD4]/10"
               }
             ].map((item, idx) => (
               <div key={idx} className="p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl hover:border-[#1A6FD4]/20 transition-all group">
@@ -231,9 +229,10 @@ export default function SellOnlinePage() {
       {/* HOW TO SELL TIMELINE */}
       <section id="how-it-works" className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-10 sm:mb-16 lg:mb-20 uppercase tracking-tight">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4 uppercase tracking-tight">
             How to Sell Your Products Online?
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-10 sm:mb-16 lg:mb-20 rounded-full" />
 
           <div className="relative max-w-5xl mx-auto">
             {/* Vertical Line */}
@@ -305,6 +304,7 @@ export default function SellOnlinePage() {
             <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
               Why Suppliers Sell on ANGA9?
             </h2>
+            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
             <p className="text-[15px] sm:text-[18px] text-[#4B5563]">Lakhs of Sellers sell products online on ANGA9</p>
           </div>
 
@@ -355,9 +355,10 @@ export default function SellOnlinePage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5">
-              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4 sm:mb-6">
+              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
                 How to Grow Your Online Selling Business on ANGA9?
               </h2>
+              <div className="h-1 w-16 bg-[#1A6FD4] mb-4 sm:mb-6 rounded-full" />
               <p className="text-[#4B5563] text-[15px] sm:text-[17px] leading-relaxed mb-6 sm:mb-8">
                 After you get your first order, it is time to start growing your online selling business! Some factors that help you building your online business are:
               </p>
@@ -384,7 +385,7 @@ export default function SellOnlinePage() {
                   title: "Product Recommendations",
                   desc: "Use data-driven product recommendations to align with customer demand. These recommendations are made using customer demand data from across the internet.",
                   icon: Zap,
-                  color: "text-[#6C47FF] bg-[#6C47FF]/10"
+                  color: "text-[#1A6FD4] bg-[#1A6FD4]/10"
                 },
                 {
                   title: "Price Recommendation",
@@ -399,7 +400,7 @@ export default function SellOnlinePage() {
                   color: "text-[#1A6FD4] bg-[#1A6FD4]/10"
                 }
               ].map((item, idx) => (
-                <div key={idx} className="bg-white p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] shadow-sm hover:border-[#6C47FF]/30 transition-all">
+                <div key={idx} className="bg-white p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] shadow-sm hover:border-[#1A6FD4]/30 transition-all">
                   <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${item.color} flex items-center justify-center mb-4 sm:mb-6`}>
                     <item.icon size={20} className="sm:hidden" />
                     <item.icon size={24} className="hidden sm:block" />
@@ -416,13 +417,13 @@ export default function SellOnlinePage() {
       {/* CTA SECTION */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="relative bg-[#6C47FF] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
+          <div className="relative bg-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
             <div className="absolute inset-0 opacity-10">
               <Image src="/seller-cta-pattern.png" fill className="object-cover" alt="pattern" />
             </div>
             <h2 className="relative z-10 text-[22px] sm:text-[32px] lg:text-[48px] font-bold mb-5 sm:mb-8">Ready to grow your business?</h2>
             <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#6C47FF] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
+              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#1A6FD4] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
                 Start Selling
               </Link>
               <Link href="/seller/login" className="h-[48px] sm:h-[60px] px-8 sm:px-12 border-2 border-white text-white font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-white/10 transition-all hover:scale-105">

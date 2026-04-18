@@ -60,7 +60,7 @@ export default function GrowBusinessPage() {
       icon: Zap,
       title: "Product Recommendations",
       desc: "Discover what products are trending in your category. Our demand intelligence tool suggests high-potential products based on buyer search data across India.",
-      color: "text-[#6C47FF] bg-[#6C47FF]/10",
+      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       stats: "Data-driven insights",
     },
     {
@@ -126,8 +126,8 @@ export default function GrowBusinessPage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-colors hover:text-[#1A6FD4] ${
-                  item.name === "Grow Your Business" ? "text-[#1A6FD4]" : "text-[#4B5563]"
+                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                  item.name === "Grow Your Business" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
                 {item.name}
@@ -169,12 +169,12 @@ export default function GrowBusinessPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#6C47FF] uppercase tracking-wider mb-3 block">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
                 Scale Your Wholesale Business
               </span>
               <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
                 Powerful Tools to{" "}
-                <span className="text-[#6C47FF]">Grow Your B2B Business</span>
+                <span className="text-[#1A6FD4]">Grow Your B2B Business</span>
               </h1>
               <p className="text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 From smart pricing to advanced analytics, ANGA9 gives you everything you need to scale your wholesale business, reach more retailers, and increase your revenue.
@@ -201,21 +201,22 @@ export default function GrowBusinessPage() {
       {/* GROWTH TOOLS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Tools to Accelerate Your Growth
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Leverage data-driven tools built to help suppliers sell more and sell smarter
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
             {growthTools.map((item, idx) => (
-              <div key={idx} className="p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl hover:border-[#6C47FF]/20 transition-all group">
+              <div key={idx} className="p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl hover:border-[#1A6FD4]/20 transition-all group">
                 <div className="flex items-start justify-between mb-4 sm:mb-6">
                   <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <item.icon size={24} />
                   </div>
-                  <span className="text-[11px] sm:text-[12px] font-bold text-[#6C47FF] bg-[#6C47FF]/10 px-2.5 py-1 rounded-full">{item.stats}</span>
+                  <span className="text-[11px] sm:text-[12px] font-bold text-[#1A6FD4] bg-[#1A6FD4]/10 px-2.5 py-1 rounded-full">{item.stats}</span>
                 </div>
                 <h3 className="text-[17px] sm:text-[20px] font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
                 <p className="text-[13px] sm:text-[15px] text-[#4B5563] leading-relaxed">{item.desc}</p>
@@ -233,9 +234,10 @@ export default function GrowBusinessPage() {
               <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
                 B2B Marketplace
               </span>
-              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4 sm:mb-6">
+              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
                 Built for Wholesale & Bulk Commerce
               </h2>
+              <div className="h-1 w-16 bg-[#1A6FD4] mb-4 sm:mb-6 rounded-full" />
               <p className="text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed mb-6 sm:mb-8">
                 ANGA9 is designed from the ground up for B2B transactions. Whether you&apos;re a manufacturer, distributor, or wholesaler, our platform gives you the tools to connect with retailers and grow your wholesale business.
               </p>
@@ -265,9 +267,10 @@ export default function GrowBusinessPage() {
       {/* SUCCESS STORIES / GROWTH TIPS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-4">
+          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Tips from Top Sellers
           </h2>
+          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Proven strategies from sellers who scaled their business on ANGA9
           </p>
@@ -321,13 +324,13 @@ export default function GrowBusinessPage() {
       {/* CTA */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <div className="relative bg-gradient-to-r from-[#6C47FF] to-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
+          <div className="relative bg-[#1A6FD4] rounded-2xl sm:rounded-[32px] overflow-hidden p-6 sm:p-10 lg:p-20 text-center text-white">
             <h2 className="relative z-10 text-[22px] sm:text-[32px] lg:text-[48px] font-bold mb-3 sm:mb-4">Start growing your business today</h2>
             <p className="relative z-10 text-[14px] sm:text-[17px] text-white/80 mb-5 sm:mb-8 max-w-lg mx-auto">
               Join thousands of suppliers scaling their wholesale business on ANGA9
             </p>
             <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#6C47FF] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
+              <Link href="/seller/register" className="h-[48px] sm:h-[60px] px-8 sm:px-12 bg-white text-[#1A6FD4] font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-[#F3F4F6] transition-all hover:scale-105">
                 Start Selling
               </Link>
               <Link href="/seller/sell-online" className="h-[48px] sm:h-[60px] px-8 sm:px-12 border-2 border-white text-white font-bold rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg hover:bg-white/10 transition-all hover:scale-105">

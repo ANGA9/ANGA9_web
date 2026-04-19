@@ -27,8 +27,6 @@ import {
   Layers,
   Menu,
   X,
-  Instagram,
-  Mail,
 } from "lucide-react";
 
 export default function SellerLandingPage() {
@@ -62,7 +60,7 @@ export default function SellerLandingPage() {
           </div>
 
           <div className="flex items-center gap-3 lg:gap-4">
-            <Link href="/seller/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
+            <Link href="/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
               Login
             </Link>
             <Link href="/seller/register" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]">
@@ -512,21 +510,19 @@ export default function SellerLandingPage() {
                 sell@anga9.com
               </Link>
               <div className="flex items-center gap-4">
-                <Link
-                  href="https://www.instagram.com/anga9shop/"
-                  target="_blank"
-                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E1306C]/10 text-[#E1306C] transition-all hover:bg-[#E1306C] hover:text-white"
-                  title="Follow @anga9shop on Instagram"
-                >
-                  <Instagram size={20} />
-                </Link>
-                <Link
-                  href="mailto:sell@anga9.com"
-                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1A6FD4]/10 text-[#1A6FD4] transition-all hover:bg-[#1A6FD4] hover:text-white"
-                  title="Email us"
-                >
-                  <Mail size={20} />
-                </Link>
+                {/* Social placeholders using circle backgrounds for now */}
+                {[
+                  { icon: "Ig", color: "bg-[#E1306C]" },
+                  { icon: "Fb", color: "bg-[#1877F2]" },
+                  { icon: "Yt", color: "bg-[#FF0000]" },
+                ].map((social) => (
+                  <div
+                    key={social.icon}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-[14px] font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}
+                  >
+                    {social.icon}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

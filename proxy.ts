@@ -1,28 +1,23 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PORTAL_CONFIG: Record<string, string> = {
-  "/admin": "admin",
-  "/seller": "seller",
-};
-
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Admin & Seller portals
-  for (const [prefix, portalName] of Object.entries(PORTAL_CONFIG)) {
-    // Only match if the path is exactly the prefix or starts with prefix + '/'
-    if (pathname !== prefix && !pathname.startsWith(`${prefix}/`)) continue;
+  // Seller portal — all pages are public (no auth gate)
+  if (pathname === "/seller" || pathname.startsWith("/seller/")) {
+    return NextResponse.next();
+  }
 
-    // Allow public seller pages without auth
-    const publicPaths = [`${prefix}/login`, prefix, `${prefix}/sell-online`, `${prefix}/how-it-works`, `${prefix}/shipping`, `${prefix}/grow-business`];
-    if (publicPaths.includes(pathname)) {
+  // Admin portal
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    if (pathname === "/admin/login" || pathname === "/admin") {
       return NextResponse.next();
     }
 
     const portalCookie = request.cookies.get("portal");
-    if (!portalCookie || portalCookie.value !== portalName) {
-      const loginUrl = new URL(`${prefix}/login`, request.url);
+    if (!portalCookie || portalCookie.value !== "admin") {
+      const loginUrl = new URL("/admin/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
 

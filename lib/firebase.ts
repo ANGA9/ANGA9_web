@@ -1,5 +1,7 @@
+// Firebase is retained for potential Realtime Database use.
+// Authentication has moved to Supabase Auth.
+
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCCOJsyjBzGlnUQc2xbmeRSZuXoyI5ZjzU",
@@ -11,18 +13,6 @@ const firebaseConfig = {
   appId: "1:250606811651:web:cab3e29020a8cbbb382c36"
 };
 
-// Initialize Firebase only if it hasn't been initialized already
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-const auth = getAuth(app);
-
-// Disable reCAPTCHA verification for localhost/127.0.0.1 development
-// This allows phone auth to work with test phone numbers on localhost
-if (typeof window !== "undefined") {
-  const host = window.location.hostname;
-  if (host === "localhost" || host === "127.0.0.1") {
-    auth.settings.appVerificationDisabledForTesting = true;
-  }
-}
-
-export { app, auth };
+export { app };

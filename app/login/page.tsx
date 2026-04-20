@@ -1,74 +1,43 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Phone, ShieldCheck, Store, Download } from "lucide-react";
-import { auth } from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 
-declare global {
-  interface Window {
-    recaptchaVerifier?: RecaptchaVerifier;
-  }
-}
+type Tab = "email" | "phone";
+type Step = "input" | "otp";
 
 export default function CustomerLoginPage() {
-  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [tab, setTab] = useState<Tab>("email");
+  const [step, setStep] = useState<Step>("input");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize recaptcha once on mount
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-        callback: () => {},
-        "expired-callback": () => {
-          setError("reCAPTCHA expired. Please try again.");
-        },
-      });
-      window.recaptchaVerifier.render();
-    }
-    return () => {
-      if (window.recaptchaVerifier) {
-        try { window.recaptchaVerifier.clear(); } catch {}
-        window.recaptchaVerifier = undefined;
-      }
-    };
-  }, []);
+  const supabase = getSupabaseBrowserClient();
 
-  async function handlePhoneSubmit(e: React.FormEvent) {
+  /* ─── Email submit ─── */
+  async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    const cleanPhone = phone.replace(/\s/g, "");
-    if (cleanPhone.length !== 10) {
-      setError("Please enter a valid 10-digit mobile number");
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError("Please enter a valid email address");
       return;
     }
 
     setLoading(true);
     try {
-      const phoneNumber = `+91${cleanPhone}`;
-      const appVerifier = window.recaptchaVerifier!;
-
-      const confirmation = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      setConfirmationResult(confirmation);
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
+      if (otpErr) throw otpErr;
       setStep("otp");
     } catch (err: any) {
-      console.error("Phone auth error:", err);
-      if (err.code === "auth/invalid-app-credential") {
-        setError(
-          "reCAPTCHA verification failed. Please try refreshing the page. " +
-          "If testing locally, add a test phone number in Firebase Console."
-        );
-      } else if (err.code === "auth/too-many-requests") {
+      console.error("Email OTP error:", err);
+      if (err.message?.includes("rate limit")) {
         setError("Too many attempts. Please try again later.");
-      } else if (err.code === "auth/captcha-check-failed") {
-        setError("reCAPTCHA check failed. Please refresh and try again.");
       } else {
         setError(err.message || "Failed to send OTP. Please try again.");
       }
@@ -77,9 +46,49 @@ export default function CustomerLoginPage() {
     }
   }
 
+  /* ─── OTP verify ─── */
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    const code = otp.join("");
+    if (code.length !== 6) {
+      setError("Please enter the 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (tab === "email") {
+        const { error: verifyErr } = await supabase.auth.verifyOtp({
+          email: email.trim(),
+          token: code,
+          type: "email",
+        });
+        if (verifyErr) throw verifyErr;
+      } else {
+        const { error: verifyErr } = await supabase.auth.verifyOtp({
+          phone: `+91${phone.replace(/\s/g, "")}`,
+          token: code,
+          type: "sms",
+        });
+        if (verifyErr) throw verifyErr;
+      }
+      window.location.href = "/";
+    } catch (err: any) {
+      console.error("OTP verify error:", err);
+      if (err.message?.includes("expired")) {
+        setError("OTP has expired. Please request a new one.");
+      } else {
+        setError("The OTP you entered is incorrect. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ─── OTP input helpers ─── */
   function handleOtpChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
-    // Handle paste of full OTP
     if (value.length > 1) {
       const digits = value.replace(/\D/g, "").slice(0, 6).split("");
       if (digits.length > 1) {
@@ -119,7 +128,6 @@ export default function CustomerLoginPage() {
       const prevInput = parent?.children[index - 1] as HTMLInputElement;
       prevInput?.focus();
     }
-    // Arrow key navigation
     if (e.key === "ArrowRight" && index < 5) {
       const parent = (e.currentTarget as HTMLElement).parentElement;
       const nextInput = parent?.children[index + 1] as HTMLInputElement;
@@ -132,33 +140,14 @@ export default function CustomerLoginPage() {
     }
   }
 
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault();
+  function switchTab(t: Tab) {
+    setTab(t);
+    setStep("input");
+    setOtp(["", "", "", "", "", ""]);
     setError("");
-    const code = otp.join("");
-    if (code.length !== 6) {
-      setError("Please enter the 6-digit OTP");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      if (!confirmationResult) throw new Error("No pending OTP check.");
-      await confirmationResult.confirm(code);
-      window.location.href = "/";
-    } catch (err: any) {
-      console.error(err);
-      if (err.code === "auth/invalid-verification-code") {
-        setError("The OTP you entered is incorrect. Please try again.");
-      } else {
-        setError("Verification failed. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
   }
 
-  /* ─── Logo (matches homepage size) ─── */
+  /* ─── Logo ─── */
   const logo = (
     <a href="/" className="shrink-0">
       <Image src="/anga9-logo.png" alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
@@ -173,26 +162,54 @@ export default function CustomerLoginPage() {
     </svg>
   );
 
-  /* ─── Phone Form ─── */
-  const phoneForm = (
-    <form onSubmit={handlePhoneSubmit} className="space-y-5">
+  /* ─── Tabs ─── */
+  const tabs = (
+    <div className="flex border-b border-[#E8EEF4] mb-6">
+      <button
+        type="button"
+        onClick={() => switchTab("email")}
+        className={`flex items-center gap-2 px-4 py-3 text-[14px] font-semibold transition-all border-b-2 ${
+          tab === "email"
+            ? "border-[#1A6FD4] text-[#1A6FD4]"
+            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
+        }`}
+      >
+        <Mail className="w-4 h-4" />
+        Email
+      </button>
+      <button
+        type="button"
+        onClick={() => switchTab("phone")}
+        className={`flex items-center gap-2 px-4 py-3 text-[14px] font-semibold transition-all border-b-2 ${
+          tab === "phone"
+            ? "border-[#1A6FD4] text-[#1A6FD4]"
+            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
+        }`}
+      >
+        <Phone className="w-4 h-4" />
+        Phone
+      </button>
+    </div>
+  );
+
+  /* ─── Email input form ─── */
+  const emailForm = (
+    <form onSubmit={handleEmailSubmit} className="space-y-5">
       <div>
         <label className="block text-[13px] font-medium text-[#4B5563] mb-2">
-          Mobile Number
+          Email Address
         </label>
         <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-          <span className="flex items-center text-sm font-semibold text-[#4B5563] pl-4 pr-2 select-none">
-            +91
+          <span className="flex items-center pl-4 pr-2">
+            <Mail className="w-4 h-4 text-[#9CA3AF]" />
           </span>
           <div className="w-px h-6 bg-[#D0E3F7]" />
           <input
-            type="tel"
-            inputMode="numeric"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
-            maxLength={14}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             autoFocus
-            placeholder="Enter your phone number"
+            placeholder="Enter your email address"
             className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
           />
         </div>
@@ -224,22 +241,70 @@ export default function CustomerLoginPage() {
     </form>
   );
 
+  /* ─── Phone input form (disabled — coming soon) ─── */
+  const phoneForm = (
+    <div className="space-y-5">
+      <div>
+        <label className="block text-[13px] font-medium text-[#4B5563] mb-2">
+          Mobile Number
+        </label>
+        <div className="flex items-center rounded-xl border border-[#E8EEF4] bg-[#F3F4F6] overflow-hidden opacity-60">
+          <span className="flex items-center text-sm font-semibold text-[#9CA3AF] pl-4 pr-2 select-none">
+            +91
+          </span>
+          <div className="w-px h-6 bg-[#E8EEF4]" />
+          <input
+            type="tel"
+            inputMode="numeric"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
+            maxLength={14}
+            disabled
+            placeholder="Enter your phone number"
+            className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#9CA3AF] placeholder:text-[#9CA3AF] cursor-not-allowed"
+          />
+        </div>
+      </div>
+
+      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3">
+        <p className="text-[13px] text-[#4B5563] text-center">
+          <Phone className="w-4 h-4 inline-block mr-1.5 text-[#1A6FD4] -mt-0.5" />
+          Phone login will be available soon. Please use email for now.
+        </p>
+      </div>
+
+      <button
+        disabled
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-sm bg-[#9CA3AF] cursor-not-allowed"
+      >
+        Coming Soon
+      </button>
+    </div>
+  );
+
   /* ─── OTP Form ─── */
   const otpForm = (
     <form onSubmit={handleVerify} className="space-y-5">
       <button
         type="button"
-        onClick={() => { setStep("phone"); setOtp(["", "", "", "", "", ""]); setError(""); }}
+        onClick={() => { setStep("input"); setOtp(["", "", "", "", "", ""]); setError(""); }}
         className="flex items-center gap-1.5 text-[13px] font-medium text-[#1A6FD4] hover:text-[#155bb5] transition-colors mb-1"
       >
         <ArrowLeft className="w-4 h-4" />
-        Change number
+        {tab === "email" ? "Change email" : "Change number"}
       </button>
 
       <div className="flex items-center gap-2 rounded-lg bg-[#EAF2FF] px-3.5 py-2.5">
-        <Phone className="w-4 h-4 text-[#1A6FD4]" />
+        {tab === "email" ? (
+          <Mail className="w-4 h-4 text-[#1A6FD4]" />
+        ) : (
+          <Phone className="w-4 h-4 text-[#1A6FD4]" />
+        )}
         <p className="text-[13px] text-[#4B5563]">
-          OTP sent to <span className="font-semibold text-[#1A1A2E]">+91 {phone}</span>
+          OTP sent to{" "}
+          <span className="font-semibold text-[#1A1A2E]">
+            {tab === "email" ? email : `+91 ${phone}`}
+          </span>
         </p>
       </div>
 
@@ -247,7 +312,6 @@ export default function CustomerLoginPage() {
         {otp.map((d, i) => (
           <input
             key={i}
-            id={`otp-${i}`}
             type="text"
             inputMode="numeric"
             maxLength={6}
@@ -284,10 +348,22 @@ export default function CustomerLoginPage() {
     </form>
   );
 
+  /* ─── Form content switcher ─── */
+  const formContent = step === "otp" ? otpForm : (tab === "email" ? emailForm : phoneForm);
+
+  /* ─── Heading text ─── */
+  const heading = step === "otp" ? "Verify OTP" : "Welcome";
+  const subheading = step === "otp"
+    ? "Enter the verification code we sent"
+    : "Sign in to access your account";
+  const desktopHeading = step === "otp" ? "Verify OTP" : "Welcome back";
+  const desktopSubheading = step === "otp"
+    ? "Enter the verification code we sent"
+    : "Sign in with your email or phone";
+
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
     <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF]">
-      {/* Top bar */}
       <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
         <a href="/" className="transition-opacity hover:opacity-70">
           <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
@@ -295,31 +371,22 @@ export default function CustomerLoginPage() {
         {logo}
       </div>
 
-      {/* Form card */}
       <div className="flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
-          <div className="mb-6">
-            <h2 className="text-[22px] font-bold text-[#1A1A2E] mb-1">
-              {step === "phone" ? "Welcome" : "Verify OTP"}
-            </h2>
-            <p className="text-[14px] text-[#4B5563]">
-              {step === "phone"
-                ? "Sign in to access your account"
-                : "Enter the verification code we sent"
-              }
-            </p>
+          <div className="mb-2">
+            <h2 className="text-[22px] font-bold text-[#1A1A2E] mb-1">{heading}</h2>
+            <p className="text-[14px] text-[#4B5563]">{subheading}</p>
           </div>
-          {step === "phone" ? phoneForm : otpForm}
+          {step === "input" && tabs}
+          {formContent}
         </div>
       </div>
     </div>
   );
 
-  /* ─── DESKTOP VIEW (md+) — split panel ─── */
+  /* ─── DESKTOP VIEW (md+) ─── */
   const desktopView = (
     <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF]">
-
-      {/* Minimal top bar */}
       <div className="w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
@@ -344,12 +411,9 @@ export default function CustomerLoginPage() {
         </div>
       </div>
 
-      {/* Centered split card */}
       <div className="flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
-
-            {/* Left panel — hero image + text overlay */}
             <div className="relative w-[500px] shrink-0">
               <Image
                 src="/login-hero.png"
@@ -358,9 +422,7 @@ export default function CustomerLoginPage() {
                 style={{ objectFit: "cover" }}
                 priority
               />
-              {/* Gradient overlay for text readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              {/* Text overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <h2 className="text-[24px] font-bold text-white leading-tight mb-2">
                   Shop from India&apos;s finest sellers
@@ -371,22 +433,14 @@ export default function CustomerLoginPage() {
               </div>
             </div>
 
-            {/* Right panel — form */}
             <div className="flex-1 flex flex-col justify-center px-12 py-10">
-              <div className="mb-8">
-                <h1 className="text-[28px] font-bold text-[#1A1A2E] mb-2">
-                  {step === "phone" ? "Welcome back" : "Verify OTP"}
-                </h1>
-                <p className="text-[15px] text-[#4B5563] leading-relaxed">
-                  {step === "phone"
-                    ? "Enter your mobile number to continue"
-                    : "Enter the verification code we sent"
-                  }
-                </p>
+              <div className="mb-4">
+                <h1 className="text-[28px] font-bold text-[#1A1A2E] mb-2">{desktopHeading}</h1>
+                <p className="text-[15px] text-[#4B5563] leading-relaxed">{desktopSubheading}</p>
               </div>
-              {step === "phone" ? phoneForm : otpForm}
+              {step === "input" && tabs}
+              {formContent}
             </div>
-
           </div>
         </div>
       </div>
@@ -395,7 +449,6 @@ export default function CustomerLoginPage() {
 
   return (
     <>
-      <div id="recaptcha-container" ref={recaptchaContainerRef}></div>
       {mobileView}
       {desktopView}
     </>

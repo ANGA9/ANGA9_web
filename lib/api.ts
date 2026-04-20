@@ -1,4 +1,4 @@
-import { auth } from "./firebase";
+import { getSupabaseBrowserClient } from "./supabase";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -7,10 +7,9 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const user = auth.currentUser;
-  if (!user) return {};
-  const token = await user.getIdToken();
-  return { Authorization: `Bearer ${token}` };
+  const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
+  if (!session) return {};
+  return { Authorization: `Bearer ${session.access_token}` };
 }
 
 async function request<T = unknown>(

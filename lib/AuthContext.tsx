@@ -1,114 +1,139 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { User, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
-import { auth } from "./firebase";
+import { User as SupabaseUser, Session } from "@supabase/supabase-js";
+import { getSupabaseBrowserClient } from "./supabase";
 
-/** Supabase user record returned by auth-service /verify */
+/** Row from public.users table (created by DB trigger on auth signup) */
 export interface DbUser {
   id: string;
-  firebase_uid: string;
+  auth_uid: string;
   role: "customer" | "seller" | "admin";
   phone?: string;
   email?: string;
   full_name?: string;
+  gstin?: string;
+  company_name?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface AuthContextType {
-  /** Firebase user (null if not logged in) */
-  user: User | null;
-  /** Supabase user record (null until synced with backend) */
+  /** Supabase auth user (null if not logged in) */
+  user: SupabaseUser | null;
+  /** Supabase session (null if not logged in) */
+  session: Session | null;
+  /** Public.users DB record (null until fetched) */
   dbUser: DbUser | null;
   loading: boolean;
-  /** Get a fresh Firebase ID token for API calls */
+  /** Get Supabase access token for API calls */
   getToken: () => Promise<string | null>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  session: null,
   dbUser: null,
   loading: true,
   getToken: async () => null,
   logout: async () => {},
 });
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [dbUser, setDbUser] = useState<DbUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const getToken = useCallback(async (): Promise<string | null> => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return null;
-    return currentUser.getIdToken();
-  }, []);
+  const supabase = getSupabaseBrowserClient();
 
-  /** Sync Firebase user with Supabase via auth-service */
-  const syncDbUser = useCallback(async (firebaseUser: User) => {
-    try {
-      const token = await firebaseUser.getIdToken();
-      const res = await fetch(`${API_URL}/api/auth/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setDbUser(data.user ?? data);
+  const fetchDbUser = useCallback(
+    async (authUid: string, retries = 2): Promise<void> => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("auth_uid", authUid)
+        .single();
+
+      if (data) {
+        setDbUser(data as DbUser);
+      } else if (retries > 0) {
+        // Trigger may not have fired yet — retry after short delay
+        await new Promise((r) => setTimeout(r, 500));
+        return fetchDbUser(authUid, retries - 1);
       } else {
-        // Auth service not available yet — clear dbUser silently
-        console.warn("Auth service unavailable, skipping DB sync");
+        console.warn("Could not fetch DB user after retries", error);
         setDbUser(null);
       }
-    } catch {
-      // Backend not running — expected during early development
-      console.warn("Could not reach auth service for DB sync");
-      setDbUser(null);
+    },
+    [supabase],
+  );
+
+  const setCookies = useCallback((authUser: SupabaseUser | null) => {
+    if (authUser) {
+      document.cookie = "portal=customer; path=/; max-age=86400";
+      if (authUser.phone) {
+        const purePhone = authUser.phone.replace(/[^\d]/g, "").slice(-10);
+        document.cookie = "customer_phone=" + purePhone + "; path=/; max-age=86400";
+      }
+      if (authUser.email) {
+        document.cookie = "customer_email=" + encodeURIComponent(authUser.email) + "; path=/; max-age=86400";
+      }
+    } else {
+      document.cookie = "portal=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "customer_phone=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "customer_email=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+    // Restore session on mount
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      setUser(s?.user ?? null);
+      if (s?.user) {
+        setCookies(s.user);
+        fetchDbUser(s.user.id);
+      }
+      setLoading(false);
+    });
 
-      if (currentUser && currentUser.phoneNumber) {
-        // Set cookies for portal routing
-        document.cookie = "portal=customer; path=/; max-age=86400";
-        const purePhone = currentUser.phoneNumber.replace(/[^\d]/g, "").slice(-10);
-        document.cookie = "customer_phone=" + purePhone + "; path=/; max-age=86400";
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setUser(s?.user ?? null);
 
-        // Sync with backend DB
-        await syncDbUser(currentUser);
+      if (s?.user) {
+        setCookies(s.user);
+        fetchDbUser(s.user.id);
       } else {
-        // Clear state on sign out
-        document.cookie = "portal=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        document.cookie = "customer_phone=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        setCookies(null);
         setDbUser(null);
       }
 
       setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [syncDbUser]);
+    return () => subscription.unsubscribe();
+  }, [supabase, fetchDbUser, setCookies]);
 
-  const logout = async () => {
-    try {
-      await firebaseSignOut(auth);
-      setDbUser(null);
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Error signing out", error);
-    }
-  };
+  const getToken = useCallback(async (): Promise<string | null> => {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token ?? null;
+  }, [supabase]);
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setDbUser(null);
+    setCookies(null);
+    window.location.href = "/";
+  }, [supabase, setCookies]);
 
   return (
-    <AuthContext.Provider value={{ user, dbUser, loading, getToken, logout }}>
+    <AuthContext.Provider value={{ user, session, dbUser, loading, getToken, logout }}>
       {children}
     </AuthContext.Provider>
   );

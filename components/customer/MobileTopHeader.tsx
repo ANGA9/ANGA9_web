@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
+import { useAuth } from "@/lib/AuthContext";
 
 const megaTabs = [
   "FASHION",
@@ -15,20 +15,11 @@ const megaTabs = [
   "HOME DECOR & FLOORING",
 ];
 
-function getCookie(name: string) {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 export default function MobileTopHeader() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
-
-  useEffect(() => {
-    setIsLoggedIn(getCookie("customer_phone") !== null);
-  }, []);
 
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;

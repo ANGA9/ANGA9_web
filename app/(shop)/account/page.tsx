@@ -89,7 +89,7 @@ export default function CustomerAccountPage() {
       .from("addresses")
       .select("id, label, line1, line2, city, state, pincode, is_default")
       .eq("user_id", dbUser.id)
-      .then(({ data }) => {
+      .then(({ data }: { data: Address[] | null }) => {
         setAddresses((data as Address[]) || []);
         setLoadingAddresses(false);
       });

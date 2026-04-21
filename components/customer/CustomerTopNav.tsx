@@ -54,7 +54,7 @@ export default function CustomerTopNav() {
         {/* constrained content */}
         <div
           className="mx-auto flex items-center"
-          style={{ maxWidth: 1280, padding: "0 24px", height: 56 }}
+          style={{ maxWidth: 1400, padding: "0 48px", height: 72 }}
         >
           {/* Logo */}
           <Link
@@ -65,8 +65,8 @@ export default function CustomerTopNav() {
             <Image
               src="/anga9-logo.png"
               alt="ANGA"
-              width={100}
-              height={34}
+              width={110}
+              height={36}
               priority
               style={{ objectFit: "contain" }}
             />
@@ -171,7 +171,7 @@ export default function CustomerTopNav() {
         {/* constrained content */}
         <div
           className="mx-auto flex items-center"
-          style={{ maxWidth: 1280, padding: "0 24px", height: 72 }}
+          style={{ maxWidth: 1400, padding: "0 48px", height: 72 }}
         >
           {/* Search bar — flex:1, max 700px */}
           <div

@@ -39,10 +39,10 @@ export default function CategoryStrip() {
   return (
     <>
       <div
-        className="sticky top-[130px] z-30 border-b"
+        className="sticky top-[145px] z-30 border-b"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
-        <div className="mx-auto relative" style={{ maxWidth: 1280, padding: "0 24px" }}>
+        <div className="mx-auto relative" style={{ maxWidth: 1400, padding: "0 48px" }}>
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide -mb-px">
             {/* Mega-menu tabs */}
             {megaTabs.map((tab) => {

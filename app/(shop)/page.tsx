@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   Home,
   Cpu,
@@ -8,8 +11,9 @@ import {
 } from "lucide-react";
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
+import { api } from "@/lib/api";
 
-const categories = [
+const categoryIcons = [
   { name: "Home Decor", icon: Home },
   { name: "Electronics", icon: Cpu },
   { name: "Retail", icon: ShoppingBag },
@@ -18,70 +22,87 @@ const categories = [
   { name: "Office Essentials", icon: Briefcase },
 ];
 
-const products: Product[] = [
-  {
-    id: "p1",
-    name: "Premium Mesh Office Chair",
-    seller: "Rajesh Furniture",
-    category: "Ergonomic",
-    originalPrice: 18000,
-    price: 12499,
-    minOrder: "5 units",
-    badge: "Top Rated",
-  },
-  {
-    id: "p2",
-    name: "Modular L-Shape Workstation",
-    seller: "Sharma Interiors",
-    category: "Furniture",
-    originalPrice: 13500,
-    price: 8990,
-    minOrder: "2 units",
-    badge: "New Arrival",
-  },
-  {
-    id: "p3",
-    name: "LED Panel Light 40W",
-    seller: "Bright Solutions",
-    category: "Lighting",
-    originalPrice: 4800,
-    price: 3299,
-    minOrder: "10 units",
-    badge: "Top Rated",
-  },
-  {
-    id: "p4",
-    name: "Executive Standing Desk",
-    seller: "WorkSpace Co.",
-    category: "Furniture",
-    originalPrice: 28000,
-    price: 21500,
-    minOrder: "1 unit",
-    badge: "New Arrival",
-  },
-  {
-    id: "p5",
-    name: "Wireless Keyboard + Mouse Combo",
-    seller: "TechNest India",
-    category: "Electronics",
-    originalPrice: 3500,
-    price: 2199,
-    minOrder: "5 units",
-    badge: "Top Rated",
-  },
-  {
-    id: "p6",
-    name: "4-Drawer Steel Filing Cabinet",
-    seller: "OfficePro Depot",
-    category: "Storage",
-    originalPrice: 10200,
-    price: 7800,
-    minOrder: "2 units",
-    badge: "Top Rated",
-  },
-];
+/** Shape returned by GET /api/products */
+interface ApiProduct {
+  id: string;
+  name: string;
+  slug: string;
+  seller_id: string;
+  category_id?: string;
+  description?: string;
+  base_price: number;
+  sale_price?: number | null;
+  min_order_qty: number;
+  unit: string;
+  status: string;
+  images: string[];
+  tags: string[];
+  created_at: string;
+}
+
+interface ApiCategory {
+  id: string;
+  name: string;
+  slug: string;
+  parent_id?: string | null;
+}
+
+/** Map API product to ProductCard's expected shape */
+function toCardProduct(p: ApiProduct, categoryName?: string): Product {
+  return {
+    id: p.id,
+    name: p.name,
+    seller: "", // seller name not available in list response
+    category: categoryName || "",
+    originalPrice: p.base_price,
+    price: p.sale_price ?? p.base_price,
+    minOrder: `${p.min_order_qty} ${p.unit}${p.min_order_qty > 1 ? "s" : ""}`,
+    badge: undefined,
+  };
+}
 
 export default function CustomerHomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchData() {
+      try {
+        // Fetch products and categories in parallel
+        const [productsRes, categoriesRes] = await Promise.all([
+          api.get<{ data: ApiProduct[]; total: number }>(
+            "/api/products?status=active&limit=12&sort_by=newest"
+          ),
+          api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
+        ]);
+
+        if (cancelled) return;
+
+        // Build category lookup — handle both { categories: [...] } and bare array
+        const catMap = new Map<string, string>();
+        const rawCats = categoriesRes;
+        const cats = Array.isArray(rawCats) ? rawCats : (rawCats as { categories: ApiCategory[] })?.categories ?? [];
+        for (const c of cats) {
+          catMap.set(c.id, c.name);
+        }
+
+        const mapped = (productsRes?.data ?? []).map((p) =>
+          toCardProduct(p, p.category_id ? catMap.get(p.category_id) : undefined)
+        );
+        setProducts(mapped);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchData();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="py-6">
       {/* Hero */}
@@ -107,7 +128,7 @@ export default function CustomerHomePage() {
           className="grid grid-cols-3 sm:grid-cols-6"
           style={{ gap: 12 }}
         >
-          {categories.map((cat) => (
+          {categoryIcons.map((cat) => (
             <button
               key={cat.name}
               className="flex flex-col items-center border cursor-pointer transition-all duration-150 hover:border-[#1A6FD4] hover:scale-[1.03]"
@@ -159,11 +180,28 @@ export default function CustomerHomePage() {
             View All
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-[14px] border"
+                style={{ background: "#F3F4F6", borderColor: "#E8EEF4", height: 340 }}
+              />
+            ))}
+          </div>
+        ) : products.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center py-12" style={{ color: "#9CA3AF" }}>
+            No products available yet.
+          </p>
+        )}
       </section>
     </div>
   );

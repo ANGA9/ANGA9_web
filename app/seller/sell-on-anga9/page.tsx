@@ -183,7 +183,7 @@ export default function SellerLandingPage() {
               */}
               <div className="hidden lg:block relative w-full h-[300px] rounded-2xl overflow-hidden">
                 <Image
-                  src="/seller-why-sell.png"
+                  src="/seller-benefits.png"
                   fill
                   sizes="400px"
                   quality={75}

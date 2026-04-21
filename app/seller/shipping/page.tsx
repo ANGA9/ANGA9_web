@@ -179,7 +179,7 @@ export default function ShippingPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="Shipping" priority />
+              <Image src="/seller-shipping-hero.png" fill className="object-contain" alt="Shipping" priority />
             </div>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function ShippingPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full order-2 lg:order-1">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="Shipping process" />
+              <Image src="/seller-shipping-process.png" fill className="object-contain" alt="Shipping process" />
             </div>
 
             <div className="order-1 lg:order-2">

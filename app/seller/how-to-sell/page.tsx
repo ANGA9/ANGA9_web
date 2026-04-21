@@ -36,6 +36,7 @@ export default function HowItWorksPage() {
       icon: UserPlus,
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       highlights: ["Quick 10-minute setup", "Business verification within 24 hours", "Dedicated onboarding support"],
+      image: "/seller-step-register.png",
     },
     {
       step: 2,
@@ -44,6 +45,7 @@ export default function HowItWorksPage() {
       icon: PackagePlus,
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       highlights: ["Bulk catalog upload via CSV", "Set wholesale pricing tiers", "Configure minimum order quantities"],
+      image: "/seller-step-list.png",
     },
     {
       step: 3,
@@ -52,6 +54,7 @@ export default function HowItWorksPage() {
       icon: ShoppingCart,
       color: "text-[#22C55E] bg-[#22C55E]/10",
       highlights: ["Real-time order notifications", "Doorstep pickup by logistics partner", "Order management dashboard"],
+      image: "/seller-step-orders.png",
     },
     {
       step: 4,
@@ -60,6 +63,7 @@ export default function HowItWorksPage() {
       icon: Wallet,
       color: "text-[#F59E0B] bg-[#F59E0B]/10",
       highlights: ["7-day payment cycle", "COD orders included", "Transparent payout tracking"],
+      image: "/seller-step-payment.png",
     },
   ];
 
@@ -151,7 +155,7 @@ export default function HowItWorksPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="How it works" priority />
+              <Image src="/seller-how-hero.png" fill className="object-contain" alt="How it works" priority />
             </div>
           </div>
         </div>
@@ -196,7 +200,7 @@ export default function HowItWorksPage() {
                 {/* Image */}
                 <div className="flex-1 w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[480px]">
                   <div className="relative aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg sm:shadow-2xl border-2 sm:border-4 border-white bg-[#F8FBFF]">
-                    <Image src="/seller-why-sell.png" fill className="object-cover" alt={item.title} />
+                    <Image src={item.image} fill className="object-cover" alt={item.title} />
                   </div>
                 </div>
               </div>

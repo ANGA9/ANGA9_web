@@ -192,7 +192,7 @@ export default function GrowBusinessPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="Grow business" priority />
+              <Image src="/seller-grow-hero.png" fill className="object-contain" alt="Grow business" priority />
             </div>
           </div>
         </div>
@@ -258,7 +258,7 @@ export default function GrowBusinessPage() {
             </div>
 
             <div className="relative h-[280px] sm:h-[400px] lg:h-[520px] w-full">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="B2B Features" />
+              <Image src="/seller-grow-b2b.png" fill className="object-contain" alt="B2B Features" />
             </div>
           </div>
         </div>

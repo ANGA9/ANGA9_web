@@ -34,12 +34,10 @@ export default function proxy(request: NextRequest) {
     }
 
     // Protected seller routes (dashboard, onboarding, etc.)
-    // Check for Supabase session cookie
-    const sbAccessToken =
-      request.cookies.get("sb-access-token") ??
-      request.cookies.get("sb-plfaugkadavxenpqawzw-auth-token");
+    // Check for portal cookie (set by AuthContext on login)
+    const portalCookie = request.cookies.get("portal");
 
-    if (!sbAccessToken) {
+    if (!portalCookie) {
       // No session → redirect to seller login
       const loginUrl = new URL("/seller/login", request.url);
       return NextResponse.redirect(loginUrl);

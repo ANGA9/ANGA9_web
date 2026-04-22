@@ -25,15 +25,28 @@ export default function OnboardingPage() {
 
   // Load existing profile on mount
   useEffect(() => {
-    if (authLoading || !session) return;
+    if (authLoading) return;
+    // If no session after auth loaded, still show the form (user can fill and save later)
+    if (!session) {
+      // Pre-fill email from user if available
+      if (user) {
+        setForm(prev => ({
+          ...prev,
+          email: prev.email || user.email || "",
+          full_name: prev.full_name || (user.user_metadata?.full_name as string) || "",
+        }));
+      }
+      setLoaded(true);
+      return;
+    }
     (async () => {
       try {
         const token = await getToken();
-        if (!token) return;
+        if (!token) { setLoaded(true); return; }
         const res = await fetch(`${API}/api/users/seller-profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) return;
+        if (!res.ok) { setLoaded(true); return; }
         const { sellerProfile } = await res.json();
         if (sellerProfile) {
           setProfileExists(true);

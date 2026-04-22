@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   Store,
   Package,
+  ClipboardCheck,
 } from "lucide-react";
 import Header from "@/components/Header";
 import StatsCard from "@/components/StatsCard";
@@ -30,101 +31,63 @@ interface StatsData {
   iconBg: string;
 }
 
-const fallbackStats: StatsData[] = [
-  {
-    title: "Total Revenue",
-    value: "\u20B90",
-    delta: "Phase 4",
-    deltaType: "positive" as const,
-    icon: IndianRupee,
-    iconColor: "#1A6FD4",
-    iconBg: "#1A6FD415",
-  },
-  {
-    title: "Active Orders",
-    value: "0",
-    delta: "Phase 3",
-    deltaType: "positive" as const,
-    icon: ShoppingCart,
-    iconColor: "#6B7280",
-    iconBg: "#6B728015",
-  },
-  {
-    title: "Registered Sellers",
-    value: "...",
-    delta: "loading",
-    deltaType: "positive" as const,
-    icon: Store,
-    iconColor: "#9CA3AF",
-    iconBg: "#9CA3AF15",
-  },
-  {
-    title: "Products Listed",
-    value: "...",
-    delta: "loading",
-    deltaType: "positive" as const,
-    icon: Package,
-    iconColor: "#374151",
-    iconBg: "#37415115",
-  },
-];
-
 export default function DashboardPage() {
-  const [stats, setStats] = useState<StatsData[]>(fallbackStats);
+  const [stats, setStats] = useState<StatsData[]>([
+    { title: "Total Revenue", value: "₹0", delta: "Coming soon", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
+    { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#6C47FF", iconBg: "#F3EEFF" },
+    { title: "Products Live", value: "...", delta: "loading", deltaType: "positive", icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
+    { title: "Pending Reviews", value: "...", delta: "loading", deltaType: "positive", icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
+  ]);
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        // Fetch product count and seller count from API
-        const [productsRes, sellersRes] = await Promise.allSettled([
-          api.get<{ total: number }>("/api/products?status=active&limit=1"),
-          api.get<{ total: number }>("/api/products?status=draft&limit=1"),
-        ]);
+        const res = await api.get<{
+          totalSellers?: number; verifiedSellers?: number; pendingSellers?: number;
+          totalProducts?: number; activeProducts?: number; pendingProducts?: number;
+          totalRevenue?: number;
+        }>("/api/users/admin-stats", { silent: true });
 
-        const activeCount =
-          productsRes.status === "fulfilled" ? (productsRes.value?.total ?? 0) : 0;
-        const draftCount =
-          sellersRes.status === "fulfilled" ? (sellersRes.value?.total ?? 0) : 0;
-        const totalProducts = activeCount + draftCount;
-
-        setStats([
-          {
-            title: "Total Revenue",
-            value: "\u20B90",
-            delta: "Coming in Phase 3",
-            deltaType: "positive",
-            icon: IndianRupee,
-            iconColor: "#1A6FD4",
-            iconBg: "#1A6FD415",
-          },
-          {
-            title: "Active Orders",
-            value: "0",
-            delta: "Coming in Phase 3",
-            deltaType: "positive",
-            icon: ShoppingCart,
-            iconColor: "#6B7280",
-            iconBg: "#6B728015",
-          },
-          {
-            title: "Active Products",
-            value: formatCount(activeCount),
-            delta: `${formatCount(draftCount)} draft`,
-            deltaType: "positive",
-            icon: Store,
-            iconColor: "#9CA3AF",
-            iconBg: "#9CA3AF15",
-          },
-          {
-            title: "Products Listed",
-            value: formatCount(totalProducts),
-            delta: `${formatCount(activeCount)} active`,
-            deltaType: "positive",
-            icon: Package,
-            iconColor: "#374151",
-            iconBg: "#37415115",
-          },
-        ]);
+        if (res) {
+          setStats([
+            {
+              title: "Total Revenue",
+              value: `₹${formatCount(res.totalRevenue ?? 0)}`,
+              delta: "Coming soon",
+              deltaType: "positive",
+              icon: IndianRupee,
+              iconColor: "#1A6FD4",
+              iconBg: "#EAF2FF",
+            },
+            {
+              title: "Registered Sellers",
+              value: formatCount(res.totalSellers ?? 0),
+              delta: `${formatCount(res.verifiedSellers ?? 0)} verified`,
+              deltaType: "positive",
+              icon: Store,
+              iconColor: "#6C47FF",
+              iconBg: "#F3EEFF",
+            },
+            {
+              title: "Products Live",
+              value: formatCount(res.activeProducts ?? 0),
+              delta: `${formatCount(res.totalProducts ?? 0)} total`,
+              deltaType: "positive",
+              icon: Package,
+              iconColor: "#22C55E",
+              iconBg: "#F0FDF4",
+            },
+            {
+              title: "Pending Reviews",
+              value: formatCount(res.pendingProducts ?? 0),
+              delta: res.pendingProducts ? "needs attention" : "all clear",
+              deltaType: res.pendingProducts ? "negative" : "positive",
+              icon: ClipboardCheck,
+              iconColor: "#F59E0B",
+              iconBg: "#FFFBEB",
+            },
+          ]);
+        }
       } catch (err) {
         console.error("Failed to fetch admin stats:", err);
       }

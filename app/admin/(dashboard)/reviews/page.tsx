@@ -1,27 +1,56 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Package, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Package, CheckCircle2, XCircle, X } from "lucide-react";
 import Header from "@/components/Header";
 
 interface Product {
   id: string; name: string; slug: string; base_price: number;
-  min_order_qty?: number; status: string; created_at: string;
+  min_order_qty?: number; unit?: string; description?: string;
+  status: string; created_at: string;
 }
 
 export default function ReviewsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rejectTarget, setRejectTarget] = useState<Product | null>(null);
+  const [rejectNotes, setRejectNotes] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get<{ data: Product[] }>("/api/products?status=pending_review&limit=50");
-        setProducts(res?.data || []);
-      } catch { /* ignore */ }
-      setLoading(false);
-    })();
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await api.get<{ data: Product[] }>("/api/products?status=pending_review&limit=50");
+      setProducts(res?.data || []);
+    } catch { /* ignore */ }
+    setLoading(false);
   }, []);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  async function handleApprove(productId: string) {
+    setActionLoading(productId);
+    try {
+      await api.patch(`/api/products/${productId}/review`, { action: "approve" });
+      setProducts(prev => prev.filter(p => p.id !== productId));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to approve");
+    }
+    setActionLoading(null);
+  }
+
+  async function handleReject() {
+    if (!rejectTarget || !rejectNotes.trim()) return;
+    setActionLoading(rejectTarget.id);
+    try {
+      await api.patch(`/api/products/${rejectTarget.id}/review`, { action: "reject", notes: rejectNotes.trim() });
+      setProducts(prev => prev.filter(p => p.id !== rejectTarget.id));
+      setRejectTarget(null);
+      setRejectNotes("");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to reject");
+    }
+    setActionLoading(null);
+  }
 
   if (loading) return <div className="min-h-screen"><Header /><div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" /></div></div>;
 
@@ -47,6 +76,7 @@ export default function ReviewsPage() {
                 <thead>
                   <tr className="border-b border-anga-border bg-[#F8FBFF]">
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Product Name</th>
+                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Description</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Price</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Min Qty</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Submitted</th>
@@ -56,16 +86,25 @@ export default function ReviewsPage() {
                 <tbody>
                   {products.map((p) => (
                     <tr key={p.id} className="border-b border-anga-border last:border-0 hover:bg-[#F8FBFF] transition-colors">
-                      <td className="px-4 py-3 font-medium text-anga-text">{p.name}</td>
-                      <td className="px-4 py-3 text-anga-text">₹{p.base_price}</td>
-                      <td className="px-4 py-3 text-[#4B5563]">{p.min_order_qty || 1}</td>
+                      <td className="px-4 py-3 font-medium text-anga-text max-w-[200px]">{p.name}</td>
+                      <td className="px-4 py-3 text-[#4B5563] max-w-[250px] truncate">{p.description || "—"}</td>
+                      <td className="px-4 py-3 text-anga-text font-medium">₹{p.base_price}</td>
+                      <td className="px-4 py-3 text-[#4B5563]">{p.min_order_qty || 1} {p.unit || "pc"}</td>
                       <td className="px-4 py-3 text-[#9CA3AF]">{new Date(p.created_at).toLocaleDateString()}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
-                          <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-[11px] font-semibold hover:bg-[#16A34A] transition-colors">
-                            <CheckCircle2 className="w-3 h-3" /> Approve
+                          <button
+                            onClick={() => handleApprove(p.id)}
+                            disabled={actionLoading === p.id}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#22C55E] text-white text-[11px] font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
+                          >
+                            {actionLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Approve
                           </button>
-                          <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-[11px] font-semibold hover:bg-[#DC2626] transition-colors">
+                          <button
+                            onClick={() => { setRejectTarget(p); setRejectNotes(""); }}
+                            disabled={actionLoading === p.id}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#EF4444] text-white text-[11px] font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
+                          >
                             <XCircle className="w-3 h-3" /> Reject
                           </button>
                         </div>
@@ -78,6 +117,45 @@ export default function ReviewsPage() {
           </div>
         )}
       </main>
+
+      {/* Reject Modal */}
+      {rejectTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[16px] font-bold text-anga-text">Reject Product</h3>
+              <button onClick={() => setRejectTarget(null)} className="text-[#9CA3AF] hover:text-anga-text">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-[13px] text-[#4B5563] mb-1">
+              Rejecting: <span className="font-semibold">{rejectTarget.name}</span>
+            </p>
+            <p className="text-[12px] text-[#9CA3AF] mb-4">The seller will see your rejection reason and can re-submit after making changes.</p>
+            <label className="block text-[13px] font-medium text-[#4B5563] mb-1.5">Rejection Reason *</label>
+            <textarea
+              value={rejectNotes}
+              onChange={e => setRejectNotes(e.target.value)}
+              placeholder="e.g. Product description is insufficient, missing proper images..."
+              className="h-28 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 py-3 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#EF4444] focus:outline-none focus:ring-2 focus:ring-[#EF4444]/10 transition-colors resize-none"
+              maxLength={500}
+            />
+            <div className="flex gap-3 mt-4">
+              <button onClick={() => setRejectTarget(null)} className="flex-1 h-10 rounded-lg border border-[#E8EEF4] text-[13px] font-medium text-[#4B5563] hover:bg-[#F8FBFF] transition-colors">
+                Cancel
+              </button>
+              <button
+                onClick={handleReject}
+                disabled={!rejectNotes.trim() || actionLoading === rejectTarget.id}
+                className="flex-1 h-10 rounded-lg bg-[#EF4444] text-white text-[13px] font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {actionLoading === rejectTarget.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Reject Product
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

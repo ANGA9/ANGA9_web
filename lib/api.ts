@@ -4,19 +4,26 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 interface ApiOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
+  /** If true, don't throw on error — return null instead */
+  silent?: boolean;
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
-  if (!session) return {};
-  return { Authorization: `Bearer ${session.access_token}` };
+  try {
+    const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
+    if (!session) return {};
+    return { Authorization: `Bearer ${session.access_token}` };
+  } catch {
+    // Supabase client may not be initialized (e.g. admin pages)
+    return {};
+  }
 }
 
 async function request<T = unknown>(
   path: string,
   options: ApiOptions = {},
 ): Promise<T> {
-  const { body, headers: customHeaders, ...rest } = options;
+  const { body, headers: customHeaders, silent, ...rest } = options;
 
   const authHeaders = await getAuthHeaders();
 
@@ -31,6 +38,7 @@ async function request<T = unknown>(
   });
 
   if (!res.ok) {
+    if (silent) return null as T;
     const errorBody = await res.json().catch(() => ({}));
     const message =
       (errorBody as Record<string, string>).message ||

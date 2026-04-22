@@ -24,7 +24,7 @@ export default function SellersPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get<{ sellers: Seller[] }>("/api/users/sellers");
+        const res = await api.get<{ sellers: Seller[] }>("/api/users/sellers", { silent: true });
         setSellers(res?.sellers || []);
       } catch { /* ignore */ }
       setLoading(false);

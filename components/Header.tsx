@@ -1,11 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Search, Bell, Plus, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
 
 export default function Header() {
   const router = useRouter();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await api.get<{ pendingProducts?: number }>("/api/users/admin-stats", { silent: true });
+        setPendingCount(res?.pendingProducts ?? 0);
+      } catch { /* ignore - admin stats may not be available */ }
+    }
+    fetchStats();
+  }, []);
 
   function handleLogout() {
     document.cookie = "portal=; path=/; max-age=0";
@@ -26,13 +40,18 @@ export default function Header() {
 
       {/* Right section */}
       <div className="flex items-center gap-3 ml-4">
-        {/* Notification bell */}
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-anga-border text-anga-text-secondary hover:bg-anga-bg hover:text-anga-text transition-colors">
+        {/* Notification bell — links to reviews page */}
+        <Link
+          href="/admin/reviews"
+          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-anga-border text-anga-text-secondary hover:bg-anga-bg hover:text-anga-text transition-colors"
+        >
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF4D4D] text-[10px] font-bold text-white">
-            3
-          </span>
-        </button>
+          {pendingCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF4D4D] text-[10px] font-bold text-white">
+              {pendingCount > 99 ? "99+" : pendingCount}
+            </span>
+          )}
+        </Link>
 
         {/* New Product CTA */}
         <Button className="bg-[#1A6FD4] hover:bg-[#155bb5] text-white gap-1.5 h-10 px-4 rounded-lg shadow-sm">

@@ -49,19 +49,19 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* ANGA brand colors — neutral scheme */
-  --color-anga-purple: #111111;
-  --color-anga-bg: #F7F7F8;
+  /* ANGA brand colors — blue scheme */
+  --color-anga-purple: #1A6FD4;
+  --color-anga-bg: #F8FBFF;
   --color-anga-green: #22C55E;
-  --color-anga-text: #111111;
+  --color-anga-text: #1A1A2E;
   --color-anga-text-secondary: #6B7280;
-  --color-anga-border: #E5E7EB;
-  --color-anga-badge: #374151;
-  /* Seller portal — matches neutral scheme */
-  --color-seller-teal: #111111;
-  --color-seller-bg: #F7F7F8;
-  --color-seller-border: #E5E7EB;
-  --color-seller-teal-light: #F3F4F6;
+  --color-anga-border: #E8EEF4;
+  --color-anga-badge: #1A6FD4;
+  /* Seller portal — blue scheme */
+  --color-seller-teal: #1A6FD4;
+  --color-seller-bg: #F8FBFF;
+  --color-seller-border: #E8EEF4;
+  --color-seller-teal-light: #EAF2FF;
   /* Customer portal */
   --color-customer-primary: #146EB4;
   --color-customer-primary-hover: #115FA0;
@@ -83,32 +83,32 @@
   --card-foreground: #111111;
   --popover: #ffffff;
   --popover-foreground: #111111;
-  --primary: #111111;
+  --primary: #1A6FD4;
   --primary-foreground: #ffffff;
-  --secondary: #F3F4F6;
-  --secondary-foreground: #111111;
+  --secondary: #EAF2FF;
+  --secondary-foreground: #1A1A2E;
   --muted: #F3F4F6;
   --muted-foreground: #6B7280;
-  --accent: #F3F4F6;
-  --accent-foreground: #111111;
+  --accent: #EAF2FF;
+  --accent-foreground: #1A6FD4;
   --destructive: #EF4444;
-  --border: #E5E7EB;
-  --input: #E5E7EB;
-  --ring: #111111;
-  --chart-1: #111111;
-  --chart-2: #6B7280;
-  --chart-3: #9CA3AF;
-  --chart-4: #D1D5DB;
-  --chart-5: #374151;
+  --border: #E8EEF4;
+  --input: #E8EEF4;
+  --ring: #1A6FD4;
+  --chart-1: #1A6FD4;
+  --chart-2: #6C47FF;
+  --chart-3: #22C55E;
+  --chart-4: #F59E0B;
+  --chart-5: #EF4444;
   --radius: 0.625rem;
   --sidebar: #ffffff;
-  --sidebar-foreground: #111111;
-  --sidebar-primary: #111111;
+  --sidebar-foreground: #1A1A2E;
+  --sidebar-primary: #1A6FD4;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #F3F4F6;
-  --sidebar-accent-foreground: #111111;
-  --sidebar-border: #E5E7EB;
-  --sidebar-ring: #111111;
+  --sidebar-accent: #EAF2FF;
+  --sidebar-accent-foreground: #1A6FD4;
+  --sidebar-border: #E8EEF4;
+  --sidebar-ring: #1A6FD4;
 }
 
 @layer base {

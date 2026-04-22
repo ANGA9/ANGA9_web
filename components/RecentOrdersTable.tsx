@@ -13,7 +13,7 @@ const orders = [
     id: "ORD-7291",
     product: "LED Panel Lights (Box of 50)",
     category: "Electronics",
-    categoryColor: "#111111",
+    categoryColor: "#1A6FD4",
     buyer: "Sharma Electricals",
     amount: 48500,
     status: "Delivered",
@@ -89,7 +89,7 @@ export default function RecentOrdersTable() {
           <h3 className="text-base font-semibold text-anga-text">Recent Orders</h3>
           <p className="text-sm text-anga-text-secondary">Latest marketplace transactions</p>
         </div>
-        <button className="text-sm font-medium text-[#111111] hover:underline">
+        <button className="text-sm font-medium text-[#1A6FD4] hover:underline">
           View All
         </button>
       </div>

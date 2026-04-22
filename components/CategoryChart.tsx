@@ -86,7 +86,7 @@ export default function CategoryChart() {
           <Tooltip content={<CustomTooltip />} />
           <Bar
             dataKey="orders"
-            fill="#111111"
+            fill="#1A6FD4"
             radius={[0, 6, 6, 0]}
             barSize={28}
           />

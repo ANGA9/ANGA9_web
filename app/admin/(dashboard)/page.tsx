@@ -37,8 +37,8 @@ const fallbackStats: StatsData[] = [
     delta: "Phase 4",
     deltaType: "positive" as const,
     icon: IndianRupee,
-    iconColor: "#111111",
-    iconBg: "#11111115",
+    iconColor: "#1A6FD4",
+    iconBg: "#1A6FD415",
   },
   {
     title: "Active Orders",
@@ -94,8 +94,8 @@ export default function DashboardPage() {
             delta: "Coming in Phase 3",
             deltaType: "positive",
             icon: IndianRupee,
-            iconColor: "#111111",
-            iconBg: "#11111115",
+            iconColor: "#1A6FD4",
+            iconBg: "#1A6FD415",
           },
           {
             title: "Active Orders",

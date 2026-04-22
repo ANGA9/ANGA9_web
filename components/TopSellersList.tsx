@@ -6,7 +6,7 @@ const sellers = [
     initials: "SE",
     category: "Electronics",
     revenue: 1245000,
-    color: "#111111",
+    color: "#1A6FD4",
   },
   {
     name: "Gupta Textiles",
@@ -49,7 +49,7 @@ export default function TopSellersList() {
     <div className="rounded-xl border border-anga-border bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-base font-semibold text-anga-text">Top Sellers</h3>
-        <button className="text-sm font-medium text-[#111111] hover:underline">
+        <button className="text-sm font-medium text-[#1A6FD4] hover:underline">
           View All
         </button>
       </div>

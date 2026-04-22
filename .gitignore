@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+
+
+ Your API gateway at http://localhost:4000 is not running. The frontend is trying to fetch products but the gateway is down.                                 
+                                                                                                                                                                Start it back up:                                                                                                                                                                                                                                                                                                           cd backend && node services/product-service/dist/index.js &                                                                                                 
+  node services/auth-service/dist/index.js &                                                                                                              
+  node services/api-gateway/dist/index.js &

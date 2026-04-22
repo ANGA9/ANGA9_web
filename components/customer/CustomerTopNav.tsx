@@ -19,12 +19,14 @@ import {
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
 
 export default function CustomerTopNav() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
   const { user, loading } = useAuth();
   const isLoggedIn = !!user;
+  const { count: cartCount } = useCart();
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -231,12 +233,14 @@ export default function CustomerTopNav() {
             >
               <div className="relative">
                 <ShoppingCart style={{ width: 20, height: 20 }} />
-                <span
-                  className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                  style={{ background: t.yellowCta, color: t.ctaText }}
-                >
-                  3
-                </span>
+                {cartCount > 0 && (
+                  <span
+                    className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                    style={{ background: t.yellowCta, color: t.ctaText }}
+                  >
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
               </div>
               Cart
             </Link>

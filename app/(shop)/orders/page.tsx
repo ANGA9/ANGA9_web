@@ -1,79 +1,107 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Loader2, CheckCircle2 } from "lucide-react";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { api } from "@/lib/api";
 
 const tabs = ["All Orders", "Active", "Delivered", "Cancelled"] as const;
 
-const orders: Order[] = [
-  {
-    id: "ORD-8421",
-    date: "Apr 10, 2025",
-    product: "Premium Mesh Office Chair",
-    seller: "Rajesh Furniture",
-    qty: 5,
-    amount: 62495,
-    status: "Processing",
-  },
-  {
-    id: "ORD-8419",
-    date: "Apr 09, 2025",
-    product: "LED Panel Light 40W",
-    seller: "Bright Solutions",
-    qty: 10,
-    amount: 32990,
-    status: "Delivered",
-  },
-  {
-    id: "ORD-8410",
-    date: "Apr 07, 2025",
-    product: "Modular L-Shape Workstation",
-    seller: "Sharma Interiors",
-    qty: 2,
-    amount: 17980,
-    status: "Delivered",
-  },
-  {
-    id: "ORD-8385",
-    date: "Apr 01, 2025",
-    product: "Wireless Keyboard + Mouse Combo",
-    seller: "TechNest India",
-    qty: 5,
-    amount: 10995,
-    status: "Cancelled",
-  },
-];
-
-const tabFilter: Record<string, string[]> = {
-  "All Orders": [],
-  Active: ["Processing"],
-  Delivered: ["Delivered"],
-  Cancelled: ["Cancelled"],
+const statusMap: Record<string, string> = {
+  confirmed: "Processing",
+  processing: "Processing",
+  shipped: "Processing",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Cancelled",
 };
 
 export default function CustomerOrdersPage() {
-  const [activeTab, setActiveTab] =
-    useState<(typeof tabs)[number]>("All Orders");
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#1A6FD4" }} />
+      </div>
+    }>
+      <OrdersContent />
+    </Suspense>
+  );
+}
+
+function OrdersContent() {
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("All Orders");
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const justPlaced = searchParams.get("placed") === "1";
+  const [showSuccess, setShowSuccess] = useState(justPlaced);
+
+  useEffect(() => {
+    if (showSuccess) {
+      const timer = setTimeout(() => setShowSuccess(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccess]);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        setLoading(true);
+        const data = await api.get<{ orders: ApiOrder[] }>("/api/orders");
+        const mapped: Order[] = (data.orders ?? []).map((o) => ({
+          id: o.order_number,
+          date: new Date(o.placed_at).toLocaleDateString("en-IN", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          product: o.items?.[0]?.product_name ?? "Order",
+          seller: "",
+          qty: o.items?.reduce((s: number, i: { quantity: number }) => s + i.quantity, 0) ?? 0,
+          amount: o.total,
+          status: (statusMap[o.status] ?? "Processing") as Order["status"],
+        }));
+        setOrders(mapped);
+      } catch {
+        // silently fail
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchOrders();
+  }, []);
 
   const filtered =
     activeTab === "All Orders"
       ? orders
-      : orders.filter((o) => tabFilter[activeTab].includes(o.status));
+      : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
-      <h1
-        className="text-xl font-bold mb-1"
-        style={{ color: t.textPrimary }}
-      >
+      {showSuccess && (
+        <div
+          className="mb-4 flex items-center gap-3 rounded-xl border p-4"
+          style={{ background: "#E8F5E9", borderColor: "#A5D6A7" }}
+        >
+          <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-green-800">Order placed successfully!</p>
+            <p className="text-xs text-green-700 mt-0.5">
+              Your order has been confirmed. You can track it here.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <h1 className="text-xl font-bold mb-1" style={{ color: t.textPrimary }}>
         My Orders
       </h1>
       <p className="text-sm mb-6" style={{ color: t.textSecondary }}>
         Track and manage your wholesale orders
       </p>
 
-      {/* Tabs */}
       <div className="flex gap-1 border-b mb-6" style={{ borderColor: t.border }}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
@@ -93,26 +121,37 @@ export default function CustomerOrdersPage() {
         })}
       </div>
 
-      {/* Order cards */}
-      <div className="space-y-3">
-        {filtered.map((order) => (
-          <OrderCard key={order.id} order={order} />
-        ))}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="w-8 h-8 animate-spin" style={{ color: t.bluePrimary }} />
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((order, idx) => (
+            <OrderCard key={order.id + idx} order={order} />
+          ))}
 
-        {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <h3
-              className="text-base font-semibold"
-              style={{ color: t.textPrimary }}
-            >
-              No orders found
-            </h3>
-            <p className="mt-1 text-sm" style={{ color: t.textSecondary }}>
-              Orders matching this filter will appear here.
-            </p>
-          </div>
-        )}
-      </div>
+          {filtered.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <h3 className="text-base font-semibold" style={{ color: t.textPrimary }}>
+                No orders found
+              </h3>
+              <p className="mt-1 text-sm" style={{ color: t.textSecondary }}>
+                Orders matching this filter will appear here.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
+}
+
+interface ApiOrder {
+  id: string;
+  order_number: string;
+  status: string;
+  total: number;
+  placed_at: string;
+  items?: { product_name: string; quantity: number }[];
 }

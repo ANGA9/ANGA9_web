@@ -7,6 +7,7 @@ import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart 
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
 
 const megaTabs = [
   "FASHION",
@@ -20,6 +21,7 @@ export default function MobileTopHeader() {
   const { user } = useAuth();
   const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
+  const { count: cartCount } = useCart();
 
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;
@@ -56,12 +58,14 @@ export default function MobileTopHeader() {
           {/* Cart */}
           <Link href="/cart" className="relative">
             <ShoppingCart style={{ width: 22, height: 22, color: t.textSecondary }} />
-            <span
-              className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-              style={{ background: t.yellowCta, color: t.ctaText }}
-            >
-              3
-            </span>
+            {cartCount > 0 && (
+              <span
+                className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                style={{ background: t.yellowCta, color: t.ctaText }}
+              >
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
           </Link>
 
           {/* Login / User Greeting */}

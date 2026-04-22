@@ -1,7 +1,9 @@
 "use client";
 
-import { PackageOpen, Heart, ShoppingCart } from "lucide-react";
+import { useState } from "react";
+import { PackageOpen, Heart, ShoppingCart, Loader2, Check } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { useCart } from "@/lib/CartContext";
 
 export interface Product {
   id: string;
@@ -29,6 +31,23 @@ export default function ProductCard({
   showWishlistHeart,
   onRemoveWishlist,
 }: ProductCardProps) {
+  const { addItem } = useCart();
+  const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (adding) return;
+    setAdding(true);
+    try {
+      await addItem(product.id);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    } catch {
+      // silently fail
+    } finally {
+      setAdding(false);
+    }
+  };
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
   );
@@ -139,16 +158,24 @@ export default function ProductCard({
         {/* Button row */}
         <div className="flex" style={{ gap: 8, marginTop: 12 }}>
           <button
-            className="flex flex-1 items-center justify-center rounded-[10px] text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px"
+            onClick={handleAddToCart}
+            disabled={adding}
+            className="flex flex-1 items-center justify-center rounded-[10px] text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-60"
             style={{
-              background: "#FFCC00",
-              color: "#1A1A2E",
+              background: added ? "#4CAF50" : "#FFCC00",
+              color: added ? "#FFFFFF" : "#1A1A2E",
               padding: "10px 0",
               gap: 6,
             }}
           >
-            <ShoppingCart style={{ width: 15, height: 15 }} />
-            Add to Cart
+            {adding ? (
+              <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" />
+            ) : added ? (
+              <Check style={{ width: 15, height: 15 }} />
+            ) : (
+              <ShoppingCart style={{ width: 15, height: 15 }} />
+            )}
+            {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
           </button>
           <button
             className="flex shrink-0 items-center justify-center rounded-[10px] border transition-colors hover:border-[#DC2626] hover:text-[#DC2626]"

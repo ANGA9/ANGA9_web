@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 function formatINR(value: number) {
@@ -10,6 +13,7 @@ interface CartSummaryProps {
 }
 
 export default function CartSummary({ subtotal }: CartSummaryProps) {
+  const router = useRouter();
   const gst = Math.round(subtotal * 0.18);
   const delivery = subtotal > 10000 ? 0 : 500;
   const total = subtotal + gst + delivery;
@@ -74,6 +78,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       )}
 
       <button
+        onClick={() => router.push("/checkout")}
         className="mt-5 flex w-full items-center justify-center rounded-[10px] py-3.5 text-[15px] font-bold transition-opacity hover:opacity-90"
         style={{ background: t.yellowCta, color: t.ctaText }}
       >

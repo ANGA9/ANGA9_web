@@ -53,7 +53,7 @@ export default function proxy(request: NextRequest) {
   // Admin portal
   // ──────────────────────────────────────────────────
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    if (pathname === "/admin/login" || pathname === "/admin") {
+    if (pathname === "/admin/login") {
       return NextResponse.next();
     }
 

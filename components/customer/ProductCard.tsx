@@ -4,6 +4,9 @@ import { useState } from "react";
 import { PackageOpen, Heart, ShoppingCart, Loader2, Check } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
+import toast from "react-hot-toast";
 
 export interface Product {
   id: string;
@@ -32,18 +35,33 @@ export default function ProductCard({
   onRemoveWishlist,
 }: ProductCardProps) {
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
 
   const handleAddToCart = async () => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please login to add products to cart", {
+        icon: "🔒",
+        duration: 3500,
+      });
+      openLoginSheet();
+      return;
+    }
+
     if (adding) return;
     setAdding(true);
     try {
       await addItem(product.id);
       setAdded(true);
+      toast.success(`${product.name} added to cart!`, {
+        icon: "🛒",
+      });
       setTimeout(() => setAdded(false), 2000);
     } catch {
-      // silently fail
+      toast.error("Failed to add item to cart");
     } finally {
       setAdding(false);
     }

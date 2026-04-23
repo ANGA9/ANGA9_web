@@ -5,6 +5,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck, CheckCircle2 } from "lucide-react"
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
+import toast from "react-hot-toast";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp" | "success";
@@ -39,6 +40,7 @@ export default function LoginSheet() {
   useEffect(() => {
     if (user && isOpen && step === "otp") {
       setStep("success");
+      toast.success("Login successful! Welcome to ANGA9", { icon: "🎉" });
       const timer = setTimeout(() => {
         handleClose();
       }, 1500);
@@ -83,6 +85,7 @@ export default function LoginSheet() {
       const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
       if (otpErr) throw otpErr;
       setStep("otp");
+      toast.success("OTP sent to your email!", { icon: "📧" });
     } catch (err: any) {
       console.error("Email OTP error:", err);
       if (err.message?.includes("rate limit")) {

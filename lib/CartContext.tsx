@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { api } from "./api";
 import { useAuth } from "./AuthContext";
+import toast from "react-hot-toast";
 
 interface CartItem {
   productId: string;
@@ -73,11 +74,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const updateQty = useCallback(async (productId: string, qty: number) => {
     await api.patch<{ count: number }>(`/api/cart/items/${productId}`, { qty });
     await refreshCart();
+    toast.success("Cart updated");
   }, [refreshCart]);
 
   const removeItem = useCallback(async (productId: string) => {
     await api.delete(`/api/cart/items/${productId}`);
     await refreshCart();
+    toast.success("Item removed from cart");
   }, [refreshCart]);
 
   const clearCart = useCallback(async () => {

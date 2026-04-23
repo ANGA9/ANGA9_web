@@ -41,6 +41,7 @@ async function request<T = unknown>(
     if (silent) return null as T;
     const errorBody = await res.json().catch(() => ({}));
     const message =
+      (errorBody as Record<string, string>).error ||
       (errorBody as Record<string, string>).message ||
       `API error: ${res.status}`;
     throw new Error(message);

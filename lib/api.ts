@@ -9,6 +9,11 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
+  // If in admin portal, send bypass token
+  if (typeof document !== 'undefined' && document.cookie.includes('portal=admin')) {
+    return { Authorization: 'Bearer ADMIN_BYPASS_TOKEN' };
+  }
+
   try {
     const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
     if (!session) return {};

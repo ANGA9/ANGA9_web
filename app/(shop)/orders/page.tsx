@@ -51,6 +51,7 @@ function OrdersContent() {
         setLoading(true);
         const data = await api.get<{ orders: ApiOrder[] }>("/api/orders");
         const mapped: Order[] = (data.orders ?? []).map((o) => ({
+          internalId: o.id,
           id: o.order_number,
           date: new Date(o.placed_at).toLocaleDateString("en-IN", {
             month: "short",

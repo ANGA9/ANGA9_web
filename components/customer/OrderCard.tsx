@@ -1,7 +1,10 @@
-import { PackageOpen } from "lucide-react";
+import { useState } from "react";
+import { PackageOpen, Download, Loader2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { api } from "@/lib/api";
 
 export interface Order {
+  internalId?: string;
   id: string;
   date: string;
   product: string;
@@ -26,6 +29,23 @@ const statusConfig: Record<
 
 export default function OrderCard({ order }: { order: Order }) {
   const s = statusConfig[order.status];
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadInvoice = async () => {
+    if (!order.internalId || downloading) return;
+    try {
+      setDownloading(true);
+      const res = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
+      if (res.url) {
+        window.open(res.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Failed to download invoice:", error);
+      alert("Failed to download invoice. Please try again later.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div
@@ -84,6 +104,20 @@ export default function OrderCard({ order }: { order: Order }) {
             style={{ background: t.yellowCta, color: t.ctaText }}
           >
             Reorder
+          </button>
+        )}
+
+        {/* Invoice Download Button */}
+        {order.internalId && (
+          <button
+            onClick={handleDownloadInvoice}
+            disabled={downloading}
+            className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90 disabled:opacity-50"
+            style={{ borderColor: t.border, color: t.textSecondary }}
+            title="Download Invoice"
+          >
+            {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+            Invoice
           </button>
         )}
       </div>

@@ -65,7 +65,7 @@ function toCardProduct(p: SearchProduct): Product {
   };
 }
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -471,5 +471,18 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+import { Suspense } from 'react';
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="py-6 flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: t.bluePrimary }} />
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
   );
 }

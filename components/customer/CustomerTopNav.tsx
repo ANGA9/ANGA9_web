@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search,
   Heart,
@@ -20,14 +21,71 @@ import {
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
+import { api } from "@/lib/api";
+
+interface Suggestion {
+  id: string;
+  name: string;
+  slug: string;
+  category_name?: string;
+  base_price: number;
+  images?: string[];
+}
+
+function formatINR(value: number) {
+  return "\u20B9" + value.toLocaleString("en-IN");
+}
 
 export default function CustomerTopNav() {
+  const router = useRouter();
   const [moreOpen, setMoreOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
   const { user, loading } = useAuth();
   const isLoggedIn = !!user;
   const { count: cartCount } = useCart();
   const moreRef = useRef<HTMLDivElement>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const fetchSuggestions = useCallback(async (q: string) => {
+    if (q.length < 2) { setSuggestions([]); return; }
+    try {
+      const res = await api.get<{ suggestions: Suggestion[] }>(
+        `/api/search/autocomplete?q=${encodeURIComponent(q)}&limit=5`,
+        { silent: true }
+      );
+      setSuggestions(res?.suggestions ?? []);
+    } catch {
+      setSuggestions([]);
+    }
+  }, []);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setShowSuggestions(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSuggestions(value), 300);
+  };
+
+  const handleSearchSubmit = () => {
+    if (!searchQuery.trim()) return;
+    setShowSuggestions(false);
+    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) setShowCallout(false);
@@ -179,10 +237,15 @@ export default function CustomerTopNav() {
           <div
             className="relative"
             style={{ flex: 1, maxWidth: 700 }}
+            ref={searchRef}
           >
             <input
               type="text"
               placeholder="Search products, sellers..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
+              onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
               className="w-full outline-none transition-colors"
               style={{
                 background: "#FFFFFF",
@@ -195,8 +258,9 @@ export default function CustomerTopNav() {
               }}
             />
             {/* Icon with left-border separator */}
-            <div
-              className="absolute top-1/2 -translate-y-1/2 flex items-center"
+            <button
+              onClick={handleSearchSubmit}
+              className="absolute top-1/2 -translate-y-1/2 flex items-center cursor-pointer"
               style={{
                 right: 0,
                 height: "100%",
@@ -207,7 +271,46 @@ export default function CustomerTopNav() {
               }}
             >
               <Search style={{ width: 20, height: 20 }} />
-            </div>
+            </button>
+
+            {/* Autocomplete dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div
+                className="absolute left-0 right-0 top-full mt-1 rounded-lg border py-1 overflow-hidden"
+                style={{
+                  background: "#FFFFFF",
+                  borderColor: t.border,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                  zIndex: 60,
+                }}
+              >
+                {suggestions.map((s) => (
+                  <Link
+                    key={s.id}
+                    href={`/products/${s.id}`}
+                    onClick={() => setShowSuggestions(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#F8FBFF]"
+                  >
+                    <Search className="w-4 h-4 shrink-0" style={{ color: t.textMuted }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] truncate" style={{ color: t.textPrimary }}>
+                        {s.name}
+                      </p>
+                      <p className="text-[11px]" style={{ color: t.textMuted }}>
+                        {s.category_name && `${s.category_name} · `}{formatINR(s.base_price)}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+                <button
+                  onClick={handleSearchSubmit}
+                  className="w-full px-4 py-2 text-[13px] font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
+                  style={{ borderColor: t.border, color: t.bluePrimary }}
+                >
+                  Search for &quot;{searchQuery}&quot;
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Right icons group */}

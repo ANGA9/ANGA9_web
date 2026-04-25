@@ -1,13 +1,23 @@
 "use client";
 
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
+import { api } from "@/lib/api";
+
+interface Suggestion {
+  id: string;
+  name: string;
+  slug: string;
+  category_name?: string;
+  base_price: number;
+}
 
 const megaTabs = [
   "FASHION",
@@ -18,10 +28,53 @@ const megaTabs = [
 
 export default function MobileTopHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useAuth();
   const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
   const { count: cartCount } = useCart();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const fetchSuggestions = useCallback(async (q: string) => {
+    if (q.length < 2) { setSuggestions([]); return; }
+    try {
+      const res = await api.get<{ suggestions: Suggestion[] }>(
+        `/api/search/autocomplete?q=${encodeURIComponent(q)}&limit=5`,
+        { silent: true }
+      );
+      setSuggestions(res?.suggestions ?? []);
+    } catch {
+      setSuggestions([]);
+    }
+  }, []);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setShowSuggestions(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSuggestions(value), 300);
+  };
+
+  const handleSearchSubmit = () => {
+    if (!searchQuery.trim()) return;
+    setShowSuggestions(false);
+    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;

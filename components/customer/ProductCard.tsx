@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { PackageOpen, Heart, ShoppingCart, Loader2, Check } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
@@ -71,8 +72,9 @@ export default function ProductCard({
   );
 
   return (
-    <div
-      className="group overflow-hidden rounded-[14px] border transition-colors hover:border-[#1A6FD4]"
+    <Link
+      href={`/products/${product.id}`}
+      className="group block overflow-hidden rounded-[14px] border transition-colors hover:border-[#1A6FD4]"
       style={{ background: "#FFFFFF", borderColor: "#E8EEF4" }}
     >
       {/* Image area */}
@@ -120,7 +122,7 @@ export default function ProductCard({
         {/* Wishlist heart (filled red, for wishlist page) */}
         {showWishlistHeart && (
           <button
-            onClick={onRemoveWishlist}
+            onClick={(e) => { e.preventDefault(); onRemoveWishlist?.(); }}
             className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-sm transition-opacity hover:opacity-80"
           >
             <Heart
@@ -176,7 +178,7 @@ export default function ProductCard({
         {/* Button row */}
         <div className="flex" style={{ gap: 8, marginTop: 12 }}>
           <button
-            onClick={handleAddToCart}
+            onClick={(e) => { e.preventDefault(); handleAddToCart(); }}
             disabled={adding}
             className="flex flex-1 items-center justify-center rounded-[10px] text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-60"
             style={{
@@ -196,6 +198,7 @@ export default function ProductCard({
             {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
           </button>
           <button
+            onClick={(e) => e.preventDefault()}
             className="flex shrink-0 items-center justify-center rounded-[10px] border transition-colors hover:border-[#DC2626] hover:text-[#DC2626]"
             style={{
               width: 40,
@@ -209,6 +212,6 @@ export default function ProductCard({
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

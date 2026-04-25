@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
 import { Menu, LogOut } from "lucide-react";
+import NotificationBell from "@/components/shared/NotificationBell";
 
 export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => void }) {
   const { user, logout } = useAuth();
@@ -16,6 +17,9 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
       </Link>
       <span className="ml-2 text-[11px] font-bold text-[#1A6FD4] bg-[#EAF2FF] px-2 py-0.5 rounded hidden sm:inline">Seller</span>
       <div className="flex-1" />
+      <div className="mr-4">
+        <NotificationBell portalType="seller" />
+      </div>
       <span className="text-[13px] text-[#4B5563] mr-4 hidden sm:inline">{user?.email}</span>
       <button onClick={logout} className="flex items-center gap-1.5 text-[13px] font-medium text-[#9CA3AF] hover:text-[#EF4444] transition-colors">
         <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Logout</span>

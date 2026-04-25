@@ -319,6 +319,9 @@ export default function CustomerTopNav() {
             className="flex items-center shrink-0"
             style={{ marginLeft: 40, gap: 36, minWidth: "fit-content" }}
           >
+            {/* Notifications */}
+            <NotificationBell portalType="customer" />
+
             {/* Wishlist */}
             <Link
               href="/wishlist"

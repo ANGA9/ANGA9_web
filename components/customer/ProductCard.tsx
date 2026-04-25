@@ -2,12 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PackageOpen, Heart, ShoppingCart, Loader2, Check } from "lucide-react";
+import { PackageOpen, Heart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
-import { useCart } from "@/lib/CartContext";
-import { useAuth } from "@/lib/AuthContext";
-import { useLoginSheet } from "@/lib/LoginSheetContext";
-import toast from "react-hot-toast";
 
 export interface Product {
   id: string;
@@ -34,39 +30,7 @@ export default function ProductCard({
   product,
   showWishlistHeart,
   onRemoveWishlist,
-}: ProductCardProps) {
-  const { addItem } = useCart();
-  const { user } = useAuth();
-  const { open: openLoginSheet } = useLoginSheet();
-  const [adding, setAdding] = useState(false);
-  const [added, setAdded] = useState(false);
-
-  const handleAddToCart = async () => {
-    // Check if user is logged in
-    if (!user) {
-      toast.error("Please login to add products to cart", {
-        icon: "🔒",
-        duration: 3500,
-      });
-      openLoginSheet();
-      return;
-    }
-
-    if (adding) return;
-    setAdding(true);
-    try {
-      await addItem(product.id);
-      setAdded(true);
-      toast.success(`${product.name} added to cart!`, {
-        icon: "🛒",
-      });
-      setTimeout(() => setAdded(false), 2000);
-    } catch {
-      toast.error("Failed to add item to cart");
-    } finally {
-      setAdding(false);
-    }
-  };
+  }: ProductCardProps) {
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
   );
@@ -174,43 +138,6 @@ export default function ProductCard({
         <p className="text-[11px]" style={{ color: "#6B7280", marginTop: 2 }}>
           Min order: {product.minOrder}
         </p>
-
-        {/* Button row */}
-        <div className="flex" style={{ gap: 8, marginTop: 12 }}>
-          <button
-            onClick={(e) => { e.preventDefault(); handleAddToCart(); }}
-            disabled={adding}
-            className="flex flex-1 items-center justify-center rounded-[10px] text-[13px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-60"
-            style={{
-              background: added ? "#4CAF50" : "#FFCC00",
-              color: added ? "#FFFFFF" : "#1A1A2E",
-              padding: "10px 0",
-              gap: 6,
-            }}
-          >
-            {adding ? (
-              <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" />
-            ) : added ? (
-              <Check style={{ width: 15, height: 15 }} />
-            ) : (
-              <ShoppingCart style={{ width: 15, height: 15 }} />
-            )}
-            {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
-          </button>
-          <button
-            onClick={(e) => e.preventDefault()}
-            className="flex shrink-0 items-center justify-center rounded-[10px] border transition-colors hover:border-[#DC2626] hover:text-[#DC2626]"
-            style={{
-              width: 40,
-              height: 40,
-              borderColor: "#E8EEF4",
-              color: "#9CA3AF",
-              background: "#FFFFFF",
-            }}
-          >
-            <Heart style={{ width: 16, height: 16 }} />
-          </button>
-        </div>
       </div>
     </Link>
   );

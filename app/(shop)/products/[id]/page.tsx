@@ -434,32 +434,56 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Add to Cart */}
-          <button
-            onClick={handleAddToCart}
-            disabled={adding || stock.status === "out"}
-            className="w-full flex items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
-            style={{
-              background: added ? t.inStock : stock.status === "out" ? t.textMuted : t.yellowCta,
-              color: added ? "#FFFFFF" : t.ctaText,
-              padding: "14px 0",
-            }}
-          >
-            {adding ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : added ? (
-              <Check className="w-5 h-5" />
-            ) : (
-              <ShoppingCart className="w-5 h-5" />
-            )}
-            {adding
-              ? "Adding..."
-              : added
-              ? "Added to Cart!"
-              : stock.status === "out"
-              ? "Out of Stock"
-              : "Add to Cart"}
-          </button>
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            {/* Add to Cart */}
+            <button
+              onClick={handleAddToCart}
+              disabled={adding || stock.status === "out"}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
+              style={{
+                background: added ? t.inStock : stock.status === "out" ? t.textMuted : "#FFFFFF",
+                color: added ? "#FFFFFF" : t.textPrimary,
+                border: `2px solid ${added ? t.inStock : stock.status === "out" ? t.textMuted : t.border}`,
+                padding: "14px 0",
+              }}
+            >
+              {adding ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : added ? (
+                <Check className="w-5 h-5" />
+              ) : (
+                <ShoppingCart className="w-5 h-5" />
+              )}
+              {adding
+                ? "Adding..."
+                : added
+                ? "Added!"
+                : stock.status === "out"
+                ? "Out of Stock"
+                : "Add to Cart"}
+            </button>
+
+            {/* Buy Now */}
+            <button
+              onClick={async () => {
+                if (stock.status !== "out") {
+                  await handleAddToCart();
+                  router.push('/cart');
+                }
+              }}
+              disabled={adding || stock.status === "out"}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
+              style={{
+                background: stock.status === "out" ? t.textMuted : "#9C27B0",
+                color: "#FFFFFF",
+                border: "2px solid transparent",
+                padding: "14px 0",
+              }}
+            >
+              Buy Now
+            </button>
+          </div>
 
           {/* Description */}
           {product.description && (

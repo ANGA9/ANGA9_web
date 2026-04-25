@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
+import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
 import { api } from "@/lib/api";
 
 const categoryIcons = [
@@ -64,16 +65,31 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
 export default function CustomerHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortParam, setSortParam] = useState("newest");
+  const [categoryParam, setCategoryParam] = useState("");
+  const hasActiveFilters = !!categoryParam;
+
+  const updateFilters = (updates: Record<string, string>) => {
+    if (updates.sort !== undefined) setSortParam(updates.sort);
+    if (updates.category !== undefined) setCategoryParam(updates.category);
+  };
 
   useEffect(() => {
     let cancelled = false;
 
     async function fetchData() {
+      setLoading(true);
       try {
+        const queryParams = new URLSearchParams();
+        queryParams.set("status", "active");
+        queryParams.set("limit", "12");
+        queryParams.set("sort_by", sortParam);
+        if (categoryParam) queryParams.set("category", categoryParam);
+
         // Fetch products and categories in parallel
         const [productsRes, categoriesRes] = await Promise.all([
           api.get<{ data: ApiProduct[]; total: number }>(
-            "/api/products?status=active&limit=12&sort_by=newest"
+            `/api/products?${queryParams.toString()}`
           ),
           api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
         ]);
@@ -101,7 +117,7 @@ export default function CustomerHomePage() {
 
     fetchData();
     return () => { cancelled = true; };
-  }, []);
+  }, [sortParam, categoryParam]);
 
   return (
     <div className="py-6">
@@ -181,8 +197,18 @@ export default function CustomerHomePage() {
           </button>
         </div>
 
+        <div className="-mx-1 sm:-mx-4 md:mx-0 mb-4 md:mb-6">
+          <SearchFilterStrip 
+            sortParam={sortParam} 
+            categoryParam={categoryParam} 
+            hasActiveFilters={hasActiveFilters} 
+            updateUrl={updateFilters} 
+            renderDesktopSidebar={() => null}
+          />
+        </div>
+
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -192,7 +218,7 @@ export default function CustomerHomePage() {
             ))}
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

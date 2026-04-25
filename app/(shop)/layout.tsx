@@ -32,8 +32,8 @@ export default function CustomerShopLayout({
 
           {/* ══════════ PAGE CONTENT ══════════ */}
           <main
-            className="mx-auto pb-20 md:pb-0"
-            style={{ maxWidth: 1400, padding: "0 48px" }}
+            className="mx-auto pb-20 md:pb-0 px-1 sm:px-4 md:px-[48px]"
+            style={{ maxWidth: 1400 }}
           >
             {children}
           </main>

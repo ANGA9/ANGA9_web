@@ -10,6 +10,7 @@ import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { api } from "@/lib/api";
+import NotificationBell from "@/components/shared/NotificationBell";
 
 interface Suggestion {
   id: string;
@@ -101,8 +102,11 @@ export default function MobileTopHeader() {
           />
         </Link>
 
-        {/* Wishlist + Cart + Login */}
+        {/* Notifications + Wishlist + Cart + Login */}
         <div className="flex items-center gap-4">
+          {/* Notifications */}
+          <NotificationBell portalType="customer" />
+
           {/* Wishlist */}
           <Link href="/wishlist" className="relative">
             <Heart style={{ width: 22, height: 22, color: t.textSecondary }} />

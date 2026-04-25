@@ -192,7 +192,7 @@ export default function SearchFilterStrip({
                 <h4 className="font-bold text-base md:text-lg mb-4">Category</h4>
                 <div className="relative mb-5">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                  <input type="text" placeholder="Search categories..." className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors" style={{ borderColor: t.border, focusBorderColor: t.bluePrimary }} />
+                  <input type="text" placeholder="Search categories..." className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors focus:ring-2 focus:ring-[#1A6FD4]/20 focus:border-[#1A6FD4]" style={{ borderColor: t.border }} />
                 </div>
                 <div className="space-y-4">
                   {["Women T-shirts", "Women Tops And Tunics", "Analog Watches", "Appliance Covers", "Bangles & Bracelets"].map((cat) => (

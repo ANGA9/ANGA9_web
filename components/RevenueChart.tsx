@@ -90,12 +90,12 @@ export default function RevenueChart() {
             dataKey="month"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
+            tick={{ fill: "#6B7280", fontSize: '12px' }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
+            tick={{ fill: "#6B7280", fontSize: '12px' }}
             tickFormatter={formatINR}
           />
           <Tooltip content={<CustomTooltip />} />

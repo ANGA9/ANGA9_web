@@ -154,7 +154,7 @@ export default function MobileTopHeader() {
             >
               <User style={{ width: 18, height: 18, color: t.bluePrimary }} />
             </div>
-            <span className="font-bold text-[14px] leading-none" style={{ color: t.bluePrimary }}>
+            <span className="font-bold text-sm md:text-base leading-none" style={{ color: t.bluePrimary }}>
               Login
             </span>
           </button>
@@ -181,13 +181,13 @@ export default function MobileTopHeader() {
         />
         <div className="flex items-center gap-1.5 ml-2 flex-1 min-w-0">
           <span
-            className="text-[14px] font-semibold leading-tight"
+            className="text-sm md:text-base font-semibold leading-tight"
             style={{ color: t.textPrimary }}
           >
             Location not set
           </span>
           <span
-            className="text-[14px] font-medium leading-tight"
+            className="text-sm md:text-base font-medium leading-tight"
             style={{ color: t.bluePrimary }}
           >
             Select delivery location
@@ -229,7 +229,7 @@ export default function MobileTopHeader() {
             onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
             onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
-            className="flex-1 bg-transparent outline-none text-[14px]"
+            className="flex-1 bg-transparent outline-none text-sm md:text-base"
             style={{ color: t.textPrimary }}
           />
           <Mic
@@ -261,11 +261,11 @@ export default function MobileTopHeader() {
                 >
                   <Search className="w-3.5 h-3.5 shrink-0" style={{ color: t.textMuted }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] truncate" style={{ color: t.textPrimary }}>
+                    <p className="text-sm md:text-base truncate" style={{ color: t.textPrimary }}>
                       {s.name}
                     </p>
                     {s.category_name && (
-                      <p className="text-[11px]" style={{ color: t.textMuted }}>
+                      <p className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                         {s.category_name}
                       </p>
                     )}
@@ -274,7 +274,7 @@ export default function MobileTopHeader() {
               ))}
               <button
                 onClick={handleSearchSubmit}
-                className="w-full px-4 py-2 text-[12px] font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
+                className="w-full px-4 py-2 text-xs md:text-sm font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
                 style={{ borderColor: t.border, color: t.bluePrimary }}
               >
                 Search for &quot;{searchQuery}&quot;
@@ -299,7 +299,7 @@ export default function MobileTopHeader() {
           {megaTabs.map((tab) => (
             <div
               key={tab}
-              className="shrink-0 flex items-center h-10 px-3 text-[12px] font-medium whitespace-nowrap"
+              className="shrink-0 flex items-center h-10 px-3 text-xs md:text-sm font-medium whitespace-nowrap"
               style={{ color: t.textPrimary }}
             >
               {tab}

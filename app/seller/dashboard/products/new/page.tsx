@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-const labelCls = "block text-[13px] font-medium text-[#4B5563] mb-1.5";
+const labelCls = "block text-sm md:text-base font-medium text-[#4B5563] mb-1.5";
 const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors";
 
 export default function AddProductPage() {
@@ -66,23 +66,23 @@ export default function AddProductPage() {
     return (
       <div className="max-w-md mx-auto mt-16 text-center">
         <CheckCircle2 className="w-14 h-14 text-[#22C55E] mx-auto mb-4" />
-        <h1 className="text-[22px] font-bold text-[#1A1A2E] mb-2">Product Submitted!</h1>
-        <p className="text-[14px] text-[#4B5563]">Your product has been submitted for review. You&apos;ll be notified once it&apos;s approved.</p>
+        <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2">Product Submitted!</h1>
+        <p className="text-sm md:text-base text-[#4B5563]">Your product has been submitted for review. You&apos;ll be notified once it&apos;s approved.</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-[580px]">
-      <Link href="/seller/dashboard/products" className="inline-flex items-center gap-1 text-[13px] text-[#1A6FD4] font-medium hover:underline mb-4">
+      <Link href="/seller/dashboard/products" className="inline-flex items-center gap-1 text-sm md:text-base text-[#1A6FD4] font-medium hover:underline mb-4">
         <ArrowLeft className="w-4 h-4" /> Back to Products
       </Link>
-      <h1 className="text-[20px] font-bold text-[#1A1A2E] mb-1">Add New Product</h1>
-      <p className="text-[13px] text-[#9CA3AF] mb-6">Product will be submitted for review before going live</p>
+      <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">Add New Product</h1>
+      <p className="text-sm md:text-base text-[#9CA3AF] mb-6">Product will be submitted for review before going live</p>
 
       {errors.length > 0 && (
         <div className="mb-5 rounded-lg bg-red-50 border border-red-100 px-4 py-3">
-          {errors.map((e, i) => <p key={i} className="text-[13px] text-red-600">{e}</p>)}
+          {errors.map((e, i) => <p key={i} className="text-sm md:text-base text-red-600">{e}</p>)}
         </div>
       )}
 
@@ -105,7 +105,7 @@ export default function AddProductPage() {
             <input className={inputCls} type="number" min="1" value={form.min_order_qty} onChange={e => set("min_order_qty", e.target.value)} placeholder="1" />
           </div>
         </div>
-        <button type="submit" disabled={submitting} className="w-full h-11 bg-[#6C47FF] text-white text-[14px] font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+        <button type="submit" disabled={submitting} className="w-full h-11 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           Submit for Review
         </button>

@@ -117,7 +117,7 @@ export default function RecentOrdersTable() {
                 <div>
                   <p className="text-sm text-anga-text">{order.product}</p>
                   <span
-                    className="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium text-white"
+                    className="mt-1 inline-block rounded-full px-2 py-0.5 text-xs md:text-sm font-medium text-white"
                     style={{ backgroundColor: order.categoryColor }}
                   >
                     {order.category}

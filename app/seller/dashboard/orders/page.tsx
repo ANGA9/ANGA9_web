@@ -62,8 +62,8 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <h1 className="text-[20px] font-bold text-[#1A1A2E] mb-1">Orders</h1>
-      <p className="text-[13px] text-[#9CA3AF] mb-6">Manage orders containing your products</p>
+      <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">Orders</h1>
+      <p className="text-sm md:text-base text-[#9CA3AF] mb-6">Manage orders containing your products</p>
       
       {loading ? (
         <div className="flex items-center justify-center py-16">
@@ -72,18 +72,18 @@ export default function OrdersPage() {
       ) : orders.length === 0 ? (
         <div className="bg-white rounded-xl border border-[#E8EEF4] p-12 text-center">
           <ShoppingCart className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-          <h2 className="text-[16px] font-bold text-[#1A1A2E] mb-2">No Orders Yet</h2>
-          <p className="text-[13px] text-[#9CA3AF]">Orders will appear here once customers purchase your products</p>
+          <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-2">No Orders Yet</h2>
+          <p className="text-sm md:text-base text-[#9CA3AF]">Orders will appear here once customers purchase your products</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-[#E8EEF4] overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#F8FAFC] border-b border-[#E8EEF4]">
-                <th className="py-3 px-4 text-[13px] font-semibold text-[#1A1A2E]">Order Info</th>
-                <th className="py-3 px-4 text-[13px] font-semibold text-[#1A1A2E]">Products</th>
-                <th className="py-3 px-4 text-[13px] font-semibold text-[#1A1A2E]">Status</th>
-                <th className="py-3 px-4 text-[13px] font-semibold text-[#1A1A2E] text-right">Actions</th>
+                <th className="py-3 px-4 text-sm md:text-base font-semibold text-[#1A1A2E]">Order Info</th>
+                <th className="py-3 px-4 text-sm md:text-base font-semibold text-[#1A1A2E]">Products</th>
+                <th className="py-3 px-4 text-sm md:text-base font-semibold text-[#1A1A2E]">Status</th>
+                <th className="py-3 px-4 text-sm md:text-base font-semibold text-[#1A1A2E] text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -93,20 +93,20 @@ export default function OrdersPage() {
                 return (
                   <tr key={order.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FAFC]/50 transition-colors">
                     <td className="py-4 px-4 align-top">
-                      <p className="text-[14px] font-bold text-[#1A1A2E]">{order.order_number}</p>
-                      <p className="text-[12px] text-[#6B7280] mt-1">
+                      <p className="text-sm md:text-base font-bold text-[#1A1A2E]">{order.order_number}</p>
+                      <p className="text-xs md:text-sm text-[#6B7280] mt-1">
                         {new Date(order.placed_at).toLocaleDateString("en-IN", {
                           day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
                         })}
                       </p>
-                      <p className="text-[14px] font-semibold text-[#1A6FD4] mt-2">
+                      <p className="text-sm md:text-base font-semibold text-[#1A6FD4] mt-2">
                         {formatINR(totalAmount)}
                       </p>
                     </td>
                     <td className="py-4 px-4 align-top">
                       <div className="space-y-2">
                         {order.items.map((item) => (
-                          <div key={item.id} className="text-[13px]">
+                          <div key={item.id} className="text-sm md:text-base">
                             <span className="font-medium text-[#1A1A2E]">{item.product_name}</span>
                             <span className="text-[#6B7280] ml-2">x{item.quantity}</span>
                           </div>
@@ -114,7 +114,7 @@ export default function OrdersPage() {
                       </div>
                     </td>
                     <td className="py-4 px-4 align-top">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-medium capitalize ${
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs md:text-sm font-medium capitalize ${
                         orderStatus === 'delivered' ? 'bg-green-100 text-green-800' :
                         orderStatus === 'shipped' ? 'bg-blue-100 text-blue-800' :
                         orderStatus === 'processing' ? 'bg-yellow-100 text-yellow-800' :
@@ -130,7 +130,7 @@ export default function OrdersPage() {
                           <button
                             disabled={updating === order.id}
                             onClick={() => updateStatus(order.id, 'processing')}
-                            className="flex items-center justify-center gap-2 bg-[#FFCC00] hover:bg-[#F5B800] text-[#1A1A2E] text-[12px] font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
+                            className="flex items-center justify-center gap-2 bg-[#FFCC00] hover:bg-[#F5B800] text-[#1A1A2E] text-xs md:text-sm font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
                           >
                             {updating === order.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Package className="w-3.5 h-3.5" />}
                             Mark Processing
@@ -140,7 +140,7 @@ export default function OrdersPage() {
                           <button
                             disabled={updating === order.id}
                             onClick={() => updateStatus(order.id, 'shipped')}
-                            className="flex items-center justify-center gap-2 bg-[#1A6FD4] hover:bg-[#155AB0] text-white text-[12px] font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
+                            className="flex items-center justify-center gap-2 bg-[#1A6FD4] hover:bg-[#155AB0] text-white text-xs md:text-sm font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
                           >
                             {updating === order.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Truck className="w-3.5 h-3.5" />}
                             Mark Shipped
@@ -150,7 +150,7 @@ export default function OrdersPage() {
                           <button
                             disabled={updating === order.id}
                             onClick={() => updateStatus(order.id, 'delivered')}
-                            className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-[12px] font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
+                            className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm font-bold py-1.5 px-3 rounded-lg transition-colors w-[130px] disabled:opacity-50"
                           >
                             {updating === order.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                             Mark Delivered

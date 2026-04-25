@@ -318,7 +318,7 @@ export default function CheckoutPage() {
             <button
               onClick={handlePayWithRazorpay}
               disabled={placing || !razorpayLoaded}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-[10px] py-3.5 text-[15px] font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-[10px] py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
               style={{ background: "#1A6FD4", color: "#FFFFFF" }}
             >
               {placing ? (
@@ -335,14 +335,14 @@ export default function CheckoutPage() {
             </button>
 
             {!razorpayLoaded && (
-              <p className="mt-2 text-center text-[11px]" style={{ color: t.textMuted }}>
+              <p className="mt-2 text-center text-xs md:text-sm" style={{ color: t.textMuted }}>
                 Loading payment gateway...
               </p>
             )}
 
             <Link
               href="/cart"
-              className="mt-3 block text-center text-[13px] font-medium transition-opacity hover:opacity-80"
+              className="mt-3 block text-center text-sm md:text-base font-medium transition-opacity hover:opacity-80"
               style={{ color: t.bluePrimary }}
             >
               Back to Cart

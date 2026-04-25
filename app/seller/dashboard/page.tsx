@@ -12,8 +12,8 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
     <div className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
       <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${color}`}>{icon}</div>
       <div>
-        <p className="text-[24px] font-bold text-[#1A1A2E]">{value}</p>
-        <p className="text-[12px] text-[#9CA3AF] font-medium">{label}</p>
+        <p className="text-2xl md:text-3xl font-bold text-[#1A1A2E]">{value}</p>
+        <p className="text-xs md:text-sm text-[#9CA3AF] font-medium">{label}</p>
       </div>
     </div>
   );
@@ -76,16 +76,16 @@ export default function DashboardHome() {
       <div className="max-w-lg mx-auto mt-12">
         <div className={`rounded-2xl border-2 p-8 text-center ${c.bg}`}>
           <div className="flex justify-center mb-4">{c.icon}</div>
-          <h1 className="text-[22px] font-bold text-[#1A1A2E] mb-2">{c.title}</h1>
-          {bizName && status === "pending" && <p className="text-[14px] font-medium text-[#1A6FD4] mb-1">{bizName}</p>}
-          <p className="text-[14px] text-[#4B5563] leading-relaxed mb-6">{c.desc}</p>
-          {status === "unverified" && <Link href="/seller/onboarding" className="inline-flex h-10 px-5 bg-[#1A6FD4] text-white text-[13px] font-semibold rounded-lg items-center hover:bg-[#155bb5] transition-colors">Continue Onboarding</Link>}
+          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2">{c.title}</h1>
+          {bizName && status === "pending" && <p className="text-sm md:text-base font-medium text-[#1A6FD4] mb-1">{bizName}</p>}
+          <p className="text-sm md:text-base text-[#4B5563] leading-relaxed mb-6">{c.desc}</p>
+          {status === "unverified" && <Link href="/seller/onboarding" className="inline-flex h-10 px-5 bg-[#1A6FD4] text-white text-sm md:text-base font-semibold rounded-lg items-center hover:bg-[#155bb5] transition-colors">Continue Onboarding</Link>}
           {status === "pending" && (
             <div className="mt-4 pt-4 border-t border-[#FDE68A] flex justify-center gap-6">
               {[{ l: "Submitted", d: true }, { l: "Under Review", d: false }, { l: "Verified", d: false }].map(s => (
                 <div key={s.l} className="flex flex-col items-center gap-1">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${s.d ? "bg-[#22C55E] text-white" : "bg-white text-[#9CA3AF] border"}`}>{s.d ? "✓" : "…"}</div>
-                  <span className={`text-[11px] ${s.d ? "text-[#1A1A2E]" : "text-[#9CA3AF]"}`}>{s.l}</span>
+                  <span className={`text-xs md:text-sm ${s.d ? "text-[#1A1A2E]" : "text-[#9CA3AF]"}`}>{s.l}</span>
                 </div>
               ))}
             </div>
@@ -100,12 +100,12 @@ export default function DashboardHome() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[22px] font-bold text-[#1A1A2E]">Welcome{bizName ? `, ${bizName}` : ""}!</h1>
-          <p className="text-[13px] text-[#9CA3AF]">Here&apos;s an overview of your store</p>
+          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Welcome{bizName ? `, ${bizName}` : ""}!</h1>
+          <p className="text-sm md:text-base text-[#9CA3AF]">Here&apos;s an overview of your store</p>
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-[13px] font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
+          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>
@@ -119,19 +119,19 @@ export default function DashboardHome() {
       </div>
 
       <div className="bg-white rounded-xl border border-[#E8EEF4] p-6">
-        <h2 className="text-[16px] font-bold text-[#1A1A2E] mb-4">Quick Actions</h2>
+        <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link href="/seller/dashboard/products/new" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">
             <Package className="w-5 h-5 text-[#6C47FF]" />
-            <div><p className="text-[13px] font-semibold text-[#1A1A2E]">Add Product</p><p className="text-[11px] text-[#9CA3AF]">List a new product for sale</p></div>
+            <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">Add Product</p><p className="text-xs md:text-sm text-[#9CA3AF]">List a new product for sale</p></div>
           </Link>
           <Link href="/seller/dashboard/products" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">
             <Eye className="w-5 h-5 text-[#1A6FD4]" />
-            <div><p className="text-[13px] font-semibold text-[#1A1A2E]">View Products</p><p className="text-[11px] text-[#9CA3AF]">Manage your listings</p></div>
+            <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">View Products</p><p className="text-xs md:text-sm text-[#9CA3AF]">Manage your listings</p></div>
           </Link>
           <Link href="/seller/dashboard/profile" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">
             <CheckCircle2 className="w-5 h-5 text-[#22C55E]" />
-            <div><p className="text-[13px] font-semibold text-[#1A1A2E]">Edit Profile</p><p className="text-[11px] text-[#9CA3AF]">Update your business info</p></div>
+            <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">Edit Profile</p><p className="text-xs md:text-sm text-[#9CA3AF]">Update your business info</p></div>
           </Link>
         </div>
       </div>

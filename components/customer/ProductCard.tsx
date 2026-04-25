@@ -52,7 +52,7 @@ export default function ProductCard({
         />
         {/* Category pill */}
         <span
-          className="rounded-full px-3 py-0.5 text-[10px] font-medium"
+          className="rounded-full px-3 py-0.5 text-xs md:text-sm font-medium"
           style={{ background: "rgba(26,111,212,0.1)", color: "#1A6FD4" }}
         >
           {product.category}
@@ -61,7 +61,7 @@ export default function ProductCard({
         {/* Badge — bottom-left */}
         {product.badge && (
           <span
-            className="absolute bottom-3 left-3 rounded-md px-2 py-0.5 text-[10px] font-bold"
+            className="absolute bottom-3 left-3 rounded-md px-2 py-0.5 text-xs md:text-sm font-bold"
             style={{
               background:
                 product.badge === "Top Rated" ? "#EAF2FF" : "#FFCC00",
@@ -76,7 +76,7 @@ export default function ProductCard({
         {/* Discount badge — top-right */}
         {discount > 0 && (
           <span
-            className="absolute top-3 right-3 rounded-[6px] text-[11px] font-bold text-white"
+            className="absolute top-3 right-3 rounded-[6px] text-xs md:text-sm font-bold text-white"
             style={{ background: "#1A6FD4", padding: "3px 7px" }}
           >
             -{discount}%
@@ -100,14 +100,14 @@ export default function ProductCard({
 
       {/* Body */}
       <div style={{ padding: "14px 16px" }}>
-        <p className="text-[11px] mb-0.5" style={{ color: "#9CA3AF" }}>
+        <p className="text-xs md:text-sm mb-0.5" style={{ color: "#9CA3AF" }}>
           {product.seller}
         </p>
         <h3
           className="font-semibold mb-1.5 overflow-hidden"
           style={{
             color: "#1A1A2E",
-            fontSize: 15,
+            fontSize: '16px',
             lineHeight: 1.35,
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -121,21 +121,21 @@ export default function ProductCard({
         <div className="flex items-baseline mb-1">
           <span
             className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: 20 }}
+            style={{ color: "#1A1A2E", fontSize: '24px' }}
           >
             {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
             <span
               className="line-through"
-              style={{ color: "#9CA3AF", fontSize: 12, marginLeft: 8 }}
+              style={{ color: "#9CA3AF", fontSize: '12px', marginLeft: 8 }}
             >
               {formatINR(product.originalPrice)}
             </span>
           )}
         </div>
 
-        <p className="text-[11px]" style={{ color: "#6B7280", marginTop: 2 }}>
+        <p className="text-xs md:text-sm" style={{ color: "#6B7280", marginTop: 2 }}>
           Min order: {product.minOrder}
         </p>
       </div>

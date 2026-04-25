@@ -123,12 +123,12 @@ export default function SellerNotificationsPage() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-lg font-bold text-[#1A1A2E]">Notifications</h1>
-          <p className="text-[13px] text-[#9CA3AF] mt-0.5">{total} notification{total !== 1 ? "s" : ""}</p>
+          <p className="text-sm md:text-base text-[#9CA3AF] mt-0.5">{total} notification{total !== 1 ? "s" : ""}</p>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="flex items-center gap-1.5 rounded-lg border border-[#E8EEF4] px-3 py-2 text-[13px] font-medium text-[#1A6FD4] hover:bg-[#F8FBFF] transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-[#E8EEF4] px-3 py-2 text-sm md:text-base font-medium text-[#1A6FD4] hover:bg-[#F8FBFF] transition-colors"
           >
             <CheckCheck className="w-4 h-4" />
             Mark all as read
@@ -142,7 +142,7 @@ export default function SellerNotificationsPage() {
           <button
             key={tab}
             onClick={() => { setFilter(tab); setPage(1); }}
-            className={`px-4 py-2.5 text-[13px] font-medium border-b-2 transition-colors ${
+            className={`px-4 py-2.5 text-sm md:text-base font-medium border-b-2 transition-colors ${
               filter === tab
                 ? "border-[#1A6FD4] text-[#1A6FD4]"
                 : "border-transparent text-[#4B5563]"
@@ -196,25 +196,25 @@ export default function SellerNotificationsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <p className={`text-[14px] leading-tight text-[#1A1A2E] ${n.read ? "" : "font-semibold"}`}>
+                      <p className={`text-sm md:text-base leading-tight text-[#1A1A2E] ${n.read ? "" : "font-semibold"}`}>
                         {n.title}
                       </p>
                       {!n.read && <span className="w-2 h-2 rounded-full shrink-0 mt-1.5 bg-[#1A6FD4]" />}
                     </div>
-                    <p className="text-[13px] mt-1 text-[#4B5563]">{n.body}</p>
+                    <p className="text-sm md:text-base mt-1 text-[#4B5563]">{n.body}</p>
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-[12px] text-[#9CA3AF]">{timeAgo(n.sent_at)}</span>
+                      <span className="text-xs md:text-sm text-[#9CA3AF]">{timeAgo(n.sent_at)}</span>
                       {!n.read && (
                         <button
                           onClick={() => markAsRead(n.id)}
-                          className="flex items-center gap-1 text-[12px] font-medium text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="flex items-center gap-1 text-xs md:text-sm font-medium text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <Check className="w-3.5 h-3.5" /> Mark read
                         </button>
                       )}
                       <button
                         onClick={() => deleteNotification(n.id)}
-                        className="flex items-center gap-1 text-[12px] text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="flex items-center gap-1 text-xs md:text-sm text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Delete
                       </button>
@@ -234,7 +234,7 @@ export default function SellerNotificationsPage() {
               >
                 <ChevronLeft className="w-4 h-4 text-[#4B5563]" />
               </button>
-              <span className="text-[13px] px-2 text-[#4B5563]">Page {page} of {totalPages}</span>
+              <span className="text-sm md:text-base px-2 text-[#4B5563]">Page {page} of {totalPages}</span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}

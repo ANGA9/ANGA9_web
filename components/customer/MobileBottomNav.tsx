@@ -56,7 +56,7 @@ export default function MobileBottomNav() {
             <span
               className="mt-0.5"
               style={{
-                fontSize: 11,
+                fontSize: '12px',
                 fontWeight: isActive ? 700 : 600,
                 letterSpacing: "0.01em",
                 color: isActive ? t.bluePrimary : "#374151",

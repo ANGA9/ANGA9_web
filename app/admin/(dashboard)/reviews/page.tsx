@@ -59,20 +59,20 @@ export default function ReviewsPage() {
       <Header />
       <main className="p-6 xl:p-8">
         <div className="mb-6">
-          <h1 className="text-[20px] font-bold text-anga-text">Product Reviews</h1>
-          <p className="text-[13px] text-anga-text-secondary">{products.length} product{products.length !== 1 ? "s" : ""} awaiting review</p>
+          <h1 className="text-xl md:text-2xl font-bold text-anga-text">Product Reviews</h1>
+          <p className="text-sm md:text-base text-anga-text-secondary">{products.length} product{products.length !== 1 ? "s" : ""} awaiting review</p>
         </div>
 
         {products.length === 0 ? (
           <div className="bg-white rounded-xl border border-anga-border p-12 text-center">
             <Package className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-            <h2 className="text-[16px] font-bold text-anga-text mb-2">No Pending Reviews</h2>
-            <p className="text-[13px] text-anga-text-secondary">All product submissions have been reviewed</p>
+            <h2 className="text-base md:text-lg font-bold text-anga-text mb-2">No Pending Reviews</h2>
+            <p className="text-sm md:text-base text-anga-text-secondary">All product submissions have been reviewed</p>
           </div>
         ) : (
           <div className="bg-white rounded-xl border border-anga-border overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-[13px]">
+              <table className="w-full text-sm md:text-base">
                 <thead>
                   <tr className="border-b border-anga-border bg-[#F8FBFF]">
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Product Name</th>
@@ -96,14 +96,14 @@ export default function ReviewsPage() {
                           <button
                             onClick={() => handleApprove(p.id)}
                             disabled={actionLoading === p.id}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#22C55E] text-white text-[11px] font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
                           >
                             {actionLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Approve
                           </button>
                           <button
                             onClick={() => { setRejectTarget(p); setRejectNotes(""); }}
                             disabled={actionLoading === p.id}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#EF4444] text-white text-[11px] font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
                           >
                             <XCircle className="w-3 h-3" /> Reject
                           </button>
@@ -123,16 +123,16 @@ export default function ReviewsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-anga-text">Reject Product</h3>
+              <h3 className="text-base md:text-lg font-bold text-anga-text">Reject Product</h3>
               <button onClick={() => setRejectTarget(null)} className="text-[#9CA3AF] hover:text-anga-text">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-[13px] text-[#4B5563] mb-1">
+            <p className="text-sm md:text-base text-[#4B5563] mb-1">
               Rejecting: <span className="font-semibold">{rejectTarget.name}</span>
             </p>
-            <p className="text-[12px] text-[#9CA3AF] mb-4">The seller will see your rejection reason and can re-submit after making changes.</p>
-            <label className="block text-[13px] font-medium text-[#4B5563] mb-1.5">Rejection Reason *</label>
+            <p className="text-xs md:text-sm text-[#9CA3AF] mb-4">The seller will see your rejection reason and can re-submit after making changes.</p>
+            <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-1.5">Rejection Reason *</label>
             <textarea
               value={rejectNotes}
               onChange={e => setRejectNotes(e.target.value)}
@@ -141,13 +141,13 @@ export default function ReviewsPage() {
               maxLength={500}
             />
             <div className="flex gap-3 mt-4">
-              <button onClick={() => setRejectTarget(null)} className="flex-1 h-10 rounded-lg border border-[#E8EEF4] text-[13px] font-medium text-[#4B5563] hover:bg-[#F8FBFF] transition-colors">
+              <button onClick={() => setRejectTarget(null)} className="flex-1 h-10 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-medium text-[#4B5563] hover:bg-[#F8FBFF] transition-colors">
                 Cancel
               </button>
               <button
                 onClick={handleReject}
                 disabled={!rejectNotes.trim() || actionLoading === rejectTarget.id}
-                className="flex-1 h-10 rounded-lg bg-[#EF4444] text-white text-[13px] font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 h-10 rounded-lg bg-[#EF4444] text-white text-sm md:text-base font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {actionLoading === rejectTarget.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Reject Product

@@ -3,7 +3,7 @@ import { SellerFormData, BUSINESS_TYPES, INDIAN_STATES } from "./types";
 
 type P = { form: SellerFormData; set: (k: keyof SellerFormData, v: any) => void };
 
-const labelCls = "block text-[13px] font-medium text-[#4B5563] mb-1.5";
+const labelCls = "block text-sm md:text-base font-medium text-[#4B5563] mb-1.5";
 const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors";
 const selectCls = inputCls + " appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239CA3AF%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] bg-[length:20px] pr-10";
 
@@ -71,7 +71,7 @@ export function Step4({ form, set }: P) {
   const masked = form.aadhaar_number ? form.aadhaar_number.replace(/(\d{4})(\d{4})(\d{0,4})/, "$1 $2 $3").trim() : "";
   return (
     <div className="space-y-5">
-      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 text-[13px] text-[#4B5563]">
+      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 text-sm md:text-base text-[#4B5563]">
         All KYC information is encrypted and stored securely. These fields are optional but recommended for faster verification.
       </div>
       <div><label className={labelCls}>GSTIN</label>
@@ -80,7 +80,7 @@ export function Step4({ form, set }: P) {
         <input className={inputCls} value={form.pan_number} onChange={e => set("pan_number", e.target.value.toUpperCase().slice(0, 10))} placeholder="e.g. ABCDE1234F" maxLength={10} /></div>
       <div><label className={labelCls}>Aadhaar Number</label>
         <input className={inputCls} value={masked} onChange={e => set("aadhaar_number", e.target.value.replace(/\D/g, "").slice(0, 12))} placeholder="12-digit Aadhaar number" />
-        <p className="text-[11px] text-[#9CA3AF] mt-1">Stored encrypted. Only last 4 digits visible after save.</p></div>
+        <p className="text-xs md:text-sm text-[#9CA3AF] mt-1">Stored encrypted. Only last 4 digits visible after save.</p></div>
     </div>
   );
 }
@@ -122,8 +122,8 @@ export function Step6({ form, set }: P) {
     <div className="space-y-5">
       <label className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] bg-white cursor-pointer hover:border-[#1A6FD4]/30 transition-colors">
         <input type="checkbox" checked={form.pickup_address_same} onChange={e => set("pickup_address_same", e.target.checked)} className="h-5 w-5 rounded border-[#E8EEF4] accent-[#1A6FD4]" />
-        <div><p className="text-[14px] font-medium text-[#1A1A2E]">Same as business address</p>
-          <p className="text-[12px] text-[#9CA3AF]">Use the address entered in Step 3 as your pickup location</p></div>
+        <div><p className="text-sm md:text-base font-medium text-[#1A1A2E]">Same as business address</p>
+          <p className="text-xs md:text-sm text-[#9CA3AF]">Use the address entered in Step 3 as your pickup location</p></div>
       </label>
       {!form.pickup_address_same && (
         <div><label className={labelCls}>Pickup Address *</label>
@@ -137,10 +137,10 @@ export function Step7({ form, onEdit }: { form: SellerFormData; onEdit: (step: n
   const Section = ({ title, step, children }: { title: string; step: number; children: React.ReactNode }) => (
     <div className="border border-[#E8EEF4] rounded-xl p-5 mb-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[15px] font-bold text-[#1A1A2E]">{title}</h3>
-        <button onClick={() => onEdit(step)} className="text-[12px] font-semibold text-[#1A6FD4] hover:underline">Edit</button>
+        <h3 className="text-base font-bold text-[#1A1A2E]">{title}</h3>
+        <button onClick={() => onEdit(step)} className="text-xs md:text-sm font-semibold text-[#1A6FD4] hover:underline">Edit</button>
       </div>
-      <div className="space-y-1.5 text-[13px] text-[#4B5563]">{children}</div>
+      <div className="space-y-1.5 text-sm md:text-base text-[#4B5563]">{children}</div>
     </div>
   );
   const Row = ({ label, value }: { label: string; value: string }) => value ? (
@@ -149,7 +149,7 @@ export function Step7({ form, onEdit }: { form: SellerFormData; onEdit: (step: n
 
   return (
     <div>
-      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 mb-5 text-[13px] text-[#4B5563]">
+      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 mb-5 text-sm md:text-base text-[#4B5563]">
         Please review all your details below. Click "Edit" on any section to make changes before submitting.
       </div>
       <Section title="Personal Details" step={0}>

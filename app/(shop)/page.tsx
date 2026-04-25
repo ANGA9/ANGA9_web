@@ -129,13 +129,13 @@ export default function CustomerHomePage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
           <h2
             className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: 20 }}
+            style={{ color: "#1A1A2E", fontSize: '24px' }}
           >
             Shop by category
           </h2>
           <button
             className="font-medium transition-opacity hover:opacity-80"
-            style={{ color: "#1A6FD4", fontSize: 13 }}
+            style={{ color: "#1A6FD4", fontSize: '14px' }}
           >
             View All
           </button>
@@ -171,7 +171,7 @@ export default function CustomerHomePage() {
               </div>
               <span
                 className="font-medium text-center leading-tight"
-                style={{ color: "#1A1A2E", fontSize: 13 }}
+                style={{ color: "#1A1A2E", fontSize: '14px' }}
               >
                 {cat.name}
               </span>
@@ -185,13 +185,13 @@ export default function CustomerHomePage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
           <h2
             className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: 20 }}
+            style={{ color: "#1A1A2E", fontSize: '24px' }}
           >
             Discover products for you
           </h2>
           <button
             className="font-medium transition-opacity hover:opacity-80"
-            style={{ color: "#1A6FD4", fontSize: 13 }}
+            style={{ color: "#1A6FD4", fontSize: '14px' }}
           >
             View All
           </button>

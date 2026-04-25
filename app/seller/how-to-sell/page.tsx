@@ -91,7 +91,7 @@ export default function HowItWorksPage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                className={`text-base font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
                   item.name === "How It Works" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
@@ -117,11 +117,11 @@ export default function HowItWorksPage() {
           <div className="absolute top-full left-0 right-0 z-40 bg-white border-b border-[#E8EEF4] shadow-lg lg:hidden">
             <nav className="flex flex-col px-4 py-3">
               {navLinks.map((item) => (
-                <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
+                <Link key={item.name} href={item.href} className="text-base font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   {item.name}
                 </Link>
               ))}
-              <Link href="/seller/login" className="text-[15px] font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/seller/login" className="text-base font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Login
               </Link>
             </nav>
@@ -134,14 +134,14 @@ export default function HowItWorksPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
+              <span className="text-xs md:text-sm sm:text-sm md:text-base font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
                 Simple 4-Step Process
               </span>
-              <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
+              <h1 className="mb-4 sm:mb-6 text-3xl md:text-4xl sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
                 Start Selling on ANGA9 in{" "}
                 <span className="text-[#1A6FD4]">Minutes</span>
               </h1>
-              <p className="text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
+              <p className="text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 From registration to your first order, our streamlined process gets your business online fast. Join thousands of suppliers already growing on India&apos;s B2B marketplace.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -164,11 +164,11 @@ export default function HowItWorksPage() {
       {/* STEPS */}
       <section id="steps" className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Your Journey to Selling Online
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Follow these four simple steps to get your products in front of buyers across India
           </p>
 
@@ -182,14 +182,14 @@ export default function HowItWorksPage() {
                       <item.icon size={24} />
                     </div>
                     <div>
-                      <span className="text-[12px] sm:text-[13px] font-bold text-[#1A6FD4] uppercase tracking-wider">Step {item.step}</span>
-                      <h3 className="text-[20px] sm:text-[24px] lg:text-[28px] font-bold text-[#1A1A2E]">{item.title}</h3>
+                      <span className="text-xs md:text-sm sm:text-sm md:text-base font-bold text-[#1A6FD4] uppercase tracking-wider">Step {item.step}</span>
+                      <h3 className="text-xl md:text-2xl sm:text-2xl md:text-3xl lg:text-3xl md:text-4xl font-bold text-[#1A1A2E]">{item.title}</h3>
                     </div>
                   </div>
-                  <p className="text-[14px] sm:text-[16px] text-[#4B5563] leading-relaxed mb-4 sm:mb-6">{item.desc}</p>
+                  <p className="text-sm md:text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-4 sm:mb-6">{item.desc}</p>
                   <ul className="space-y-2 sm:space-y-3">
                     {item.highlights.map((h, i) => (
-                      <li key={i} className="flex items-center gap-3 text-[13px] sm:text-[15px] text-[#1A1A2E]">
+                      <li key={i} className="flex items-center gap-3 text-sm md:text-base sm:text-base text-[#1A1A2E]">
                         <CheckCircle2 size={18} className="text-[#22C55E] shrink-0" />
                         {h}
                       </li>
@@ -212,11 +212,11 @@ export default function HowItWorksPage() {
       {/* REQUIREMENTS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             What You Need to Get Started
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Keep these documents and details ready for a smooth registration
           </p>
 
@@ -226,8 +226,8 @@ export default function HowItWorksPage() {
                 <div className="w-14 h-14 rounded-2xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mx-auto mb-4 sm:mb-6">
                   <item.icon size={28} />
                 </div>
-                <h3 className="text-[16px] sm:text-[18px] font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
-                <p className="text-[13px] sm:text-[14px] text-[#4B5563] leading-relaxed">{item.desc}</p>
+                <h3 className="text-base md:text-lg sm:text-lg md:text-xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
+                <p className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -237,7 +237,7 @@ export default function HowItWorksPage() {
       {/* FAQ-STYLE QUICK ANSWERS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Common Questions
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-10 sm:mb-16 rounded-full" />
@@ -251,8 +251,8 @@ export default function HowItWorksPage() {
               { q: "How does payment work?", a: "Payments are processed on a 7-day cycle from delivery confirmation. Both prepaid and Cash on Delivery order amounts are deposited directly to your registered bank account." },
             ].map((item, idx) => (
               <div key={idx} className="bg-[#F8FBFF] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-[#E8EEF4]">
-                <h3 className="text-[15px] sm:text-[17px] font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.q}</h3>
-                <p className="text-[13px] sm:text-[15px] text-[#4B5563] leading-relaxed">{item.a}</p>
+                <h3 className="text-base sm:text-base md:text-lg font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.q}</h3>
+                <p className="text-sm md:text-base sm:text-base text-[#4B5563] leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
@@ -267,13 +267,13 @@ export default function HowItWorksPage() {
               <Link href="/" className="mb-6 block">
                 <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
-              <p className="mb-8 max-w-sm text-[15px] sm:text-[17px] leading-relaxed text-[#4B5563]">
+              <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
                 India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.
               </p>
             </div>
 
             <div className="lg:col-span-3">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
               <ul className="space-y-4">
                 {[
                   { label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
@@ -282,22 +282,22 @@ export default function HowItWorksPage() {
                   { label: "Grow Your Business", href: "/seller/grow-business" },
                 ].map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-[15px] text-[#4B5563] transition-colors hover:text-[#1A6FD4]">{link.label}</Link>
+                    <Link href={link.href} className="text-base text-[#4B5563] transition-colors hover:text-[#1A6FD4]">{link.label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div className="lg:col-span-4">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Contact Us</h4>
-              <Link href="mailto:sell@anga9.com" className="mb-6 block text-[16px] font-medium text-[#4B5563] hover:text-[#1A6FD4]">sell@anga9.com</Link>
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">Contact Us</h4>
+              <Link href="mailto:sell@anga9.com" className="mb-6 block text-base md:text-lg font-medium text-[#4B5563] hover:text-[#1A6FD4]">sell@anga9.com</Link>
               <div className="flex items-center gap-4">
                 {[
                   { icon: "Ig", color: "bg-[#E1306C]" },
                   { icon: "Fb", color: "bg-[#1877F2]" },
                   { icon: "Yt", color: "bg-[#FF0000]" },
                 ].map((social) => (
-                  <div key={social.icon} className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-[14px] font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}>
+                  <div key={social.icon} className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-sm md:text-base font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}>
                     {social.icon}
                   </div>
                 ))}
@@ -306,7 +306,7 @@ export default function HowItWorksPage() {
           </div>
 
           <div className="mt-10 sm:mt-16 lg:mt-20 border-t border-[#E8EEF4] pt-6 sm:pt-10 text-center">
-            <p className="text-[14px] text-[#6B7280]">&copy; 2024-25 ANGA9 Inc. All Rights Reserved.</p>
+            <p className="text-sm md:text-base text-[#6B7280]">&copy; 2024-25 ANGA9 Inc. All Rights Reserved.</p>
           </div>
         </div>
       </footer>

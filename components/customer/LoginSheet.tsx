@@ -210,8 +210,8 @@ export default function LoginSheet() {
               <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center animate-[scaleIn_0.3s_ease-out]">
                 <CheckCircle2 className="w-10 h-10 text-green-500" />
               </div>
-              <p className="text-[18px] font-semibold text-[#1A1A2E] mt-4">Login Successful!</p>
-              <p className="text-[13px] text-[#4B5563] mt-1">Welcome to ANGA9</p>
+              <p className="text-lg md:text-xl font-semibold text-[#1A1A2E] mt-4">Login Successful!</p>
+              <p className="text-sm md:text-base text-[#4B5563] mt-1">Welcome to ANGA9</p>
             </div>
           )}
 
@@ -219,8 +219,8 @@ export default function LoginSheet() {
           {step === "input" && (
             <>
               <div className="mb-4">
-                <h2 className="text-[20px] font-bold text-[#1A1A2E]">Login or Sign Up</h2>
-                <p className="text-[13px] text-[#4B5563] mt-1">Enter your email or phone to continue</p>
+                <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Login or Sign Up</h2>
+                <p className="text-sm md:text-base text-[#4B5563] mt-1">Enter your email or phone to continue</p>
               </div>
 
               {/* Tabs */}
@@ -228,7 +228,7 @@ export default function LoginSheet() {
                 <button
                   type="button"
                   onClick={() => switchTab("email")}
-                  className={`flex items-center gap-1.5 px-3 py-2.5 text-[13px] font-semibold transition-all border-b-2 ${
+                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
                     tab === "email"
                       ? "border-[#1A6FD4] text-[#1A6FD4]"
                       : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
@@ -240,7 +240,7 @@ export default function LoginSheet() {
                 <button
                   type="button"
                   onClick={() => switchTab("phone")}
-                  className={`flex items-center gap-1.5 px-3 py-2.5 text-[13px] font-semibold transition-all border-b-2 ${
+                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
                     tab === "phone"
                       ? "border-[#1A6FD4] text-[#1A6FD4]"
                       : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
@@ -271,14 +271,14 @@ export default function LoginSheet() {
 
                   {error && (
                     <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
-                      <p className="text-[12px] text-red-600">{error}</p>
+                      <p className="text-xs md:text-sm text-red-600">{error}</p>
                     </div>
                   )}
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
@@ -287,7 +287,7 @@ export default function LoginSheet() {
                     )}
                   </button>
 
-                  <p className="text-[11px] text-[#9CA3AF] text-center leading-relaxed">
+                  <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
                     <a href="#" className="text-[#1A6FD4]">Terms</a> &{" "}
                     <a href="#" className="text-[#1A6FD4]">Privacy Policy</a>
@@ -316,14 +316,14 @@ export default function LoginSheet() {
                   </div>
 
                   <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3 py-2.5">
-                    <p className="text-[12px] text-[#4B5563] text-center">
+                    <p className="text-xs md:text-sm text-[#4B5563] text-center">
                       Phone login will be available soon. Please use email for now.
                     </p>
                   </div>
 
                   <button
                     disabled
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-semibold text-white bg-[#9CA3AF] cursor-not-allowed"
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white bg-[#9CA3AF] cursor-not-allowed"
                   >
                     Coming Soon
                   </button>
@@ -338,7 +338,7 @@ export default function LoginSheet() {
               <button
                 type="button"
                 onClick={() => { setStep("input"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                className="flex items-center gap-1.5 text-[13px] font-medium text-[#1A6FD4] mb-4"
+                className="flex items-center gap-1.5 text-sm md:text-base font-medium text-[#1A6FD4] mb-4"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Change email
@@ -346,7 +346,7 @@ export default function LoginSheet() {
 
               <div className="flex items-center gap-2 rounded-lg bg-[#EAF2FF] px-3 py-2 mb-5">
                 <Mail className="w-4 h-4 text-[#1A6FD4]" />
-                <p className="text-[13px] text-[#4B5563]">
+                <p className="text-sm md:text-base text-[#4B5563]">
                   OTP sent to <span className="font-semibold text-[#1A1A2E]">{email}</span>
                 </p>
               </div>
@@ -372,14 +372,14 @@ export default function LoginSheet() {
 
                 {error && (
                   <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
-                    <p className="text-[12px] text-red-600">{error}</p>
+                    <p className="text-xs md:text-sm text-red-600">{error}</p>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-[14px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">{spinner} Verifying...</span>

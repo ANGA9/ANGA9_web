@@ -38,20 +38,20 @@ export default function SellersPage() {
       <Header />
       <main className="p-6 xl:p-8">
         <div className="mb-6">
-          <h1 className="text-[20px] font-bold text-anga-text">Registered Sellers</h1>
-          <p className="text-[13px] text-anga-text-secondary">{sellers.length} seller{sellers.length !== 1 ? "s" : ""} registered</p>
+          <h1 className="text-xl md:text-2xl font-bold text-anga-text">Registered Sellers</h1>
+          <p className="text-sm md:text-base text-anga-text-secondary">{sellers.length} seller{sellers.length !== 1 ? "s" : ""} registered</p>
         </div>
 
         {sellers.length === 0 ? (
           <div className="bg-white rounded-xl border border-anga-border p-12 text-center">
             <Store className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-            <h2 className="text-[16px] font-bold text-anga-text mb-2">No Sellers Yet</h2>
-            <p className="text-[13px] text-anga-text-secondary">Sellers will appear here after they complete onboarding</p>
+            <h2 className="text-base md:text-lg font-bold text-anga-text mb-2">No Sellers Yet</h2>
+            <p className="text-sm md:text-base text-anga-text-secondary">Sellers will appear here after they complete onboarding</p>
           </div>
         ) : (
           <div className="bg-white rounded-xl border border-anga-border overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-[13px]">
+              <table className="w-full text-sm md:text-base">
                 <thead>
                   <tr className="border-b border-anga-border bg-[#F8FBFF]">
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Business Name</th>
@@ -71,22 +71,22 @@ export default function SellersPage() {
                         <td className="px-4 py-3 text-[#4B5563] capitalize">{s.business_type?.replace("_", " ") || "—"}</td>
                         <td className="px-4 py-3 text-[#4B5563]">{[s.city, s.state].filter(Boolean).join(", ") || "—"}</td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold border ${badge.cls}`}>{badge.label}</span>
+                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs md:text-sm font-semibold border ${badge.cls}`}>{badge.label}</span>
                         </td>
                         <td className="px-4 py-3 text-[#9CA3AF]">{new Date(s.created_at).toLocaleDateString()}</td>
                         <td className="px-4 py-3">
                           {s.verification_status === "pending" && (
                             <div className="flex gap-2">
-                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-[11px] font-semibold hover:bg-[#16A34A] transition-colors">
+                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors">
                                 <CheckCircle2 className="w-3 h-3" /> Approve
                               </button>
-                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-[11px] font-semibold hover:bg-[#DC2626] transition-colors">
+                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors">
                                 <XCircle className="w-3 h-3" /> Reject
                               </button>
                             </div>
                           )}
                           {s.verification_status === "verified" && (
-                            <span className="text-[11px] text-[#22C55E] font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Approved</span>
+                            <span className="text-xs md:text-sm text-[#22C55E] font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Approved</span>
                           )}
                         </td>
                       </tr>

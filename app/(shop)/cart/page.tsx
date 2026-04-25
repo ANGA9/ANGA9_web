@@ -74,10 +74,10 @@ export default function CustomerCartPage() {
             <ArrowLeft className="w-6 h-6 text-gray-700" />
           </Link>
           <div className="flex flex-col">
-            <h1 className="text-[17px] font-bold text-gray-900 leading-tight">
+            <h1 className="text-base md:text-lg font-bold text-gray-900 leading-tight">
               Shopping Cart
             </h1>
-            <span className="text-[11px] text-gray-500">
+            <span className="text-xs md:text-sm text-gray-500">
               {items.length} {items.length === 1 ? "item" : "items"}
             </span>
           </div>
@@ -91,15 +91,15 @@ export default function CustomerCartPage() {
             >
               <ShoppingBag className="w-10 h-10" style={{ color: t.bluePrimary }} />
             </div>
-            <h2 className="text-[18px] font-bold text-gray-900 mb-1">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
               Your cart is empty
             </h2>
-            <p className="text-[14px] text-gray-500 text-center mb-6">
+            <p className="text-sm md:text-base text-gray-500 text-center mb-6">
               Looks like you haven&apos;t added anything to your cart yet.
             </p>
             <Link
               href="/"
-              className="rounded-lg px-8 py-3 text-[15px] font-bold transition-all active:scale-95"
+              className="rounded-lg px-8 py-3 text-base font-bold transition-all active:scale-95"
               style={{ background: t.yellowCta, color: t.ctaText }}
             >
               Start Shopping
@@ -113,7 +113,7 @@ export default function CustomerCartPage() {
                 style={{ background: "#E8F5E9" }}
               >
                 <Tag className="w-4 h-4 text-green-700" />
-                <span className="text-[13px] font-medium text-green-800">
+                <span className="text-sm md:text-base font-medium text-green-800">
                   You&apos;re saving {formatINR(totalSavings)} on this order!
                 </span>
               </div>
@@ -140,19 +140,19 @@ export default function CustomerCartPage() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[14px] font-medium text-gray-900 leading-snug line-clamp-2">
+                        <h3 className="text-sm md:text-base font-medium text-gray-900 leading-snug line-clamp-2">
                           {item.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="text-[16px] font-bold text-gray-900">
+                          <span className="text-base md:text-lg font-bold text-gray-900">
                             {formatINR(price)}
                           </span>
                           {disc > 0 && (
                             <>
-                              <span className="text-[12px] text-gray-400 line-through">
+                              <span className="text-xs md:text-sm text-gray-400 line-through">
                                 {formatINR(item.base_price)}
                               </span>
-                              <span className="text-[12px] font-semibold text-green-600">
+                              <span className="text-xs md:text-sm font-semibold text-green-600">
                                 {disc}% off
                               </span>
                             </>
@@ -160,7 +160,7 @@ export default function CustomerCartPage() {
                         </div>
                         <div className="flex items-center gap-1.5 mt-2">
                           <Truck className="w-3.5 h-3.5 text-gray-400" />
-                          <span className="text-[11px] text-gray-500">
+                          <span className="text-xs md:text-sm text-gray-500">
                             {delivery === 0 ? (
                               <span className="text-green-600 font-semibold">FREE Delivery</span>
                             ) : (
@@ -179,7 +179,7 @@ export default function CustomerCartPage() {
                         >
                           <Minus className="w-3.5 h-3.5 text-gray-600" />
                         </button>
-                        <div className="w-10 h-8 flex items-center justify-center border-y border-gray-200 text-[14px] font-semibold text-gray-900">
+                        <div className="w-10 h-8 flex items-center justify-center border-y border-gray-200 text-sm md:text-base font-semibold text-gray-900">
                           {item.qty}
                         </div>
                         <button
@@ -190,13 +190,13 @@ export default function CustomerCartPage() {
                         </button>
                       </div>
 
-                      <span className="text-[15px] font-bold text-gray-900">
+                      <span className="text-base font-bold text-gray-900">
                         {formatINR(price * item.qty)}
                       </span>
 
                       <button
                         onClick={() => handleRemove(item.productId)}
-                        className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-red-500 transition-colors"
+                        className="flex items-center gap-1 text-xs md:text-sm text-gray-400 hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="hidden xs:inline">Remove</span>
@@ -210,7 +210,7 @@ export default function CustomerCartPage() {
             <div className="bg-white mt-2 px-4 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Ticket className="w-5 h-5" style={{ color: t.bluePrimary }} />
-                <span className="text-[14px] font-medium text-gray-900">
+                <span className="text-sm md:text-base font-medium text-gray-900">
                   Apply Coupon
                 </span>
               </div>
@@ -218,10 +218,10 @@ export default function CustomerCartPage() {
             </div>
 
             <div className="bg-white mt-2 px-4 py-4">
-              <h3 className="text-[16px] font-bold text-gray-900 mb-4">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4">
                 Price Details
               </h3>
-              <div className="space-y-2.5 text-[14px]">
+              <div className="space-y-2.5 text-sm md:text-base">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Price ({items.length} items)</span>
                   <span className="text-gray-900">{formatINR(totalOriginal)}</span>
@@ -248,14 +248,14 @@ export default function CustomerCartPage() {
                 </div>
                 <div className="border-t border-dashed border-gray-200 pt-3 mt-1">
                   <div className="flex justify-between">
-                    <span className="text-[15px] font-bold text-gray-900">Total Amount</span>
-                    <span className="text-[17px] font-bold text-gray-900">{formatINR(total)}</span>
+                    <span className="text-base font-bold text-gray-900">Total Amount</span>
+                    <span className="text-base md:text-lg font-bold text-gray-900">{formatINR(total)}</span>
                   </div>
                 </div>
               </div>
               {totalSavings > 0 && (
                 <div
-                  className="mt-3 py-2 px-3 rounded-lg text-[12px] font-medium"
+                  className="mt-3 py-2 px-3 rounded-lg text-xs md:text-sm font-medium"
                   style={{ background: "#E8F5E9", color: "#2E7D32" }}
                 >
                   You will save {formatINR(totalSavings)} on this order
@@ -266,21 +266,21 @@ export default function CustomerCartPage() {
             <div className="bg-white mt-2 px-4 py-4 flex items-center justify-around">
               <div className="flex flex-col items-center gap-1">
                 <ShieldCheck className="w-5 h-5 text-gray-400" />
-                <span className="text-[10px] text-gray-500 text-center leading-tight">
+                <span className="text-xs md:text-sm text-gray-500 text-center leading-tight">
                   Safe &<br />Secure
                 </span>
               </div>
               <div className="w-px h-8 bg-gray-200" />
               <div className="flex flex-col items-center gap-1">
                 <Truck className="w-5 h-5 text-gray-400" />
-                <span className="text-[10px] text-gray-500 text-center leading-tight">
+                <span className="text-xs md:text-sm text-gray-500 text-center leading-tight">
                   Free<br />Delivery
                 </span>
               </div>
               <div className="w-px h-8 bg-gray-200" />
               <div className="flex flex-col items-center gap-1">
                 <Tag className="w-5 h-5 text-gray-400" />
-                <span className="text-[10px] text-gray-500 text-center leading-tight">
+                <span className="text-xs md:text-sm text-gray-500 text-center leading-tight">
                   Best<br />Prices
                 </span>
               </div>
@@ -291,16 +291,16 @@ export default function CustomerCartPage() {
               style={{ borderColor: t.border }}
             >
               <div>
-                <span className="text-[18px] font-bold text-gray-900">
+                <span className="text-lg md:text-xl font-bold text-gray-900">
                   {formatINR(total)}
                 </span>
-                <button className="block text-[12px] font-medium" style={{ color: t.bluePrimary }}>
+                <button className="block text-xs md:text-sm font-medium" style={{ color: t.bluePrimary }}>
                   View price details
                 </button>
               </div>
               <Link
                 href="/checkout"
-                className="rounded-lg px-8 py-3 text-[15px] font-bold transition-all active:scale-95 shadow-md"
+                className="rounded-lg px-8 py-3 text-base font-bold transition-all active:scale-95 shadow-md"
                 style={{ background: t.yellowCta, color: t.ctaText }}
               >
                 Place Order

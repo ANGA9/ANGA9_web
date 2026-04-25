@@ -217,7 +217,7 @@ export default function SellerLoginPage() {
       <button
         type="button"
         onClick={() => switchTab("email")}
-        className={`flex items-center gap-2 px-4 py-3 text-[14px] font-semibold transition-all border-b-2 ${
+        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
           tab === "email"
             ? "border-[#1A6FD4] text-[#1A6FD4]"
             : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
@@ -229,7 +229,7 @@ export default function SellerLoginPage() {
       <button
         type="button"
         onClick={() => switchTab("phone")}
-        className={`flex items-center gap-2 px-4 py-3 text-[14px] font-semibold transition-all border-b-2 ${
+        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
           tab === "phone"
             ? "border-[#1A6FD4] text-[#1A6FD4]"
             : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
@@ -245,7 +245,7 @@ export default function SellerLoginPage() {
   const emailForm = (
     <form onSubmit={handleEmailSubmit} className="space-y-5">
       <div>
-        <label className="block text-[13px] font-medium text-[#4B5563] mb-2">
+        <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
           Email Address
         </label>
         <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
@@ -266,14 +266,14 @@ export default function SellerLoginPage() {
 
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
-          <p className="text-[13px] text-red-600">{error}</p>
+          <p className="text-sm md:text-base text-red-600">{error}</p>
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
       >
         {loading ? (
           <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
@@ -294,7 +294,7 @@ export default function SellerLoginPage() {
   const phoneForm = (
     <div className="space-y-5">
       <div>
-        <label className="block text-[13px] font-medium text-[#4B5563] mb-2">
+        <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
           Mobile Number
         </label>
         <div className="flex items-center rounded-xl border border-[#E8EEF4] bg-[#F3F4F6] overflow-hidden opacity-60">
@@ -316,7 +316,7 @@ export default function SellerLoginPage() {
       </div>
 
       <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3">
-        <p className="text-[13px] text-[#4B5563] text-center">
+        <p className="text-sm md:text-base text-[#4B5563] text-center">
           <Phone className="w-4 h-4 inline-block mr-1.5 text-[#1A6FD4] -mt-0.5" />
           Phone login will be available soon. Please use email for now.
         </p>
@@ -324,7 +324,7 @@ export default function SellerLoginPage() {
 
       <button
         disabled
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-sm bg-[#9CA3AF] cursor-not-allowed"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm bg-[#9CA3AF] cursor-not-allowed"
       >
         Coming Soon
       </button>
@@ -337,7 +337,7 @@ export default function SellerLoginPage() {
       <button
         type="button"
         onClick={() => { setStep("input"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-        className="flex items-center gap-1.5 text-[13px] font-medium text-[#1A6FD4] hover:text-[#155bb5] transition-colors mb-1"
+        className="flex items-center gap-1.5 text-sm md:text-base font-medium text-[#1A6FD4] hover:text-[#155bb5] transition-colors mb-1"
       >
         <ArrowLeft className="w-4 h-4" />
         {tab === "email" ? "Change email" : "Change number"}
@@ -349,7 +349,7 @@ export default function SellerLoginPage() {
         ) : (
           <Phone className="w-4 h-4 text-[#1A6FD4]" />
         )}
-        <p className="text-[13px] text-[#4B5563]">
+        <p className="text-sm md:text-base text-[#4B5563]">
           OTP sent to{" "}
           <span className="font-semibold text-[#1A1A2E]">
             {tab === "email" ? email : `+91 ${phone}`}
@@ -376,14 +376,14 @@ export default function SellerLoginPage() {
 
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
-          <p className="text-[13px] text-red-600">{error}</p>
+          <p className="text-sm md:text-base text-red-600">{error}</p>
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
       >
         {loading ? (
           <span className="flex items-center gap-2">{spinner} Verifying...</span>
@@ -423,8 +423,8 @@ export default function SellerLoginPage() {
       <div className="flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
           <div className="mb-2">
-            <h2 className="text-[22px] font-bold text-[#1A1A2E] mb-1">{heading}</h2>
-            <p className="text-[14px] text-[#4B5563]">{subheading}</p>
+            <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
+            <p className="text-sm md:text-base text-[#4B5563]">{subheading}</p>
           </div>
           {step === "input" && tabs}
           {formContent}
@@ -443,7 +443,7 @@ export default function SellerLoginPage() {
             <a
               href="/seller/sell-on-anga9"
               className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: 15 }}
+              style={{ fontSize: '16px' }}
             >
               <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Sell on ANGA9
@@ -451,7 +451,7 @@ export default function SellerLoginPage() {
             <a
               href="#"
               className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: 15 }}
+              style={{ fontSize: '16px' }}
             >
               <Download style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Download App
@@ -474,12 +474,12 @@ export default function SellerLoginPage() {
                 <div className="mb-8">
                   <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
                     <Store className="w-4 h-4 text-white" />
-                    <span className="text-[13px] font-semibold text-white">Seller Portal</span>
+                    <span className="text-sm md:text-base font-semibold text-white">Seller Portal</span>
                   </div>
-                  <h2 className="text-[28px] font-bold text-white leading-tight mb-4">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
                     Manage your wholesale business on ANGA9
                   </h2>
-                  <p className="text-[15px] text-white/80 leading-relaxed max-w-[350px]">
+                  <p className="text-base text-white/80 leading-relaxed max-w-[350px]">
                     List products, track orders, and grow your revenue with India&apos;s fastest growing B2B marketplace.
                   </p>
                 </div>
@@ -494,8 +494,8 @@ export default function SellerLoginPage() {
                         <ShieldCheck className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-[14px] font-semibold text-white">{item.label}</p>
-                        <p className="text-[12px] text-white/60">{item.desc}</p>
+                        <p className="text-sm md:text-base font-semibold text-white">{item.label}</p>
+                        <p className="text-xs md:text-sm text-white/60">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -506,8 +506,8 @@ export default function SellerLoginPage() {
             {/* Right panel — Login form */}
             <div className="flex-1 flex flex-col justify-center px-12 py-10">
               <div className="mb-4">
-                <h1 className="text-[28px] font-bold text-[#1A1A2E] mb-2">{desktopHeading}</h1>
-                <p className="text-[15px] text-[#4B5563] leading-relaxed">{desktopSubheading}</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-[#1A1A2E] mb-2">{desktopHeading}</h1>
+                <p className="text-base text-[#4B5563] leading-relaxed">{desktopSubheading}</p>
               </div>
               {step === "input" && tabs}
               {formContent}

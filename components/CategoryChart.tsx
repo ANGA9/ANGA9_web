@@ -73,14 +73,14 @@ export default function CategoryChart() {
             type="number"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
+            tick={{ fill: "#6B7280", fontSize: '12px' }}
           />
           <YAxis
             type="category"
             dataKey="category"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
+            tick={{ fill: "#6B7280", fontSize: '12px' }}
             width={120}
           />
           <Tooltip content={<CustomTooltip />} />

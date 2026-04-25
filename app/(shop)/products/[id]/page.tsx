@@ -218,7 +218,7 @@ export default function ProductDetailPage() {
   return (
     <div className="py-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-[13px] mb-6 flex-wrap" style={{ color: t.textMuted }}>
+      <nav className="flex items-center gap-1.5 text-sm md:text-base mb-6 flex-wrap" style={{ color: t.textMuted }}>
         <Link href="/" className="hover:underline" style={{ color: t.bluePrimary }}>
           Home
         </Link>
@@ -237,7 +237,7 @@ export default function ProductDetailPage() {
       {/* Back button (mobile) */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-[13px] font-medium mb-4 md:hidden"
+        className="flex items-center gap-1.5 text-sm md:text-base font-medium mb-4 md:hidden"
         style={{ color: t.bluePrimary }}
       >
         <ArrowLeft className="w-4 h-4" />
@@ -267,7 +267,7 @@ export default function ProductDetailPage() {
 
             {discount > 0 && (
               <span
-                className="absolute top-4 right-4 rounded-lg text-[13px] font-bold text-white px-3 py-1"
+                className="absolute top-4 right-4 rounded-lg text-sm md:text-base font-bold text-white px-3 py-1"
                 style={{ background: t.bluePrimary }}
               >
                 -{discount}%
@@ -300,7 +300,7 @@ export default function ProductDetailPage() {
           {/* Category */}
           {product.categories && (
             <span
-              className="inline-block rounded-full px-3 py-0.5 text-[11px] font-medium mb-3"
+              className="inline-block rounded-full px-3 py-0.5 text-xs md:text-sm font-medium mb-3"
               style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}
             >
               {product.categories.name}
@@ -308,13 +308,13 @@ export default function ProductDetailPage() {
           )}
 
           {/* Name */}
-          <h1 className="font-bold leading-tight mb-2" style={{ color: t.textPrimary, fontSize: 24 }}>
+          <h1 className="font-bold leading-tight mb-2" style={{ color: t.textPrimary, fontSize: '30px' }}>
             {product.name}
           </h1>
 
           {/* Price */}
           <div className="flex items-baseline gap-3 mb-4">
-            <span className="font-bold" style={{ color: t.textPrimary, fontSize: 28 }}>
+            <span className="font-bold" style={{ color: t.textPrimary, fontSize: '36px' }}>
               {formatINR(currentPrice)}
             </span>
             {discount > 0 && (
@@ -343,7 +343,7 @@ export default function ProductDetailPage() {
               }}
             />
             <span
-              className="text-[13px] font-medium"
+              className="text-sm md:text-base font-medium"
               style={{
                 color:
                   stock.status === "in"
@@ -366,7 +366,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Min order */}
-          <p className="text-[13px] mb-5" style={{ color: t.textSecondary }}>
+          <p className="text-sm md:text-base mb-5" style={{ color: t.textSecondary }}>
             Min order: {product.min_order_qty} {product.unit}
             {product.min_order_qty > 1 ? "s" : ""}
           </p>
@@ -374,7 +374,7 @@ export default function ProductDetailPage() {
           {/* Variants */}
           {variants.length > 0 && (
             <div className="mb-5">
-              <p className="text-[13px] font-semibold mb-2" style={{ color: t.textPrimary }}>
+              <p className="text-sm md:text-base font-semibold mb-2" style={{ color: t.textPrimary }}>
                 Variants
               </p>
               <div className="flex flex-wrap gap-2">
@@ -382,7 +382,7 @@ export default function ProductDetailPage() {
                   <button
                     key={v.id}
                     onClick={() => setSelectedVariant(v.id)}
-                    className="rounded-lg border px-4 py-2 text-[13px] font-medium transition-colors"
+                    className="rounded-lg border px-4 py-2 text-sm md:text-base font-medium transition-colors"
                     style={{
                       borderColor: selectedVariant === v.id ? t.bluePrimary : t.border,
                       background: selectedVariant === v.id ? `${t.bluePrimary}10` : "#FFFFFF",
@@ -391,7 +391,7 @@ export default function ProductDetailPage() {
                   >
                     {v.name || v.sku}
                     {v.price_offset !== 0 && (
-                      <span className="ml-1 text-[11px]" style={{ color: t.textMuted }}>
+                      <span className="ml-1 text-xs md:text-sm" style={{ color: t.textMuted }}>
                         ({v.price_offset > 0 ? "+" : ""}
                         {formatINR(v.price_offset)})
                       </span>
@@ -404,7 +404,7 @@ export default function ProductDetailPage() {
 
           {/* Quantity Picker */}
           <div className="mb-6">
-            <p className="text-[13px] font-semibold mb-2" style={{ color: t.textPrimary }}>
+            <p className="text-sm md:text-base font-semibold mb-2" style={{ color: t.textPrimary }}>
               Quantity
             </p>
             <div
@@ -419,7 +419,7 @@ export default function ProductDetailPage() {
                 <Minus className="w-4 h-4" style={{ color: t.textSecondary }} />
               </button>
               <span
-                className="flex items-center justify-center w-12 h-10 text-[15px] font-semibold border-x"
+                className="flex items-center justify-center w-12 h-10 text-base font-semibold border-x"
                 style={{ borderColor: t.border, color: t.textPrimary }}
               >
                 {quantity}
@@ -440,7 +440,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleAddToCart}
               disabled={adding || stock.status === "out"}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
               style={{
                 background: added ? t.inStock : stock.status === "out" ? t.textMuted : "#FFFFFF",
                 color: added ? "#FFFFFF" : t.textPrimary,
@@ -473,7 +473,7 @@ export default function ProductDetailPage() {
                 }
               }}
               disabled={adding || stock.status === "out"}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
               style={{
                 background: stock.status === "out" ? t.textMuted : "#9C27B0",
                 color: "#FFFFFF",
@@ -488,11 +488,11 @@ export default function ProductDetailPage() {
           {/* Description */}
           {product.description && (
             <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
-              <h2 className="font-semibold text-[15px] mb-3" style={{ color: t.textPrimary }}>
+              <h2 className="font-semibold text-base mb-3" style={{ color: t.textPrimary }}>
                 Description
               </h2>
               <div
-                className="text-[14px] leading-relaxed whitespace-pre-wrap"
+                className="text-sm md:text-base leading-relaxed whitespace-pre-wrap"
                 style={{ color: t.textSecondary }}
               >
                 {product.description}
@@ -507,7 +507,7 @@ export default function ProductDetailPage() {
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full px-3 py-1 text-[11px] font-medium"
+                    className="rounded-full px-3 py-1 text-xs md:text-sm font-medium"
                     style={{ background: t.bgBlueTint, color: t.bluePrimary }}
                   >
                     {tag}

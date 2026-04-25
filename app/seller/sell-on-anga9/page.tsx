@@ -53,7 +53,7 @@ export default function SellerLandingPage() {
 
           <div className="hidden items-center gap-8 lg:flex">
             {navLinks.map((item) => (
-              <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] transition-all hover:text-[#1A6FD4] pb-1 border-b-2 border-transparent hover:border-[#1A6FD4]">
+              <Link key={item.name} href={item.href} className="text-base font-medium text-[#4B5563] transition-all hover:text-[#1A6FD4] pb-1 border-b-2 border-transparent hover:border-[#1A6FD4]">
                 {item.name}
               </Link>
             ))}
@@ -93,19 +93,19 @@ export default function SellerLandingPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
+              <span className="text-xs md:text-sm sm:text-sm md:text-base font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
                 India&apos;s Leading B2B Marketplace
               </span>
-              <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-6xl font-bold leading-[1.15] text-[#1A1A2E]">
+              <h1 className="mb-4 sm:mb-6 text-3xl md:text-4xl sm:text-[36px] md:text-5xl lg:text-6xl font-bold leading-[1.15] text-[#1A1A2E]">
                 Sell online to Crores of Customers at{" "}
                 <span className="text-[#1A6FD4]">0% Commission</span>
               </h1>
 
-              <p className="mb-5 sm:mb-6 text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed max-w-lg">
+              <p className="mb-5 sm:mb-6 text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed max-w-lg">
                 Become an ANGA9 seller and grow your wholesale business across India. Reach bulk buyers, retailers, and resellers on the fastest growing B2B platform.
               </p>
 
-              <div className="mb-5 sm:mb-6 flex flex-wrap items-center gap-3 sm:gap-4 text-[13px] sm:text-[14px] text-[#4B5563]">
+              <div className="mb-5 sm:mb-6 flex flex-wrap items-center gap-3 sm:gap-4 text-sm md:text-base sm:text-sm md:text-base text-[#4B5563]">
                 <span className="inline-flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-[#22C55E]" /> Free Registration
                 </span>
@@ -118,8 +118,8 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="mb-6 sm:mb-8 flex items-start sm:items-center gap-3 bg-white p-3 rounded-xl border border-[#E8EEF4]">
-                <span className="bg-[#FF4D4D] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 sm:mt-0">NEW</span>
-                <p className="text-[12px] sm:text-[13px] text-[#4B5563]">
+                <span className="bg-[#FF4D4D] text-white text-xs md:text-sm font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 sm:mt-0">NEW</span>
+                <p className="text-xs md:text-sm sm:text-sm md:text-base text-[#4B5563]">
                   Join India&apos;s fastest growing B2B marketplace. List your products, reach bulk buyers, and scale your wholesale business.
                 </p>
               </div>
@@ -153,8 +153,8 @@ export default function SellerLandingPage() {
             ].map(({ icon: Icon, value, label }) => (
               <div key={label} className="flex flex-col items-start p-4 sm:p-6 bg-[#F8FBFF] rounded-xl border border-[#E8EEF4]">
                 <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#1A6FD4] mb-2 sm:mb-3" />
-                <p className="mb-1 text-[22px] sm:text-[28px] font-extrabold text-[#1A6FD4]">{value}</p>
-                <p className="text-[13px] sm:text-[15px] font-medium text-[#1A1A2E] leading-snug">{label}</p>
+                <p className="mb-1 text-xl md:text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A6FD4]">{value}</p>
+                <p className="text-sm md:text-base sm:text-base font-medium text-[#1A1A2E] leading-snug">{label}</p>
               </div>
             ))}
           </div>
@@ -166,11 +166,11 @@ export default function SellerLandingPage() {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="grid gap-16 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-5 lg:sticky lg:top-32">
-              <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
                 Why Suppliers Love ANGA9
               </h2>
               <div className="h-1 w-16 bg-[#1A6FD4] mb-8 rounded-full" />
-              <p className="text-[#6B7280] text-[17px] leading-relaxed max-w-[400px] mb-8">
+              <p className="text-[#6B7280] text-base md:text-lg leading-relaxed max-w-[400px] mb-8">
                 All the benefits that come with selling on ANGA9 are designed to
                 help you sell more, and make it easier to grow your business.
               </p>
@@ -232,9 +232,9 @@ export default function SellerLandingPage() {
                       >
                         <Icon className="h-6 w-6" />
                       </div>
-                      <h3 className="text-[20px] font-bold text-[#1A1A2E]">{title}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">{title}</h3>
                     </div>
-                    <p className="text-[#6B7280] text-[16px] leading-relaxed ml-[60px] max-md:ml-0">
+                    <p className="text-[#6B7280] text-base md:text-lg leading-relaxed ml-[60px] max-md:ml-0">
                       {desc}
                     </p>
                   </div>
@@ -249,7 +249,7 @@ export default function SellerLandingPage() {
       <section className="bg-[#F8FBFF] py-20 lg:py-28">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight uppercase">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight uppercase">
               How It Works
             </h2>
             <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mt-4 rounded-full" />
@@ -270,11 +270,11 @@ export default function SellerLandingPage() {
                   <div className="w-[60px] h-[60px] rounded-full bg-[#1A6FD4] text-white flex items-center justify-center shadow-lg mb-4 ring-[8px] ring-[#F8FBFF]">
                     <item.icon className="h-6 w-6" />
                   </div>
-                  <span className="text-[12px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-1">
+                  <span className="text-xs md:text-sm font-bold text-[#1A6FD4] uppercase tracking-wider mb-1">
                     Step {item.step}
                   </span>
-                  <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-2">{item.title}</h4>
-                  <p className="text-[14px] text-[#6B7280] leading-relaxed max-w-[200px] mx-auto">
+                  <h4 className="text-lg md:text-xl font-bold text-[#1A1A2E] mb-2">{item.title}</h4>
+                  <p className="text-sm md:text-base text-[#6B7280] leading-relaxed max-w-[200px] mx-auto">
                     {item.desc}
                   </p>
                 </div>
@@ -288,11 +288,11 @@ export default function SellerLandingPage() {
       <section className="py-20 lg:py-28 bg-white border-t border-[#E8EEF4]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
               Grow Your Business With ANGA9
             </h2>
             <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
-            <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">
+            <p className="text-[#6B7280] text-base md:text-lg max-w-[500px] mx-auto">
               Access exclusive tools and insights tailored directly to boost your
               online enterprise.
             </p>
@@ -332,8 +332,8 @@ export default function SellerLandingPage() {
                 <div className={`w-12 h-12 rounded-xl ${color} flex items-center justify-center mb-6`}>
                   <Icon className="h-6 w-6" />
                 </div>
-                <h4 className="text-[18px] font-bold text-[#1A1A2E] mb-3">{title}</h4>
-                <p className="text-[#6B7280] text-[15px] leading-relaxed">{desc}</p>
+                <h4 className="text-lg md:text-xl font-bold text-[#1A1A2E] mb-3">{title}</h4>
+                <p className="text-[#6B7280] text-base leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -344,11 +344,11 @@ export default function SellerLandingPage() {
       <section className="py-20 lg:py-28 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-[32px] font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">
               Seller Success Stories
             </h2>
             <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
-            <p className="text-[#6B7280] text-[17px] max-w-[500px] mx-auto">
+            <p className="text-[#6B7280] text-base md:text-lg max-w-[500px] mx-auto">
               Real sellers, real growth. Here&apos;s what our top suppliers have
               to say.
             </p>
@@ -402,16 +402,16 @@ export default function SellerLandingPage() {
                     <Users className="h-8 w-8 text-[#1A1A2E]" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#1A1A2E] text-[16px]">{story.name}</p>
-                    <p className="text-[13px] text-[#6B7280]">{story.business}</p>
+                    <p className="font-bold text-[#1A1A2E] text-base md:text-lg">{story.name}</p>
+                    <p className="text-sm md:text-base text-[#6B7280]">{story.business}</p>
                   </div>
                 </div>
-                <p className="text-[#4B5563] text-[15px] leading-relaxed flex-1 mb-5">
+                <p className="text-[#4B5563] text-base leading-relaxed flex-1 mb-5">
                   &ldquo;{story.quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-2 pt-4 border-t border-[#E8EEF4]">
                   <TrendingUp className="h-4 w-4 text-[#22C55E]" />
-                  <span className="text-[13px] font-bold text-[#22C55E]">{story.growth}</span>
+                  <span className="text-sm md:text-base font-bold text-[#22C55E]">{story.growth}</span>
                   <div className="ml-auto flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((s) => (
                       <Star key={s} className="h-3.5 w-3.5 text-[#FFCC00] fill-[#FFCC00]" />
@@ -439,7 +439,7 @@ export default function SellerLandingPage() {
                 <div className="w-12 h-12 rounded-full bg-[#1A6FD4]/5 flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-[#1A6FD4] group-hover:text-white">
                   <Icon className="h-6 w-6" />
                 </div>
-                <span className="text-[14px] font-semibold text-[#4B5563] text-center whitespace-nowrap">{label}</span>
+                <span className="text-sm md:text-base font-semibold text-[#4B5563] text-center whitespace-nowrap">{label}</span>
               </div>
             ))}
           </div>
@@ -462,13 +462,13 @@ export default function SellerLandingPage() {
                   style={{ objectFit: "contain" }}
                 />
               </Link>
-              <p className="mb-8 max-w-sm text-[17px] leading-relaxed text-[#4B5563]">
+              <p className="mb-8 max-w-sm text-base md:text-lg leading-relaxed text-[#4B5563]">
                 Sell your products to crores of customers on ANGA9 at 0%
                 commission
               </p>
               <Link
                 href="/seller/login"
-                className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#6C47FF] px-8 text-[16px] font-bold text-white shadow-lg shadow-[#6C47FF]/20 transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
+                className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#6C47FF] px-8 text-base md:text-lg font-bold text-white shadow-lg shadow-[#6C47FF]/20 transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
               >
                 Start Selling
               </Link>
@@ -476,7 +476,7 @@ export default function SellerLandingPage() {
 
             {/* Quick Links Column */}
             <div className="lg:col-span-3">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">
                 Sell on ANGA9
               </h4>
               <ul className="space-y-4">
@@ -489,7 +489,7 @@ export default function SellerLandingPage() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-[#4B5563] transition-colors hover:text-[#1A6FD4]"
+                      className="text-base text-[#4B5563] transition-colors hover:text-[#1A6FD4]"
                     >
                       {link.label}
                     </Link>
@@ -500,12 +500,12 @@ export default function SellerLandingPage() {
 
             {/* Contact Column */}
             <div className="lg:col-span-4">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">
                 Contact Us
               </h4>
               <Link
                 href="mailto:sell@anga9.com"
-                className="mb-6 block text-[16px] font-medium text-[#4B5563] hover:text-[#1A6FD4]"
+                className="mb-6 block text-base md:text-lg font-medium text-[#4B5563] hover:text-[#1A6FD4]"
               >
                 sell@anga9.com
               </Link>
@@ -518,7 +518,7 @@ export default function SellerLandingPage() {
                 ].map((social) => (
                   <div
                     key={social.icon}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-[14px] font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-sm md:text-base font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}
                   >
                     {social.icon}
                   </div>
@@ -528,7 +528,7 @@ export default function SellerLandingPage() {
           </div>
 
           <div className="mt-20 border-t border-[#E8EEF4] pt-10 text-center">
-            <p className="text-[14px] text-[#6B7280]">
+            <p className="text-sm md:text-base text-[#6B7280]">
               &copy; 2024-25 ANGA9 Inc. All Rights Reserved.
             </p>
           </div>

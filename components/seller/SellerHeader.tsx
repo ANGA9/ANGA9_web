@@ -15,13 +15,13 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
       <Link href="/" className="shrink-0">
         <Image src="/anga9-logo.png" alt="ANGA9" width={90} height={30} priority style={{ objectFit: "contain" }} />
       </Link>
-      <span className="ml-2 text-[11px] font-bold text-[#1A6FD4] bg-[#EAF2FF] px-2 py-0.5 rounded hidden sm:inline">Seller</span>
+      <span className="ml-2 text-xs md:text-sm font-bold text-[#1A6FD4] bg-[#EAF2FF] px-2 py-0.5 rounded hidden sm:inline">Seller</span>
       <div className="flex-1" />
       <div className="mr-4">
         <NotificationBell portalType="seller" />
       </div>
-      <span className="text-[13px] text-[#4B5563] mr-4 hidden sm:inline">{user?.email}</span>
-      <button onClick={logout} className="flex items-center gap-1.5 text-[13px] font-medium text-[#9CA3AF] hover:text-[#EF4444] transition-colors">
+      <span className="text-sm md:text-base text-[#4B5563] mr-4 hidden sm:inline">{user?.email}</span>
+      <button onClick={logout} className="flex items-center gap-1.5 text-sm md:text-base font-medium text-[#9CA3AF] hover:text-[#EF4444] transition-colors">
         <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">Logout</span>
       </button>
     </header>

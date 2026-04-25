@@ -40,7 +40,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm md:text-base font-medium transition-colors ${
                   active
                     ? "bg-[#EAF2FF] text-[#1A6FD4]"
                     : "text-[#4B5563] hover:bg-[#F8FBFF] hover:text-[#1A1A2E]"
@@ -53,7 +53,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
           })}
         </nav>
         <div className="px-3 pb-4">
-          <div className="text-[11px] text-[#9CA3AF] text-center">ANGA9 Seller Portal</div>
+          <div className="text-xs md:text-sm text-[#9CA3AF] text-center">ANGA9 Seller Portal</div>
         </div>
       </aside>
     </>

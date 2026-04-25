@@ -77,14 +77,14 @@ export default function ProductsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[20px] font-bold text-[#1A1A2E]">Products</h1>
-          <p className="text-[13px] text-[#9CA3AF]">
+          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Products</h1>
+          <p className="text-sm md:text-base text-[#9CA3AF]">
             {total} product{total !== 1 ? "s" : ""}
           </p>
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-[13px] font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
+          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>
@@ -93,11 +93,11 @@ export default function ProductsPage() {
       {products.length === 0 ? (
         <div className="bg-white rounded-xl border border-[#E8EEF4] p-12 text-center">
           <Package className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-          <h2 className="text-[16px] font-bold text-[#1A1A2E] mb-2">No Products Yet</h2>
-          <p className="text-[13px] text-[#9CA3AF] mb-6">Start by adding your first product to list on ANGA9</p>
+          <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-2">No Products Yet</h2>
+          <p className="text-sm md:text-base text-[#9CA3AF] mb-6">Start by adding your first product to list on ANGA9</p>
           <Link
             href="/seller/dashboard/products/new"
-            className="inline-flex items-center gap-2 h-10 px-5 bg-[#1A6FD4] text-white text-[13px] font-semibold rounded-lg hover:bg-[#155bb5] transition-colors"
+            className="inline-flex items-center gap-2 h-10 px-5 bg-[#1A6FD4] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#155bb5] transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Your First Product
           </Link>
@@ -105,7 +105,7 @@ export default function ProductsPage() {
       ) : (
         <div className="bg-white rounded-xl border border-[#E8EEF4] overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
+            <table className="w-full text-sm md:text-base">
               <thead>
                 <tr className="border-b border-[#E8EEF4] bg-[#F8FBFF]">
                   <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Product</th>
@@ -128,7 +128,7 @@ export default function ProductsPage() {
                     <td className="px-4 py-3">
                       <div className="relative inline-block">
                         <span
-                          className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold border cursor-pointer transition-opacity ${
+                          className={`inline-flex px-2 py-0.5 rounded-full text-xs md:text-sm font-semibold border cursor-pointer transition-opacity ${
                             STATUS_BADGE[p.status] || STATUS_BADGE.draft
                           }`}
                           onMouseEnter={() => p.status === "rejected" && setHoveredRejected(p.id)}
@@ -139,7 +139,7 @@ export default function ProductsPage() {
 
                         {/* Rejection Tooltip */}
                         {p.status === "rejected" && hoveredRejected === p.id && p.review_notes && (
-                          <div className="absolute bottom-full left-0 mb-2 w-64 bg-[#1A1A2E] text-white text-[12px] rounded-lg p-3 shadow-lg z-50 pointer-events-none">
+                          <div className="absolute bottom-full left-0 mb-2 w-64 bg-[#1A1A2E] text-white text-xs md:text-sm rounded-lg p-3 shadow-lg z-50 pointer-events-none">
                             <p className="font-semibold mb-2">Rejection Reason:</p>
                             <p className="text-white/90 leading-relaxed">{p.review_notes}</p>
                             <div className="absolute top-full left-4 w-2 h-2 bg-[#1A1A2E] transform rotate-45"></div>

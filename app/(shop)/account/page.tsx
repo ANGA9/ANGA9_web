@@ -55,7 +55,7 @@ function MenuItem({
   return (
     <button className="flex items-center w-full bg-white px-4 py-3.5 hover:bg-gray-50 transition-colors relative">
       <Icon className="w-[22px] h-[22px] text-black" />
-      <span className="ml-4 text-[15px] font-normal text-gray-800 flex-1 text-left">
+      <span className="ml-4 text-base font-normal text-gray-800 flex-1 text-left">
         {label}
       </span>
       <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -139,7 +139,7 @@ export default function CustomerAccountPage() {
           {/* 2. Login Banner / Profile Summary */}
           {!isLoggedIn ? (
             <div className="bg-white px-4 py-5 flex items-center justify-between mb-2">
-              <span className="text-[15px] font-medium text-gray-900 w-2/3 leading-tight">
+              <span className="text-base font-medium text-gray-900 w-2/3 leading-tight">
                 Log in for exclusive offers
               </span>
               <Link
@@ -159,8 +159,8 @@ export default function CustomerAccountPage() {
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-gray-900 truncate">{displayName}</p>
-                <p className="text-[13px] text-gray-500 truncate">{displayEmail}</p>
+                <p className="text-base font-semibold text-gray-900 truncate">{displayName}</p>
+                <p className="text-sm md:text-base text-gray-500 truncate">{displayEmail}</p>
               </div>
             </div>
           )}
@@ -168,7 +168,7 @@ export default function CustomerAccountPage() {
           {/* 3. Account Settings Section */}
           <div className="bg-white mb-2 pb-2">
             <div className="px-4 py-4 pt-5">
-              <h2 className="text-[17px] font-bold text-gray-900">Account Settings</h2>
+              <h2 className="text-base md:text-lg font-bold text-gray-900">Account Settings</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={Bell} label="Notification Settings" />
@@ -179,7 +179,7 @@ export default function CustomerAccountPage() {
           {/* 4. Earn with ANGA Section */}
           <div className="bg-white mb-2 pb-2">
             <div className="px-4 py-4 pt-5">
-              <h2 className="text-[17px] font-bold text-gray-900">Earn with ANGA</h2>
+              <h2 className="text-base md:text-lg font-bold text-gray-900">Earn with ANGA</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={Store} label="Sell on ANGA" isLast />
@@ -189,7 +189,7 @@ export default function CustomerAccountPage() {
           {/* 5. Feedback & Information Section */}
           <div className="bg-white mb-3 pb-2 shadow-sm">
             <div className="px-4 py-4 pt-5">
-              <h2 className="text-[17px] font-bold text-gray-900">Feedback & Information</h2>
+              <h2 className="text-base md:text-lg font-bold text-gray-900">Feedback & Information</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={FileText} label="Terms, Policies and Licenses" />
@@ -319,7 +319,7 @@ export default function CustomerAccountPage() {
                 <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                   {profileFields.map((field) => (
                     <div key={field.label}>
-                      <p className="text-[11px] mb-0.5" style={{ color: t.textMuted }}>
+                      <p className="text-xs md:text-sm mb-0.5" style={{ color: t.textMuted }}>
                         {field.label}
                       </p>
                       <p className="text-sm" style={{ color: t.textPrimary }}>
@@ -364,7 +364,7 @@ export default function CustomerAccountPage() {
                           </span>
                           {addr.is_default && (
                             <span
-                              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                              className="rounded-full px-2 py-0.5 text-xs md:text-sm font-semibold"
                               style={{ background: t.bgBlueTint, color: t.bluePrimary }}
                             >
                               Default

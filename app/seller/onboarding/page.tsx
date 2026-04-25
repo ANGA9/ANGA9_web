@@ -195,10 +195,10 @@ export default function OnboardingPage() {
       {/* Progress stepper */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[13px] font-semibold text-[#1A6FD4]">
+          <p className="text-sm md:text-base font-semibold text-[#1A6FD4]">
             Step {step + 1} of 7
           </p>
-          <p className="text-[13px] text-[#9CA3AF]">{STEP_TITLES[step]}</p>
+          <p className="text-sm md:text-base text-[#9CA3AF]">{STEP_TITLES[step]}</p>
         </div>
         <div className="flex gap-1.5">
           {STEP_TITLES.map((_, i) => (
@@ -218,12 +218,12 @@ export default function OnboardingPage() {
               onClick={() => { if (i < step) setStep(i); }}
               className={`flex flex-col items-center gap-1.5 group ${i <= step ? "cursor-pointer" : "cursor-default"}`}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold transition-all ${
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold transition-all ${
                 i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#E8EEF4] text-[#9CA3AF]"
               }`}>
                 {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
               </div>
-              <span className={`text-[10px] font-medium max-w-[70px] text-center leading-tight ${
+              <span className={`text-xs md:text-sm font-medium max-w-[70px] text-center leading-tight ${
                 i <= step ? "text-[#1A1A2E]" : "text-[#9CA3AF]"
               }`}>{title}</span>
             </button>
@@ -233,10 +233,10 @@ export default function OnboardingPage() {
 
       {/* Card */}
       <div className="bg-white rounded-2xl border border-[#E8EEF4] shadow-[0_4px_24px_rgba(26,111,212,0.06)] p-6 sm:p-8">
-        <h2 className="text-[20px] sm:text-[24px] font-bold text-[#1A1A2E] mb-1">
+        <h2 className="text-xl md:text-2xl sm:text-2xl md:text-3xl font-bold text-[#1A1A2E] mb-1">
           {STEP_TITLES[step]}
         </h2>
-        <p className="text-[13px] text-[#9CA3AF] mb-6">
+        <p className="text-sm md:text-base text-[#9CA3AF] mb-6">
           {step === 6 ? "Review your information before submitting" : "Fill in the details below to continue"}
         </p>
 
@@ -244,7 +244,7 @@ export default function OnboardingPage() {
         {errors.length > 0 && (
           <div className="mb-5 rounded-lg bg-red-50 border border-red-100 px-4 py-3">
             {errors.map((e, i) => (
-              <p key={i} className="text-[13px] text-red-600">{e}</p>
+              <p key={i} className="text-sm md:text-base text-red-600">{e}</p>
             ))}
           </div>
         )}
@@ -258,7 +258,7 @@ export default function OnboardingPage() {
         <button
           onClick={handlePrev}
           disabled={step === 0}
-          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-[14px] font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none"
+          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none"
         >
           <ChevronLeft className="w-4 h-4" /> Previous
         </button>
@@ -266,7 +266,7 @@ export default function OnboardingPage() {
         <button
           onClick={saveProgress}
           disabled={saving}
-          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-[14px] font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60"
+          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Draft
@@ -275,7 +275,7 @@ export default function OnboardingPage() {
         {step < 6 ? (
           <button
             onClick={handleNext}
-            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#1A6FD4] text-[14px] font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
           >
             Next <ChevronRight className="w-4 h-4" />
           </button>
@@ -283,7 +283,7 @@ export default function OnboardingPage() {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#6C47FF] text-[14px] font-semibold text-white hover:bg-[#5A3AE0] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
+            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#6C47FF] text-sm md:text-base font-semibold text-white hover:bg-[#5A3AE0] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Verification

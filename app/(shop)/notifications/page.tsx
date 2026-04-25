@@ -132,17 +132,17 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="font-bold text-[20px]" style={{ color: t.textPrimary }}>
+          <h1 className="font-bold text-xl md:text-2xl" style={{ color: t.textPrimary }}>
             Notifications
           </h1>
-          <p className="text-[13px] mt-1" style={{ color: t.textMuted }}>
+          <p className="text-sm md:text-base mt-1" style={{ color: t.textMuted }}>
             {total} notification{total !== 1 ? "s" : ""}
           </p>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-medium transition-colors hover:bg-[#F8FBFF]"
+            className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm md:text-base font-medium transition-colors hover:bg-[#F8FBFF]"
             style={{ borderColor: t.border, color: t.bluePrimary }}
           >
             <CheckCheck className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function NotificationsPage() {
           <button
             key={tab}
             onClick={() => { setFilter(tab); setPage(1); }}
-            className="px-4 py-2.5 text-[13px] font-medium transition-colors border-b-2"
+            className="px-4 py-2.5 text-sm md:text-base font-medium transition-colors border-b-2"
             style={{
               borderColor: filter === tab ? t.bluePrimary : "transparent",
               color: filter === tab ? t.bluePrimary : t.textSecondary,
@@ -226,7 +226,7 @@ export default function NotificationsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <p
-                        className="text-[14px] leading-tight"
+                        className="text-sm md:text-base leading-tight"
                         style={{
                           color: t.textPrimary,
                           fontWeight: n.read ? 400 : 600,
@@ -242,19 +242,19 @@ export default function NotificationsPage() {
                       )}
                     </div>
                     <p
-                      className="text-[13px] mt-1"
+                      className="text-sm md:text-base mt-1"
                       style={{ color: t.textSecondary }}
                     >
                       {n.body}
                     </p>
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-[12px]" style={{ color: t.textMuted }}>
+                      <span className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                         {timeAgo(n.sent_at)}
                       </span>
                       {!n.read && (
                         <button
                           onClick={() => markAsRead(n.id)}
-                          className="flex items-center gap-1 text-[12px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="flex items-center gap-1 text-xs md:text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
                           style={{ color: t.bluePrimary }}
                         >
                           <Check className="w-3.5 h-3.5" />
@@ -263,7 +263,7 @@ export default function NotificationsPage() {
                       )}
                       <button
                         onClick={() => deleteNotification(n.id)}
-                        className="flex items-center gap-1 text-[12px] opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="flex items-center gap-1 text-xs md:text-sm opacity-0 group-hover:opacity-100 transition-opacity"
                         style={{ color: t.textMuted }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -287,7 +287,7 @@ export default function NotificationsPage() {
               >
                 <ChevronLeft className="w-4 h-4" style={{ color: t.textSecondary }} />
               </button>
-              <span className="text-[13px] px-2" style={{ color: t.textSecondary }}>
+              <span className="text-sm md:text-base px-2" style={{ color: t.textSecondary }}>
                 Page {page} of {totalPages}
               </span>
               <button

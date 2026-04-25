@@ -177,13 +177,13 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
             className="flex items-center justify-between px-4 py-3 border-b"
             style={{ borderColor: t.border }}
           >
-            <h3 className="font-semibold text-[14px]" style={{ color: t.textPrimary }}>
+            <h3 className="font-semibold text-sm md:text-base" style={{ color: t.textPrimary }}>
               Notifications
             </h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="flex items-center gap-1 text-[11px] font-medium transition-colors hover:opacity-80"
+                className="flex items-center gap-1 text-xs md:text-sm font-medium transition-colors hover:opacity-80"
                 style={{ color: t.bluePrimary }}
               >
                 <CheckCheck className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 px-4">
                 <Bell className="w-8 h-8 mb-2" style={{ color: t.textMuted, opacity: 0.4 }} />
-                <p className="text-[13px]" style={{ color: t.textMuted }}>
+                <p className="text-sm md:text-base" style={{ color: t.textMuted }}>
                   No notifications yet
                 </p>
               </div>
@@ -237,7 +237,7 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <p
-                          className="text-[13px] leading-tight"
+                          className="text-sm md:text-base leading-tight"
                           style={{
                             color: t.textPrimary,
                             fontWeight: n.read ? 400 : 600,
@@ -253,19 +253,19 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
                         )}
                       </div>
                       <p
-                        className="text-[12px] mt-0.5 line-clamp-2"
+                        className="text-xs md:text-sm mt-0.5 line-clamp-2"
                         style={{ color: t.textSecondary }}
                       >
                         {n.body}
                       </p>
                       <div className="flex items-center gap-3 mt-1.5">
-                        <span className="text-[11px]" style={{ color: t.textMuted }}>
+                        <span className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                           {timeAgo(n.sent_at)}
                         </span>
                         {!n.read && (
                           <button
                             onClick={() => markAsRead(n.id)}
-                            className="text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="text-xs md:text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
                             style={{ color: t.bluePrimary }}
                           >
                             <Check className="w-3.5 h-3.5 inline mr-0.5" />
@@ -274,7 +274,7 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
                         )}
                         <button
                           onClick={() => deleteNotification(n.id, !n.read)}
-                          className="text-[11px] opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-xs md:text-sm opacity-0 group-hover:opacity-100 transition-opacity"
                           style={{ color: t.textMuted }}
                         >
                           <Trash2 className="w-3 h-3" />
@@ -291,7 +291,7 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
           <Link
             href={viewAllHref}
             onClick={() => setOpen(false)}
-            className="block text-center py-2.5 border-t text-[13px] font-medium transition-colors hover:bg-[#F8FBFF]"
+            className="block text-center py-2.5 border-t text-sm md:text-base font-medium transition-colors hover:bg-[#F8FBFF]"
             style={{ borderColor: t.border, color: t.bluePrimary }}
           >
             View all notifications

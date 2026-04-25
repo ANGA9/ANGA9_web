@@ -59,7 +59,7 @@ export default function SearchFilterStrip({
       >
         <button 
           onClick={() => setActiveModal("sort")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-[14px] md:text-[16px] font-semibold border-r hover:bg-gray-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold border-r hover:bg-gray-50 transition-colors"
           style={{ borderColor: t.border, color: t.textPrimary }}
         >
           <ArrowUpDown className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
@@ -67,15 +67,15 @@ export default function SearchFilterStrip({
         </button>
         <button 
           onClick={() => setActiveModal("category")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-[14px] md:text-[16px] font-semibold border-r hover:bg-gray-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold border-r hover:bg-gray-50 transition-colors"
           style={{ borderColor: t.border, color: t.textPrimary }}
         >
           Category
-          <span className="text-[10px] md:text-[12px] ml-1 text-gray-400">▼</span>
+          <span className="text-xs md:text-sm md:text-xs md:text-sm ml-1 text-gray-400">▼</span>
         </button>
         <button 
           onClick={() => setActiveModal("filters")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-[14px] md:text-[16px] font-semibold hover:bg-gray-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold hover:bg-gray-50 transition-colors"
           style={{ color: t.textPrimary }}
         >
           <SlidersHorizontal className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
@@ -94,7 +94,7 @@ export default function SearchFilterStrip({
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
           <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[400px] shadow-2xl">
             <div className="flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-[14px] md:text-[16px] uppercase tracking-wide" style={{ color: t.textPrimary }}>Sort By</h3>
+              <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Sort By</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
             <div className="p-2 md:p-3 overflow-y-auto">
@@ -102,7 +102,7 @@ export default function SearchFilterStrip({
                 <button
                   key={opt.value}
                   onClick={() => handleSortChange(opt.value)}
-                  className="w-full flex items-center justify-between p-4 md:p-3 md:rounded-xl text-[15px] hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-4 md:p-3 md:rounded-xl text-base hover:bg-gray-50 transition-colors"
                   style={{ color: t.textPrimary }}
                 >
                   {opt.label}
@@ -123,7 +123,7 @@ export default function SearchFilterStrip({
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
           <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[500px] shadow-2xl">
             <div className="flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-[14px] md:text-[16px] uppercase tracking-wide" style={{ color: t.textPrimary }}>Categories</h3>
+              <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Categories</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
@@ -144,15 +144,15 @@ export default function SearchFilterStrip({
                     />
                     {categoryParam === cat && <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />}
                   </div>
-                  <span className="text-[14px] md:text-[15px] group-hover:text-black transition-colors" style={{ color: t.textSecondary }}>{cat}</span>
+                  <span className="text-sm md:text-base md:text-base group-hover:text-black transition-colors" style={{ color: t.textSecondary }}>{cat}</span>
                 </label>
               ))}
             </div>
             <div className="p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
-              <span className="text-[13px] font-medium text-gray-500">1000+ Products</span>
+              <span className="text-sm md:text-base font-medium text-gray-500">1000+ Products</span>
               <button 
                 onClick={handleClose}
-                className="px-8 py-2.5 rounded-lg text-white font-bold text-[14px] shadow-sm hover:opacity-90 transition-opacity"
+                className="px-8 py-2.5 rounded-lg text-white font-bold text-sm md:text-base shadow-sm hover:opacity-90 transition-opacity"
                 style={{ background: t.bluePrimary }}
               >
                 Apply
@@ -168,7 +168,7 @@ export default function SearchFilterStrip({
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
           <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[700px] md:h-[600px] shadow-2xl">
             <div className="flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-[14px] md:text-[16px] uppercase tracking-wide" style={{ color: t.textPrimary }}>Filters</h3>
+              <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Filters</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
             <div className="flex-1 flex overflow-hidden">
@@ -177,7 +177,7 @@ export default function SearchFilterStrip({
                 {["Category", "Gender", "Color", "Fabric", "Size", "Price", "Rating", "Occasion", "Combo", "Discount"].map((tab, i) => (
                   <div 
                     key={tab} 
-                    className={`p-4 md:px-5 md:py-4 text-[13px] md:text-[14px] cursor-pointer transition-colors ${i === 0 ? "bg-white border-l-4 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+                    className={`p-4 md:px-5 md:py-4 text-sm md:text-base md:text-sm md:text-base cursor-pointer transition-colors ${i === 0 ? "bg-white border-l-4 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
                     style={{ 
                       borderLeftColor: i === 0 ? t.bluePrimary : "transparent",
                       color: i === 0 ? t.bluePrimary : undefined
@@ -189,10 +189,10 @@ export default function SearchFilterStrip({
               </div>
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-white">
-                <h4 className="font-bold text-[16px] mb-4">Category</h4>
+                <h4 className="font-bold text-base md:text-lg mb-4">Category</h4>
                 <div className="relative mb-5">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                  <input type="text" placeholder="Search categories..." className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border rounded-xl text-[14px] outline-none transition-colors" style={{ borderColor: t.border, focusBorderColor: t.bluePrimary }} />
+                  <input type="text" placeholder="Search categories..." className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors" style={{ borderColor: t.border, focusBorderColor: t.bluePrimary }} />
                 </div>
                 <div className="space-y-4">
                   {["Women T-shirts", "Women Tops And Tunics", "Analog Watches", "Appliance Covers", "Bangles & Bracelets"].map((cat) => (
@@ -212,7 +212,7 @@ export default function SearchFilterStrip({
                        />
                        {categoryParam === cat && <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />}
                      </div>
-                     <span className="text-[14px] md:text-[15px] group-hover:text-black transition-colors" style={{ color: t.textSecondary }}>{cat}</span>
+                     <span className="text-sm md:text-base md:text-base group-hover:text-black transition-colors" style={{ color: t.textSecondary }}>{cat}</span>
                    </label>
                   ))}
                 </div>
@@ -224,10 +224,10 @@ export default function SearchFilterStrip({
               </div>
             </div>
             <div className="p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
-              <span className="text-[13px] font-medium text-gray-500">1000+ Products</span>
+              <span className="text-sm md:text-base font-medium text-gray-500">1000+ Products</span>
               <button 
                 onClick={handleClose}
-                className="px-8 py-2.5 rounded-lg text-white font-bold text-[14px] shadow-sm hover:opacity-90 transition-opacity"
+                className="px-8 py-2.5 rounded-lg text-white font-bold text-sm md:text-base shadow-sm hover:opacity-90 transition-opacity"
                 style={{ background: t.bluePrimary }}
               >
                 Apply Filters

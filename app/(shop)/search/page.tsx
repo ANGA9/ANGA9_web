@@ -169,13 +169,13 @@ function SearchPageContent() {
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-[15px]" style={{ color: t.textPrimary }}>
+        <h3 className="font-semibold text-base" style={{ color: t.textPrimary }}>
           Filters
         </h3>
         {hasActiveFilters && (
           <button
             onClick={clearAllFilters}
-            className="text-[12px] font-medium"
+            className="text-xs md:text-sm font-medium"
             style={{ color: t.bluePrimary }}
           >
             Clear all
@@ -190,7 +190,7 @@ function SearchPageContent() {
             onClick={() => toggleSection("categories")}
             className="flex items-center justify-between w-full mb-3"
           >
-            <span className="text-[13px] font-semibold" style={{ color: t.textPrimary }}>
+            <span className="text-sm md:text-base font-semibold" style={{ color: t.textPrimary }}>
               Category
             </span>
             {expandedSections.categories ? (
@@ -212,7 +212,7 @@ function SearchPageContent() {
                   className="flex items-center justify-between w-full text-left py-1 px-2 rounded transition-colors hover:bg-gray-50"
                 >
                   <span
-                    className="text-[13px]"
+                    className="text-sm md:text-base"
                     style={{
                       color: categoryParam === cat.name ? t.bluePrimary : t.textSecondary,
                       fontWeight: categoryParam === cat.name ? 600 : 400,
@@ -220,7 +220,7 @@ function SearchPageContent() {
                   >
                     {cat.name}
                   </span>
-                  <span className="text-[11px]" style={{ color: t.textMuted }}>
+                  <span className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                     {cat.count}
                   </span>
                 </button>
@@ -236,7 +236,7 @@ function SearchPageContent() {
           onClick={() => toggleSection("price")}
           className="flex items-center justify-between w-full mb-3"
         >
-          <span className="text-[13px] font-semibold" style={{ color: t.textPrimary }}>
+          <span className="text-sm md:text-base font-semibold" style={{ color: t.textPrimary }}>
             Price Range
           </span>
           {expandedSections.price ? (
@@ -253,10 +253,10 @@ function SearchPageContent() {
                 placeholder={filters?.price_range?.min?.toString() || "Min"}
                 value={localMinPrice}
                 onChange={(e) => setLocalMinPrice(e.target.value)}
-                className="w-full h-9 rounded-lg border px-3 text-[13px] outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10"
+                className="w-full h-9 rounded-lg border px-3 text-sm md:text-base outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10"
                 style={{ borderColor: t.border, color: t.textPrimary }}
               />
-              <span className="text-[13px] shrink-0" style={{ color: t.textMuted }}>
+              <span className="text-sm md:text-base shrink-0" style={{ color: t.textMuted }}>
                 to
               </span>
               <input
@@ -264,13 +264,13 @@ function SearchPageContent() {
                 placeholder={filters?.price_range?.max?.toString() || "Max"}
                 value={localMaxPrice}
                 onChange={(e) => setLocalMaxPrice(e.target.value)}
-                className="w-full h-9 rounded-lg border px-3 text-[13px] outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10"
+                className="w-full h-9 rounded-lg border px-3 text-sm md:text-base outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10"
                 style={{ borderColor: t.border, color: t.textPrimary }}
               />
             </div>
             <button
               onClick={applyPriceFilter}
-              className="w-full h-8 rounded-lg text-[12px] font-semibold transition-colors hover:opacity-90"
+              className="w-full h-8 rounded-lg text-xs md:text-sm font-semibold transition-colors hover:opacity-90"
               style={{ background: t.bgBlueTint, color: t.bluePrimary }}
             >
               Apply
@@ -286,7 +286,7 @@ function SearchPageContent() {
             onClick={() => toggleSection("sellers")}
             className="flex items-center justify-between w-full mb-3"
           >
-            <span className="text-[13px] font-semibold" style={{ color: t.textPrimary }}>
+            <span className="text-sm md:text-base font-semibold" style={{ color: t.textPrimary }}>
               Sellers
             </span>
             {expandedSections.sellers ? (
@@ -302,10 +302,10 @@ function SearchPageContent() {
                   key={seller.name}
                   className="flex items-center justify-between py-1 px-2"
                 >
-                  <span className="text-[13px]" style={{ color: t.textSecondary }}>
+                  <span className="text-sm md:text-base" style={{ color: t.textSecondary }}>
                     {seller.name}
                   </span>
-                  <span className="text-[11px]" style={{ color: t.textMuted }}>
+                  <span className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                     {seller.count}
                   </span>
                 </div>
@@ -322,11 +322,11 @@ function SearchPageContent() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="font-bold text-[20px]" style={{ color: t.textPrimary }}>
+          <h1 className="font-bold text-xl md:text-2xl" style={{ color: t.textPrimary }}>
             {query ? `Results for "${query}"` : "All Products"}
           </h1>
           {!loading && (
-            <p className="text-[13px] mt-1" style={{ color: t.textMuted }}>
+            <p className="text-sm md:text-base mt-1" style={{ color: t.textMuted }}>
               {total} product{total !== 1 ? "s" : ""} found
             </p>
           )}
@@ -336,7 +336,7 @@ function SearchPageContent() {
           {/* Mobile filter toggle */}
           <button
             onClick={() => setShowMobileFilters(true)}
-            className="flex md:hidden items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-medium"
+            className="flex md:hidden items-center gap-1.5 rounded-lg border px-3 py-2 text-sm md:text-base font-medium"
             style={{ borderColor: t.border, color: t.textSecondary }}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -353,7 +353,7 @@ function SearchPageContent() {
           <select
             value={sortParam}
             onChange={(e) => updateUrl({ sort: e.target.value })}
-            className="rounded-lg border px-3 py-2 text-[13px] font-medium outline-none focus:border-[#1A6FD4]"
+            className="rounded-lg border px-3 py-2 text-sm md:text-base font-medium outline-none focus:border-[#1A6FD4]"
             style={{ borderColor: t.border, color: t.textSecondary, background: "#FFFFFF" }}
           >
             {SORT_OPTIONS.map((opt) => (
@@ -391,7 +391,7 @@ function SearchPageContent() {
               style={{ background: t.bgCard }}
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-[16px]" style={{ color: t.textPrimary }}>
+                <h3 className="font-bold text-base md:text-lg" style={{ color: t.textPrimary }}>
                   Filters
                 </h3>
                 <button onClick={() => setShowMobileFilters(false)}>
@@ -401,7 +401,7 @@ function SearchPageContent() {
               <FilterSidebar />
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="w-full mt-5 rounded-xl py-3 text-[14px] font-bold"
+                className="w-full mt-5 rounded-xl py-3 text-sm md:text-base font-bold"
                 style={{ background: t.yellowCta, color: t.ctaText }}
               >
                 Show Results
@@ -441,7 +441,7 @@ function SearchPageContent() {
                         params.set("page", String(page));
                         router.push(`/search?${params.toString()}`);
                       }}
-                      className="w-9 h-9 rounded-lg text-[13px] font-medium transition-colors"
+                      className="w-9 h-9 rounded-lg text-sm md:text-base font-medium transition-colors"
                       style={{
                         background: page === pageParam ? t.bluePrimary : "transparent",
                         color: page === pageParam ? "#FFFFFF" : t.textSecondary,

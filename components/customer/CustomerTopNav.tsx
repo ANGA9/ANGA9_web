@@ -139,7 +139,7 @@ export default function CustomerTopNav() {
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
             <button
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-              style={{ color: t.textSecondary, fontSize: 15 }}
+              style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
               Select Pincode
@@ -148,7 +148,7 @@ export default function CustomerTopNav() {
             <Link
               href="/seller/sell-on-anga9"
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-              style={{ color: t.textSecondary, fontSize: 15 }}
+              style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <Store style={{ width: 18, height: 18, color: t.bluePrimary }} />
               Sell on ANGA9
@@ -160,7 +160,7 @@ export default function CustomerTopNav() {
                 <Link
                   href="/account"
                   className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:opacity-80"
-                  style={{ color: t.bluePrimary, fontSize: 15 }}
+                  style={{ color: t.bluePrimary, fontSize: '16px' }}
                 >
                   <HandHeart style={{ width: 20, height: 20 }} />
                   <span>Hii, Let&apos;s Shop</span>
@@ -170,7 +170,7 @@ export default function CustomerTopNav() {
                   <Link
                     href="/login"
                     className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-                    style={{ color: t.textPrimary, fontSize: 15 }}
+                    style={{ color: t.textPrimary, fontSize: '16px' }}
                   >
                     <User style={{ width: 18, height: 18 }} />
                     Login
@@ -192,7 +192,7 @@ export default function CustomerTopNav() {
                         }
                       `}</style>
                       <div
-                        className="absolute whitespace-nowrap rounded-lg flex items-center justify-center text-[17px] font-normal tracking-wide"
+                        className="absolute whitespace-nowrap rounded-lg flex items-center justify-center text-base md:text-lg font-normal tracking-wide"
                         style={{
                           top: "calc(100% + 14px)",
                           right: -10,
@@ -253,7 +253,7 @@ export default function CustomerTopNav() {
                 border: `1.5px solid ${t.bluePrimary}`,
                 borderRadius: 4,
                 padding: "12px 48px 12px 16px",
-                fontSize: 15,
+                fontSize: '16px',
                 color: t.textPrimary,
                 lineHeight: "1.4",
               }}
@@ -294,10 +294,10 @@ export default function CustomerTopNav() {
                   >
                     <Search className="w-4 h-4 shrink-0" style={{ color: t.textMuted }} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[14px] truncate" style={{ color: t.textPrimary }}>
+                      <p className="text-sm md:text-base truncate" style={{ color: t.textPrimary }}>
                         {s.name}
                       </p>
-                      <p className="text-[11px]" style={{ color: t.textMuted }}>
+                      <p className="text-xs md:text-sm" style={{ color: t.textMuted }}>
                         {s.category_name && `${s.category_name} · `}{formatINR(s.base_price)}
                       </p>
                     </div>
@@ -305,7 +305,7 @@ export default function CustomerTopNav() {
                 ))}
                 <button
                   onClick={handleSearchSubmit}
-                  className="w-full px-4 py-2 text-[13px] font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
+                  className="w-full px-4 py-2 text-sm md:text-base font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
                   style={{ borderColor: t.border, color: t.bluePrimary }}
                 >
                   Search for &quot;{searchQuery}&quot;
@@ -326,7 +326,7 @@ export default function CustomerTopNav() {
             <Link
               href="/wishlist"
               className="flex items-center gap-2 font-medium transition-colors hover:text-[#DC2626]"
-              style={{ color: t.textSecondary, fontSize: 15 }}
+              style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <Heart style={{ width: 20, height: 20 }} />
               Wishlist
@@ -336,7 +336,7 @@ export default function CustomerTopNav() {
             <Link
               href="/cart"
               className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
-              style={{ color: t.textSecondary, fontSize: 15 }}
+              style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <div className="relative">
                 <ShoppingCart style={{ width: 20, height: 20 }} />
@@ -357,7 +357,7 @@ export default function CustomerTopNav() {
               <Link
                 href="/account"
                 className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
-                style={{ color: t.textSecondary, fontSize: 15 }}
+                style={{ color: t.textSecondary, fontSize: '16px' }}
               >
                 <CircleUserRound style={{ width: 20, height: 20 }} />
                 Profile
@@ -373,7 +373,7 @@ export default function CustomerTopNav() {
             >
               <button
                 className="flex items-center gap-1.5 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-                style={{ color: t.textSecondary, fontSize: 15 }}
+                style={{ color: t.textSecondary, fontSize: '16px' }}
               >
                 More
                 <ChevronDown style={{ width: 16, height: 16 }} />
@@ -407,7 +407,7 @@ export default function CustomerTopNav() {
                           key={item.label}
                           href={item.href}
                           className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[#F3F4F6]"
-                          style={{ color: t.textPrimary, fontSize: 15 }}
+                          style={{ color: t.textPrimary, fontSize: '16px' }}
                         >
                           {inner}
                         </Link>
@@ -417,7 +417,7 @@ export default function CustomerTopNav() {
                       <button
                         key={item.label}
                         className="flex w-full items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[#F3F4F6] text-left"
-                        style={{ color: t.textPrimary, fontSize: 15 }}
+                        style={{ color: t.textPrimary, fontSize: '16px' }}
                       >
                         {inner}
                       </button>

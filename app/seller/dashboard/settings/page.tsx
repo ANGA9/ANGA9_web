@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Loader2, Save } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const labelCls = "block text-[13px] font-medium text-[#4B5563] mb-1.5";
+const labelCls = "block text-sm md:text-base font-medium text-[#4B5563] mb-1.5";
 const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors";
 
 export default function SettingsPage() {
@@ -50,10 +50,10 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-[580px]">
-      <h1 className="text-[20px] font-bold text-[#1A1A2E] mb-1">Settings</h1>
-      <p className="text-[13px] text-[#9CA3AF] mb-6">Manage your bank account and preferences</p>
+      <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">Settings</h1>
+      <p className="text-sm md:text-base text-[#9CA3AF] mb-6">Manage your bank account and preferences</p>
       <div className="bg-white rounded-xl border border-[#E8EEF4] p-6 space-y-5">
-        <h2 className="text-[15px] font-bold text-[#1A1A2E]">Bank Account</h2>
+        <h2 className="text-base font-bold text-[#1A1A2E]">Bank Account</h2>
         <div><label className={labelCls}>Account Holder Name</label><input className={inputCls} value={form.bank_account_name} onChange={e => setForm(p => ({ ...p, bank_account_name: e.target.value }))} /></div>
         <div><label className={labelCls}>Account Number</label><input className={inputCls} type="password" value={form.bank_account_number} onChange={e => setForm(p => ({ ...p, bank_account_number: e.target.value }))} /></div>
         <div><label className={labelCls}>IFSC Code</label><input className={inputCls} value={form.bank_ifsc} onChange={e => setForm(p => ({ ...p, bank_ifsc: e.target.value.toUpperCase() }))} /></div>
@@ -61,10 +61,10 @@ export default function SettingsPage() {
           <div><label className={labelCls}>Bank Name</label><input className={inputCls + " bg-[#F8FBFF]"} value={form.bank_name} readOnly /></div>
           <div><label className={labelCls}>Branch</label><input className={inputCls + " bg-[#F8FBFF]"} value={form.bank_branch} readOnly /></div>
         </div>
-        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 h-11 px-6 bg-[#1A6FD4] text-white text-[14px] font-semibold rounded-lg hover:bg-[#155bb5] transition-colors disabled:opacity-60">
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 h-11 px-6 bg-[#1A6FD4] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#155bb5] transition-colors disabled:opacity-60">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save Changes
         </button>
-        {saved && <p className="text-[13px] text-[#22C55E] font-medium">✓ Settings saved successfully</p>}
+        {saved && <p className="text-sm md:text-base text-[#22C55E] font-medium">✓ Settings saved successfully</p>}
       </div>
     </div>
   );

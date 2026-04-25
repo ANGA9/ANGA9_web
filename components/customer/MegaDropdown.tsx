@@ -74,7 +74,7 @@ export default function MegaDropdown({
         {columns.map((col) => (
           <div key={col.heading} className="min-w-[160px]">
             <h4
-              className="text-[13px] font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5"
+              className="text-sm md:text-base font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5"
               style={{
                 color: t.bluePrimary,
                 borderBottom: `2px solid ${t.bluePrimary}`,
@@ -86,7 +86,7 @@ export default function MegaDropdown({
               {col.items.map((item) => (
                 <li key={item}>
                   <button
-                    className="block text-[13px] leading-[1.5] py-1 transition-colors hover:text-[#1A6FD4] text-left"
+                    className="block text-sm md:text-base leading-[1.5] py-1 transition-colors hover:text-[#1A6FD4] text-left"
                     style={{ color: t.textPrimary }}
                   >
                     {item}

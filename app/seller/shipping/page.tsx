@@ -111,7 +111,7 @@ export default function ShippingPage() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-[15px] font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
+                className={`text-base font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
                   item.name === "Shipping & Delivery" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
                 }`}
               >
@@ -137,11 +137,11 @@ export default function ShippingPage() {
           <div className="absolute top-full left-0 right-0 z-40 bg-white border-b border-[#E8EEF4] shadow-lg lg:hidden">
             <nav className="flex flex-col px-4 py-3">
               {navLinks.map((item) => (
-                <Link key={item.name} href={item.href} className="text-[15px] font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
+                <Link key={item.name} href={item.href} className="text-base font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   {item.name}
                 </Link>
               ))}
-              <Link href="/seller/login" className="text-[15px] font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/seller/login" className="text-base font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                 Login
               </Link>
             </nav>
@@ -154,14 +154,14 @@ export default function ShippingPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
+              <span className="text-xs md:text-sm sm:text-sm md:text-base font-bold text-[#1A6FD4] uppercase tracking-wider mb-3 block">
                 Logistics & Delivery
               </span>
-              <h1 className="mb-4 sm:mb-6 text-[28px] sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
+              <h1 className="mb-4 sm:mb-6 text-3xl md:text-4xl sm:text-[36px] md:text-5xl lg:text-[56px] font-bold leading-[1.15] text-[#1A1A2E]">
                 Hassle-Free Shipping Across{" "}
                 <span className="text-[#1A6FD4]">All of India</span>
               </h1>
-              <p className="text-[15px] sm:text-[17px] text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
+              <p className="text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 Focus on your products while we handle the logistics. ANGA9&apos;s integrated shipping network delivers your orders reliably to 19,000+ pin codes at the most affordable rates.
               </p>
               <div className="flex flex-wrap gap-4 sm:gap-6">
@@ -171,8 +171,8 @@ export default function ShippingPage() {
                   { value: "2-7 Days", label: "Delivery Time" },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center">
-                    <div className="text-[22px] sm:text-[28px] font-bold text-[#1A6FD4]">{stat.value}</div>
-                    <div className="text-[12px] sm:text-[13px] text-[#4B5563] font-medium">{stat.label}</div>
+                    <div className="text-xl md:text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A6FD4]">{stat.value}</div>
+                    <div className="text-xs md:text-sm sm:text-sm md:text-base text-[#4B5563] font-medium">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -188,11 +188,11 @@ export default function ShippingPage() {
       {/* SHIPPING FEATURES */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Shipping Made Simple
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Everything you need for smooth order fulfillment, built into the platform
           </p>
 
@@ -202,8 +202,8 @@ export default function ShippingPage() {
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${item.color} flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
                   <item.icon size={24} />
                 </div>
-                <h3 className="text-[17px] sm:text-[20px] font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
-                <p className="text-[13px] sm:text-[15px] text-[#4B5563] leading-relaxed">{item.desc}</p>
+                <h3 className="text-base md:text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
+                <p className="text-sm md:text-base sm:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -213,11 +213,11 @@ export default function ShippingPage() {
       {/* DELIVERY ZONES */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Delivery Zones & Timelines
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Transparent delivery timelines and shipping rates based on destination
           </p>
 
@@ -228,17 +228,17 @@ export default function ShippingPage() {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center">
                     <MapPin size={22} />
                   </div>
-                  <h3 className="text-[18px] sm:text-[22px] font-bold text-[#1A1A2E]">{zone.zone}</h3>
+                  <h3 className="text-lg md:text-xl sm:text-xl md:text-2xl font-bold text-[#1A1A2E]">{zone.zone}</h3>
                 </div>
-                <p className="text-[13px] sm:text-[14px] text-[#4B5563] mb-4 sm:mb-6">{zone.cities}</p>
+                <p className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563] mb-4 sm:mb-6">{zone.cities}</p>
                 <div className="space-y-3 border-t border-[#E8EEF4] pt-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-[13px] sm:text-[14px] text-[#4B5563]">Delivery Time</span>
-                    <span className="text-[14px] sm:text-[15px] font-bold text-[#1A1A2E]">{zone.timeline}</span>
+                    <span className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563]">Delivery Time</span>
+                    <span className="text-sm md:text-base sm:text-base font-bold text-[#1A1A2E]">{zone.timeline}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[13px] sm:text-[14px] text-[#4B5563]">Shipping Rate</span>
-                    <span className="text-[14px] sm:text-[15px] font-bold text-[#22C55E]">{zone.rate}</span>
+                    <span className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563]">Shipping Rate</span>
+                    <span className="text-sm md:text-base sm:text-base font-bold text-[#22C55E]">{zone.rate}</span>
                   </div>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function ShippingPage() {
             </div>
 
             <div className="order-1 lg:order-2">
-              <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+              <h2 className="text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
                 How Order Fulfillment Works
               </h2>
               <div className="h-1 w-16 bg-[#1A6FD4] mb-6 sm:mb-8 rounded-full" />
@@ -272,8 +272,8 @@ export default function ShippingPage() {
                       {item.step}
                     </div>
                     <div>
-                      <h4 className="text-[15px] sm:text-[17px] font-bold text-[#1A1A2E] mb-1">{item.title}</h4>
-                      <p className="text-[13px] sm:text-[14px] text-[#4B5563] leading-relaxed">{item.desc}</p>
+                      <h4 className="text-base sm:text-base md:text-lg font-bold text-[#1A1A2E] mb-1">{item.title}</h4>
+                      <p className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -286,11 +286,11 @@ export default function ShippingPage() {
       {/* PACKAGING TIPS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-[#F8FBFF]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Packaging Best Practices
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Proper packaging reduces returns and keeps your customers happy
           </p>
 
@@ -300,8 +300,8 @@ export default function ShippingPage() {
                 <div className="w-10 h-10 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-4 font-bold text-lg">
                   {idx + 1}
                 </div>
-                <h3 className="text-[15px] sm:text-[17px] font-bold text-[#1A1A2E] mb-2">{tip.title}</h3>
-                <p className="text-[13px] sm:text-[14px] text-[#4B5563] leading-relaxed">{tip.desc}</p>
+                <h3 className="text-base sm:text-base md:text-lg font-bold text-[#1A1A2E] mb-2">{tip.title}</h3>
+                <p className="text-sm md:text-base sm:text-sm md:text-base text-[#4B5563] leading-relaxed">{tip.desc}</p>
               </div>
             ))}
           </div>
@@ -311,11 +311,11 @@ export default function ShippingPage() {
       {/* RETURNS */}
       <section className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-12">
-          <h2 className="text-center text-[24px] sm:text-[32px] lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
+          <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Returns & Reverse Logistics
           </h2>
           <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
-          <p className="text-center text-[15px] sm:text-[17px] text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             We handle the reverse logistics so you can focus on your business
           </p>
 
@@ -330,8 +330,8 @@ export default function ShippingPage() {
                   <item.icon size={22} />
                 </div>
                 <div>
-                  <h3 className="text-[15px] sm:text-[17px] font-bold text-[#1A1A2E] mb-1 sm:mb-2">{item.title}</h3>
-                  <p className="text-[13px] sm:text-[15px] text-[#4B5563] leading-relaxed">{item.desc}</p>
+                  <h3 className="text-base sm:text-base md:text-lg font-bold text-[#1A1A2E] mb-1 sm:mb-2">{item.title}</h3>
+                  <p className="text-sm md:text-base sm:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -347,13 +347,13 @@ export default function ShippingPage() {
               <Link href="/" className="mb-6 block">
                 <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
-              <p className="mb-8 max-w-sm text-[15px] sm:text-[17px] leading-relaxed text-[#4B5563]">
+              <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
                 India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.
               </p>
             </div>
 
             <div className="lg:col-span-3">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">Sell on ANGA9</h4>
               <ul className="space-y-4">
                 {[
                   { label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
@@ -362,22 +362,22 @@ export default function ShippingPage() {
                   { label: "Grow Your Business", href: "/seller/grow-business" },
                 ].map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-[15px] text-[#4B5563] transition-colors hover:text-[#1A6FD4]">{link.label}</Link>
+                    <Link href={link.href} className="text-base text-[#4B5563] transition-colors hover:text-[#1A6FD4]">{link.label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div className="lg:col-span-4">
-              <h4 className="mb-6 text-[18px] font-bold text-[#1A1A2E]">Contact Us</h4>
-              <Link href="mailto:sell@anga9.com" className="mb-6 block text-[16px] font-medium text-[#4B5563] hover:text-[#1A6FD4]">sell@anga9.com</Link>
+              <h4 className="mb-6 text-lg md:text-xl font-bold text-[#1A1A2E]">Contact Us</h4>
+              <Link href="mailto:sell@anga9.com" className="mb-6 block text-base md:text-lg font-medium text-[#4B5563] hover:text-[#1A6FD4]">sell@anga9.com</Link>
               <div className="flex items-center gap-4">
                 {[
                   { icon: "Ig", color: "bg-[#E1306C]" },
                   { icon: "Fb", color: "bg-[#1877F2]" },
                   { icon: "Yt", color: "bg-[#FF0000]" },
                 ].map((social) => (
-                  <div key={social.icon} className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-[14px] font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}>
+                  <div key={social.icon} className={`flex h-9 w-9 items-center justify-center rounded-lg ${social.color}/10 text-sm md:text-base font-bold text-[#1A1A2E] cursor-pointer hover:opacity-80 transition-opacity`}>
                     {social.icon}
                   </div>
                 ))}
@@ -386,7 +386,7 @@ export default function ShippingPage() {
           </div>
 
           <div className="mt-10 sm:mt-16 lg:mt-20 border-t border-[#E8EEF4] pt-6 sm:pt-10 text-center">
-            <p className="text-[14px] text-[#6B7280]">&copy; 2024-25 ANGA9 Inc. All Rights Reserved.</p>
+            <p className="text-sm md:text-base text-[#6B7280]">&copy; 2024-25 ANGA9 Inc. All Rights Reserved.</p>
           </div>
         </div>
       </footer>

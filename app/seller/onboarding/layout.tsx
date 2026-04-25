@@ -30,7 +30,7 @@ export default function OnboardingLayout({
           </Link>
           <a
             href="mailto:sell@anga9.com"
-            className="text-[13px] font-medium text-[#1A6FD4] hover:underline"
+            className="text-sm md:text-base font-medium text-[#1A6FD4] hover:underline"
           >
             Need help?
           </a>

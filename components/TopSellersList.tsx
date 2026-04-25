@@ -74,7 +74,7 @@ export default function TopSellersList() {
               <p className="text-sm font-medium text-anga-text truncate">
                 {seller.name}
               </p>
-              <span className="text-[10px] font-medium text-anga-text-secondary bg-anga-bg px-1.5 py-0.5 rounded">
+              <span className="text-xs md:text-sm font-medium text-anga-text-secondary bg-anga-bg px-1.5 py-0.5 rounded">
                 {seller.category}
               </span>
             </div>

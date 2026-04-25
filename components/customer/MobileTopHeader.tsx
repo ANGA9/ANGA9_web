@@ -200,9 +200,9 @@ export default function MobileTopHeader() {
       </button>
 
       {/* ── Row 3: Search Bar ── */}
-      <div style={{ padding: "10px 12px", background: t.bgCard }}>
+      <div style={{ padding: "10px 12px", background: t.bgCard }} ref={searchRef}>
         <div
-          className="flex items-center gap-2.5"
+          className="relative flex items-center gap-2.5"
           style={{
             background: "#FFFFFF",
             borderRadius: 6,
@@ -221,6 +221,10 @@ export default function MobileTopHeader() {
           <input
             type="text"
             placeholder="Search for products"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
+            onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
             className="flex-1 bg-transparent outline-none text-[14px]"
             style={{ color: t.textPrimary }}
           />
@@ -232,6 +236,47 @@ export default function MobileTopHeader() {
               flexShrink: 0,
             }}
           />
+
+          {/* Autocomplete dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div
+              className="absolute left-0 right-0 top-full mt-1 rounded-lg border py-1 overflow-hidden"
+              style={{
+                background: "#FFFFFF",
+                borderColor: t.border,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                zIndex: 60,
+              }}
+            >
+              {suggestions.map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/products/${s.id}`}
+                  onClick={() => setShowSuggestions(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#F8FBFF]"
+                >
+                  <Search className="w-3.5 h-3.5 shrink-0" style={{ color: t.textMuted }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] truncate" style={{ color: t.textPrimary }}>
+                      {s.name}
+                    </p>
+                    {s.category_name && (
+                      <p className="text-[11px]" style={{ color: t.textMuted }}>
+                        {s.category_name}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+              <button
+                onClick={handleSearchSubmit}
+                className="w-full px-4 py-2 text-[12px] font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
+                style={{ borderColor: t.border, color: t.bluePrimary }}
+              >
+                Search for &quot;{searchQuery}&quot;
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

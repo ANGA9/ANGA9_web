@@ -22,6 +22,7 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { api } from "@/lib/api";
+import NotificationBell from "@/components/shared/NotificationBell";
 
 interface Suggestion {
   id: string;

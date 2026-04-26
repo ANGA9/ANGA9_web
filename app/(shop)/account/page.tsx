@@ -484,7 +484,7 @@ export default function CustomerAccountPage() {
 
                     <button
                       className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90"
-                      style={{ background: t.yellowCta, color: t.ctaText }}
+                      style={{ background: t.primaryCta, color: t.ctaText }}
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       Edit Profile

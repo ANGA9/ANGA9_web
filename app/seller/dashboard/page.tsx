@@ -105,7 +105,7 @@ export default function DashboardHome() {
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
+          className="flex items-center gap-2 h-10 px-5 bg-[#4338CA] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#3730A3] transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>
@@ -114,7 +114,7 @@ export default function DashboardHome() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={<IndianRupee className="w-5 h-5 text-[#22C55E]" />} label="Total Revenue" value="₹0" color="bg-[#F0FDF4]" />
         <StatCard icon={<ShoppingCart className="w-5 h-5 text-[#1A6FD4]" />} label="Total Orders" value={0} color="bg-[#EAF2FF]" />
-        <StatCard icon={<Package className="w-5 h-5 text-[#6C47FF]" />} label="Products" value={stats.products} color="bg-[#F3EEFF]" />
+        <StatCard icon={<Package className="w-5 h-5 text-[#4338CA]" />} label="Products" value={stats.products} color="bg-[#F3EEFF]" />
         <StatCard icon={<Eye className="w-5 h-5 text-[#F59E0B]" />} label="Store Views" value={0} color="bg-[#FFFBEB]" />
       </div>
 
@@ -122,7 +122,7 @@ export default function DashboardHome() {
         <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link href="/seller/dashboard/products/new" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">
-            <Package className="w-5 h-5 text-[#6C47FF]" />
+            <Package className="w-5 h-5 text-[#4338CA]" />
             <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">Add Product</p><p className="text-xs md:text-sm text-[#9CA3AF]">List a new product for sale</p></div>
           </Link>
           <Link href="/seller/dashboard/products" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">

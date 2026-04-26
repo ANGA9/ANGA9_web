@@ -105,7 +105,7 @@ export default function AddProductPage() {
             <input className={inputCls} type="number" min="1" value={form.min_order_qty} onChange={e => set("min_order_qty", e.target.value)} placeholder="1" />
           </div>
         </div>
-        <button type="submit" disabled={submitting} className="w-full h-11 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+        <button type="submit" disabled={submitting} className="w-full h-11 bg-[#4338CA] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#3730A3] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           Submit for Review
         </button>

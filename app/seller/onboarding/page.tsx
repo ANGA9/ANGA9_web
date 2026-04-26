@@ -283,7 +283,7 @@ export default function OnboardingPage() {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#6C47FF] text-sm md:text-base font-semibold text-white hover:bg-[#5A3AE0] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
+            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#4338CA] text-sm md:text-base font-semibold text-white hover:bg-[#3730A3] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Verification

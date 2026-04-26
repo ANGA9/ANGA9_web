@@ -100,7 +100,7 @@ export default function CustomerCartPage() {
             <Link
               href="/"
               className="rounded-lg px-8 py-3 text-base font-bold transition-all active:scale-95"
-              style={{ background: t.yellowCta, color: t.ctaText }}
+              style={{ background: t.primaryCta, color: t.ctaText }}
             >
               Start Shopping
             </Link>
@@ -301,7 +301,7 @@ export default function CustomerCartPage() {
               <Link
                 href="/checkout"
                 className="rounded-lg px-8 py-3 text-base font-bold transition-all active:scale-95 shadow-md"
-                style={{ background: t.yellowCta, color: t.ctaText }}
+                style={{ background: t.primaryCta, color: t.ctaText }}
               >
                 Place Order
               </Link>
@@ -405,7 +405,7 @@ export default function CustomerCartPage() {
                 <Link
                   href="/"
                   className="mt-4 rounded-[10px] px-5 py-2.5 text-sm font-bold transition-opacity hover:opacity-90"
-                  style={{ background: t.yellowCta, color: t.ctaText }}
+                  style={{ background: t.primaryCta, color: t.ctaText }}
                 >
                   Start Shopping
                 </Link>

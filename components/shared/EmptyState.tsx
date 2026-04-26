@@ -15,7 +15,7 @@ export default function EmptyState({
   description,
   actionLabel,
   onAction,
-  accentColor = "#6C47FF",
+  accentColor = "#4338CA",
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">

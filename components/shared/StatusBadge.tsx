@@ -10,7 +10,7 @@ const styles: Record<string, string> = {
   Processing: "bg-[#F59E0B]/10 text-[#F59E0B]",
   "Pending Approval": "bg-[#F59E0B]/10 text-[#F59E0B]",
   "Low Stock": "bg-[#F59E0B]/10 text-[#F59E0B]",
-  Shipped: "bg-[#6C47FF]/10 text-[#6C47FF]",
+  Shipped: "bg-[#4338CA]/10 text-[#4338CA]",
   Cancelled: "bg-[#EF4444]/10 text-[#EF4444]",
   "Out of Stock": "bg-[#EF4444]/10 text-[#EF4444]",
   Pending: "bg-[#6B7280]/10 text-[#6B7280]",

@@ -475,7 +475,7 @@ export default function ProductDetailPage() {
               disabled={adding || stock.status === "out"}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
               style={{
-                background: stock.status === "out" ? t.textMuted : "#9C27B0",
+                background: stock.status === "out" ? t.textMuted : "#4338CA",
                 color: "#FFFFFF",
                 border: "2px solid transparent",
                 padding: "14px 0",

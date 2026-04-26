@@ -355,7 +355,7 @@ export default function CustomerTopNav() {
                 {cartCount > 0 && (
                   <span
                     className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                    style={{ background: t.yellowCta, color: t.ctaText }}
+                    style={{ background: t.primaryCta, color: t.ctaText }}
                   >
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>

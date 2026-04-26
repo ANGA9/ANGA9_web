@@ -63,7 +63,7 @@ export default function SellerLandingPage() {
             <Link href="/seller/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
               Login
             </Link>
-            <Link href="/seller/login" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]">
+            <Link href="/seller/login" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#4338CA] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#3730A3]">
               Start Selling
             </Link>
             <button className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
@@ -80,7 +80,7 @@ export default function SellerLandingPage() {
                   {item.name}
                 </Link>
               ))}
-              <Link href="/seller/login" className="inline-flex h-14 items-center justify-center rounded-xl bg-[#6C47FF] text-lg font-bold text-white shadow-lg" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/seller/login" className="inline-flex h-14 items-center justify-center rounded-xl bg-[#4338CA] text-lg font-bold text-white shadow-lg" onClick={() => setIsMenuOpen(false)}>
                 Start Selling
               </Link>
             </div>
@@ -125,7 +125,7 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#6C47FF] text-white font-bold rounded-xl shadow-lg shadow-[#6C47FF]/25 hover:bg-[#5A3AE0] transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                   Start Selling <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link href="/seller/how-it-works" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center">
@@ -468,7 +468,7 @@ export default function SellerLandingPage() {
               </p>
               <Link
                 href="/seller/login"
-                className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#6C47FF] px-8 text-base md:text-lg font-bold text-white shadow-lg shadow-[#6C47FF]/20 transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]"
+                className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#4338CA] px-8 text-base md:text-lg font-bold text-white shadow-lg shadow-[#4338CA]/20 transition-all hover:scale-[1.02] hover:bg-[#3730A3]"
               >
                 Start Selling
               </Link>

@@ -80,7 +80,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       <button
         onClick={() => router.push("/checkout")}
         className="mt-5 flex w-full items-center justify-center rounded-[10px] py-3.5 text-base font-bold transition-opacity hover:opacity-90"
-        style={{ background: t.yellowCta, color: t.ctaText }}
+        style={{ background: t.primaryCta, color: t.ctaText }}
       >
         Proceed to Checkout
       </button>

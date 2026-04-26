@@ -189,7 +189,7 @@ export default function CheckoutPage() {
         <Link
           href="/"
           className="rounded-[10px] px-6 py-3 text-sm font-bold transition-opacity hover:opacity-90"
-          style={{ background: t.yellowCta, color: t.ctaText }}
+          style={{ background: t.primaryCta, color: t.ctaText }}
         >
           Browse Products
         </Link>

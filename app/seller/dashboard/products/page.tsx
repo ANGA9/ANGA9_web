@@ -84,7 +84,7 @@ export default function ProductsPage() {
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-10 px-5 bg-[#6C47FF] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#5A3AE0] transition-colors shadow-sm"
+          className="flex items-center gap-2 h-10 px-5 bg-[#4338CA] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#3730A3] transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>

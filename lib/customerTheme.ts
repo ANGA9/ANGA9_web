@@ -3,10 +3,10 @@ export const CUSTOMER_THEME = {
   bluePrimary: "#1A6FD4",
 
   // CTA yellow — Add to Cart, Shop Now, all purchase CTAs
-  yellowCta: "#FFCC00",
+  primaryCta: "#4338CA",
 
   // CTA button text — always near-black, never white
-  ctaText: "#1A1A2E",
+  ctaText: "#FFFFFF",
 
   // Near-black — logo text, headings, product names, prices
   textPrimary: "#1A1A2E",

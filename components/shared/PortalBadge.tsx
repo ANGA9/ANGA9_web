@@ -5,9 +5,9 @@ interface PortalBadgeProps {
 }
 
 const config = {
-  admin: { label: "Admin", bg: "bg-[#6C47FF]/10", text: "text-[#6C47FF]" },
+  admin: { label: "Admin", bg: "bg-[#4338CA]/10", text: "text-[#4338CA]" },
   seller: { label: "Seller", bg: "bg-[#0F6E56]/10", text: "text-[#0F6E56]" },
-  customer: { label: "Customer", bg: "bg-[#6C47FF]/10", text: "text-[#6C47FF]" },
+  customer: { label: "Customer", bg: "bg-[#4338CA]/10", text: "text-[#4338CA]" },
 };
 
 export default function PortalBadge({ portal }: PortalBadgeProps) {

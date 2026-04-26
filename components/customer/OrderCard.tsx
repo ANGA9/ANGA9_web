@@ -123,7 +123,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {order.status === "Delivered" && (
           <button
             className="rounded-lg px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90"
-            style={{ background: t.yellowCta, color: t.ctaText }}
+            style={{ background: t.primaryCta, color: t.ctaText }}
           >
             Reorder
           </button>

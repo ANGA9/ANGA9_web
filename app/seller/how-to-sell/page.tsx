@@ -104,7 +104,7 @@ export default function HowItWorksPage() {
             <Link href="/seller/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
               Login
             </Link>
-            <Link href="/seller/login" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#6C47FF] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#5A3AE0]">
+            <Link href="/seller/login" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#4338CA] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#3730A3]">
               Start Selling
             </Link>
             <button className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -145,7 +145,7 @@ export default function HowItWorksPage() {
                 From registration to your first order, our streamlined process gets your business online fast. Join thousands of suppliers already growing on India&apos;s B2B marketplace.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#6C47FF] text-white font-bold rounded-xl shadow-lg shadow-[#6C47FF]/25 hover:bg-[#5A3AE0] transition-all hover:scale-[1.02] flex items-center justify-center">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
                   Register Now
                 </Link>
                 <Link href="#steps" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2">

@@ -402,7 +402,7 @@ function SearchPageContent() {
               <button
                 onClick={() => setShowMobileFilters(false)}
                 className="w-full mt-5 rounded-xl py-3 text-sm md:text-base font-bold"
-                style={{ background: t.yellowCta, color: t.ctaText }}
+                style={{ background: t.primaryCta, color: t.ctaText }}
               >
                 Show Results
               </button>

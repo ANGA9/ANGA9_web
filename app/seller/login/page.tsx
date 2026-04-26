@@ -464,7 +464,7 @@ export default function SellerLoginPage() {
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}
-            <div className="relative w-[500px] shrink-0 bg-gradient-to-br from-[#1A6FD4] to-[#6C47FF]">
+            <div className="relative w-[500px] shrink-0 bg-gradient-to-br from-[#1A6FD4] to-[#4338CA]">
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/20" />
                 <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full bg-white/10" />

@@ -168,7 +168,7 @@ export default function ProductCard({
           <button
             onClick={handleAddToCart}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-bold text-sm transition-colors hover:bg-gray-50 border"
-            style={{ color: t.textPrimary, borderColor: t.border }}
+            style={{ color: "#1A1A2E", borderColor: "#1A1A2E" }}
           >
             <ShoppingCart className="w-4 h-4" />
             Cart
@@ -176,7 +176,7 @@ export default function ProductCard({
           <button
             onClick={handleBuyNow}
             className="flex-1 py-2.5 rounded-lg font-bold text-sm text-white transition-opacity hover:opacity-90 shadow-sm"
-            style={{ background: "#9C27B0" }}
+            style={{ background: "#4338CA" }}
           >
             Buy Now
           </button>

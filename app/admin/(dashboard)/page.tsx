@@ -34,7 +34,7 @@ interface StatsData {
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatsData[]>([
     { title: "Total Revenue", value: "₹0", delta: "Coming soon", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
-    { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#6C47FF", iconBg: "#F3EEFF" },
+    { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#4338CA", iconBg: "#F3EEFF" },
     { title: "Products Live", value: "...", delta: "loading", deltaType: "positive", icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
     { title: "Pending Reviews", value: "...", delta: "loading", deltaType: "positive", icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
   ]);
@@ -65,7 +65,7 @@ export default function DashboardPage() {
               delta: `${formatCount(res.verifiedSellers ?? 0)} verified`,
               deltaType: "positive",
               icon: Store,
-              iconColor: "#6C47FF",
+              iconColor: "#4338CA",
               iconBg: "#F3EEFF",
             },
             {

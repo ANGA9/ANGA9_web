@@ -47,7 +47,7 @@ export default function ProductCard({
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    wishlist.toggleItem(product);
+    wishlist.toggleItem(product.id);
     if (isSaved && onRemoveWishlist) {
       onRemoveWishlist();
     }

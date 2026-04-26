@@ -1,16 +1,30 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { api } from "./api";
+import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
-import { Product } from "@/components/customer/ProductCard";
+
+interface WishlistItem {
+  productId: string;
+  name: string;
+  slug: string;
+  base_price: number;
+  sale_price: number | null;
+  seller_id: string;
+  images: string[];
+  addedAt: string;
+}
 
 interface WishlistContextValue {
-  items: Product[];
+  items: WishlistItem[];
   count: number;
+  loading: boolean;
   hasItem(productId: string): boolean;
-  toggleItem(product: Product): void;
-  removeItem(productId: string): void;
-  clearWishlist(): void;
+  toggleItem(productId: string): Promise<void>;
+  removeItem(productId: string): Promise<void>;
+  clearWishlist(): Promise<void>;
+  refreshWishlist(): Promise<void>;
 }
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
@@ -21,82 +35,85 @@ export function useWishlist() {
   return ctx;
 }
 
-const WISHLIST_KEY = "anga9_wishlist";
-
 export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<Product[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { user } = useAuth();
+  const [items, setItems] = useState<WishlistItem[]>([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  // Load from local storage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(WISHLIST_KEY);
-      if (stored) {
-        setItems(JSON.parse(stored));
-      }
-    } catch (e) {
-      console.error("Failed to parse wishlist from local storage", e);
-    }
-    setIsLoaded(true);
-  }, []);
-
-  // Save to local storage whenever items change
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
-    }
-  }, [items, isLoaded]);
-
-  const hasItem = useCallback((productId: string) => {
-    return items.some(item => item.id === productId);
-  }, [items]);
-
-  const toggleItem = useCallback((product: Product) => {
-    setItems(prev => {
-      const exists = prev.some(item => item.id === product.id);
-      if (exists) {
-        return prev.filter(item => item.id !== product.id);
-      } else {
-        return [...prev, product];
-      }
-    });
-  }, []);
-
-  // Separate effect for toasts to prevent double-firing in strict mode
-  const initialMount = useRef(true);
-  const prevCount = useRef(0);
-  
-  useEffect(() => {
-    // Only fire toasts after the initial load from localStorage is complete
-    if (!isLoaded) return;
-    
-    if (initialMount.current) {
-      initialMount.current = false;
-      prevCount.current = items.length;
+  const refreshWishlist = useCallback(async () => {
+    if (!user) {
+      setItems([]);
+      setCount(0);
       return;
     }
-    
-    if (items.length > prevCount.current) {
-      toast.success("Added to wishlist");
-    } else if (items.length < prevCount.current) {
-      toast.success("Removed from wishlist");
+    try {
+      setLoading(true);
+      const data = await api.get<{ items: WishlistItem[]; count: number }>("/api/wishlist");
+      setItems(data.items);
+      setCount(data.count);
+    } catch {
+      // silently fail — wishlist may not be available
+    } finally {
+      setLoading(false);
     }
-    
-    prevCount.current = items.length;
-  }, [items, isLoaded]);
+  }, [user]);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems(prev => prev.filter(item => item.id !== productId));
-    toast.success("Removed from wishlist");
-  }, []);
+  useEffect(() => {
+    refreshWishlist();
+  }, [refreshWishlist]);
 
-  const clearWishlist = useCallback(() => {
-    setItems([]);
-    toast.success("Wishlist cleared");
+  const hasItem = useCallback(
+    (productId: string) => {
+      return items.some((item) => item.productId === productId);
+    },
+    [items]
+  );
+
+  const toggleItem = useCallback(
+    async (productId: string) => {
+      try {
+        const data = await api.post<{ message: string; added: boolean; count: number }>(
+          "/api/wishlist/items",
+          { productId }
+        );
+        toast.success(data.message);
+        await refreshWishlist();
+      } catch {
+        toast.error("Failed to update wishlist");
+      }
+    },
+    [refreshWishlist]
+  );
+
+  const removeItem = useCallback(
+    async (productId: string) => {
+      try {
+        await api.delete(`/api/wishlist/items/${productId}`);
+        toast.success("Removed from wishlist");
+        await refreshWishlist();
+      } catch {
+        toast.error("Failed to remove from wishlist");
+      }
+    },
+    [refreshWishlist]
+  );
+
+  const clearWishlist = useCallback(async () => {
+    try {
+      await api.delete("/api/wishlist");
+      setItems([]);
+      setCount(0);
+      toast.success("Wishlist cleared");
+    } catch {
+      toast.error("Failed to clear wishlist");
+    }
   }, []);
 
   return (
-    <WishlistContext.Provider value={{ items, count: items.length, hasItem, toggleItem, removeItem, clearWishlist }}>
+    <WishlistContext.Provider
+      value={{ items, count, loading, hasItem, toggleItem, removeItem, clearWishlist, refreshWishlist }}
+    >
       {children}
     </WishlistContext.Provider>
   );

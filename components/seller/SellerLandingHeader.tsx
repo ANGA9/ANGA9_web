@@ -37,8 +37,8 @@ export default function SellerLandingHeader() {
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-[#E8EEF4] shadow-sm">
-        {/* Removed max-w to match full width of customer portal */}
-        <div className="mx-auto flex h-[64px] sm:h-[72px] w-full items-center justify-between px-3 sm:px-6 lg:px-12">
+        {/* Restore max-w-[1400px] to align with standard page width */}
+        <div className="mx-auto flex h-[64px] sm:h-[72px] max-w-[1400px] items-center justify-between px-3 sm:px-6 lg:px-12">
           {/* Logo */}
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-80 flex items-center gap-1.5 sm:gap-2">
             <Image 
@@ -82,15 +82,6 @@ export default function SellerLandingHeader() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 lg:gap-4">
-            {/* Desktop: Back to Customer Portal */}
-            <Link 
-              href="/" 
-              className="hidden lg:flex items-center gap-2 rounded-lg border border-[#E8EEF4] bg-white px-4 py-2 text-sm font-bold text-[#1A1A2E] shadow-sm transition-all hover:bg-gray-50 hover:border-gray-300"
-            >
-              <User size={16} />
-              Back to Customer Portal
-            </Link>
-
             {/* Desktop: Login & Start Selling */}
             <Link 
               href="/seller/login" 
@@ -105,22 +96,7 @@ export default function SellerLandingHeader() {
               Start Selling
             </Link>
 
-            {/* Mobile: Customer Portal & Login */}
-            <div className="flex items-center gap-1.5 lg:hidden mr-1">
-              <Link 
-                href="/" 
-                className="flex items-center gap-1 rounded-md border border-[#E8EEF4] bg-white px-2 py-1.5 text-[11px] font-bold text-[#1A1A2E] shadow-sm"
-              >
-                <User size={12} />
-                Portal
-              </Link>
-              <Link 
-                href="/seller/login" 
-                className="rounded-md bg-[#4338CA] px-3 py-1.5 text-[11px] font-bold text-white shadow-sm"
-              >
-                Login
-              </Link>
-            </div>
+
             
             {/* Mobile Menu Toggle */}
             <button 

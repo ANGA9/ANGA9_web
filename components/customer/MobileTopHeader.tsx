@@ -115,7 +115,7 @@ export default function MobileTopHeader() {
             {wishlistCount > 0 && (
               <span
                 className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                style={{ background: "#DC2626", color: "#FFFFFF" }}
+                style={{ background: "#4338CA", color: "#FFFFFF" }}
               >
                 {wishlistCount > 99 ? "99+" : wishlistCount}
               </span>

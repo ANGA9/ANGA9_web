@@ -64,20 +64,26 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   // Separate effect for toasts to prevent double-firing in strict mode
   const initialMount = useRef(true);
-  const prevCount = useRef(items.length);
+  const prevCount = useRef(0);
+  
   useEffect(() => {
+    // Only fire toasts after the initial load from localStorage is complete
+    if (!isLoaded) return;
+    
     if (initialMount.current) {
       initialMount.current = false;
       prevCount.current = items.length;
       return;
     }
+    
     if (items.length > prevCount.current) {
       toast.success("Added to wishlist");
     } else if (items.length < prevCount.current) {
       toast.success("Removed from wishlist");
     }
+    
     prevCount.current = items.length;
-  }, [items]);
+  }, [items, isLoaded]);
 
   const removeItem = useCallback((productId: string) => {
     setItems(prev => prev.filter(item => item.id !== productId));

@@ -25,7 +25,7 @@ const navItems = [
   { icon: ShoppingCart, label: "Orders", href: "/admin/orders" },
   { icon: Store, label: "Sellers", href: "/admin/sellers" },
   { icon: ClipboardCheck, label: "Product Reviews", href: "/admin/reviews" },
-  { icon: Users, label: "Customers", href: "/admin/customers" },
+  { icon: Users, label: "Users", href: "/admin/users" },
   { icon: Settings, label: "Settings", href: "/admin/settings" },
 ];
 

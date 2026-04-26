@@ -24,6 +24,8 @@ export default function DashboardHome() {
   const [status, setStatus] = useState<VStatus | null>(null);
   const [bizName, setBizName] = useState("");
   const [stats, setStats] = useState({ products: 0, pending: 0, active: 0 });
+  const [revenue, setRevenue] = useState(0);
+  const [orderCount, setOrderCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -53,6 +55,28 @@ export default function DashboardHome() {
           if (prodRes.ok) {
             const d = await prodRes.json();
             setStats(prev => ({ ...prev, products: d.total || 0 }));
+          }
+        } catch { /* ignore */ }
+
+        // Fetch earnings
+        try {
+          const earnRes = await fetch(`${API}/api/seller/earnings`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (earnRes.ok) {
+            const d = await earnRes.json();
+            setRevenue(d.total || 0);
+          }
+        } catch { /* ignore */ }
+
+        // Fetch order count
+        try {
+          const orderRes = await fetch(`${API}/api/orders/seller`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (orderRes.ok) {
+            const d = await orderRes.json();
+            setOrderCount(Array.isArray(d.orders) ? d.orders.length : 0);
           }
         } catch { /* ignore */ }
       } catch { /* ignore */ }
@@ -112,8 +136,8 @@ export default function DashboardHome() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={<IndianRupee className="w-5 h-5 text-[#22C55E]" />} label="Total Revenue" value="₹0" color="bg-[#F0FDF4]" />
-        <StatCard icon={<ShoppingCart className="w-5 h-5 text-[#1A6FD4]" />} label="Total Orders" value={0} color="bg-[#EAF2FF]" />
+        <StatCard icon={<IndianRupee className="w-5 h-5 text-[#22C55E]" />} label="Total Revenue" value={`₹${revenue.toLocaleString("en-IN")}`} color="bg-[#F0FDF4]" />
+        <StatCard icon={<ShoppingCart className="w-5 h-5 text-[#1A6FD4]" />} label="Total Orders" value={orderCount} color="bg-[#EAF2FF]" />
         <StatCard icon={<Package className="w-5 h-5 text-[#4338CA]" />} label="Products" value={stats.products} color="bg-[#F3EEFF]" />
         <StatCard icon={<Eye className="w-5 h-5 text-[#F59E0B]" />} label="Store Views" value={0} color="bg-[#FFFBEB]" />
       </div>

@@ -2,13 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+
+interface Address {
+  id: string;
+  label?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  is_default: boolean;
+}
 
 declare global {
   interface Window {
@@ -51,6 +62,23 @@ export default function CheckoutPage() {
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [showAddressPicker, setShowAddressPicker] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get<{ addresses?: Address[]; data?: Address[] }>("/api/users/addresses", { silent: true });
+        const list = res?.addresses || res?.data || [];
+        setAddresses(list);
+        const def = list.find((a) => a.is_default) || list[0];
+        if (def) setSelectedAddressId(def.id);
+      } catch { /* ignore */ }
+    })();
+  }, []);
+
+  const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
 
   const subtotal = items.reduce(
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
@@ -99,6 +127,7 @@ export default function CheckoutPage() {
             productId: item.productId,
             qty: item.qty,
           })),
+          ...(selectedAddressId ? { address_id: selectedAddressId } : {}),
         }
       );
 
@@ -209,6 +238,62 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Order items */}
         <div className="lg:col-span-3 space-y-3">
+          {/* Delivery Address */}
+          <div className="rounded-[14px] border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
+                <MapPin className="w-4 h-4" style={{ color: t.bluePrimary }} /> Delivery Address
+              </h3>
+              {addresses.length > 1 && (
+                <button
+                  onClick={() => setShowAddressPicker(!showAddressPicker)}
+                  className="text-xs font-semibold flex items-center gap-1"
+                  style={{ color: t.bluePrimary }}
+                >
+                  Change <ChevronDown className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            {selectedAddress ? (
+              <div>
+                <p className="text-sm font-medium" style={{ color: t.textPrimary }}>
+                  {selectedAddress.label || "Address"}{selectedAddress.is_default ? " (Default)" : ""}
+                </p>
+                <p className="text-sm mt-0.5" style={{ color: t.textSecondary }}>
+                  {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}
+                </p>
+                <p className="text-sm" style={{ color: t.textSecondary }}>
+                  {selectedAddress.city}, {selectedAddress.state} {selectedAddress.pincode}
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-3">
+                <p className="text-sm" style={{ color: t.textMuted }}>No saved addresses</p>
+                <Link href="/account" className="text-xs font-semibold mt-1 inline-block" style={{ color: t.bluePrimary }}>
+                  + Add an address
+                </Link>
+              </div>
+            )}
+            {showAddressPicker && (
+              <div className="mt-3 pt-3 border-t space-y-2" style={{ borderColor: t.border }}>
+                {addresses.map((addr) => (
+                  <button
+                    key={addr.id}
+                    onClick={() => { setSelectedAddressId(addr.id); setShowAddressPicker(false); }}
+                    className="w-full text-left rounded-lg border p-3 text-sm transition-colors hover:bg-gray-50"
+                    style={{ borderColor: addr.id === selectedAddressId ? t.bluePrimary : t.border }}
+                  >
+                    <span className="font-medium" style={{ color: t.textPrimary }}>{addr.label || "Address"}</span>
+                    {addr.is_default && <span className="ml-2 text-xs font-semibold" style={{ color: t.bluePrimary }}>(Default)</span>}
+                    <p className="text-xs mt-0.5" style={{ color: t.textSecondary }}>
+                      {addr.line1}, {addr.city}, {addr.state} {addr.pincode}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div
             className="rounded-[14px] border p-5"
             style={{ background: t.bgCard, borderColor: t.border }}

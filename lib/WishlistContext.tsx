@@ -12,6 +12,7 @@ interface WishlistItem {
   base_price: number;
   sale_price: number | null;
   seller_id: string;
+  seller_name: string;
   images: string[];
   addedAt: string;
 }

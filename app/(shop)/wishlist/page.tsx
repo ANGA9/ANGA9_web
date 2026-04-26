@@ -15,7 +15,7 @@ export default function CustomerWishlistPage() {
   const products = items.map((item) => ({
     id: item.productId,
     name: item.name,
-    seller: item.seller_id,
+    seller: item.seller_name,
     category: "",
     originalPrice: item.base_price,
     price: item.sale_price ?? item.base_price,

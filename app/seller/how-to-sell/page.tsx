@@ -10,16 +10,14 @@ import {
   Wallet,
   CheckCircle2,
   ArrowRight,
-  Menu,
-  X,
   FileText,
   BarChart3,
   Truck,
   Shield,
 } from "lucide-react";
+import SellerLandingHeader from "@/components/seller/SellerLandingHeader";
 
 export default function HowItWorksPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
     { name: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
@@ -80,54 +78,7 @@ export default function HowItWorksPage() {
       style={{ fontFamily: "var(--font-gilroy)" }}
     >
       {/* HEADER */}
-      <header className="sticky top-0 z-50 w-full bg-white border-b border-[#E8EEF4]">
-        <div className="mx-auto flex h-[60px] sm:h-[72px] max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-12">
-          <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
-            <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={110} height={36} priority quality={75} style={{ objectFit: "contain" }} />
-          </Link>
-
-          <div className="hidden items-center gap-8 lg:flex">
-            {navLinks.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`text-base font-medium transition-all hover:text-[#1A6FD4] pb-1 border-b-2 hover:border-[#1A6FD4] ${
-                  item.name === "How It Works" ? "text-[#1A6FD4] border-[#1A6FD4]" : "text-[#4B5563] border-transparent"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3 lg:gap-4">
-            <Link href="/seller/login" className="rounded-lg border border-[#1A6FD4] px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 text-xs sm:text-sm font-bold text-[#1A6FD4] transition-all hover:bg-[#1A6FD4]/5 inline-flex">
-              Login
-            </Link>
-            <Link href="/seller/login" className="hidden lg:inline-flex h-11 items-center justify-center rounded-[10px] bg-[#4338CA] px-6 text-sm font-bold text-white shadow-[0_4px_12px_rgba(108,71,255,0.25)] transition-all hover:scale-[1.02] hover:bg-[#3730A3]">
-              Start Selling
-            </Link>
-            <button className="p-2 lg:hidden text-[#1A1A2E] hover:bg-[#F3F4F6] rounded-lg transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {isMenuOpen && (
-          <div className="absolute top-full left-0 right-0 z-40 bg-white border-b border-[#E8EEF4] shadow-lg lg:hidden">
-            <nav className="flex flex-col px-4 py-3">
-              {navLinks.map((item) => (
-                <Link key={item.name} href={item.href} className="text-base font-medium text-[#4B5563] hover:text-[#1A6FD4] hover:bg-[#F8FBFF] px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  {item.name}
-                </Link>
-              ))}
-              <Link href="/seller/login" className="text-base font-medium text-[#1A6FD4] hover:bg-[#1A6FD4]/5 px-3 py-3 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
-                Login
-              </Link>
-            </nav>
-          </div>
-        )}
-      </header>
+      <SellerLandingHeader />
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#F8FBFF] py-12 sm:py-16 lg:py-24">

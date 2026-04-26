@@ -63,6 +63,7 @@ function OrdersContent() {
           qty: o.items?.reduce((s: number, i: { quantity: number }) => s + i.quantity, 0) ?? 0,
           amount: o.total,
           status: (statusMap[o.status] ?? "Processing") as Order["status"],
+          rawStatus: o.status,
         }));
         setOrders(mapped);
       } catch {
@@ -129,7 +130,17 @@ function OrdersContent() {
       ) : (
         <div className="space-y-3">
           {filtered.map((order, idx) => (
-            <OrderCard key={order.id + idx} order={order} />
+            <OrderCard
+              key={order.id + idx}
+              order={order}
+              onCancelled={(id) =>
+                setOrders((prev) =>
+                  prev.map((o) =>
+                    o.internalId === id ? { ...o, status: "Cancelled", rawStatus: "cancelled" } : o
+                  )
+                )
+              }
+            />
           ))}
 
           {filtered.length === 0 && (

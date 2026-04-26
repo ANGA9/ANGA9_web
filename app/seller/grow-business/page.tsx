@@ -36,42 +36,42 @@ export default function GrowBusinessPage() {
     {
       icon: Megaphone,
       title: "ANGA9 Promotions",
-      desc: "Boost your product visibility with targeted promotions. Feature your products in search results, category pages, and the homepage to reach more buyers.",
+      desc: "Boost visibility and reach more buyers with targeted homepage and search ads.",
       color: "text-[#EF4444] bg-[#EF4444]/10",
       stats: "3x more visibility",
     },
     {
       icon: BarChart3,
       title: "Sales Analytics",
-      desc: "Get detailed insights into your sales performance, customer behaviour, and product trends. Use data to make smarter inventory and pricing decisions.",
+      desc: "Gain real-time insights into performance, trends, and customer behavior to make smarter decisions.",
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       stats: "Real-time dashboards",
     },
     {
       icon: Target,
-      title: "Smart Pricing Engine",
-      desc: "Our AI-powered pricing tool recommends competitive prices based on market trends, competitor analysis, and demand patterns to maximize your sales volume.",
+      title: "Smart Pricing",
+      desc: "Our AI engine recommends competitive pricing based on live market trends to maximize volume.",
       color: "text-[#22C55E] bg-[#22C55E]/10",
       stats: "Up to 40% more orders",
     },
     {
       icon: Zap,
-      title: "Product Recommendations",
-      desc: "Discover what products are trending in your category. Our demand intelligence tool suggests high-potential products based on buyer search data across India.",
+      title: "Recommendations",
+      desc: "Discover trending products and high-potential categories based on nationwide buyer search data.",
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       stats: "Data-driven insights",
     },
     {
       icon: LayoutDashboard,
       title: "Quality Dashboard",
-      desc: "Monitor product quality metrics, track return rates, and get actionable feedback on how to improve customer satisfaction and reduce returns.",
+      desc: "Track quality metrics and return rates. Get actionable feedback to improve customer satisfaction.",
       color: "text-[#F59E0B] bg-[#F59E0B]/10",
       stats: "Reduce returns by 30%",
     },
     {
       icon: BadgeCheck,
-      title: "Seller Badges & Trust",
-      desc: "Earn trust badges based on your performance metrics. Trusted sellers get priority placement in search results and higher buyer confidence.",
+      title: "Seller Badges",
+      desc: "Earn trust badges for high performance to unlock priority search placement and buyer confidence.",
       color: "text-[#0EA5E9] bg-[#0EA5E9]/10",
       stats: "Priority in search",
     },
@@ -81,22 +81,22 @@ export default function GrowBusinessPage() {
     {
       icon: Boxes,
       title: "Bulk Order Management",
-      desc: "Handle large wholesale orders with ease. Set bulk pricing tiers, minimum order quantities, and manage inventory for high-volume B2B transactions.",
+      desc: "Easily set bulk pricing tiers and manage high-volume B2B inventory.",
     },
     {
       icon: Handshake,
       title: "Retailer Network",
-      desc: "Connect directly with verified retailers and resellers across India. Build long-term business relationships with recurring bulk buyers.",
+      desc: "Connect directly with verified retailers and build recurring wholesale relationships.",
     },
     {
       icon: Layers,
       title: "Catalog Syndication",
-      desc: "Your products are automatically showcased to relevant B2B buyers. Our matching algorithm connects your catalog with the right retailers in your category.",
+      desc: "Our algorithm automatically matches your catalog with relevant active retailers.",
     },
     {
       icon: Globe,
       title: "Pan-India Reach",
-      desc: "Expand your wholesale distribution beyond your local market. Reach retailers in tier-2 and tier-3 cities who are actively sourcing products online.",
+      desc: "Expand distribution to buyers in tier-2 and tier-3 cities actively sourcing online.",
     },
   ];
 
@@ -128,7 +128,7 @@ export default function GrowBusinessPage() {
                 <span className="text-[#1A6FD4]">Grow Your B2B Business</span>
               </h1>
               <p className="text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
-                From smart pricing to advanced analytics, ANGA9 gives you everything you need to scale your wholesale business, reach more retailers, and increase your revenue.
+                Scale your wholesale business effortlessly. From smart pricing to advanced analytics, access everything you need to increase your revenue.
               </p>
 
               {/* Stats Row */}
@@ -230,32 +230,32 @@ export default function GrowBusinessPage() {
             {[
               {
                 title: "Optimize Your Catalog",
-                desc: "Use high-quality images, detailed descriptions, and relevant keywords. Sellers with complete catalogs see 60% more views than those with incomplete listings.",
+                desc: "High-quality images and clear descriptions get 60% more views than incomplete listings.",
                 tip: "Add at least 4 images per product",
               },
               {
                 title: "Competitive Pricing",
-                desc: "Use the Smart Pricing Engine to set prices that attract buyers while maintaining healthy margins. Monitor competitor pricing and adjust seasonally.",
-                tip: "Update prices weekly for best results",
+                desc: "Use the Smart Pricing Engine to attract buyers while maintaining healthy profit margins.",
+                tip: "Update prices weekly",
               },
               {
                 title: "Fast Order Fulfillment",
-                desc: "Ship orders within 24 hours of receiving them. Fast dispatch improves your seller rating and leads to more visibility in search results.",
+                desc: "Dispatch within 24 hours. Fast shipping improves ratings and boosts search visibility.",
                 tip: "Same-day dispatch = higher rankings",
               },
               {
                 title: "Leverage Promotions",
-                desc: "Run targeted promotions during peak buying seasons. Sellers using ANGA9 Promotions see an average of 3x increase in product views.",
+                desc: "Run targeted ads during peak seasons. Promoted items see a 3x increase in views.",
                 tip: "Plan campaigns around festivals",
               },
               {
-                title: "Monitor Quality Metrics",
-                desc: "Keep your return rate below 5% by maintaining product quality and accurate descriptions. High quality scores unlock premium seller badges.",
+                title: "Monitor Quality",
+                desc: "Keep return rates below 5% by ensuring quality. High scores unlock premium seller badges.",
                 tip: "Check quality dashboard daily",
               },
               {
                 title: "Expand Your Range",
-                desc: "Use Product Recommendations to identify high-demand items in your category. Sellers who expand their catalog see consistent month-over-month growth.",
+                desc: "Use Product Recommendations to add high-demand items and achieve steady monthly growth.",
                 tip: "Add 10+ new products monthly",
               },
             ].map((item, idx) => (

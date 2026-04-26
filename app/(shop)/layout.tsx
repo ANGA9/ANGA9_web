@@ -7,6 +7,7 @@ import MobileBottomNav from "@/components/customer/MobileBottomNav";
 import LoginSheet from "@/components/customer/LoginSheet";
 import { LoginSheetProvider } from "@/lib/LoginSheetContext";
 import { CartProvider } from "@/lib/CartContext";
+import { WishlistProvider } from "@/lib/WishlistContext";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export default function CustomerShopLayout({
@@ -17,33 +18,35 @@ export default function CustomerShopLayout({
   return (
     <LoginSheetProvider>
       <CartProvider>
-        <div className="min-h-screen" style={{ background: t.bgPage }}>
+        <WishlistProvider>
+          <div className="min-h-screen" style={{ background: t.bgPage }}>
 
-          {/* ══════════ DESKTOP NAV (md+) ══════════ */}
-          <div className="hidden md:block">
-            <CustomerTopNav />
-            <CategoryStrip />
+            {/* ══════════ DESKTOP NAV (md+) ══════════ */}
+            <div className="hidden md:block">
+              <CustomerTopNav />
+              <CategoryStrip />
+            </div>
+
+            {/* ══════════ MOBILE NAV (<md) ══════════ */}
+            <div className="block md:hidden sticky top-0 z-40">
+              <MobileTopHeader />
+            </div>
+
+            {/* ══════════ PAGE CONTENT ══════════ */}
+            <main
+              className="mx-auto pb-20 md:pb-0 px-1 sm:px-4 md:px-[48px]"
+              style={{ maxWidth: 1400 }}
+            >
+              {children}
+            </main>
+
+            {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
+            <MobileBottomNav />
+
+            {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
+            <LoginSheet />
           </div>
-
-          {/* ══════════ MOBILE NAV (<md) ══════════ */}
-          <div className="block md:hidden sticky top-0 z-40">
-            <MobileTopHeader />
-          </div>
-
-          {/* ══════════ PAGE CONTENT ══════════ */}
-          <main
-            className="mx-auto pb-20 md:pb-0 px-1 sm:px-4 md:px-[48px]"
-            style={{ maxWidth: 1400 }}
-          >
-            {children}
-          </main>
-
-          {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
-          <MobileBottomNav />
-
-          {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
-          <LoginSheet />
-        </div>
+        </WishlistProvider>
       </CartProvider>
     </LoginSheetProvider>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PackageOpen, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useRouter } from "next/navigation";
+import { useWishlist } from "@/lib/WishlistContext";
 
 export interface Product {
   id: string;
@@ -36,7 +37,8 @@ export default function ProductCard({
   isWishlistContext,
 }: ProductCardProps) {
   const router = useRouter();
-  const [isSaved, setIsSaved] = useState(showWishlistHeart || false);
+  const wishlist = useWishlist();
+  const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
   
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
@@ -45,7 +47,7 @@ export default function ProductCard({
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsSaved(!isSaved);
+    wishlist.toggleItem(product);
     if (isSaved && onRemoveWishlist) {
       onRemoveWishlist();
     }

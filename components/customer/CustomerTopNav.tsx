@@ -21,6 +21,7 @@ import {
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
+import { useWishlist } from "@/lib/WishlistContext";
 import { api } from "@/lib/api";
 import NotificationBell from "@/components/shared/NotificationBell";
 
@@ -44,6 +45,7 @@ export default function CustomerTopNav() {
   const { user, loading } = useAuth();
   const isLoggedIn = !!user;
   const { count: cartCount } = useCart();
+  const { count: wishlistCount } = useWishlist();
   const moreRef = useRef<HTMLDivElement>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -328,7 +330,17 @@ export default function CustomerTopNav() {
               className="flex items-center gap-2 font-medium transition-colors hover:text-[#DC2626]"
               style={{ color: t.textSecondary, fontSize: '16px' }}
             >
-              <Heart style={{ width: 20, height: 20 }} />
+              <div className="relative">
+                <Heart style={{ width: 20, height: 20 }} />
+                {wishlistCount > 0 && (
+                  <span
+                    className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                    style={{ background: "#DC2626", color: "#FFFFFF" }}
+                  >
+                    {wishlistCount > 99 ? "99+" : wishlistCount}
+                  </span>
+                )}
+              </div>
               Wishlist
             </Link>
 

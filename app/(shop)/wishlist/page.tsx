@@ -1,71 +1,49 @@
-import ProductCard, { type Product } from "@/components/customer/ProductCard";
-import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+"use client";
 
-const savedProducts: Product[] = [
-  {
-    id: "w1",
-    name: "Premium Mesh Office Chair",
-    seller: "Rajesh Furniture",
-    category: "Ergonomic",
-    originalPrice: 18000,
-    price: 12499,
-    minOrder: "5 units",
-    badge: "Top Rated",
-  },
-  {
-    id: "w2",
-    name: "Modular L-Shape Workstation",
-    seller: "Sharma Interiors",
-    category: "Furniture",
-    originalPrice: 13500,
-    price: 8990,
-    minOrder: "2 units",
-    badge: "New Arrival",
-  },
-  {
-    id: "w3",
-    name: "LED Panel Light 40W",
-    seller: "Bright Solutions",
-    category: "Lighting",
-    originalPrice: 4800,
-    price: 3299,
-    minOrder: "10 units",
-    badge: "Top Rated",
-  },
-  {
-    id: "w4",
-    name: "Executive Standing Desk",
-    seller: "WorkSpace Co.",
-    category: "Furniture",
-    originalPrice: 28000,
-    price: 21500,
-    minOrder: "1 unit",
-    badge: "New Arrival",
-  },
-];
+import ProductCard from "@/components/customer/ProductCard";
+import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { useWishlist } from "@/lib/WishlistContext";
+import EmptyState from "@/components/shared/EmptyState";
+import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
 
 export default function CustomerWishlistPage() {
+  const { items, removeItem } = useWishlist();
+  const router = useRouter();
+
   return (
-    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
+    <div className="mx-auto max-w-[1280px] px-1 sm:px-4 py-6">
       <h1
-        className="text-xl font-bold mb-1"
+        className="text-xl md:text-2xl font-bold mb-1"
         style={{ color: t.textPrimary }}
       >
-        Saved Items
+        My Wishlist
       </h1>
-      <p className="text-sm mb-6" style={{ color: t.textSecondary }}>
-        {savedProducts.length} products saved for later
+      <p className="text-sm md:text-base mb-6" style={{ color: t.textSecondary }}>
+        {items.length} {items.length === 1 ? 'item' : 'items'} saved for later
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {savedProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            showWishlistHeart
-          />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <EmptyState
+          icon={Heart}
+          title="Your wishlist is empty"
+          description="Save items you like to view them later."
+          actionLabel="Continue Shopping"
+          onAction={() => router.push("/")}
+          accentColor={t.bluePrimary}
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+          {items.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              isWishlistContext={true}
+              onRemoveWishlist={() => removeItem(product.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { PackageOpen, Download, Loader2 } from "lucide-react";
+import { PackageOpen, Download, Loader2, XCircle } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export interface Order {
   internalId?: string;
@@ -12,6 +13,7 @@ export interface Order {
   qty: number;
   amount: number;
   status: "Delivered" | "Processing" | "Cancelled";
+  rawStatus?: string;
 }
 
 function formatINR(value: number) {
@@ -27,9 +29,29 @@ const statusConfig: Record<
   Cancelled: { bg: t.bgCancelled, text: t.outOfStock },
 };
 
-export default function OrderCard({ order }: { order: Order }) {
+export default function OrderCard({ order, onCancelled }: { order: Order; onCancelled?: (id: string) => void }) {
   const s = statusConfig[order.status];
   const [downloading, setDownloading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const canCancel = order.status === "Processing" &&
+    ["placed", "confirmed", "processing"].includes(order.rawStatus || "");
+
+  const handleCancel = async () => {
+    if (!order.internalId || cancelling) return;
+    setCancelling(true);
+    try {
+      await api.post(`/api/orders/${order.internalId}/cancel`, { reason: "Cancelled by customer" });
+      toast.success("Order cancelled successfully");
+      setShowCancelConfirm(false);
+      onCancelled?.(order.internalId);
+    } catch {
+      toast.error("Failed to cancel order");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const handleDownloadInvoice = async () => {
     if (!order.internalId || downloading) return;
@@ -120,7 +142,40 @@ export default function OrderCard({ order }: { order: Order }) {
             Invoice
           </button>
         )}
+
+        {canCancel && (
+          <button
+            onClick={() => setShowCancelConfirm(true)}
+            className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors hover:bg-red-50"
+            style={{ borderColor: "#FECACA", color: t.outOfStock }}
+          >
+            <XCircle className="w-3.5 h-3.5" /> Cancel
+          </button>
+        )}
       </div>
+
+      {showCancelConfirm && (
+        <div className="mt-3 pt-3 border-t flex items-center justify-between" style={{ borderColor: t.border }}>
+          <p className="text-xs" style={{ color: t.textSecondary }}>Are you sure you want to cancel this order?</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCancelConfirm(false)}
+              className="px-3 py-1.5 rounded-lg border text-xs font-bold"
+              style={{ borderColor: t.border, color: t.textSecondary }}
+            >
+              No, Keep
+            </button>
+            <button
+              onClick={handleCancel}
+              disabled={cancelling}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold text-white disabled:opacity-50"
+              style={{ background: t.outOfStock }}
+            >
+              {cancelling ? <Loader2 className="w-3 h-3 animate-spin inline" /> : "Yes, Cancel"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

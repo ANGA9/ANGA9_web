@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Store, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { Loader2, Store, CheckCircle2, XCircle } from "lucide-react";
 import Header from "@/components/Header";
+import toast from "react-hot-toast";
 
 interface Seller {
   id: string; user_id: string; business_name?: string; business_type?: string;
@@ -20,6 +21,7 @@ const STATUS_BADGE: Record<string, { cls: string; label: string }> = {
 export default function SellersPage() {
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -30,6 +32,38 @@ export default function SellersPage() {
       setLoading(false);
     })();
   }, []);
+
+  const handleApprove = async (sellerId: string) => {
+    setActionLoading(sellerId);
+    try {
+      await api.patch(`/api/users/sellers/${sellerId}/verify`, { status: "verified" });
+      setSellers((prev) =>
+        prev.map((s) => (s.id === sellerId ? { ...s, verification_status: "verified" } : s))
+      );
+      toast.success("Seller approved successfully");
+    } catch {
+      toast.error("Failed to approve seller");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleReject = async (sellerId: string) => {
+    const reason = prompt("Reason for rejection:");
+    if (!reason) return;
+    setActionLoading(sellerId);
+    try {
+      await api.patch(`/api/users/sellers/${sellerId}/verify`, { status: "rejected", reason });
+      setSellers((prev) =>
+        prev.map((s) => (s.id === sellerId ? { ...s, verification_status: "rejected" } : s))
+      );
+      toast.success("Seller rejected");
+    } catch {
+      toast.error("Failed to reject seller");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   if (loading) return <div className="min-h-screen"><Header /><div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" /></div></div>;
 
@@ -77,10 +111,18 @@ export default function SellersPage() {
                         <td className="px-4 py-3">
                           {s.verification_status === "pending" && (
                             <div className="flex gap-2">
-                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors">
-                                <CheckCircle2 className="w-3 h-3" /> Approve
+                              <button
+                                onClick={() => handleApprove(s.id)}
+                                disabled={actionLoading === s.id}
+                                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
+                              >
+                                {actionLoading === s.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Approve
                               </button>
-                              <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors">
+                              <button
+                                onClick={() => handleReject(s.id)}
+                                disabled={actionLoading === s.id}
+                                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
+                              >
                                 <XCircle className="w-3 h-3" /> Reject
                               </button>
                             </div>

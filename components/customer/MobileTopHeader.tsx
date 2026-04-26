@@ -9,6 +9,7 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
+import { useWishlist } from "@/lib/WishlistContext";
 import { api } from "@/lib/api";
 import NotificationBell from "@/components/shared/NotificationBell";
 
@@ -34,6 +35,7 @@ export default function MobileTopHeader() {
   const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
   const { count: cartCount } = useCart();
+  const { count: wishlistCount } = useWishlist();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -110,6 +112,14 @@ export default function MobileTopHeader() {
           {/* Wishlist */}
           <Link href="/wishlist" className="relative">
             <Heart style={{ width: 22, height: 22, color: t.textSecondary }} />
+            {wishlistCount > 0 && (
+              <span
+                className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                style={{ background: "#DC2626", color: "#FFFFFF" }}
+              >
+                {wishlistCount > 99 ? "99+" : wishlistCount}
+              </span>
+            )}
           </Link>
 
           {/* Cart */}

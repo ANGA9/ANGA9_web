@@ -20,46 +20,46 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
 
   return (
     <div
-      className="rounded-[14px] border p-5 sticky top-28"
-      style={{ background: t.bgCard, borderColor: t.border }}
+      className="rounded-xl border p-6 sticky top-28 bg-gray-100/80"
+      style={{ borderColor: t.border }}
     >
       <h3
-        className="text-base font-semibold mb-4"
+        className="text-[15px] font-black mb-6 uppercase tracking-wider"
         style={{ color: t.textPrimary }}
       >
-        Order Summary
+        Price Details
       </h3>
 
-      <div className="space-y-3 text-sm">
+      <div className="space-y-4 text-[15px]">
         <div className="flex justify-between">
           <span style={{ color: t.textSecondary }}>Subtotal</span>
-          <span className="font-medium" style={{ color: t.textPrimary }}>
+          <span className="font-bold" style={{ color: t.textPrimary }}>
             {formatINR(subtotal)}
           </span>
         </div>
         <div className="flex justify-between">
           <span style={{ color: t.textSecondary }}>GST (18%)</span>
-          <span className="font-medium" style={{ color: t.textPrimary }}>
+          <span className="font-bold" style={{ color: t.textPrimary }}>
             {formatINR(gst)}
           </span>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: t.textSecondary }}>Delivery</span>
-          <span className="font-medium" style={{ color: t.textPrimary }}>
-            {delivery === 0 ? "Free" : formatINR(delivery)}
+          <span style={{ color: t.textSecondary }}>Delivery Charges</span>
+          <span className="font-bold" style={{ color: delivery === 0 ? t.inStock : t.textPrimary }}>
+            {delivery === 0 ? "FREE" : formatINR(delivery)}
           </span>
         </div>
 
-        <div className="border-t pt-3" style={{ borderColor: t.border }}>
-          <div className="flex justify-between">
+        <div className="border-t border-gray-300 pt-5 mt-2" style={{ borderColor: t.border }}>
+          <div className="flex justify-between items-end">
             <span
-              className="text-base font-semibold"
+              className="text-[17px] font-black"
               style={{ color: t.textPrimary }}
             >
-              Total
+              Total Amount
             </span>
             <span
-              className="text-xl font-bold"
+              className="text-[22px] font-black leading-none tracking-tight"
               style={{ color: t.textPrimary }}
             >
               {formatINR(total)}
@@ -68,18 +68,9 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
         </div>
       </div>
 
-      {delivery === 0 && (
-        <p
-          className="mt-3 text-xs font-medium"
-          style={{ color: t.inStock }}
-        >
-          Free delivery on orders above ₹10,000
-        </p>
-      )}
-
       <button
         onClick={() => router.push("/checkout")}
-        className="mt-5 flex w-full items-center justify-center rounded-[10px] py-3.5 text-base font-bold transition-opacity hover:opacity-90"
+        className="mt-8 flex w-full items-center justify-center rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] shadow-lg shadow-indigo-100"
         style={{ background: t.primaryCta, color: t.ctaText }}
       >
         Proceed to Checkout
@@ -87,7 +78,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
 
       <Link
         href="/"
-        className="mt-3 block text-center text-sm md:text-base font-medium transition-opacity hover:opacity-80"
+        className="mt-4 block text-center text-sm font-bold transition-opacity hover:opacity-80"
         style={{ color: t.bluePrimary }}
       >
         Continue Shopping

@@ -14,10 +14,12 @@ const tabs = [
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const hidePaths = ["/cart", "/checkout"];
+  if (hidePaths.includes(pathname || "")) return null;
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-[9999] flex items-center justify-around border-t md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-[60] flex items-center justify-around border-t md:hidden"
       style={{
         height: "calc(60px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",

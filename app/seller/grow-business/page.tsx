@@ -131,14 +131,13 @@ export default function GrowBusinessPage() {
                 Scale your wholesale business effortlessly. From smart pricing to advanced analytics, access everything you need to increase your revenue.
               </p>
 
-              {/* Stats Row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-                {successMetrics.map((stat) => (
-                  <div key={stat.label} className="bg-white p-3 sm:p-4 rounded-xl border border-[#E8EEF4] text-center">
-                    <div className="text-xl md:text-2xl sm:text-2xl md:text-3xl font-bold text-[#1A6FD4]">{stat.value}</div>
-                    <div className="text-xs md:text-sm sm:text-xs md:text-sm text-[#4B5563] font-medium">{stat.label}</div>
-                  </div>
-                ))}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                  Register with us
+                </Link>
+                <Link href="#steps" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2">
+                  View Steps <ArrowRight size={18} />
+                </Link>
               </div>
             </div>
 
@@ -150,7 +149,7 @@ export default function GrowBusinessPage() {
       </section>
 
       {/* GROWTH TOOLS */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-white">
+      <section id="steps" className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Tools to Accelerate Your Growth

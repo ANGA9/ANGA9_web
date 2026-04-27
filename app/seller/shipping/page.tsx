@@ -14,6 +14,7 @@ import {
   RotateCcw,
   Warehouse,
   Globe,
+  ArrowRight,
 } from "lucide-react";
 import SellerLandingHeader from "@/components/seller/SellerLandingHeader";
 
@@ -113,17 +114,13 @@ export default function ShippingPage() {
               <p className="text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 Focus on your products while we handle the logistics. ANGA9&apos;s integrated shipping network delivers your orders reliably to 19,000+ pin codes at the most affordable rates.
               </p>
-              <div className="flex flex-wrap gap-4 sm:gap-6">
-                {[
-                  { value: "19,000+", label: "Pin Codes" },
-                  { value: "Rs. 35", label: "Starting Rate" },
-                  { value: "2-7 Days", label: "Delivery Time" },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-xl md:text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A6FD4]">{stat.value}</div>
-                    <div className="text-xs md:text-sm sm:text-sm md:text-base text-[#4B5563] font-medium">{stat.label}</div>
-                  </div>
-                ))}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                  Register with us
+                </Link>
+                <Link href="#steps" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2">
+                  View Steps <ArrowRight size={18} />
+                </Link>
               </div>
             </div>
 
@@ -197,7 +194,7 @@ export default function ShippingPage() {
       </section>
 
       {/* HOW SHIPPING WORKS */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-white">
+      <section id="steps" className="py-12 sm:py-16 lg:py-24 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full order-2 lg:order-1">

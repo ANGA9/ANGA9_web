@@ -83,11 +83,11 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
-                  Start Selling <ArrowRight className="h-5 w-5" />
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                  Register with us
                 </Link>
-                <Link href="/seller/how-it-works" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center">
-                  How It Works
+                <Link href="#steps" className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2">
+                  View Steps <ArrowRight size={18} />
                 </Link>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function SellerLandingPage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-[#F8FBFF] py-20 lg:py-28">
+      <section id="steps" className="bg-[#F8FBFF] py-20 lg:py-28">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight uppercase">

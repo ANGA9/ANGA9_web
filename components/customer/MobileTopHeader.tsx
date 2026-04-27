@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart } from "lucide-react";
+import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -40,8 +40,34 @@ export default function MobileTopHeader() {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [popularTags, setPopularTags] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    // Fetch popular tags on mount
+    api.get<{ tags?: string[] }>("/api/search/filters", { silent: true })
+      .then(res => {
+        if (res?.tags) setPopularTags(res.tags.slice(0, 10)); // Show top 10
+      })
+      .catch(() => {});
+      
+    // Load recent searches
+    try {
+      const saved = localStorage.getItem("recentSearches");
+      if (saved) setRecentSearches(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  const saveRecentSearch = (term: string) => {
+    if (!term.trim()) return;
+    try {
+      const updated = [term, ...recentSearches.filter(t => t !== term)].slice(0, 5);
+      setRecentSearches(updated);
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
+    } catch {}
+  };
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 2) { setSuggestions([]); return; }
@@ -64,9 +90,18 @@ export default function MobileTopHeader() {
   };
 
   const handleSearchSubmit = () => {
-    if (!searchQuery.trim()) return;
+    const term = searchQuery.trim();
+    if (!term) return;
+    saveRecentSearch(term);
     setShowSuggestions(false);
-    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+    saveRecentSearch(tag);
+    setShowSuggestions(false);
+    router.push(`/search?q=${encodeURIComponent(tag)}`);
   };
 
   useEffect(() => {
@@ -238,7 +273,7 @@ export default function MobileTopHeader() {
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
-            onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+            onFocus={() => setShowSuggestions(true)}
             className="flex-1 bg-transparent outline-none text-sm md:text-base"
             style={{ color: t.textPrimary }}
           />
@@ -252,43 +287,91 @@ export default function MobileTopHeader() {
           />
 
           {/* Autocomplete dropdown */}
-          {showSuggestions && suggestions.length > 0 && (
+          {showSuggestions && (
             <div
-              className="absolute left-0 right-0 top-full mt-1 rounded-lg border py-1 overflow-hidden"
+              className="absolute left-0 right-0 top-full mt-1 rounded-xl border overflow-hidden"
               style={{
                 background: "#FFFFFF",
                 borderColor: t.border,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
                 zIndex: 60,
               }}
             >
-              {suggestions.map((s) => (
-                <Link
-                  key={s.id}
-                  href={`/products/${s.id}`}
-                  onClick={() => setShowSuggestions(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#F8FBFF]"
-                >
-                  <Search className="w-3.5 h-3.5 shrink-0" style={{ color: t.textMuted }} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-base truncate" style={{ color: t.textPrimary }}>
-                      {s.name}
-                    </p>
-                    {s.category_name && (
-                      <p className="text-xs md:text-sm" style={{ color: t.textMuted }}>
-                        {s.category_name}
-                      </p>
-                    )}
+              {!searchQuery.trim() ? (
+                <div className="p-4 flex flex-col gap-4">
+                  {/* Recent Searches */}
+                  {recentSearches.length > 0 && (
+                    <div>
+                      <h4 className="text-[14px] font-bold text-gray-700 mb-2">Recent Searches</h4>
+                      <div className="flex flex-col">
+                        {recentSearches.map((term) => (
+                          <button
+                            key={term}
+                            className="flex items-center gap-3 py-2 text-left transition-colors hover:bg-gray-50 -mx-4 px-4"
+                            onClick={() => handleTagClick(term)}
+                          >
+                            <History className="w-4 h-4 text-gray-500 shrink-0" />
+                            <span className="text-[14px] text-gray-600 font-medium truncate">
+                              {term}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Popular Searches */}
+                  <div>
+                    <h4 className="text-[14px] font-bold text-gray-700 mb-2">Popular Searches</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(popularTags.length > 0 ? popularTags : ['Smartphones', 'Laptops', 'Headphones', 'Home Decor', 'Mens Wear']).map(tag => (
+                        <button
+                          key={tag}
+                          className="px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all hover:border-[#1A6FD4] cursor-pointer"
+                          style={{ borderColor: "#E5E7EB", background: "#F8F9FA", color: "#374151" }}
+                          onClick={() => handleTagClick(tag)}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </Link>
-              ))}
-              <button
-                onClick={handleSearchSubmit}
-                className="w-full px-4 py-2 text-xs md:text-sm font-medium text-left border-t transition-colors hover:bg-[#F8FBFF]"
-                style={{ borderColor: t.border, color: t.bluePrimary }}
-              >
-                Search for &quot;{searchQuery}&quot;
-              </button>
+                </div>
+              ) : suggestions.length > 0 ? (
+                <div className="py-2">
+                  {suggestions.map((s) => (
+                    <Link
+                      key={s.id}
+                      href={`/products/${s.id}`}
+                      onClick={() => setShowSuggestions(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#F8FBFF]"
+                    >
+                      <Search className="w-4 h-4 shrink-0 text-gray-400" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] truncate font-medium" style={{ color: t.textPrimary }}>
+                          {s.name}
+                        </p>
+                        {s.category_name && (
+                          <p className="text-[12px] text-gray-500">
+                            {s.category_name}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                  <button
+                    onClick={handleSearchSubmit}
+                    className="w-full px-4 py-3 text-[14px] font-bold text-left border-t transition-colors hover:bg-[#F8FBFF]"
+                    style={{ borderColor: t.border, color: t.bluePrimary }}
+                  >
+                    Search for &quot;{searchQuery}&quot;
+                  </button>
+                </div>
+              ) : (
+                <div className="px-4 py-5 text-[14px] text-gray-500 text-center font-medium">
+                  {searchQuery.length < 2 ? "Type at least 2 characters..." : "No matches found"}
+                </div>
+              )}
             </div>
           )}
         </div>

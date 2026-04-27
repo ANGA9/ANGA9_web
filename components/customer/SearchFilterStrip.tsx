@@ -44,36 +44,38 @@ export default function SearchFilterStrip({
         THE STRIP
         Sticky below header for mobile, and normal toolbar for desktop
       */}
-      <div 
-        className="sticky top-[56px] md:top-0 z-30 flex items-center border border-black bg-white w-full overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] md:rounded-xl"
-      >
-        <button 
-          onClick={() => setActiveModal("sort")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold border-r hover:bg-gray-50 transition-colors"
-          style={{ borderColor: t.border, color: t.textPrimary }}
+      <div className="sticky top-[60px] md:top-0 z-30 px-2 md:px-0 pb-1 md:pb-0">
+        <div 
+          className="flex items-center border border-black bg-white w-full overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-xl"
         >
-          <ArrowUpDown className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
-          Sort
-        </button>
-        <button 
-          onClick={() => setActiveModal("category")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold border-r hover:bg-gray-50 transition-colors"
-          style={{ borderColor: t.border, color: t.textPrimary }}
-        >
-          Category
-          <span className="text-xs md:text-sm md:text-xs md:text-sm ml-1 text-gray-400">▼</span>
-        </button>
-        <button 
-          onClick={() => setActiveModal("filters")}
-          className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base md:text-base md:text-lg font-semibold hover:bg-gray-50 transition-colors"
-          style={{ color: t.textPrimary }}
-        >
-          <SlidersHorizontal className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
-          Filters
-          {hasActiveFilters && (
-            <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full absolute ml-[70px] mb-[15px]" style={{ background: t.bluePrimary }} />
-          )}
-        </button>
+          <button 
+            onClick={() => setActiveModal("sort")}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-black hover:bg-gray-50 transition-colors"
+            style={{ color: t.textPrimary }}
+          >
+            <ArrowUpDown className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
+            Sort
+          </button>
+          <button 
+            onClick={() => setActiveModal("category")}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-black hover:bg-gray-50 transition-colors"
+            style={{ color: t.textPrimary }}
+          >
+            Category
+            <span className="text-xs md:text-sm ml-1 text-gray-400">▼</span>
+          </button>
+          <button 
+            onClick={() => setActiveModal("filters")}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold hover:bg-gray-50 transition-colors"
+            style={{ color: t.textPrimary }}
+          >
+            <SlidersHorizontal className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
+            Filters
+            {hasActiveFilters && (
+              <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full absolute ml-[70px] mb-[15px]" style={{ background: t.bluePrimary }} />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* MODALS */}

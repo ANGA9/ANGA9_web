@@ -66,9 +66,11 @@ function MenuItem({
   isLast?: boolean;
 }) {
   return (
-    <button className="flex items-center w-full bg-white px-4 py-3.5 hover:bg-gray-50 transition-colors relative">
-      <Icon className="w-[22px] h-[22px] text-black" />
-      <span className="ml-4 text-base font-normal text-gray-800 flex-1 text-left">
+    <button className="flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100">
+      <div className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
+        <Icon className="w-[18px] h-[18px] text-gray-700" />
+      </div>
+      <span className="ml-4 text-[15px] font-semibold text-gray-800 flex-1 text-left">
         {label}
       </span>
       <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -306,85 +308,83 @@ export default function CustomerAccountPage() {
   return (
     <div className="w-full relative">
       {/* ══════════ MOBILE VIEW ══════════ */}
-      <div
-        className="block md:hidden min-h-screen bg-[#f1f3f6] pb-[80px]"
-        style={{ width: "calc(100% + 48px)", marginLeft: "-24px" }}
-      >
-        <div className="w-full bg-[#f1f3f6] min-h-screen relative shadow-sm">
-          <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
-            <Link href="/" className="mr-4">
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+      <div className="block md:hidden pb-24 pt-2">
+        <div className="w-full flex flex-col gap-3">
+          
+          <header className="flex items-center px-5 h-[60px] bg-white rounded-2xl shadow-sm border border-gray-100">
+            <Link href="/" className="mr-4 p-1 -ml-1 rounded-full hover:bg-gray-50">
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
             </Link>
-            <h1 className="text-lg font-semibold text-gray-900 tracking-wide">Account</h1>
+            <h1 className="text-[17px] font-bold text-gray-900 tracking-wide">Account</h1>
           </header>
 
           {!isLoggedIn ? (
-            <div className="bg-white px-4 py-5 flex items-center justify-between mb-2">
-              <span className="text-base font-medium text-gray-900 w-2/3 leading-tight">
+            <div className="bg-white rounded-2xl p-5 flex items-center justify-between shadow-sm border border-gray-100">
+              <span className="text-[15px] font-semibold text-gray-900 w-2/3 leading-snug">
                 Log in for exclusive offers
               </span>
               <Link
                 href="/login"
-                className="flex items-center justify-center rounded-[4px] px-6 py-2.5 text-sm font-medium transition-colors"
+                className="flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold transition-colors shadow-sm"
                 style={{ background: accentBlue, color: "#FFFFFF" }}
               >
                 Log In
               </Link>
             </div>
           ) : (
-            <div className="bg-white px-4 py-4 flex items-center gap-3 mb-2">
+            <div className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-gray-100">
               <div
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
+                className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full text-[18px] font-bold text-white shadow-sm"
                 style={{ background: accentBlue }}
               >
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-semibold text-gray-900 truncate">{displayName}</p>
-                <p className="text-sm text-gray-500 truncate">{displayEmail}</p>
+                <p className="text-[17px] font-bold text-gray-900 truncate">{displayName}</p>
+                <p className="text-[14px] text-gray-500 truncate mt-0.5">{displayEmail}</p>
               </div>
             </div>
           )}
 
-          <div className="bg-white mb-2 pb-2">
-            <div className="px-4 py-4 pt-5">
-              <h2 className="text-base font-bold text-gray-900">Account Settings</h2>
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Account Settings</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={Bell} label="Notification Settings" />
+              <div className="h-[1px] bg-gray-100 mx-5" />
               <MenuItem icon={Headset} label="Help Center" isLast />
             </div>
           </div>
 
-          <div className="bg-white mb-2 pb-2">
-            <div className="px-4 py-4 pt-5">
-              <h2 className="text-base font-bold text-gray-900">Earn with ANGA</h2>
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Earn with ANGA</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={Store} label="Sell on ANGA" isLast />
             </div>
           </div>
 
-          <div className="bg-white mb-3 pb-2 shadow-sm">
-            <div className="px-4 py-4 pt-5">
-              <h2 className="text-base font-bold text-gray-900">Feedback & Information</h2>
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mb-2">
+            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={FileText} label="Terms, Policies and Licenses" />
+              <div className="h-[1px] bg-gray-100 mx-5" />
               <MenuItem icon={HelpCircle} label="Browse FAQs" isLast />
             </div>
           </div>
 
           {isLoggedIn && (
-            <div className="px-4 mb-4">
-              <button
-                onClick={logout}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-white py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
-              >
-                <LogOut className="h-4 w-4" />
-                Log Out
-              </button>
-            </div>
+            <button
+              onClick={logout}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-white py-3.5 text-[15px] font-bold text-red-500 transition-colors hover:bg-red-50 shadow-sm active:bg-red-100"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+              Log Out
+            </button>
           )}
         </div>
       </div>

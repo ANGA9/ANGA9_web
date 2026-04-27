@@ -64,10 +64,7 @@ export default function CustomerCartPage() {
   return (
     <div className="w-full relative">
       {/* ══════════ MOBILE VIEW ══════════ */}
-      <div
-        className="block md:hidden min-h-screen bg-[#f1f3f6]"
-        style={{ width: "calc(100% + 48px)", marginLeft: "-24px" }}
-      >
+      <div className="block md:hidden min-h-screen bg-[#f1f3f6] rounded-xl overflow-hidden mt-1 mb-24">
         {/* Header */}
         <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
           <Link href="/" className="mr-3">

@@ -46,11 +46,11 @@ export default function SearchFilterStrip({
       */}
       <div className="sticky top-[60px] md:top-0 z-30 px-2 md:px-0 pb-1 md:pb-0">
         <div 
-          className="flex items-center border border-black bg-white w-full overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-xl"
+          className="flex items-center border border-gray-200 bg-white w-full overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.06)] rounded-xl"
         >
           <button 
             onClick={() => setActiveModal("sort")}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-black hover:bg-gray-50 transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-gray-200 hover:bg-gray-50 transition-colors"
             style={{ color: t.textPrimary }}
           >
             <ArrowUpDown className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
@@ -58,7 +58,7 @@ export default function SearchFilterStrip({
           </button>
           <button 
             onClick={() => setActiveModal("category")}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-black hover:bg-gray-50 transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-gray-200 hover:bg-gray-50 transition-colors"
             style={{ color: t.textPrimary }}
           >
             Category

@@ -21,6 +21,11 @@ export default function CustomerShopLayout({
         <WishlistProvider>
           <div className="min-h-screen" style={{ background: t.bgPage }}>
 
+            {/* ══════════ WCAG 2.4.1: Skip to content ══════════ */}
+            <a href="#main-content" className="skip-to-content">
+              Skip to main content
+            </a>
+
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
             <div className="hidden md:block">
               <CustomerTopNav />
@@ -34,7 +39,8 @@ export default function CustomerShopLayout({
 
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
-              className="mx-auto pb-20 md:pb-0 main-content-responsive"
+              id="main-content"
+              className="mx-auto pb-20 md:pb-0"
               style={{ maxWidth: 1400 }}
             >
               {children}

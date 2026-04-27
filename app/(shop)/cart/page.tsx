@@ -129,11 +129,11 @@ export default function CustomerCartPage() {
                   ? Math.round(((item.base_price - price) / item.base_price) * 100)
                   : 0;
                 return (
-                  <div key={item.productId} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 relative group">
+                  <div key={item.productId} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 relative group">
                     {/* Remove Icon */}
                     <button
                       onClick={() => handleRemove(item.productId)}
-                      className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all active:scale-90"
+                      className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all active:scale-90"
                       aria-label="Remove item"
                     >
                       <Trash2 className="w-[18px] h-[18px]" />
@@ -167,7 +167,7 @@ export default function CustomerCartPage() {
                               <span className="text-[13px] text-gray-400 line-through font-medium">
                                 {formatINR(item.base_price)}
                               </span>
-                              <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[11px] font-bold">
+                              <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
                                 {disc}% off
                               </span>
                             </div>
@@ -209,7 +209,7 @@ export default function CustomerCartPage() {
                       </div>
 
                       <div className="text-right">
-                        <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Item Total</p>
+                        <p className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Item Total</p>
                         <p className="text-[18px] font-black text-gray-900">
                           {formatINR(price * item.qty)}
                         </p>
@@ -221,7 +221,7 @@ export default function CustomerCartPage() {
             </div>
 
             <div className="mt-4 main-content-responsive">
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center gap-3 mb-3">
                   <Ticket className="w-5 h-5 text-gray-400" />
                   <span className="text-[14px] font-bold text-gray-900">Apply Coupon</span>
@@ -240,7 +240,7 @@ export default function CustomerCartPage() {
             </div>
 
             <div className="mt-4 mb-4 main-content-responsive">
-              <div className="bg-gray-100 rounded-xl p-5 border border-gray-200">
+              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
                 <h3 className="text-[15px] font-black text-gray-900 mb-4 uppercase tracking-wider">
                   Price Details
                 </h3>
@@ -289,7 +289,7 @@ export default function CustomerCartPage() {
                   <Truck className="w-6 h-6" />
                   <Tag className="w-6 h-6" />
                 </div>
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">
+                <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider text-center">
                   100% Secure Payments • Free Easy Returns
                 </p>
               </div>
@@ -299,21 +299,21 @@ export default function CustomerCartPage() {
             <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500">
               {/* Payment Methods Line */}
               <div className="flex items-center justify-center gap-4 py-2 bg-gray-50/80 border-b border-gray-50">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Pay via</span>
+                <span className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">Pay via</span>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 grayscale opacity-60">
                     <Smartphone className="w-3 h-3" />
-                    <span className="text-[11px] font-bold">UPI</span>
+                    <span className="text-[12px] font-bold">UPI</span>
                   </div>
                   <div className="w-px h-2 bg-gray-300" />
                   <div className="flex items-center gap-1 grayscale opacity-60">
                     <CreditCard className="w-3 h-3" />
-                    <span className="text-[11px] font-bold">CARD</span>
+                    <span className="text-[12px] font-bold">CARD</span>
                   </div>
                   <div className="w-px h-2 bg-gray-300" />
                   <div className="flex items-center gap-1 grayscale opacity-60">
                     <Banknote className="w-3 h-3" />
-                    <span className="text-[11px] font-bold">COD</span>
+                    <span className="text-[12px] font-bold">COD</span>
                   </div>
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function CustomerCartPage() {
               <div className="px-4 py-3 flex gap-4 items-center">
                 <div className="hidden xs:flex flex-col">
                   <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
-                  <span className="text-[11px] font-bold text-[#1A6FD4] mt-0.5">VIEW DETAILS</span>
+                  <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">VIEW DETAILS</span>
                 </div>
                 
                 <button
@@ -368,7 +368,7 @@ export default function CustomerCartPage() {
               return (
                 <div
                   key={item.productId}
-                  className="flex items-center gap-6 rounded-2xl border p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative group"
+                  className="flex items-center gap-6 rounded-xl border p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative group"
                   style={{ borderColor: t.border }}
                 >
                   <div
@@ -444,7 +444,7 @@ export default function CustomerCartPage() {
  
             {items.length === 0 && (
               <div
-                className="flex flex-col items-center justify-center rounded-2xl border py-24 bg-white"
+                className="flex flex-col items-center justify-center rounded-xl border py-24 bg-white"
                 style={{ borderColor: t.border }}
               >
                 <ShoppingBag className="h-16 w-16 mb-6" style={{ color: t.textMuted }} />

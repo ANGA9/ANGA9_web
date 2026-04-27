@@ -71,7 +71,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
 
   return (
     <div
-      className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-[14px] border p-4 sm:px-5"
+      className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-4 sm:px-5"
       style={{ background: t.bgCard, borderColor: t.border }}
     >
       {/* Icon */}

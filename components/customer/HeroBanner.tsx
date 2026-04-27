@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -59,121 +59,98 @@ export default function HeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const length = BANNERS.length;
 
-  const nextBanner = useCallback(
-    () => setCurrentIndex((p) => (p + 1) % length),
-    [length],
-  );
-  const prevBanner = useCallback(
-    () => setCurrentIndex((p) => (p - 1 + length) % length),
-    [length],
-  );
+  /* ── Desktop UI ── */
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollToIndex = useCallback((index: number) => {
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const scrollAmount = el.clientWidth * index;
+    el.scrollTo({ left: scrollAmount, behavior: "smooth" });
+    setCurrentIndex(index);
+  }, []);
 
   useEffect(() => {
-    const id = setInterval(nextBanner, 4000);
-    return () => clearInterval(id);
-  }, [nextBanner]);
+    const el = scrollRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const index = Math.round(el.scrollLeft / el.clientWidth);
+      setCurrentIndex(index);
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  /* ── desktop position classes (unchanged) ── */
-  function getPositionClasses(index: number) {
-    const diff = (index - currentIndex + length) % length;
-    if (diff === 0) {
-      return "z-10 opacity-100 scale-100 translate-x-0";
-    } else if (diff === 1) {
-      return "z-0 opacity-0 sm:opacity-50 scale-95 translate-x-[105%] sm:translate-x-[85%] md:translate-x-[90%] cursor-pointer pointer-events-auto sm:hover:opacity-75";
-    } else if (diff === length - 1) {
-      return "z-0 opacity-0 sm:opacity-50 scale-95 -translate-x-[105%] sm:-translate-x-[85%] md:-translate-x-[90%] cursor-pointer pointer-events-auto sm:hover:opacity-75";
-    } else {
-      if (diff > 1 && diff <= Math.floor(length / 2)) {
-        return "-z-10 opacity-0 scale-90 translate-x-[200%] pointer-events-none";
-      }
-      return "-z-10 opacity-0 scale-90 -translate-x-[200%] pointer-events-none";
-    }
-  }
+  useEffect(() => {
+    const id = setInterval(() => {
+      scrollToIndex((currentIndex + 1) % length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [currentIndex, length, scrollToIndex]);
+
+  const handleNext = () => scrollToIndex((currentIndex + 1) % length);
+  const handlePrev = () => scrollToIndex((currentIndex - 1 + length) % length);
 
   return (
     <div className="w-full pb-6 pt-2">
 
-      {/* ══════ MOBILE (<md): simple fade + small arrow buttons ══════ */}
-      <div className="block md:hidden w-full px-5" style={{ position: "relative" }}>
-        <div className="relative w-full" style={{ aspectRatio: "16/7" }}>
-          {BANNERS.map((b, i) => (
-            <Image
-              key={b.id}
-              src={b.mobile}
-              alt={b.alt}
-              fill
-              sizes="100vw"
-              className="rounded-xl object-cover object-center transition-opacity duration-500"
-              style={{ opacity: i === currentIndex ? 1 : 0 }}
-              draggable={false}
-              priority={i === 0}
-              loading={i === 0 ? "eager" : "lazy"}
-              quality={75}
-            />
-          ))}
-        </div>
-
-        {/* Arrow buttons sit outside the image via negative offset */}
-        <button
-          onClick={prevBanner}
-          className="absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center rounded-full bg-white active:bg-gray-100 shadow"
-          style={{ width: 26, height: 26, left: 4 }}
-          aria-label="Previous banner"
+      {/* ══════ UNIFIED NATIVE SWIPE CAROUSEL ══════ */}
+      <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto">
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide no-scrollbar w-full"
+          style={{ scrollBehavior: "smooth", msOverflowStyle: "none", scrollbarWidth: "none" }}
         >
-          <ChevronLeft className="w-3.5 h-3.5 text-gray-700" strokeWidth={2.5} />
-        </button>
-        <button
-          onClick={nextBanner}
-          className="absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center rounded-full bg-white active:bg-gray-100 shadow"
-          style={{ width: 26, height: 26, right: 4 }}
-          aria-label="Next banner"
-        >
-          <ChevronRight className="w-3.5 h-3.5 text-gray-700" strokeWidth={2.5} />
-        </button>
-      </div>
-
-      {/* ══════ DESKTOP (md+): 3D carousel ══════ */}
-      <div className="hidden md:block">
-        <div className="relative w-full h-[260px] md:h-[280px] flex items-center justify-center overflow-hidden">
           {BANNERS.map((b, i) => (
             <div
               key={b.id}
-              className={`absolute w-[75%] md:w-[70%] h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${getPositionClasses(i)}`}
-              onClick={() => {
-                const diff = (i - currentIndex + length) % length;
-                if (diff === 1) nextBanner();
-                if (diff === length - 1) prevBanner();
-              }}
+              className="w-full flex-shrink-0 snap-center px-1"
             >
-              <Image
-                src={b.desktop}
-                alt={b.alt}
-                fill
-                sizes="70vw"
-                className="rounded-2xl shadow-md object-cover object-center"
-                draggable={false}
-                priority={i === 0}
-                loading={i === 0 ? "eager" : "lazy"}
-                quality={75}
-              />
+              <div className="relative w-full h-[180px] md:h-[360px] lg:h-[400px] overflow-hidden rounded-xl">
+                {/* Mobile Image */}
+                <Image
+                  src={b.mobile}
+                  alt={b.alt}
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-center md:hidden"
+                  draggable={false}
+                  priority={i === 0}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  quality={75}
+                />
+                {/* Desktop Image */}
+                <Image
+                  src={b.desktop}
+                  alt={b.alt}
+                  fill
+                  sizes="100vw"
+                  className="hidden md:block object-cover object-center"
+                  draggable={false}
+                  priority={i === 0}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  quality={85}
+                />
+              </div>
             </div>
           ))}
-
-          <button
-            onClick={(e) => { e.stopPropagation(); prevBanner(); }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all flex border border-gray-100 items-center justify-center"
-            aria-label="Previous banner"
-          >
-            <ChevronLeft className="w-6 h-6" strokeWidth={2.5} />
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); nextBanner(); }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-lg backdrop-blur-sm transition-all flex border border-gray-100 items-center justify-center"
-            aria-label="Next banner"
-          >
-            <ChevronRight className="w-6 h-6" strokeWidth={2.5} />
-          </button>
         </div>
+
+        {/* Arrow buttons - hidden on mobile, visible on desktop hover */}
+        <button
+          onClick={handlePrev}
+          className="hidden md:flex absolute top-1/2 left-6 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/90 hover:bg-white active:bg-gray-100 shadow-md border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          aria-label="Previous banner"
+        >
+          <ChevronLeft className="w-5 h-5 text-gray-800" strokeWidth={2.5} />
+        </button>
+        <button
+          onClick={handleNext}
+          className="hidden md:flex absolute top-1/2 right-6 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/90 hover:bg-white active:bg-gray-100 shadow-md border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          aria-label="Next banner"
+        >
+          <ChevronRight className="w-5 h-5 text-gray-800" strokeWidth={2.5} />
+        </button>
       </div>
 
       {/* Dots Indicator */}
@@ -181,7 +158,7 @@ export default function HeroBanner() {
         {BANNERS.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrentIndex(i)}
+            onClick={() => scrollToIndex(i)}
             className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
               i === currentIndex
                 ? "w-6 sm:w-8 bg-blue-600"

@@ -196,7 +196,7 @@ export default function CustomerAccountPage() {
   }
 
   const addressFormUI = (
-    <div className="rounded-[14px] border p-6" style={{ background: t.bgCard, borderColor: t.border }}>
+    <div className="rounded-xl border p-6" style={{ background: t.bgCard, borderColor: t.border }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold" style={{ color: t.textPrimary }}>
           {editingId ? "Edit Address" : "Add New Address"}
@@ -244,7 +244,7 @@ export default function CustomerAccountPage() {
   );
 
   const addressBookUI = (
-    <div className="rounded-[14px] border p-6" style={{ background: t.bgCard, borderColor: t.border }}>
+    <div className="rounded-xl border p-6" style={{ background: t.bgCard, borderColor: t.border }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold" style={{ color: t.textPrimary }}>Address Book</h2>
         <button onClick={openAddForm} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-white" style={{ background: t.bluePrimary }}>
@@ -307,19 +307,15 @@ export default function CustomerAccountPage() {
 
   return (
     <div className="w-full relative">
-      {/* ══════════ MOBILE VIEW ══════════ */}
-      <div className="block md:hidden pb-24 pt-2">
-        <div className="w-full flex flex-col gap-3">
+      <div className="block md:hidden pb-24 pt-4 px-4">
+        <div className="w-full flex flex-col gap-4">
           
-          <header className="flex items-center h-[60px] bg-white rounded-2xl shadow-sm border border-gray-100">
-            <Link href="/" className="mr-4 p-1 -ml-1 rounded-full hover:bg-gray-50">
-              <ArrowLeft className="w-5 h-5 text-gray-700" />
-            </Link>
-            <h1 className="text-[17px] font-bold text-gray-900 tracking-wide">Account</h1>
+          <header className="mb-2">
+            <h1 className="text-[20px] font-bold text-gray-900">Account</h1>
           </header>
 
           {!isLoggedIn ? (
-            <div className="bg-white rounded-2xl p-5 flex items-center justify-between shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-5 flex items-center justify-between shadow-sm border border-gray-200">
               <span className="text-[15px] font-semibold text-gray-900 w-2/3 leading-snug">
                 Log in for exclusive offers
               </span>
@@ -332,7 +328,7 @@ export default function CustomerAccountPage() {
               </Link>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm border border-gray-200">
               <div
                 className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full text-[18px] font-bold text-white shadow-sm"
                 style={{ background: accentBlue }}
@@ -346,7 +342,7 @@ export default function CustomerAccountPage() {
             </div>
           )}
 
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
               <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Account Settings</h2>
             </div>
@@ -357,7 +353,7 @@ export default function CustomerAccountPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
               <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Earn with ANGA</h2>
             </div>
@@ -366,7 +362,7 @@ export default function CustomerAccountPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mb-2">
+          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
               <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
             </div>
@@ -380,7 +376,7 @@ export default function CustomerAccountPage() {
           {isLoggedIn && (
             <button
               onClick={logout}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-white py-3.5 text-[15px] font-bold text-red-500 transition-colors hover:bg-red-50 shadow-sm active:bg-red-100"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-white py-4 text-[15px] font-bold text-red-500 transition-colors active:bg-red-50 shadow-sm mb-3"
             >
               <LogOut className="h-[18px] w-[18px]" />
               Log Out
@@ -412,7 +408,7 @@ export default function CustomerAccountPage() {
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 md:col-span-4 lg:col-span-3">
               <div
-                className="rounded-[14px] border overflow-hidden"
+                className="rounded-xl border overflow-hidden"
                 style={{ background: t.bgCard, borderColor: t.border }}
               >
                 {navItems.map((item) => {
@@ -452,7 +448,7 @@ export default function CustomerAccountPage() {
               {/* Profile card - always visible */}
               {(activeNav === "Profile" || activeNav === "Business Info") && (
                 <div
-                  className="rounded-[14px] border p-6"
+                  className="rounded-xl border p-6"
                   style={{ background: t.bgCard, borderColor: t.border }}
                 >
                   <div className="flex items-start gap-5">
@@ -508,7 +504,7 @@ export default function CustomerAccountPage() {
 
               {/* My Orders shortcut */}
               {activeNav === "My Orders" && (
-                <div className="rounded-[14px] border p-6 text-center" style={{ background: t.bgCard, borderColor: t.border }}>
+                <div className="rounded-xl border p-6 text-center" style={{ background: t.bgCard, borderColor: t.border }}>
                   <Package className="w-10 h-10 mx-auto mb-3" style={{ color: t.bluePrimary }} />
                   <h2 className="text-lg font-semibold mb-2" style={{ color: t.textPrimary }}>My Orders</h2>
                   <p className="text-sm mb-4" style={{ color: t.textSecondary }}>View and manage all your orders</p>
@@ -525,7 +521,7 @@ export default function CustomerAccountPage() {
 
               {/* Settings placeholder */}
               {activeNav === "Settings" && (
-                <div className="rounded-[14px] border p-6 text-center" style={{ background: t.bgCard, borderColor: t.border }}>
+                <div className="rounded-xl border p-6 text-center" style={{ background: t.bgCard, borderColor: t.border }}>
                   <Settings className="w-10 h-10 mx-auto mb-3" style={{ color: t.textMuted }} />
                   <h2 className="text-lg font-semibold mb-2" style={{ color: t.textPrimary }}>Settings</h2>
                   <p className="text-sm" style={{ color: t.textSecondary }}>Account settings coming soon</p>

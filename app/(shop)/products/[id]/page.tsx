@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
         <div className="animate-pulse">
           <div className="h-4 w-48 rounded bg-gray-200 mb-6" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="aspect-square rounded-2xl bg-gray-100" />
+            <div className="aspect-square rounded-xl bg-gray-100" />
             <div className="space-y-4">
               <div className="h-8 w-3/4 rounded bg-gray-200" />
               <div className="h-4 w-1/3 rounded bg-gray-200" />
@@ -185,7 +185,7 @@ export default function ProductDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
         <div
-          className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl"
+          className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl"
           style={{ backgroundColor: `${t.outOfStock}15` }}
         >
           <AlertTriangle className="h-8 w-8" style={{ color: t.outOfStock }} />
@@ -249,7 +249,7 @@ export default function ProductDetailPage() {
         <div>
           {/* Main Image */}
           <div
-            className="relative flex items-center justify-center rounded-2xl overflow-hidden"
+            className="relative flex items-center justify-center rounded-xl overflow-hidden"
             style={{
               background: t.bgBlueTint,
               aspectRatio: "1",

@@ -8,6 +8,9 @@ import {
   Factory,
   Armchair,
   Briefcase,
+  ArrowUp,
+  ShieldCheck,
+  Truck,
 } from "lucide-react";
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
@@ -70,6 +73,7 @@ export default function CustomerHomePage() {
   const [hasMore, setHasMore] = useState(true);
   const [sortParam, setSortParam] = useState("newest");
   const [categoryParam, setCategoryParam] = useState("");
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const hasActiveFilters = !!categoryParam;
 
   const updateFilters = (updates: Record<string, string>) => {
@@ -188,6 +192,12 @@ export default function CustomerHomePage() {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (window.scrollY > 800) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+
       // 800px from bottom triggers next fetch early for a smoother experience
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
         if (!loading && !isFetchingRef.current && hasMore) {
@@ -200,7 +210,19 @@ export default function CustomerHomePage() {
   }, [loading, hasMore, page, sortParam, categoryParam]);
 
   return (
-    <div className="py-6">
+    <div className="py-2 md:py-6">
+      {/* ══════════ DESKTOP USP TRUST BAR ══════════ */}
+      <div className="hidden md:flex justify-between items-center bg-[#F8FBFF] border border-[#EAF2FF] rounded-xl px-6 py-3 mb-6 max-w-[1280px] mx-auto">
+        <div className="flex items-center gap-2">
+          <span className="text-[#1A6FD4] font-bold text-sm">✓ ANGA9 Verified Sellers</span>
+        </div>
+        <div className="flex items-center gap-6 text-sm font-semibold text-gray-600">
+          <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#1A6FD4]" /> 100% Secure Payments</span>
+          <span className="flex items-center gap-1.5"><Truck className="w-4 h-4 text-[#1A6FD4]" /> Pan-India Delivery</span>
+          <span className="flex items-center gap-1.5"><Factory className="w-4 h-4 text-[#1A6FD4]" /> Direct Wholesale Pricing</span>
+        </div>
+      </div>
+
       {/* Hero */}
       <HeroBanner />
 
@@ -221,18 +243,18 @@ export default function CustomerHomePage() {
           </button>
         </div>
         <div
-          className="grid grid-cols-3 sm:grid-cols-6"
-          style={{ gap: 12 }}
+          className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-6 no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0"
+          style={{ gap: 12, scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {categoryIcons.map((cat) => (
             <button
               key={cat.name}
-              className="flex flex-col items-center border cursor-pointer transition-all duration-150 hover:border-[#1A6FD4] hover:scale-[1.03]"
+              className="flex-shrink-0 snap-center w-[100px] md:w-auto flex flex-col items-center border cursor-pointer transition-all duration-150 hover:border-[#1A6FD4] hover:scale-[1.03]"
               style={{
                 background: "#FFFFFF",
                 borderColor: "#E8EEF4",
                 borderRadius: 16,
-                padding: "20px 12px",
+                padding: "20px 8px",
                 textAlign: "center",
               }}
             >
@@ -250,8 +272,8 @@ export default function CustomerHomePage() {
                 />
               </div>
               <span
-                className="font-medium text-center leading-tight"
-                style={{ color: "#1A1A2E", fontSize: '14px' }}
+                className="font-medium text-center leading-snug"
+                style={{ color: "#1A1A2E", fontSize: '13px' }}
               >
                 {cat.name}
               </span>
@@ -267,7 +289,7 @@ export default function CustomerHomePage() {
             className="font-bold"
             style={{ color: "#1A1A2E", fontSize: '24px' }}
           >
-            Discover products for you
+            Trending Now
           </h2>
           <button
             className="font-medium transition-opacity hover:opacity-80"
@@ -288,18 +310,18 @@ export default function CustomerHomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse rounded-[14px] border"
+                className="animate-pulse rounded-xl border"
                 style={{ background: "#F3F4F6", borderColor: "#E8EEF4", height: 340 }}
               />
             ))}
           </div>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -330,6 +352,17 @@ export default function CustomerHomePage() {
           </p>
         )}
       </section>
+
+      {/* Back to top button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-24 right-5 z-50 p-3 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 text-gray-700 hover:text-[#1A6FD4] hover:bg-blue-50 transition-all animate-in fade-in slide-in-from-bottom-5"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
@@ -149,9 +150,9 @@ export default function CustomerLoginPage() {
 
   /* ─── Logo ─── */
   const logo = (
-    <a href="/" className="shrink-0">
+    <Link href="/" className="shrink-0">
       <Image src="/anga9-logo.png" alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
-    </a>
+    </Link>
   );
 
   /* ─── Spinner ─── */
@@ -235,8 +236,8 @@ export default function CustomerLoginPage() {
 
       <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
         By continuing, you agree to ANGA9&apos;s{" "}
-        <a href="#" className="text-[#1A6FD4] hover:underline">Terms of Use</a> and{" "}
-        <a href="#" className="text-[#1A6FD4] hover:underline">Privacy Policy</a>.
+        <Link href="#" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+        <Link href="#" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
       </p>
     </form>
   );
@@ -345,6 +346,20 @@ export default function CustomerLoginPage() {
           </>
         )}
       </button>
+
+      <div className="mt-4 text-center">
+        <p className="text-sm text-[#4B5563]">
+          Didn&apos;t receive the code?{" "}
+          <button
+            type="button"
+            onClick={tab === "email" ? handleEmailSubmit : undefined}
+            disabled={loading}
+            className="font-semibold text-[#1A6FD4] hover:underline disabled:opacity-50"
+          >
+            Resend OTP
+          </button>
+        </p>
+      </div>
     </form>
   );
 

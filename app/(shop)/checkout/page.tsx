@@ -242,7 +242,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/"
-          className="rounded-[10px] px-6 py-3 text-sm font-bold transition-opacity hover:opacity-90"
+          className="rounded-xl px-6 py-3 text-sm font-bold transition-opacity hover:opacity-90"
           style={{ background: t.primaryCta, color: t.ctaText }}
         >
           Browse Products
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
         {/* Order items */}
         <div className="lg:col-span-3 space-y-3">
           {/* Delivery Address */}
-          <div className="rounded-[14px] border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
+          <div className="rounded-xl border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
                 <MapPin className="w-4 h-4" style={{ color: t.bluePrimary }} /> Delivery Address
@@ -320,7 +320,7 @@ export default function CheckoutPage() {
           </div>
 
           <div
-            className="rounded-[14px] border p-5"
+            className="rounded-xl border p-5"
             style={{ background: t.bgCard, borderColor: t.border }}
           >
             <h3 className="text-base font-semibold mb-4" style={{ color: t.textPrimary }}>
@@ -360,7 +360,7 @@ export default function CheckoutPage() {
 
           {/* Payment method info */}
           <div
-            className="rounded-[14px] border p-5"
+            className="rounded-xl border p-5"
             style={{ background: "#F0F7FF", borderColor: "#B8D4F0" }}
           >
             <div className="flex items-center gap-3">
@@ -382,7 +382,7 @@ export default function CheckoutPage() {
         {/* Order summary */}
         <div className="lg:col-span-2">
           <div
-            className="rounded-[14px] border p-5 sticky top-28"
+            className="rounded-xl border p-5 sticky top-28"
             style={{ background: t.bgCard, borderColor: t.border }}
           >
             <h3 className="text-base font-semibold mb-4" style={{ color: t.textPrimary }}>
@@ -442,7 +442,7 @@ export default function CheckoutPage() {
             <button
               onClick={handlePayWithRazorpay}
               disabled={placing || !razorpayLoaded || cartBlocked || validating}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-[10px] py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
               style={{ background: "#1A6FD4", color: "#FFFFFF" }}
             >
               {placing ? (
@@ -476,15 +476,15 @@ export default function CheckoutPage() {
             <div className="flex items-center justify-around mt-5 pt-4 border-t" style={{ borderColor: t.border }}>
               <div className="flex flex-col items-center gap-1">
                 <ShieldCheck className="w-4 h-4 text-gray-400" />
-                <span className="text-[9px] text-gray-500">Secure</span>
+                <span className="text-[12px] text-gray-500">Secure</span>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <Truck className="w-4 h-4 text-gray-400" />
-                <span className="text-[9px] text-gray-500">Fast Delivery</span>
+                <span className="text-[12px] text-gray-500">Fast Delivery</span>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <CreditCard className="w-4 h-4 text-gray-400" />
-                <span className="text-[9px] text-gray-500">Razorpay</span>
+                <span className="text-[12px] text-gray-500">Razorpay</span>
               </div>
             </div>
           </div>

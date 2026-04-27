@@ -417,7 +417,7 @@ function SearchPageContent() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="animate-pulse rounded-[14px] border"
+                  className="animate-pulse rounded-xl border"
                   style={{ background: "#F3F4F6", borderColor: t.border, height: 340 }}
                 />
               ))}

@@ -18,6 +18,8 @@ export default function MobileBottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-[9999] flex items-center justify-around border-t md:hidden"
+      role="navigation"
+      aria-label="Main navigation"
       style={{
         height: "calc(60px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
@@ -27,9 +29,6 @@ export default function MobileBottomNav() {
       }}
     >
       {tabs.map((tab) => {
-        // Evaluate active tab status
-        // Home tab is exactly '/'
-        // Other tabs match their path prefix
         const isActive =
           tab.href === "/"
             ? pathname === "/"
@@ -39,6 +38,7 @@ export default function MobileBottomNav() {
           <Link
             key={tab.key}
             href={tab.href}
+            aria-current={isActive ? "page" : undefined}
             className="flex flex-col items-center justify-center flex-1 h-full transition-colors"
             style={{
               color: isActive ? t.bluePrimary : "#6B7280",

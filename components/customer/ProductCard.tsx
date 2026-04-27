@@ -83,7 +83,7 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[14px] border border-black bg-white transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.10)]">
       <Link href={`/products/${product.id}`} className="flex flex-col flex-1">
         {/* Image area (aspect-square to reduce vertical length) */}
         <div
@@ -157,6 +157,14 @@ export default function ProductCard({
             {product.name}
           </h3>
 
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="flex items-center gap-1 bg-[#F8FBFF] px-1.5 py-0.5 rounded text-[11px] font-bold text-[#1A6FD4]">
+              <span>★</span>
+              <span>4.8</span>
+            </div>
+            <span className="text-[11px] text-gray-500 font-medium">(120+ sold)</span>
+          </div>
+
           <div className="mt-auto">
             {/* Price row */}
             <div className="flex items-baseline mb-1">
@@ -182,16 +190,16 @@ export default function ProductCard({
         <div className="p-3 pt-0 border-t mt-2 flex gap-2 bg-white" style={{ borderColor: t.border }}>
           <button
             onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-lg font-bold text-sm transition-colors hover:bg-gray-50 border"
-            style={{ color: "#1A1A2E", borderColor: "#1A1A2E" }}
+            className="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-lg font-semibold text-[13px] transition-colors hover:bg-gray-50 border border-gray-300"
+            style={{ color: "#1A1A2E" }}
           >
             <ShoppingCart className="w-4 h-4" />
-            Cart
+            Add to Cart
           </button>
           <button
             onClick={handleBuyNow}
-            className="flex-1 h-[44px] rounded-lg font-bold text-sm text-white transition-opacity hover:opacity-90 shadow-sm"
-            style={{ background: "#4338CA" }}
+            className="flex-1 h-[44px] rounded-lg font-bold text-[13px] text-white transition-opacity hover:opacity-90 shadow-sm"
+            style={{ background: "#1A6FD4" }}
           >
             Buy Now
           </button>

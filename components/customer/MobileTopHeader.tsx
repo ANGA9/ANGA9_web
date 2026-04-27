@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History } from "lucide-react";
+import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -45,6 +45,8 @@ export default function MobileTopHeader() {
   const searchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
+  const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
+
   useEffect(() => {
     // Fetch popular tags on mount
     api.get<{ tags?: string[] }>("/api/search/filters", { silent: true })
@@ -52,20 +54,32 @@ export default function MobileTopHeader() {
         if (res?.tags) setPopularTags(res.tags.slice(0, 10)); // Show top 10
       })
       .catch(() => {});
+  }, []);
       
+  useEffect(() => {
     // Load recent searches
     try {
-      const saved = localStorage.getItem("recentSearches");
+      const saved = localStorage.getItem(searchStorageKey);
       if (saved) setRecentSearches(JSON.parse(saved));
+      else setRecentSearches([]);
     } catch {}
-  }, []);
+  }, [searchStorageKey]);
 
   const saveRecentSearch = (term: string) => {
     if (!term.trim()) return;
     try {
       const updated = [term, ...recentSearches.filter(t => t !== term)].slice(0, 5);
       setRecentSearches(updated);
-      localStorage.setItem("recentSearches", JSON.stringify(updated));
+      localStorage.setItem(searchStorageKey, JSON.stringify(updated));
+    } catch {}
+  };
+
+  const removeRecentSearch = (e: React.MouseEvent, term: string) => {
+    e.stopPropagation();
+    try {
+      const updated = recentSearches.filter(t => t !== term);
+      setRecentSearches(updated);
+      localStorage.setItem(searchStorageKey, JSON.stringify(updated));
     } catch {}
   };
 
@@ -305,16 +319,23 @@ export default function MobileTopHeader() {
                       <h4 className="text-[14px] font-bold text-gray-700 mb-2">Recent Searches</h4>
                       <div className="flex flex-col">
                         {recentSearches.map((term) => (
-                          <button
-                            key={term}
-                            className="flex items-center gap-3 py-2 text-left transition-colors hover:bg-gray-50 -mx-4 px-4"
-                            onClick={() => handleTagClick(term)}
-                          >
-                            <History className="w-4 h-4 text-gray-500 shrink-0" />
-                            <span className="text-[14px] text-gray-600 font-medium truncate">
-                              {term}
-                            </span>
-                          </button>
+                          <div key={term} className="flex items-center transition-colors hover:bg-gray-50 -mx-4 px-4">
+                            <button
+                              className="flex-1 flex items-center gap-3 py-2 text-left"
+                              onClick={() => handleTagClick(term)}
+                            >
+                              <History className="w-4 h-4 text-gray-500 shrink-0" />
+                              <span className="text-[14px] text-gray-600 font-medium truncate">
+                                {term}
+                              </span>
+                            </button>
+                            <button 
+                              onClick={(e) => removeRecentSearch(e, term)}
+                              className="p-2 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
                         ))}
                       </div>
                     </div>

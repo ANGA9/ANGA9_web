@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
@@ -252,13 +252,26 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[900px] px-4 sm:px-8 py-6">
-      <h1 className="text-xl font-bold mb-1" style={{ color: t.textPrimary }}>
-        Checkout
-      </h1>
-      <p className="text-sm mb-6" style={{ color: t.textSecondary }}>
-        Review your order and pay securely with Razorpay
-      </p>
+    <div className="bg-[#F7F7F8] min-h-screen pb-32 lg:pb-0 lg:bg-white">
+      {/* ══════════ MOBILE HEADER (<lg) ══════════ */}
+      <header className="flex lg:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+        <Link href="/cart" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <ArrowLeft className="w-6 h-6 text-gray-800" />
+        </Link>
+        <h1 className="text-[17px] font-bold text-gray-900 leading-tight">
+          Checkout
+        </h1>
+      </header>
+
+      <div className="mx-auto max-w-[900px] px-4 sm:px-8 py-6">
+        <div className="hidden lg:block mb-6">
+          <h1 className="text-xl font-bold mb-1" style={{ color: t.textPrimary }}>
+            Checkout
+          </h1>
+          <p className="text-sm" style={{ color: t.textSecondary }}>
+            Review your order and pay securely with Razorpay
+          </p>
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Order items */}
@@ -379,11 +392,11 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Order summary */}
-        <div className="lg:col-span-2">
+        {/* Order summary (Desktop Right Column, Mobile Bottom) */}
+        <div className="lg:col-span-2 mt-4 lg:mt-0">
           <div
-            className="rounded-xl border p-5 sticky top-28"
-            style={{ background: t.bgCard, borderColor: t.border }}
+            className="rounded-xl border p-5 lg:sticky lg:top-28 bg-white"
+            style={{ borderColor: t.border }}
           >
             <h3 className="text-base font-semibold mb-4" style={{ color: t.textPrimary }}>
               Order Summary
@@ -439,24 +452,27 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <button
-              onClick={handlePayWithRazorpay}
-              disabled={placing || !razorpayLoaded || cartBlocked || validating}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
-              style={{ background: "#1A6FD4", color: "#FFFFFF" }}
-            >
-              {placing ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <CreditCard className="w-4 h-4" />
-                  Pay {formatINR(total)} with Razorpay
-                </>
-              )}
-            </button>
+            {/* Desktop CTA (Hidden on mobile) */}
+            <div className="hidden lg:block">
+              <button
+                onClick={handlePayWithRazorpay}
+                disabled={placing || !razorpayLoaded || cartBlocked || validating}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
+                style={{ background: "#1A6FD4", color: "#FFFFFF" }}
+              >
+                {placing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4" />
+                    Pay {formatINR(total)}
+                  </>
+                )}
+              </button>
+            </div>
 
             {!razorpayLoaded && (
               <p className="mt-2 text-center text-xs md:text-sm" style={{ color: t.textMuted }}>
@@ -475,21 +491,45 @@ export default function CheckoutPage() {
             {/* Trust badges */}
             <div className="flex items-center justify-around mt-5 pt-4 border-t" style={{ borderColor: t.border }}>
               <div className="flex flex-col items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-gray-400" />
-                <span className="text-[12px] text-gray-500">Secure</span>
+                <ShieldCheck className="w-5 h-5 text-gray-400" />
+                <span className="text-[12px] font-medium text-gray-500">Secure</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <Truck className="w-4 h-4 text-gray-400" />
-                <span className="text-[12px] text-gray-500">Fast Delivery</span>
+                <Truck className="w-5 h-5 text-gray-400" />
+                <span className="text-[12px] font-medium text-gray-500">Fast Delivery</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <CreditCard className="w-4 h-4 text-gray-400" />
-                <span className="text-[12px] text-gray-500">Razorpay</span>
+                <CreditCard className="w-5 h-5 text-gray-400" />
+                <span className="text-[12px] font-medium text-gray-500">Razorpay</span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ══════════ MOBILE STICKY PAYMENT BAR (<lg) ══════════ */}
+      <div className="lg:hidden fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500 px-4 py-3 flex gap-4 items-center">
+        <div className="flex flex-col">
+          <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
+          <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
+        </div>
+        
+        <button
+          onClick={handlePayWithRazorpay}
+          disabled={placing || !razorpayLoaded || cartBlocked || validating}
+          className="flex-1 h-[52px] bg-[#1A6FD4] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-blue-200"
+        >
+          {placing ? (
+            <Loader2 className="w-6 h-6 animate-spin" />
+          ) : (
+            <>
+              <CreditCard className="w-5 h-5" />
+              Pay {formatINR(total)}
+            </>
+          )}
+        </button>
+      </div>
+
     </div>
   );
 }

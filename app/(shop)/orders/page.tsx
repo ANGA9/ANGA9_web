@@ -2,7 +2,8 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -64,6 +65,7 @@ function OrdersContent() {
           amount: o.total,
           status: (statusMap[o.status] ?? "Processing") as Order["status"],
           rawStatus: o.status,
+          imageUrl: o.items?.[0]?.product_image,
         }));
         setOrders(mapped);
       } catch {
@@ -97,27 +99,31 @@ function OrdersContent() {
         </div>
       )}
 
-      <h1 className="text-xl font-bold mb-1" style={{ color: t.textPrimary }}>
-        My Orders
-      </h1>
-      <p className="text-sm mb-6" style={{ color: t.textSecondary }}>
-        Track and manage your wholesale orders
-      </p>
+      <div className="flex items-center gap-2 mb-6 lg:mb-8">
+        <h1 className="text-[24px] lg:text-[32px] font-black text-gray-900 tracking-tight">
+          My Orders
+        </h1>
+      </div>
 
-      <div className="flex gap-1 border-b mb-6" style={{ borderColor: t.border }}>
+      <div className="flex gap-1 overflow-x-auto no-scrollbar border-b mb-6" style={{ borderColor: t.border }}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
+          const statusMatch = tab.replace("Active", "Processing");
+          const count = tab === "All Orders" 
+            ? orders.length 
+            : orders.filter((o) => o.status === statusMatch).length;
+
           return (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px"
+              className="px-4 py-3 text-[14px] font-bold transition-colors border-b-[3px] -mb-px whitespace-nowrap"
               style={{
-                borderColor: isActive ? t.bluePrimary : "transparent",
-                color: isActive ? t.bluePrimary : t.textSecondary,
+                borderColor: isActive ? "#1A6FD4" : "transparent",
+                color: isActive ? "#1A6FD4" : t.textSecondary,
               }}
             >
-              {tab}
+              {tab} <span className="opacity-70 ml-1">({count})</span>
             </button>
           );
         })}
@@ -144,13 +150,23 @@ function OrdersContent() {
           ))}
 
           {filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <h3 className="text-base font-semibold" style={{ color: t.textPrimary }}>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: "#EAF2FF" }}>
+                <ShoppingBag className="w-10 h-10 text-[#1A6FD4]" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
                 No orders found
               </h3>
-              <p className="mt-1 text-sm" style={{ color: t.textSecondary }}>
-                Orders matching this filter will appear here.
+              <p className="text-[15px] text-gray-500 mb-8 max-w-[280px]">
+                You haven't placed any orders matching this filter yet.
               </p>
+              <Link
+                href="/"
+                className="rounded-xl px-10 py-3.5 text-[16px] font-bold text-white transition-all active:scale-95 shadow-sm"
+                style={{ background: "#1A6FD4" }}
+              >
+                Start Shopping
+              </Link>
             </div>
           )}
         </div>
@@ -165,5 +181,5 @@ interface ApiOrder {
   status: string;
   total: number;
   placed_at: string;
-  items?: { product_name: string; quantity: number }[];
+  items?: { product_name: string; quantity: number; product_image?: string }[];
 }

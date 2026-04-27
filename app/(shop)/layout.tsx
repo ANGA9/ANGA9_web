@@ -9,12 +9,16 @@ import { LoginSheetProvider } from "@/lib/LoginSheetContext";
 import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { usePathname } from "next/navigation";
 
 export default function CustomerShopLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isCheckout = pathname === "/checkout";
+
   return (
     <LoginSheetProvider>
       <CartProvider>
@@ -33,21 +37,23 @@ export default function CustomerShopLayout({
             </div>
 
             {/* ══════════ MOBILE NAV (<md) ══════════ */}
-            <div className="block md:hidden sticky top-0 z-40">
-              <MobileTopHeader />
-            </div>
+            {!isCheckout && (
+              <div className="block md:hidden sticky top-0 z-40">
+                <MobileTopHeader />
+              </div>
+            )}
 
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
               id="main-content"
-              className="mx-auto pb-20 md:pb-0"
+              className={`mx-auto ${isCheckout ? "pb-0" : "pb-20 md:pb-0"}`}
               style={{ maxWidth: 1400 }}
             >
               {children}
             </main>
 
             {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
-            <MobileBottomNav />
+            {!isCheckout && <MobileBottomNav />}
 
             {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
             <LoginSheet />

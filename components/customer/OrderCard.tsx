@@ -14,6 +14,7 @@ export interface Order {
   amount: number;
   status: "Delivered" | "Processing" | "Cancelled";
   rawStatus?: string;
+  imageUrl?: string;
 }
 
 function formatINR(value: number) {
@@ -69,113 +70,147 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     }
   };
 
+  // Mock estimated delivery for processing orders (5 days from order date)
+  const estDelivery = new Date(order.date);
+  if (!isNaN(estDelivery.getTime())) {
+    estDelivery.setDate(estDelivery.getDate() + 5);
+  }
+  const estDeliveryStr = !isNaN(estDelivery.getTime()) ? estDelivery.toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "TBD";
+
   return (
-    <div
-      className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-4 sm:px-5"
-      style={{ background: t.bgCard, borderColor: t.border }}
-    >
-      {/* Icon */}
+    <>
       <div
-        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl"
-        style={{ background: t.bgBlueTint }}
+        className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-4 sm:px-5"
+        style={{ background: t.bgCard, borderColor: t.border }}
       >
-        <PackageOpen className="h-6 w-6" style={{ color: t.bluePrimary }} />
-      </div>
-
-      {/* Details */}
-      <div className="flex-1 min-w-0">
-        <p className="text-xs mb-0.5" style={{ color: t.textMuted }}>
-          {order.id} &middot; {order.date}
-        </p>
-        <h3
-          className="text-sm font-semibold truncate"
-          style={{ color: t.textPrimary }}
+        {/* Product Image */}
+        <div
+          className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-100"
+          style={{ background: t.bgBlueTint }}
         >
-          {order.product}
-        </h3>
-        <p className="text-xs mt-0.5" style={{ color: t.textSecondary }}>
-          Qty: {order.qty} &middot;{" "}
-          <span className="font-medium" style={{ color: t.textPrimary }}>
-            {formatINR(order.amount)}
-          </span>{" "}
-          &middot; {order.seller}
-        </p>
+          {order.imageUrl ? (
+            <img src={order.imageUrl} alt={order.product} className="h-full w-full object-cover" />
+          ) : (
+            <PackageOpen className="h-7 w-7" style={{ color: t.bluePrimary, opacity: 0.5 }} />
+          )}
+        </div>
+
+        {/* Details */}
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] mb-1 font-bold tracking-wide uppercase" style={{ color: t.textSecondary }}>
+            {order.id} &middot; {order.date}
+          </p>
+          <h3
+            className="text-[15px] font-bold leading-tight truncate mb-1"
+            style={{ color: t.textPrimary }}
+          >
+            {order.product}
+          </h3>
+          <div className="flex flex-wrap items-center gap-2 text-[13px]" style={{ color: t.textSecondary }}>
+            <span>Qty: {order.qty}</span>
+            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+            <span className="font-black" style={{ color: t.textPrimary }}>
+              {formatINR(order.amount)}
+            </span>
+            {order.seller && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                <span className="truncate max-w-[100px]">{order.seller}</span>
+              </>
+            )}
+          </div>
+          {order.status === "Processing" && (
+            <p className="text-[12px] font-semibold mt-1.5" style={{ color: t.bluePrimary }}>
+              Est. Delivery: {estDeliveryStr}
+            </p>
+          )}
+        </div>
+
+        {/* Status + actions */}
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0 mt-2 sm:mt-0">
+          <span
+            className="inline-flex rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
+            style={{ background: s.bg, color: s.text }}
+          >
+            {order.status}
+          </span>
+
+          {(order.status === "Processing" || order.status === "Delivered") && (
+            <button
+              onClick={() => window.location.href = `/orders/${order.id}/track`}
+              className="text-[13px] font-bold transition-opacity hover:opacity-80 px-2"
+              style={{ color: t.bluePrimary }}
+            >
+              Track
+            </button>
+          )}
+
+          {order.status === "Delivered" && (
+            <button
+              className="rounded-lg px-4 py-2 text-[13px] font-bold transition-opacity hover:opacity-90 shadow-sm"
+              style={{ background: t.primaryCta, color: t.ctaText }}
+            >
+              Reorder
+            </button>
+          )}
+
+          {/* Invoice Download Button */}
+          {order.internalId && (
+            <button
+              onClick={handleDownloadInvoice}
+              disabled={downloading}
+              className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-gray-50 disabled:opacity-50 bg-white"
+              style={{ borderColor: t.border, color: t.textPrimary }}
+              title="Download Invoice"
+            >
+              {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              Invoice
+            </button>
+          )}
+
+          {canCancel && (
+            <button
+              onClick={() => setShowCancelConfirm(true)}
+              className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-red-50 bg-white"
+              style={{ borderColor: "#FECACA", color: t.outOfStock }}
+            >
+              <XCircle className="w-4 h-4" /> Cancel
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Status + actions */}
-      <div className="flex items-center gap-2.5 shrink-0">
-        <span
-          className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold"
-          style={{ background: s.bg, color: s.text }}
-        >
-          {order.status}
-        </span>
-
-        {(order.status === "Processing" || order.status === "Delivered") && (
-          <button
-            className="text-xs font-semibold transition-opacity hover:opacity-80"
-            style={{ color: t.bluePrimary }}
-          >
-            Track Order
-          </button>
-        )}
-
-        {order.status === "Delivered" && (
-          <button
-            className="rounded-lg px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90"
-            style={{ background: t.primaryCta, color: t.ctaText }}
-          >
-            Reorder
-          </button>
-        )}
-
-        {/* Invoice Download Button */}
-        {order.internalId && (
-          <button
-            onClick={handleDownloadInvoice}
-            disabled={downloading}
-            className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ borderColor: t.border, color: t.textSecondary }}
-            title="Download Invoice"
-          >
-            {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-            Invoice
-          </button>
-        )}
-
-        {canCancel && (
-          <button
-            onClick={() => setShowCancelConfirm(true)}
-            className="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors hover:bg-red-50"
-            style={{ borderColor: "#FECACA", color: t.outOfStock }}
-          >
-            <XCircle className="w-3.5 h-3.5" /> Cancel
-          </button>
-        )}
-      </div>
-
+      {/* ══════════ Cancel Confirmation Modal ══════════ */}
       {showCancelConfirm && (
-        <div className="mt-3 pt-3 border-t flex items-center justify-between" style={{ borderColor: t.border }}>
-          <p className="text-xs" style={{ color: t.textSecondary }}>Are you sure you want to cancel this order?</p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowCancelConfirm(false)}
-              className="px-3 py-1.5 rounded-lg border text-xs font-bold"
-              style={{ borderColor: t.border, color: t.textSecondary }}
-            >
-              No, Keep
-            </button>
-            <button
-              onClick={handleCancel}
-              disabled={cancelling}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold text-white disabled:opacity-50"
-              style={{ background: t.outOfStock }}
-            >
-              {cancelling ? <Loader2 className="w-3 h-3 animate-spin inline" /> : "Yes, Cancel"}
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                <XCircle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-black text-gray-900 mb-2">Cancel Order?</h3>
+              <p className="text-[14px] text-gray-500 mb-6 leading-relaxed">
+                Are you sure you want to cancel order <span className="font-bold text-gray-700">{order.id}</span>? This action cannot be undone.
+              </p>
+              <div className="flex w-full gap-3">
+                <button
+                  onClick={() => setShowCancelConfirm(false)}
+                  className="flex-1 py-3 rounded-xl border border-gray-200 text-[15px] font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  No, Keep It
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={cancelling}
+                  className="flex-1 py-3 rounded-xl bg-red-600 text-[15px] font-bold text-white hover:bg-red-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                >
+                  {cancelling ? <Loader2 className="w-5 h-5 animate-spin" /> : "Yes, Cancel"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

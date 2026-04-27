@@ -295,8 +295,8 @@ export default function CustomerCartPage() {
               </div>
             </div>
 
-            {/* Sticky Bottom Order Bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] pb-safe animate-in slide-in-from-bottom duration-500">
+            {/* Sticky Bottom Order Bar (Positioned above MobileBottomNav) */}
+            <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500">
               {/* Payment Methods Line */}
               <div className="flex items-center justify-center gap-4 py-2 bg-gray-50/80 border-b border-gray-50">
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Pay via</span>

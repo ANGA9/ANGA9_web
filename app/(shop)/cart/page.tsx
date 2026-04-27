@@ -17,6 +17,7 @@ import {
   Smartphone,
   CreditCard,
   Banknote,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,21 @@ function formatINR(value: number) {
 export default function CustomerCartPage() {
   const { items, loading, updateQty, removeItem, refreshCart } = useCart();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponState, setCouponState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const router = useRouter();
+
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) return;
+    setCouponState("loading");
+    setTimeout(() => {
+      if (couponCode.toUpperCase() === "ANGA9") {
+        setCouponState("success");
+      } else {
+        setCouponState("error");
+      }
+    }, 800);
+  };
 
   useEffect(() => {
     refreshCart();
@@ -122,7 +137,7 @@ export default function CustomerCartPage() {
               </div>
             )}
 
-            <div className="flex flex-col gap-2 mt-2 main-content-responsive">
+            <div className="flex flex-col gap-2 mt-2 px-4 md:px-0">
               {items.map((item) => {
                 const price = item.sale_price ?? item.base_price;
                 const disc = item.base_price > price
@@ -220,31 +235,42 @@ export default function CustomerCartPage() {
               })}
             </div>
 
-            <div className="mt-4 main-content-responsive">
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="mt-4 px-4 md:px-0">
+              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
                 <div className="flex items-center gap-3 mb-3">
-                  <Ticket className="w-5 h-5 text-gray-400" />
-                  <span className="text-[14px] font-bold text-gray-900">Apply Coupon</span>
+                  <Ticket className="w-5 h-5 text-[#1A6FD4]" />
+                  <span className="text-[14px] font-bold text-gray-900 uppercase tracking-wide">Apply Coupon</span>
                 </div>
-                <div className="flex gap-2 h-10">
-                  <input
-                    type="text"
-                    placeholder="Enter Coupon Code"
-                    className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm focus:outline-none focus:border-[#1A6FD4] transition-colors"
-                  />
-                  <button className="px-6 bg-white border border-[#1A6FD4] text-[#1A6FD4] text-sm font-bold rounded-lg active:scale-95 transition-all hover:bg-blue-50">
-                    Apply
-                  </button>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2 h-10">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value); setCouponState("idle"); }}
+                      placeholder="Enter Coupon Code"
+                      className={`flex-1 bg-white border rounded-lg px-4 text-sm focus:outline-none transition-colors ${couponState === 'error' ? 'border-red-500' : couponState === 'success' ? 'border-green-500' : 'border-gray-200 focus:border-[#1A6FD4]'}`}
+                      disabled={couponState === "loading" || couponState === "success"}
+                    />
+                    <button 
+                      onClick={handleApplyCoupon}
+                      disabled={couponState === "loading" || couponState === "success" || !couponCode.trim()}
+                      className="px-6 bg-white border border-[#1A6FD4] text-[#1A6FD4] text-sm font-bold rounded-lg active:scale-95 transition-all hover:bg-blue-50 disabled:opacity-50"
+                    >
+                      {couponState === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : couponState === "success" ? <Check className="w-4 h-4" /> : "Apply"}
+                    </button>
+                  </div>
+                  {couponState === "error" && <p className="text-[12px] text-red-500 font-medium ml-1">Invalid coupon code</p>}
+                  {couponState === "success" && <p className="text-[12px] text-green-600 font-medium ml-1">Coupon applied successfully!</p>}
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 mb-4 main-content-responsive">
+            <div className="mt-4 mb-4 px-4 md:px-0">
               <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
                 <h3 className="text-[15px] font-black text-gray-900 mb-4 uppercase tracking-wider">
                   Price Details
                 </h3>
-                <div className="space-y-3.5 text-[15px]">
+                <div className="space-y-3 text-[15px]">
                   <div className="flex justify-between">
                     <span className="text-gray-500 font-medium">Subtotal ({items.length} items)</span>
                     <span className="text-gray-900 font-bold">{formatINR(totalOriginal)}</span>
@@ -282,7 +308,7 @@ export default function CustomerCartPage() {
               </div>
             </div>
 
-            <div className="bg-white mt-4 pb-12 main-content-responsive">
+            <div className="bg-white mt-4 pb-12 px-4 md:px-0">
               <div className="flex flex-col items-center gap-4 py-8 border-t border-gray-100">
                 <div className="flex items-center gap-6 opacity-40">
                   <ShieldCheck className="w-6 h-6" />
@@ -297,26 +323,6 @@ export default function CustomerCartPage() {
 
             {/* Sticky Bottom Order Bar (Positioned above MobileBottomNav) */}
             <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500">
-              {/* Payment Methods Line */}
-              <div className="flex items-center justify-center gap-4 py-2 bg-gray-50/80 border-b border-gray-50">
-                <span className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">Pay via</span>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 grayscale opacity-60">
-                    <Smartphone className="w-3 h-3" />
-                    <span className="text-[12px] font-bold">UPI</span>
-                  </div>
-                  <div className="w-px h-2 bg-gray-300" />
-                  <div className="flex items-center gap-1 grayscale opacity-60">
-                    <CreditCard className="w-3 h-3" />
-                    <span className="text-[12px] font-bold">CARD</span>
-                  </div>
-                  <div className="w-px h-2 bg-gray-300" />
-                  <div className="flex items-center gap-1 grayscale opacity-60">
-                    <Banknote className="w-3 h-3" />
-                    <span className="text-[12px] font-bold">COD</span>
-                  </div>
-                </div>
-              </div>
 
               <div className="px-4 py-3 flex gap-4 items-center">
                 <div className="hidden xs:flex flex-col">
@@ -349,13 +355,18 @@ export default function CustomerCartPage() {
 
       {/* ══════════ DESKTOP VIEW ══════════ */}
       <div className="hidden md:block mx-auto max-w-[1280px] px-8 py-10">
-        <div className="flex items-baseline gap-3 mb-8">
-          <h1 className="text-[32px] font-black text-gray-900 tracking-tight">
-            Shopping Bag
-          </h1>
-          <span className="text-[18px] font-bold text-gray-400">
-            ({items.length} {items.length === 1 ? "Item" : "Items"})
-          </span>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-[32px] font-black text-gray-900 tracking-tight">
+              Shopping Bag
+            </h1>
+            <span className="text-[18px] font-bold text-gray-400">
+              ({items.length} {items.length === 1 ? "Item" : "Items"})
+            </span>
+          </div>
+          <Link href="/" className="text-sm font-bold text-[#1A6FD4] hover:underline flex items-center gap-1">
+            <ArrowLeft className="w-4 h-4" /> Continue Shopping
+          </Link>
         </div>
  
         <div className="grid grid-cols-12 gap-10">

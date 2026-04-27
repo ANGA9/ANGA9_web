@@ -211,17 +211,6 @@ export default function CustomerHomePage() {
 
   return (
     <div className="py-2 md:py-6">
-      {/* ══════════ DESKTOP USP TRUST BAR ══════════ */}
-      <div className="hidden md:flex justify-between items-center bg-[#F8FBFF] border border-[#EAF2FF] rounded-xl px-6 py-3 mb-6 max-w-[1280px] mx-auto">
-        <div className="flex items-center gap-2">
-          <span className="text-[#1A6FD4] font-bold text-sm">✓ ANGA9 Verified Sellers</span>
-        </div>
-        <div className="flex items-center gap-6 text-sm font-semibold text-gray-600">
-          <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#1A6FD4]" /> 100% Secure Payments</span>
-          <span className="flex items-center gap-1.5"><Truck className="w-4 h-4 text-[#1A6FD4]" /> Pan-India Delivery</span>
-          <span className="flex items-center gap-1.5"><Factory className="w-4 h-4 text-[#1A6FD4]" /> Direct Wholesale Pricing</span>
-        </div>
-      </div>
 
       {/* Hero */}
       <HeroBanner />

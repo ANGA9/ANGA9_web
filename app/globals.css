@@ -138,3 +138,14 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #9CA3AF;
 }
+
+/* Global Responsive Layout Margin */
+.main-content-responsive {
+  padding-inline: clamp(16px, 4vw, 24px);
+}
+
+@media (min-width: 768px) {
+  .main-content-responsive {
+    padding-inline: 48px;
+  }
+}

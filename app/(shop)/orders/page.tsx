@@ -81,7 +81,7 @@ function OrdersContent() {
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
+    <div className="mx-auto max-w-[1280px] py-6">
       {showSuccess && (
         <div
           className="mb-4 flex items-center gap-3 rounded-xl border p-4"

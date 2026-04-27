@@ -311,7 +311,7 @@ export default function CustomerAccountPage() {
       <div className="block md:hidden pb-24 pt-2">
         <div className="w-full flex flex-col gap-3">
           
-          <header className="flex items-center px-5 h-[60px] bg-white rounded-2xl shadow-sm border border-gray-100">
+          <header className="flex items-center h-[60px] bg-white rounded-2xl shadow-sm border border-gray-100">
             <Link href="/" className="mr-4 p-1 -ml-1 rounded-full hover:bg-gray-50">
               <ArrowLeft className="w-5 h-5 text-gray-700" />
             </Link>
@@ -390,7 +390,7 @@ export default function CustomerAccountPage() {
       </div>
 
       {/* ══════════ DESKTOP VIEW ══════════ */}
-      <div className="hidden md:block mx-auto max-w-[1280px] px-4 sm:px-8 py-6">
+      <div className="hidden md:block mx-auto max-w-[1280px] py-6">
         {!isLoggedIn ? (
           <div className="flex flex-col items-center justify-center py-20">
             <User className="w-16 h-16 text-[#D0E3F7] mb-4" />

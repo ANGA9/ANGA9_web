@@ -6,6 +6,7 @@ import { PackageOpen, Heart, ShoppingCart } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/WishlistContext";
+import { useCart } from "@/lib/CartContext";
 
 export interface Product {
   id: string;
@@ -38,6 +39,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   const router = useRouter();
   const wishlist = useWishlist();
+  const cart = useCart();
+  const [adding, setAdding] = useState(false);
   const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
   
   const discount = Math.round(
@@ -53,18 +56,30 @@ export default function ProductCard({
     }
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Dummy add to cart logic for now
-    alert("Added to cart!");
+    if (adding) return;
+    setAdding(true);
+    try {
+      await cart.addItem(product.id);
+    } catch {
+      // handled in CartContext
+    }
+    setAdding(false);
   };
 
-  const handleBuyNow = (e: React.MouseEvent) => {
+  const handleBuyNow = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Dummy buy now logic
-    router.push('/cart');
+    setAdding(true);
+    try {
+      await cart.addItem(product.id);
+      router.push('/checkout');
+    } catch {
+      // handled in CartContext
+    }
+    setAdding(false);
   };
 
   return (
@@ -114,7 +129,7 @@ export default function ProductCard({
           {/* Wishlist icon positioned top-right of the text area */}
           <button
             onClick={handleWishlistToggle}
-            className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors z-20"
+            className="absolute top-1 right-1 p-3 rounded-full hover:bg-gray-100 transition-colors z-20"
             aria-label="Toggle wishlist"
           >
             <Heart
@@ -167,7 +182,7 @@ export default function ProductCard({
         <div className="p-3 pt-0 border-t mt-2 flex gap-2 bg-white" style={{ borderColor: t.border }}>
           <button
             onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-bold text-sm transition-colors hover:bg-gray-50 border"
+            className="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-lg font-bold text-sm transition-colors hover:bg-gray-50 border"
             style={{ color: "#1A1A2E", borderColor: "#1A1A2E" }}
           >
             <ShoppingCart className="w-4 h-4" />
@@ -175,7 +190,7 @@ export default function ProductCard({
           </button>
           <button
             onClick={handleBuyNow}
-            className="flex-1 py-2.5 rounded-lg font-bold text-sm text-white transition-opacity hover:opacity-90 shadow-sm"
+            className="flex-1 h-[44px] rounded-lg font-bold text-sm text-white transition-opacity hover:opacity-90 shadow-sm"
             style={{ background: "#4338CA" }}
           >
             Buy Now

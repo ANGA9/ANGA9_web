@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
@@ -65,6 +65,31 @@ export default function CheckoutPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [cartWarnings, setCartWarnings] = useState<string[]>([]);
+  const [cartBlocked, setCartBlocked] = useState(false);
+  const [validating, setValidating] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.post<{ valid?: boolean; warnings?: string[]; unavailable?: { productId: string; reason: string }[] }>(
+          "/api/cart/validate", {}, { silent: true }
+        );
+        const warnings: string[] = [];
+        let blocked = false;
+        if (res?.unavailable?.length) {
+          blocked = true;
+          res.unavailable.forEach((u) => warnings.push(u.reason));
+        }
+        if (res?.warnings?.length) {
+          warnings.push(...res.warnings);
+        }
+        setCartWarnings(warnings);
+        setCartBlocked(blocked);
+      } catch { /* ignore — allow checkout if validation endpoint fails */ }
+      setValidating(false);
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -394,6 +419,20 @@ export default function CheckoutPage() {
               </p>
             )}
 
+            {cartWarnings.length > 0 && (
+              <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertTriangle className="w-4 h-4 text-amber-600" />
+                  <span className="text-xs font-semibold text-amber-700">
+                    {cartBlocked ? "Cannot proceed — fix these issues:" : "Warnings:"}
+                  </span>
+                </div>
+                {cartWarnings.map((w, i) => (
+                  <p key={i} className="text-xs text-amber-700 ml-6">• {w}</p>
+                ))}
+              </div>
+            )}
+
             {error && (
               <div className="mt-3 p-2 rounded-lg text-xs font-medium bg-red-50 text-red-600">
                 {error}
@@ -402,7 +441,7 @@ export default function CheckoutPage() {
 
             <button
               onClick={handlePayWithRazorpay}
-              disabled={placing || !razorpayLoaded}
+              disabled={placing || !razorpayLoaded || cartBlocked || validating}
               className="mt-5 flex w-full items-center justify-center gap-2 rounded-[10px] py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
               style={{ background: "#1A6FD4", color: "#FFFFFF" }}
             >

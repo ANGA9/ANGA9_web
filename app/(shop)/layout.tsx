@@ -34,7 +34,7 @@ export default function CustomerShopLayout({
 
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
-              className="mx-auto pb-20 md:pb-0 px-1 sm:px-4 md:px-[48px]"
+              className="mx-auto pb-20 md:pb-0 main-content-responsive"
               style={{ maxWidth: 1400 }}
             >
               {children}

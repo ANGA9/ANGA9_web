@@ -413,7 +413,7 @@ export default function MobileTopHeader() {
           {megaTabs.map((tab) => (
             <div
               key={tab}
-              className="shrink-0 flex items-center h-10 px-3 text-xs md:text-sm font-medium whitespace-nowrap"
+              className="shrink-0 flex items-center h-[44px] px-3 text-xs md:text-sm font-medium whitespace-nowrap"
               style={{ color: t.textPrimary }}
             >
               {tab}

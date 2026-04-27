@@ -277,7 +277,7 @@ export default function CustomerHomePage() {
           </button>
         </div>
 
-        <div className="-mx-1 sm:-mx-4 md:mx-0 mb-4 md:mb-6">
+        <div className="mb-4 md:mb-6">
           <SearchFilterStrip 
             sortParam={sortParam} 
             categoryParam={categoryParam} 
@@ -288,7 +288,7 @@ export default function CustomerHomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -299,7 +299,7 @@ export default function CustomerHomePage() {
           </div>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

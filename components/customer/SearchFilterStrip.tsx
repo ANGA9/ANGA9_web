@@ -40,22 +40,12 @@ export default function SearchFilterStrip({
 
   return (
     <>
-      <style>{`
-        @keyframes pulseBlueEdge {
-          0% { box-shadow: inset 0 0 0 0 rgba(26, 111, 212, 0), 0 0 0 0 rgba(26, 111, 212, 0); }
-          50% { box-shadow: inset 0 0 0 1px rgba(26, 111, 212, 0.5), 0 0 8px rgba(26, 111, 212, 0.2); }
-          100% { box-shadow: inset 0 0 0 0 rgba(26, 111, 212, 0), 0 0 0 0 rgba(26, 111, 212, 0); }
-        }
-        .animated-blue-edge {
-          animation: pulseBlueEdge 2s ease-in-out 15; /* 30 seconds total */
-        }
-      `}</style>
       {/* 
         THE STRIP
         Sticky below header for mobile, and normal toolbar for desktop
       */}
       <div 
-        className="animated-blue-edge sticky top-[56px] md:top-0 z-30 flex items-center border-b border-t md:border border-gray-200 md:rounded-xl bg-white w-full overflow-hidden shadow-sm"
+        className="sticky top-[56px] md:top-0 z-30 flex items-center border border-black bg-white w-full overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.08)] md:rounded-xl"
       >
         <button 
           onClick={() => setActiveModal("sort")}

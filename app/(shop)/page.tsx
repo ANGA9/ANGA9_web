@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Home,
   Cpu,
@@ -65,6 +65,9 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
 export default function CustomerHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [sortParam, setSortParam] = useState("newest");
   const [categoryParam, setCategoryParam] = useState("");
   const hasActiveFilters = !!categoryParam;
@@ -76,13 +79,16 @@ export default function CustomerHomePage() {
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
+    setPage(1);
+    setHasMore(true);
 
-    async function fetchData() {
-      setLoading(true);
+    async function fetchInitial() {
       try {
         const queryParams = new URLSearchParams();
         queryParams.set("status", "active");
         queryParams.set("limit", "12");
+        queryParams.set("page", "1");
         queryParams.set("sort_by", sortParam);
         if (categoryParam) queryParams.set("category", categoryParam);
 
@@ -96,7 +102,7 @@ export default function CustomerHomePage() {
 
         if (cancelled) return;
 
-        // Build category lookup — handle both { categories: [...] } and bare array
+        // Build category lookup
         const catMap = new Map<string, string>();
         const rawCats = categoriesRes;
         const cats = Array.isArray(rawCats) ? rawCats : (rawCats as { categories: ApiCategory[] })?.categories ?? [];
@@ -104,10 +110,21 @@ export default function CustomerHomePage() {
           catMap.set(c.id, c.name);
         }
 
-        const mapped = (productsRes?.data ?? []).map((p) =>
+        const items = productsRes?.data ?? [];
+        const mapped = items.map((p) =>
           toCardProduct(p, p.category_id ? catMap.get(p.category_id) : undefined)
         );
-        setProducts(mapped);
+        
+        // Final safety check: remove duplicates within the same batch
+        const seen = new Set();
+        const uniqueMapped = mapped.filter(p => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return true;
+        });
+
+        setProducts(uniqueMapped);
+        if (items.length < 12) setHasMore(false);
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {
@@ -115,9 +132,72 @@ export default function CustomerHomePage() {
       }
     }
 
-    fetchData();
+    fetchInitial();
     return () => { cancelled = true; };
   }, [sortParam, categoryParam]);
+
+  const isFetchingRef = useRef(false);
+
+  const loadMore = async () => {
+    if (isFetchingRef.current || !hasMore) return;
+    isFetchingRef.current = true;
+    setLoadingMore(true);
+    try {
+      const nextPage = page + 1;
+      const queryParams = new URLSearchParams();
+      queryParams.set("status", "active");
+      queryParams.set("limit", "12");
+      queryParams.set("page", nextPage.toString());
+      queryParams.set("sort_by", sortParam);
+      if (categoryParam) queryParams.set("category", categoryParam);
+
+      const [productsRes, categoriesRes] = await Promise.all([
+        api.get<{ data: ApiProduct[]; total: number }>(
+          `/api/products?${queryParams.toString()}`
+        ),
+        api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
+      ]);
+
+      const catMap = new Map<string, string>();
+      const rawCats = categoriesRes;
+      const cats = Array.isArray(rawCats) ? rawCats : (rawCats as { categories: ApiCategory[] })?.categories ?? [];
+      for (const c of cats) {
+        catMap.set(c.id, c.name);
+      }
+
+      const items = productsRes?.data ?? [];
+      const mapped = items.map((p) =>
+        toCardProduct(p, p.category_id ? catMap.get(p.category_id) : undefined)
+      );
+      
+      setProducts(prev => {
+        const existingIds = new Set(prev.map(p => p.id));
+        const newProducts = mapped.filter(p => !existingIds.has(p.id));
+        return [...prev, ...newProducts];
+      });
+      
+      setPage(nextPage);
+      if (items.length < 12) setHasMore(false);
+    } catch (err) {
+      console.error("Failed to load more products:", err);
+    } finally {
+      isFetchingRef.current = false;
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // 800px from bottom triggers next fetch early for a smoother experience
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
+        if (!loading && !isFetchingRef.current && hasMore) {
+          loadMore();
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading, hasMore, page, sortParam, categoryParam]);
 
   return (
     <div className="py-6">
@@ -218,11 +298,32 @@ export default function CustomerHomePage() {
             ))}
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4 px-1 sm:px-0">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            
+            {loadingMore && (
+              <div className="py-12 flex flex-col items-center justify-center space-y-4">
+                <div className="flex space-x-2 justify-center items-center">
+                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.3s' }}></div>
+                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.15s' }}></div>
+                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce"></div>
+                </div>
+                <p className="text-sm font-medium text-gray-500 animate-pulse">
+                  Finding more wonderful things for you...
+                </p>
+              </div>
+            )}
+            
+            {!hasMore && products.length > 0 && (
+              <p className="text-center py-12 text-sm font-medium text-gray-400">
+                You've seen everything we have for now! Check back later.
+              </p>
+            )}
+          </>
         ) : (
           <p className="text-center py-12" style={{ color: "#9CA3AF" }}>
             No products available yet.

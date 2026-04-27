@@ -68,7 +68,7 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[14px] border bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1" style={{ borderColor: t.border }}>
+    <div className="group relative flex flex-col overflow-hidden rounded-[14px] border border-black bg-white transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)]">
       <Link href={`/products/${product.id}`} className="flex flex-col flex-1">
         {/* Image area (aspect-square to reduce vertical length) */}
         <div

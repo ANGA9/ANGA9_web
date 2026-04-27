@@ -506,6 +506,8 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+    </div>
+
 
       {/* ══════════ MOBILE STICKY PAYMENT BAR (<lg) ══════════ */}
       <div className="lg:hidden fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500 px-4 py-3 flex gap-4 items-center">

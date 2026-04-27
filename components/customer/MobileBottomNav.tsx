@@ -5,15 +5,21 @@ import { usePathname } from "next/navigation";
 import { Home, User, Package, Menu } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
-const tabs = [
-  { key: "home", label: "Home", icon: Home, href: "/" },
-  { key: "account", label: "Account", icon: User, href: "/account" },
-  { key: "orders", label: "My Orders", icon: Package, href: "/orders" },
-  { key: "menu", label: "Menu", icon: Menu, href: "/menu" },
-] as const;
-
 export default function MobileBottomNav() {
   const pathname = usePathname();
+
+  const handleTabClick = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(5);
+    }
+  };
+
+  const tabs = [
+    { key: "home", label: "Home", icon: Home, href: "/" },
+    { key: "orders", label: "Orders", icon: Package, href: "/orders" },
+    { key: "account", label: "Account", icon: User, href: "/account" },
+    { key: "menu", label: "Menu", icon: Menu, href: "/menu" },
+  ] as const;
 
   return (
     <nav
@@ -23,9 +29,9 @@ export default function MobileBottomNav() {
       style={{
         height: "calc(60px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        background: t.bgCard,
-        borderColor: t.border,
-        boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
+        background: "#FFFFFF",
+        borderColor: "#F3F4F6",
+        boxShadow: "0 -4px 16px rgba(0,0,0,0.06)",
       }}
     >
       {tabs.map((tab) => {
@@ -38,28 +44,34 @@ export default function MobileBottomNav() {
           <Link
             key={tab.key}
             href={tab.href}
+            onClick={handleTabClick}
             aria-current={isActive ? "page" : undefined}
-            className="flex flex-col items-center justify-center flex-1 h-full transition-colors"
+            className="flex flex-col items-center justify-center flex-1 h-full transition-all active:scale-90"
             style={{
-              color: isActive ? t.bluePrimary : "#6B7280",
+              color: isActive ? "#1A6FD4" : "#9CA3AF",
               WebkitTapHighlightColor: "transparent",
               touchAction: "manipulation",
             }}
           >
             <tab.icon
+              fill={isActive ? "currentColor" : "none"}
               style={{
-                width: 22,
-                height: 22,
+                width: 24,
+                height: 24,
                 strokeWidth: isActive ? 2.5 : 2,
+                transition: "all 0.2s ease",
+                opacity: isActive ? 1 : 0.7,
               }}
             />
             <span
-              className="mt-0.5"
+              className="mt-1"
               style={{
-                fontSize: '12px',
-                fontWeight: isActive ? 700 : 600,
-                letterSpacing: "0.01em",
-                color: isActive ? t.bluePrimary : "#374151",
+                fontSize: '11px',
+                fontWeight: isActive ? 900 : 600,
+                letterSpacing: "0.02em",
+                textTransform: 'uppercase',
+                color: isActive ? "#1A6FD4" : "#6B7280",
+                transition: "all 0.2s ease",
               }}
             >
               {tab.label}

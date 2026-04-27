@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import toast from "react-hot-toast";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
@@ -17,6 +18,8 @@ export default function CustomerLoginPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [canResend, setCanResend] = useState(true);
 
   const supabase = getSupabaseBrowserClient();
 
@@ -35,6 +38,7 @@ export default function CustomerLoginPage() {
       const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
       if (otpErr) throw otpErr;
       setStep("otp");
+      startResendTimer();
     } catch (err: any) {
       console.error("Email OTP error:", err);
       if (err.message?.includes("rate limit")) {
@@ -42,6 +46,37 @@ export default function CustomerLoginPage() {
       } else {
         setError(err.message || "Failed to send OTP. Please try again.");
       }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function startResendTimer() {
+    setResendTimer(60);
+    setCanResend(false);
+    const interval = setInterval(() => {
+      setResendTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  async function handleResend() {
+    if (!canResend || loading) return;
+    setError("");
+    setLoading(true);
+    try {
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ email: email.trim() });
+      if (otpErr) throw otpErr;
+      startResendTimer();
+      toast.success("OTP resent successfully!");
+    } catch (err: any) {
+      setError(err.message || "Failed to resend OTP");
     } finally {
       setLoading(false);
     }
@@ -181,14 +216,15 @@ export default function CustomerLoginPage() {
       <button
         type="button"
         onClick={() => switchTab("phone")}
-        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
+        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 relative ${
           tab === "phone"
             ? "border-[#1A6FD4] text-[#1A6FD4]"
-            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
+            : "border-transparent text-[#9CA3AF] opacity-60"
         }`}
       >
         <Phone className="w-4 h-4" />
         Phone
+        <span className="absolute -top-1 -right-1 bg-gray-100 text-[9px] font-black uppercase px-1 rounded border border-gray-200 text-gray-500">Soon</span>
       </button>
     </div>
   );
@@ -321,7 +357,7 @@ export default function CustomerLoginPage() {
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
             onFocus={(e) => e.target.select()}
             autoFocus={i === 0}
-            className="h-12 w-11 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all"
+            className="h-14 w-12 rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-2xl font-bold text-[#1A1A2E] outline-none transition-all shadow-sm"
           />
         ))}
       </div>
@@ -350,14 +386,20 @@ export default function CustomerLoginPage() {
       <div className="mt-4 text-center">
         <p className="text-sm text-[#4B5563]">
           Didn&apos;t receive the code?{" "}
-          <button
-            type="button"
-            onClick={tab === "email" ? handleEmailSubmit : undefined}
-            disabled={loading}
-            className="font-semibold text-[#1A6FD4] hover:underline disabled:opacity-50"
-          >
-            Resend OTP
-          </button>
+          {canResend ? (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={loading}
+              className="font-bold text-[#1A6FD4] hover:underline disabled:opacity-50"
+            >
+              Resend OTP
+            </button>
+          ) : (
+            <span className="font-medium text-gray-400">
+              Resend in <span className="font-bold text-gray-600">{resendTimer}s</span>
+            </span>
+          )}
         </p>
       </div>
     </form>
@@ -379,10 +421,10 @@ export default function CustomerLoginPage() {
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
     <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF]">
-      <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
-        <a href="/" className="transition-opacity hover:opacity-70">
-          <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
-        </a>
+      <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3 sticky top-0 z-10">
+        <Link href="/" className="transition-opacity hover:opacity-70">
+          <ArrowLeft className="w-6 h-6 text-[#1A1A2E]" />
+        </Link>
         {logo}
       </div>
 
@@ -406,22 +448,22 @@ export default function CustomerLoginPage() {
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
           <div className="flex items-center gap-6">
-            <a
+            <Link
               href="/seller/sell-on-anga9"
-              className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: '16px' }}
+              className="flex items-center gap-2 font-bold text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
+              style={{ fontSize: '15px' }}
             >
               <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Sell on ANGA9
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
-              className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: '16px' }}
+              className="flex items-center gap-2 font-bold text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
+              style={{ fontSize: '15px' }}
             >
               <Download style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Download App
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -429,7 +471,7 @@ export default function CustomerLoginPage() {
       <div className="flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
-            <div className="relative w-[500px] shrink-0">
+            <div className="relative flex-1 min-w-[400px]">
               <Image
                 src="/login-hero.png"
                 alt="Shopping illustration"
@@ -437,14 +479,16 @@ export default function CustomerLoginPage() {
                 style={{ objectFit: "cover" }}
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight mb-2">
-                  Shop from India&apos;s finest sellers
-                </h2>
-                <p className="text-sm md:text-base text-white/80 leading-relaxed">
-                  Get access to your Orders, Wishlist and Recommendations
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A6FD4]/80 via-[#1A6FD4]/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-10">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                  <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2">
+                    Shop from India&apos;s finest sellers
+                  </h2>
+                  <p className="text-sm md:text-base text-white/90 font-medium leading-relaxed">
+                    Get access to your Orders, Wishlist and Recommendations
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -455,6 +499,18 @@ export default function CustomerLoginPage() {
               </div>
               {step === "input" && tabs}
               {formContent}
+              
+              <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-green-500" />
+                  <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wider">100% Secure</span>
+                </div>
+                <div className="flex items-center gap-4 grayscale opacity-40">
+                  <Image src="/visa.png" alt="Visa" width={32} height={10} className="object-contain" />
+                  <Image src="/mastercard.png" alt="Mastercard" width={32} height={20} className="object-contain" />
+                  <Image src="/upi.png" alt="UPI" width={32} height={10} className="object-contain" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

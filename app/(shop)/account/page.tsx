@@ -60,19 +60,25 @@ const navItems = [
 function MenuItem({
   icon: Icon,
   label,
+  badge,
 }: {
   icon: any;
   label: string;
-  isLast?: boolean;
+  badge?: string | number;
 }) {
   return (
-    <button className="flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100">
-      <div className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
+    <button className="flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100 group">
+      <div className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center shrink-0 group-hover:bg-gray-100 transition-colors">
         <Icon className="w-[18px] h-[18px] text-gray-700" />
       </div>
       <span className="ml-4 text-[15px] font-semibold text-gray-800 flex-1 text-left">
         {label}
       </span>
+      {badge && (
+        <span className="mr-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+          {badge}
+        </span>
+      )}
       <ChevronRight className="w-5 h-5 text-gray-400" />
     </button>
   );
@@ -244,11 +250,14 @@ export default function CustomerAccountPage() {
   );
 
   const addressBookUI = (
-    <div className="rounded-xl border p-6" style={{ background: t.bgCard, borderColor: t.border }}>
+    <div className="rounded-xl border p-6 bg-white" style={{ borderColor: t.border }}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold" style={{ color: t.textPrimary }}>Address Book</h2>
-        <button onClick={openAddForm} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-white" style={{ background: t.bluePrimary }}>
-          <Plus className="w-4 h-4" /> Add
+        <div className="flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-[#1A6FD4]" />
+          <h2 className="text-lg font-bold text-gray-900">Address Book</h2>
+        </div>
+        <button onClick={openAddForm} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all" style={{ background: t.bluePrimary }}>
+          <Plus className="w-4 h-4" /> Add New
         </button>
       </div>
 
@@ -267,33 +276,38 @@ export default function CustomerAccountPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {addresses.map((addr) => (
-            <div key={addr.id} className="rounded-xl border p-4 relative" style={{ borderColor: addr.is_default ? t.bluePrimary : t.border }}>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-semibold" style={{ color: t.textPrimary }}>
+            <div key={addr.id} className="group rounded-xl border p-5 relative transition-all hover:shadow-md bg-gray-50/30" style={{ borderColor: addr.is_default ? t.bluePrimary : t.border }}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-gray-100 shadow-sm">
+                  <MapPin className={cn("w-4 h-4", addr.is_default ? "text-[#1A6FD4]" : "text-gray-400")} />
+                </div>
+                <span className="text-[15px] font-bold text-gray-900">
                   {addr.label || "Address"}
                 </span>
                 {addr.is_default && (
-                  <span className="rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: t.bgBlueTint, color: t.bluePrimary }}>
+                  <span className="rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#1A6FD4]">
                     Default
                   </span>
                 )}
               </div>
-              <p className="text-sm" style={{ color: t.textSecondary }}>{addr.line1}</p>
-              {addr.line2 && <p className="text-sm" style={{ color: t.textSecondary }}>{addr.line2}</p>}
-              <p className="text-sm" style={{ color: t.textSecondary }}>
-                {addr.city}, {addr.state} {addr.pincode}
-              </p>
-              <div className="flex gap-3 mt-3">
-                <button onClick={() => openEditForm(addr)} className="text-xs font-medium hover:underline" style={{ color: t.bluePrimary }}>
+              <div className="space-y-1">
+                <p className="text-[14px] text-gray-600 leading-snug">{addr.line1}</p>
+                {addr.line2 && <p className="text-[14px] text-gray-600 leading-snug">{addr.line2}</p>}
+                <p className="text-[14px] font-medium text-gray-800">
+                  {addr.city}, {addr.state} {addr.pincode}
+                </p>
+              </div>
+              <div className="flex gap-4 mt-5 pt-3 border-t border-gray-100">
+                <button onClick={() => openEditForm(addr)} className="text-[13px] font-bold text-[#1A6FD4] hover:underline">
                   Edit
                 </button>
                 {!addr.is_default && (
-                  <button onClick={() => handleSetDefault(addr.id)} className="text-xs font-medium hover:underline" style={{ color: t.textSecondary }}>
+                  <button onClick={() => handleSetDefault(addr.id)} className="text-[13px] font-bold text-gray-500 hover:underline">
                     Set Default
                   </button>
                 )}
                 {!addr.is_default && (
-                  <button onClick={() => handleDelete(addr.id)} className="text-xs font-medium hover:underline" style={{ color: t.outOfStock }}>
+                  <button onClick={() => handleDelete(addr.id)} className="text-[13px] font-bold text-red-500 hover:underline">
                     Delete
                   </button>
                 )}
@@ -316,67 +330,64 @@ export default function CustomerAccountPage() {
 
           {!isLoggedIn ? (
             <div className="bg-white rounded-xl p-5 flex items-center justify-between shadow-sm border border-gray-200">
-              <span className="text-[15px] font-semibold text-gray-900 w-2/3 leading-snug">
-                Log in for exclusive offers
+              <span className="text-[15px] font-bold text-gray-900 w-2/3 leading-snug">
+                Log in for exclusive wholesale offers
               </span>
               <Link
                 href="/login"
-                className="flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold transition-colors shadow-sm"
+                className="flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold transition-all shadow-sm active:scale-95"
                 style={{ background: accentBlue, color: "#FFFFFF" }}
               >
                 Log In
               </Link>
             </div>
           ) : (
-            <div className="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-xl p-4 flex items-center gap-4 shadow-sm border border-gray-200 group relative">
               <div
-                className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full text-[18px] font-bold text-white shadow-sm"
-                style={{ background: accentBlue }}
+                className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full text-[20px] font-black text-white shadow-inner relative"
+                style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
               >
                 {initials}
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-sm">
+                  <Pencil className="w-3 h-3 text-gray-600" />
+                </div>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[17px] font-bold text-gray-900 truncate">{displayName}</p>
-                <p className="text-[14px] text-gray-500 truncate mt-0.5">{displayEmail}</p>
+                <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
+                <p className="text-[14px] font-medium text-gray-500 truncate mt-0.5">{displayEmail}</p>
               </div>
+              <button className="p-2 rounded-lg bg-gray-50 text-[#1A6FD4] active:scale-90 transition-all">
+                <Pencil className="w-5 h-5" />
+              </button>
             </div>
           )}
 
           <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Account Settings</h2>
+              <h2 className="text-[12px] font-black text-gray-500 uppercase tracking-wider">Account Settings</h2>
             </div>
             <div className="flex flex-col">
-              <MenuItem icon={Bell} label="Notification Settings" />
+              <MenuItem icon={Bell} label="Notification Settings" badge={3} />
               <div className="h-[1px] bg-gray-100 mx-5" />
-              <MenuItem icon={Headset} label="Help Center" isLast />
+              <MenuItem icon={Headset} label="Help Center" />
             </div>
           </div>
 
           <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Earn with ANGA</h2>
-            </div>
-            <div className="flex flex-col">
-              <MenuItem icon={Store} label="Sell on ANGA" isLast />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
-            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
+              <h2 className="text-[12px] font-black text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
             </div>
             <div className="flex flex-col">
               <MenuItem icon={FileText} label="Terms, Policies and Licenses" />
               <div className="h-[1px] bg-gray-100 mx-5" />
-              <MenuItem icon={HelpCircle} label="Browse FAQs" isLast />
+              <MenuItem icon={HelpCircle} label="Browse FAQs" />
             </div>
           </div>
 
           {isLoggedIn && (
             <button
               onClick={logout}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-white py-4 text-[15px] font-bold text-red-500 transition-colors active:bg-red-50 shadow-sm mb-3"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-100 bg-white py-4 text-[15px] font-bold text-red-500 transition-all active:bg-red-50 shadow-sm mb-24"
             >
               <LogOut className="h-[18px] w-[18px]" />
               Log Out
@@ -418,16 +429,15 @@ export default function CustomerAccountPage() {
                       key={item.label}
                       onClick={() => setActiveNav(item.label)}
                       className={cn(
-                        "flex w-full items-center gap-3 px-4 py-3.5 text-sm font-medium transition-colors",
-                        isActive ? "border-l-[3px]" : "border-l-[3px] border-transparent"
+                        "flex w-full items-center gap-3 px-4 py-4 text-sm font-bold transition-all relative",
+                        isActive ? "text-[#1A6FD4]" : "text-gray-500 hover:bg-gray-50"
                       )}
                       style={{
-                        background: isActive ? t.bgBlueTint : "transparent",
-                        color: isActive ? t.bluePrimary : t.textSecondary,
-                        borderLeftColor: isActive ? t.bluePrimary : "transparent",
+                        background: isActive ? "#F0F7FF" : "transparent",
                       }}
                     >
-                      <item.icon className="h-4 w-4" />
+                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#1A6FD4] rounded-r-full" />}
+                      <item.icon className={cn("h-4 w-4", isActive ? "text-[#1A6FD4]" : "text-gray-400")} />
                       {item.label}
                     </button>
                   );
@@ -469,11 +479,14 @@ export default function CustomerAccountPage() {
 
                       {dbUser?.role && (
                         <span
-                          className="inline-flex items-center gap-1 mt-2 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                          style={{ background: t.bgDelivered, color: t.inStock }}
+                          className="inline-flex items-center gap-1.5 mt-2 rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wider shadow-sm"
+                          style={{ 
+                            background: dbUser.role === "customer" ? "#F3F4F6" : t.bgDelivered, 
+                            color: dbUser.role === "customer" ? "#6B7280" : t.inStock 
+                          }}
                         >
-                          <CheckCircle2 className="h-3 w-3" />
-                          {dbUser.role === "seller" ? "Verified Seller" : dbUser.role === "admin" ? "Admin" : "Customer"}
+                          {dbUser.role !== "customer" && <CheckCircle2 className="h-3 w-3" />}
+                          {dbUser.role === "seller" ? "Verified Seller" : dbUser.role === "admin" ? "Admin" : "Verified Customer"}
                         </span>
                       )}
                     </div>

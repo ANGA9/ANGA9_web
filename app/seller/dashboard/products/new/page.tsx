@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -13,10 +13,26 @@ const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 t
 export default function AddProductPage() {
   const { getToken } = useAuth();
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", description: "", base_price: "", min_order_qty: "1" });
+  const [form, setForm] = useState({ name: "", description: "", base_price: "", min_order_qty: "1", category_id: "" });
+  const [categories, setCategories] = useState<{ id: string, name: string }[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${API}/api/categories`);
+        if (res.ok) {
+          const d = await res.json();
+          // The product service returns { categories: [...] }
+          setCategories(d.categories || d.data || d || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    })();
+  }, []);
 
   function set(k: string, v: string) {
     setForm(prev => ({ ...prev, [k]: v }));
@@ -33,6 +49,8 @@ export default function AddProductPage() {
     const qty = parseInt(form.min_order_qty);
     if (!qty || qty < 1) errs.push("Min order quantity must be at least 1");
     if (errs.length) { setErrors(errs); return; }
+    if (!form.category_id) errs.push("Category is required");
+    if (errs.length) { setErrors(errs); return; }
 
     setSubmitting(true);
     try {
@@ -48,6 +66,7 @@ export default function AddProductPage() {
           description: form.description.trim(),
           base_price: price,
           min_order_qty: qty,
+          category_id: form.category_id,
           status: "pending_review",
         }),
       });
@@ -94,6 +113,23 @@ export default function AddProductPage() {
         <div>
           <label className={labelCls}>Description *</label>
           <textarea className={inputCls + " h-28 py-3 resize-none"} value={form.description} onChange={e => set("description", e.target.value)} placeholder="Describe your product in detail (min 10 chars)" maxLength={2000} />
+        </div>
+        <div>
+          <label className={labelCls}>Category *</label>
+          <div className="relative">
+            <select 
+              className={inputCls + " appearance-none cursor-pointer"} 
+              value={form.category_id} 
+              onChange={e => set("category_id", e.target.value)}
+              required
+            >
+              <option value="">Select a category</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>

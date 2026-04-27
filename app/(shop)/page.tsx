@@ -215,7 +215,7 @@ export default function CustomerHomePage() {
       {/* Hero */}
       <HeroBanner />
 
-      {/* Shop by Category */}
+      {/* Shop by Category
       <section style={{ marginTop: 40 }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
           <h2
@@ -269,10 +269,10 @@ export default function CustomerHomePage() {
             </button>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Discover Products */}
-      <section style={{ marginTop: 48 }}>
+      <section className="px-4 sm:px-8" style={{ marginTop: 48 }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
           <h2
             className="font-bold"

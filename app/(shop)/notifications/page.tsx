@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import {
   Bell,
   Check,
@@ -12,6 +13,7 @@ import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -128,17 +130,28 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="font-black text-2xl md:text-3xl tracking-tight" style={{ color: t.textPrimary }}>
-            Notifications
-          </h1>
-          <p className="text-[15px] mt-1.5" style={{ color: t.textSecondary }}>
-            Stay updated with your orders, payments, and account activity.
-          </p>
-        </div>
+    <div className="w-full">
+      {/* ══════════ MOBILE HEADER (<md) ══════════ */}
+      <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+        <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <ArrowLeft className="w-6 h-6 text-gray-800" />
+        </Link>
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
+          Notifications
+        </h1>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
+          <div className="hidden md:block">
+            <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+              Notifications
+            </h1>
+            <p className="text-[15px] mt-1.5" style={{ color: t.textSecondary }}>
+              Stay updated with your orders, payments, and account activity.
+            </p>
+          </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
@@ -300,6 +313,7 @@ export default function NotificationsPage() {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 }

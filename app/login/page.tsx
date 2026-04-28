@@ -505,10 +505,12 @@ export default function CustomerLoginPage() {
                   <ShieldCheck className="w-5 h-5 text-green-500" />
                   <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wider">100% Secure</span>
                 </div>
-                <div className="flex items-center gap-4 grayscale opacity-40">
-                  <Image src="/visa.png" alt="Visa" width={32} height={10} className="object-contain" />
-                  <Image src="/mastercard.png" alt="Mastercard" width={32} height={20} className="object-contain" />
-                  <Image src="/upi.png" alt="UPI" width={32} height={10} className="object-contain" />
+                <div className="flex items-center gap-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                  <span>Visa</span>
+                  <span>•</span>
+                  <span>Mastercard</span>
+                  <span>•</span>
+                  <span>UPI</span>
                 </div>
               </div>
             </div>

@@ -229,7 +229,7 @@ export default function ProductDetailPage() {
   const descriptionLong = (product.description?.length || 0) > 150;
 
   return (
-    <div className="pb-0 md:pb-6">
+    <div className="pb-40 md:pb-6">
 
       {/* ══════════ MOBILE HEADER (<md) ══════════ */}
       <header className="flex md:hidden items-center justify-between px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">

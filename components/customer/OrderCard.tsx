@@ -80,103 +80,120 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
   return (
     <>
       <div
-        className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-4 sm:px-5"
+        className="flex flex-col gap-4 rounded-xl border p-4 sm:px-5"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
-        {/* Product Image */}
-        <div
-          className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-100"
-          style={{ background: t.bgBlueTint }}
-        >
-          {order.imageUrl ? (
-            <img src={order.imageUrl} alt={order.product} className="h-full w-full object-cover" />
-          ) : (
-            <PackageOpen className="h-7 w-7" style={{ color: t.bluePrimary, opacity: 0.5 }} />
-          )}
-        </div>
-
-        {/* Details */}
-        <div className="flex-1 min-w-0">
-          <p className="text-[11px] mb-1 font-bold tracking-wide uppercase" style={{ color: t.textSecondary }}>
-            {order.id} &middot; {order.date}
-          </p>
-          <h3
-            className="text-[15px] font-bold leading-tight truncate mb-1"
-            style={{ color: t.textPrimary }}
+        <div className="flex flex-row items-start sm:items-center gap-4">
+          {/* Product Image */}
+          <div
+            className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-100"
+            style={{ background: t.bgBlueTint }}
           >
-            {order.product}
-          </h3>
-          <div className="flex flex-wrap items-center gap-2 text-[13px]" style={{ color: t.textSecondary }}>
-            <span>Qty: {order.qty}</span>
-            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-            <span className="font-black" style={{ color: t.textPrimary }}>
-              {formatINR(order.amount)}
-            </span>
-            {order.seller && (
-              <>
-                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                <span className="truncate max-w-[100px]">{order.seller}</span>
-              </>
+            {order.imageUrl ? (
+              <img src={order.imageUrl} alt={order.product} className="h-full w-full object-cover" />
+            ) : (
+              <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary, opacity: 0.5 }} />
             )}
           </div>
-          {order.status === "Processing" && (
-            <p className="text-[12px] font-semibold mt-1.5" style={{ color: t.bluePrimary }}>
-              Est. Delivery: {estDeliveryStr}
+
+          {/* Details */}
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] mb-1 font-bold tracking-wide uppercase" style={{ color: t.textSecondary }}>
+              {order.id} &middot; {order.date}
             </p>
-          )}
+            <h3
+              className="text-[15px] sm:text-[16px] font-bold leading-tight truncate mb-1.5"
+              style={{ color: t.textPrimary }}
+            >
+              {order.product}
+            </h3>
+            <div className="flex flex-wrap items-center gap-2 text-[13px]" style={{ color: t.textSecondary }}>
+              <span>Qty: {order.qty}</span>
+              <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+              <span className="font-black" style={{ color: t.textPrimary }}>
+                {formatINR(order.amount)}
+              </span>
+              {order.seller && (
+                <>
+                  <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                  <span className="truncate max-w-[100px]">{order.seller}</span>
+                </>
+              )}
+            </div>
+            {order.status === "Processing" && (
+              <p className="text-[12px] font-semibold mt-1.5" style={{ color: t.bluePrimary }}>
+                Est. Delivery: {estDeliveryStr}
+              </p>
+            )}
+          </div>
+          
+          {/* Status badge on Desktop */}
+          <div className="hidden sm:block shrink-0 self-start mt-1">
+            <span
+              className="inline-flex rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
+              style={{ background: s.bg, color: s.text }}
+            >
+              {order.status}
+            </span>
+          </div>
         </div>
 
-        {/* Status + actions */}
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0 mt-2 sm:mt-0">
-          <span
-            className="inline-flex rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
-            style={{ background: s.bg, color: s.text }}
-          >
-            {order.status}
-          </span>
-
-          {(order.status === "Processing" || order.status === "Delivered") && (
-            <button
-              onClick={() => window.location.href = `/orders/${order.id}/track`}
-              className="text-[13px] font-bold transition-opacity hover:opacity-80 px-2"
-              style={{ color: t.bluePrimary }}
+        {/* Status (Mobile) + Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1 border-t" style={{ borderColor: t.border }}>
+          {/* Status badge on Mobile */}
+          <div className="sm:hidden">
+            <span
+              className="inline-flex rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
+              style={{ background: s.bg, color: s.text }}
             >
-              Track
-            </button>
-          )}
+              {order.status}
+            </span>
+          </div>
 
-          {order.status === "Delivered" && (
-            <button
-              className="rounded-lg px-4 py-2 text-[13px] font-bold transition-opacity hover:opacity-90 shadow-sm"
-              style={{ background: t.primaryCta, color: t.ctaText }}
-            >
-              Reorder
-            </button>
-          )}
+          <div className="flex flex-1 sm:flex-none justify-end gap-2.5 ml-auto">
+            {(order.status === "Processing" || order.status === "Delivered") && (
+              <button
+                onClick={() => window.location.href = `/orders/${order.id}/track`}
+                className="text-[13px] font-bold transition-opacity hover:opacity-80 px-2"
+                style={{ color: t.bluePrimary }}
+              >
+                Track
+              </button>
+            )}
 
-          {/* Invoice Download Button */}
-          {order.internalId && (
-            <button
-              onClick={handleDownloadInvoice}
-              disabled={downloading}
-              className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-gray-50 disabled:opacity-50 bg-white"
-              style={{ borderColor: t.border, color: t.textPrimary }}
-              title="Download Invoice"
-            >
-              {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              Invoice
-            </button>
-          )}
+            {order.status === "Delivered" && (
+              <button
+                className="rounded-lg px-4 py-2 text-[13px] font-bold transition-opacity hover:opacity-90 shadow-sm"
+                style={{ background: t.primaryCta, color: t.ctaText }}
+              >
+                Reorder
+              </button>
+            )}
 
-          {canCancel && (
-            <button
-              onClick={() => setShowCancelConfirm(true)}
-              className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-red-50 bg-white"
-              style={{ borderColor: "#FECACA", color: t.outOfStock }}
-            >
-              <XCircle className="w-4 h-4" /> Cancel
-            </button>
-          )}
+            {/* Invoice Download Button */}
+            {order.internalId && (
+              <button
+                onClick={handleDownloadInvoice}
+                disabled={downloading}
+                className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-gray-50 disabled:opacity-50 bg-white"
+                style={{ borderColor: t.border, color: t.textPrimary }}
+                title="Download Invoice"
+              >
+                {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                Invoice
+              </button>
+            )}
+
+            {canCancel && (
+              <button
+                onClick={() => setShowCancelConfirm(true)}
+                className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-colors hover:bg-red-50 bg-white"
+                style={{ borderColor: "#FECACA", color: t.outOfStock }}
+              >
+                <XCircle className="w-4 h-4" /> Cancel
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

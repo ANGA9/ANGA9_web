@@ -83,7 +83,7 @@ function OrdersContent() {
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
   return (
-    <div className="mx-auto max-w-[1280px] py-6">
+    <div className="mx-auto max-w-4xl py-6 px-4 md:px-0">
       {showSuccess && (
         <div
           className="mb-4 flex items-center gap-3 rounded-xl border p-4"
@@ -105,7 +105,7 @@ function OrdersContent() {
         </h1>
       </div>
 
-      <div className="flex gap-1 overflow-x-auto no-scrollbar border-b mb-6" style={{ borderColor: t.border }}>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-2">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           const statusMatch = tab.replace("Active", "Processing");
@@ -117,13 +117,15 @@ function OrdersContent() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="px-4 py-3 text-[14px] font-bold transition-colors border-b-[3px] -mb-px whitespace-nowrap"
+              className="px-5 py-2.5 text-[14px] font-bold rounded-full transition-all whitespace-nowrap border"
               style={{
-                borderColor: isActive ? "#1A6FD4" : "transparent",
-                color: isActive ? "#1A6FD4" : t.textSecondary,
+                backgroundColor: isActive ? "#1A6FD4" : "#FFFFFF",
+                borderColor: isActive ? "#1A6FD4" : t.border,
+                color: isActive ? "#FFFFFF" : t.textSecondary,
+                boxShadow: isActive ? "0 4px 14px rgba(26, 111, 212, 0.2)" : "none",
               }}
             >
-              {tab} <span className="opacity-70 ml-1">({count})</span>
+              {tab} <span className="opacity-80 ml-1.5 text-[12px]">{count}</span>
             </button>
           );
         })}

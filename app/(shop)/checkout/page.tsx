@@ -275,29 +275,38 @@ export default function CheckoutPage() {
         </h1>
       </header>
 
-      <div className="mx-auto max-w-[900px] px-4 sm:px-8 py-6">
-        <div className="hidden lg:block mb-6">
-          <h1 className="text-xl font-medium mb-1" style={{ color: t.textPrimary }}>
-            Checkout
-          </h1>
-          <p className="text-sm" style={{ color: t.textSecondary }}>
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6 lg:py-10">
+        <div className="hidden lg:flex items-center justify-between mb-8">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-[32px] font-medium tracking-tight" style={{ color: t.textPrimary }}>
+              Checkout
+            </h1>
+          </div>
+          <p className="text-sm font-medium" style={{ color: t.textSecondary }}>
             Review your order and pay securely with Razorpay
           </p>
         </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Order items */}
-        <div className="lg:col-span-3 space-y-3">
+        {/* Mobile heading */}
+        <div className="lg:hidden mb-4 mt-2">
+          <p className="text-[14px] font-medium" style={{ color: t.textSecondary }}>
+            Review your order and pay securely
+          </p>
+        </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+        {/* Order items — left column */}
+        <div className="lg:col-span-8 space-y-4">
           {/* Delivery Address */}
           <div className="rounded-xl border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-base font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
-                <MapPin className="w-4 h-4" style={{ color: t.bluePrimary }} /> Delivery Address
+              <h3 className="text-[17px] font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
+                <MapPin className="w-5 h-5" style={{ color: t.bluePrimary }} /> Delivery Address
               </h3>
               {addresses.length > 1 && (
                 <button
                   onClick={() => setShowAddressPicker(!showAddressPicker)}
-                  className="text-xs font-semibold flex items-center gap-1"
+                  className="text-sm font-semibold flex items-center gap-1"
                   style={{ color: t.bluePrimary }}
                 >
                   Change <ChevronDown className="w-3 h-3" />
@@ -306,20 +315,20 @@ export default function CheckoutPage() {
             </div>
             {selectedAddress ? (
               <div>
-                <p className="text-sm font-medium" style={{ color: t.textPrimary }}>
+                <p className="text-[15px] font-medium" style={{ color: t.textPrimary }}>
                   {selectedAddress.label || "Address"}{selectedAddress.is_default ? " (Default)" : ""}
                 </p>
-                <p className="text-sm mt-0.5" style={{ color: t.textSecondary }}>
+                <p className="text-[15px] mt-0.5" style={{ color: t.textSecondary }}>
                   {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}
                 </p>
-                <p className="text-sm" style={{ color: t.textSecondary }}>
+                <p className="text-[15px]" style={{ color: t.textSecondary }}>
                   {selectedAddress.city}, {selectedAddress.state} {selectedAddress.pincode}
                 </p>
               </div>
             ) : (
               <div className="text-center py-3">
-                <p className="text-sm" style={{ color: t.textMuted }}>No saved addresses</p>
-                <Link href="/account" className="text-xs font-semibold mt-1 inline-block" style={{ color: t.bluePrimary }}>
+                <p className="text-[15px]" style={{ color: t.textMuted }}>No saved addresses</p>
+                <Link href="/account" className="text-sm font-semibold mt-1 inline-block" style={{ color: t.bluePrimary }}>
                   + Add an address
                 </Link>
               </div>
@@ -330,12 +339,12 @@ export default function CheckoutPage() {
                   <button
                     key={addr.id}
                     onClick={() => { setSelectedAddressId(addr.id); setShowAddressPicker(false); }}
-                    className="w-full text-left rounded-lg border p-3 text-sm transition-colors hover:bg-gray-50"
+                    className="w-full text-left rounded-lg border p-3 text-[15px] transition-colors hover:bg-gray-50"
                     style={{ borderColor: addr.id === selectedAddressId ? t.bluePrimary : t.border }}
                   >
                     <span className="font-medium" style={{ color: t.textPrimary }}>{addr.label || "Address"}</span>
                     {addr.is_default && <span className="ml-2 text-xs font-semibold" style={{ color: t.bluePrimary }}>(Default)</span>}
-                    <p className="text-xs mt-0.5" style={{ color: t.textSecondary }}>
+                    <p className="text-sm mt-0.5" style={{ color: t.textSecondary }}>
                       {addr.line1}, {addr.city}, {addr.state} {addr.pincode}
                     </p>
                   </button>
@@ -344,37 +353,46 @@ export default function CheckoutPage() {
             )}
           </div>
 
+          {/* Order Items */}
           <div
             className="rounded-xl border p-5"
             style={{ background: t.bgCard, borderColor: t.border }}
           >
-            <h3 className="text-base font-semibold mb-4" style={{ color: t.textPrimary }}>
+            <h3 className="text-[17px] font-semibold mb-4" style={{ color: t.textPrimary }}>
               Order Items ({items.length})
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {items.map((item) => {
                 const price = item.sale_price ?? item.base_price;
+                const disc = item.base_price > price
+                  ? Math.round(((item.base_price - price) / item.base_price) * 100)
+                  : 0;
                 return (
-                  <div key={item.productId} className="flex items-center gap-3 py-2 border-b last:border-0" style={{ borderColor: t.border }}>
+                  <div key={item.productId} className="flex items-center gap-6 py-3 border-b last:border-0" style={{ borderColor: t.border }}>
                     <div
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg overflow-hidden"
+                      className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
                       style={{ background: t.bgBlueTint }}
                     >
                       {item.images?.[0] ? (
                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
-                        <PackageOpen className="h-5 w-5" style={{ color: t.bluePrimary }} />
+                        <PackageOpen className="h-7 w-7" style={{ color: t.bluePrimary }} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate" style={{ color: t.textPrimary }}>
+                      <p className="text-[17px] font-medium truncate" style={{ color: t.textPrimary }}>
                         {item.name}
                       </p>
-                      <p className="text-xs" style={{ color: t.textMuted }}>
+                      <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">
                         Qty: {item.qty} x {formatINR(price)}
                       </p>
+                      {disc > 0 && (
+                        <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
+                          {disc}% off
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm font-bold shrink-0" style={{ color: t.textPrimary }}>
+                    <p className="text-[20px] font-bold shrink-0" style={{ color: t.textPrimary }}>
                       {formatINR(price * item.qty)}
                     </p>
                   </div>
@@ -393,10 +411,10 @@ export default function CheckoutPage() {
                 <Lock className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold" style={{ color: "#1A6FD4" }}>
+                <p className="text-[15px] font-semibold" style={{ color: "#1A6FD4" }}>
                   Secure Payment via Razorpay
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: "#5B8FC9" }}>
+                <p className="text-sm mt-0.5" style={{ color: "#5B8FC9" }}>
                   UPI, Credit/Debit Cards, Net Banking, Wallets — all accepted. 100% safe & secure.
                 </p>
               </div>
@@ -404,48 +422,59 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Order summary (Desktop Right Column, Mobile Bottom) */}
-        <div className="lg:col-span-2 mt-4 lg:mt-0">
+        {/* Order summary — right column (matches CartSummary style) */}
+        <div className="lg:col-span-4 mt-4 lg:mt-0">
           <div
-            className="rounded-xl border p-5 lg:sticky lg:top-28 bg-white"
+            className="rounded-xl border p-6 lg:sticky lg:top-28 bg-white"
             style={{ borderColor: t.border }}
           >
-            <h3 className="text-base font-semibold mb-4" style={{ color: t.textPrimary }}>
-              Order Summary
+            <h3
+              className="text-[15px] font-black mb-6 uppercase tracking-wider"
+              style={{ color: t.textPrimary }}
+            >
+              Price Details
             </h3>
 
-            <div className="space-y-3 text-sm">
+            <div className="space-y-4 text-[15px]">
               <div className="flex justify-between">
                 <span style={{ color: t.textSecondary }}>Subtotal</span>
-                <span className="font-medium" style={{ color: t.textPrimary }}>{formatINR(subtotal)}</span>
+                <span className="font-bold" style={{ color: t.textPrimary }}>
+                  {formatINR(subtotal)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span style={{ color: t.textSecondary }}>GST (18%)</span>
-                <span className="font-medium" style={{ color: t.textPrimary }}>{formatINR(gst)}</span>
+                <span className="font-bold" style={{ color: t.textPrimary }}>
+                  {formatINR(gst)}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span style={{ color: t.textSecondary }}>Delivery</span>
-                <span className="font-medium" style={{ color: t.textPrimary }}>
-                  {delivery === 0 ? "Free" : formatINR(delivery)}
+                <span style={{ color: t.textSecondary }}>Delivery Charges</span>
+                <span className="font-bold" style={{ color: delivery === 0 ? t.inStock : t.textPrimary }}>
+                  {delivery === 0 ? "FREE" : formatINR(delivery)}
                 </span>
               </div>
 
-              <div className="border-t pt-3" style={{ borderColor: t.border }}>
-                <div className="flex justify-between">
-                  <span className="text-base font-semibold" style={{ color: t.textPrimary }}>Total</span>
-                  <span className="text-xl font-bold" style={{ color: t.textPrimary }}>{formatINR(total)}</span>
+              <div className="border-t border-gray-300 pt-5 mt-2" style={{ borderColor: t.border }}>
+                <div className="flex justify-between items-end">
+                  <span
+                    className="text-[17px] font-black"
+                    style={{ color: t.textPrimary }}
+                  >
+                    Total Amount
+                  </span>
+                  <span
+                    className="text-[22px] font-black leading-none tracking-tight"
+                    style={{ color: t.textPrimary }}
+                  >
+                    {formatINR(total)}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {delivery === 0 && (
-              <p className="mt-3 text-xs font-medium" style={{ color: t.inStock }}>
-                Free delivery on orders above ₹10,000
-              </p>
-            )}
-
             {cartWarnings.length > 0 && (
-              <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+              <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
                 <div className="flex items-center gap-2 mb-1">
                   <AlertTriangle className="w-4 h-4 text-amber-600" />
                   <span className="text-xs font-semibold text-amber-700">
@@ -464,22 +493,22 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Desktop CTA (Hidden on mobile) */}
+            {/* Desktop CTA — matches cart's purple button */}
             <div className="hidden lg:block">
               <button
                 onClick={handlePayWithRazorpay}
                 disabled={placing || !razorpayLoaded || cartBlocked || validating}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-bold transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
-                style={{ background: "#1A6FD4", color: "#FFFFFF" }}
+                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-indigo-100"
+                style={{ background: t.primaryCta, color: t.ctaText }}
               >
                 {placing ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                     Processing...
                   </>
                 ) : (
                   <>
-                    <CreditCard className="w-4 h-4" />
+                    <CreditCard className="w-5 h-5" />
                     Pay {formatINR(total)}
                   </>
                 )}
@@ -487,14 +516,14 @@ export default function CheckoutPage() {
             </div>
 
             {!razorpayLoaded && (
-              <p className="mt-2 text-center text-xs md:text-sm" style={{ color: t.textMuted }}>
+              <p className="mt-2 text-center text-sm" style={{ color: t.textMuted }}>
                 Loading payment gateway...
               </p>
             )}
 
             <Link
               href="/cart"
-              className="mt-3 block text-center text-sm md:text-base font-medium transition-opacity hover:opacity-80"
+              className="mt-4 block text-center text-sm font-bold transition-opacity hover:opacity-80"
               style={{ color: t.bluePrimary }}
             >
               Back to Cart

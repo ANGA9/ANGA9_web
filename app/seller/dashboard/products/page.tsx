@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import Link from "next/link";
-import { Plus, Loader2, Package } from "lucide-react";
+import { Plus, Loader2, Package, Pencil } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -113,6 +113,7 @@ export default function ProductsPage() {
                   <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Min Qty</th>
                   <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Status</th>
                   <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Added</th>
+                  <th className="text-right px-4 py-3 font-semibold text-[#4B5563]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -148,6 +149,14 @@ export default function ProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-[#9CA3AF]">{new Date(p.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href={`/seller/dashboard/products/${p.id}`}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-[#1A6FD4] bg-[#EAF2FF] rounded-lg hover:bg-[#D6E8FF] transition-colors"
+                      >
+                        <Pencil className="w-3 h-3" /> Edit
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

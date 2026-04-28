@@ -10,6 +10,8 @@ import {
   Store,
   Users,
   ClipboardCheck,
+  Wallet,
+  BarChart3,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -26,6 +28,8 @@ const navItems = [
   { icon: Store, label: "Sellers", href: "/admin/sellers" },
   { icon: ClipboardCheck, label: "Product Reviews", href: "/admin/reviews" },
   { icon: Users, label: "Users", href: "/admin/users" },
+  { icon: Wallet, label: "Payouts", href: "/admin/payouts" },
+  { icon: BarChart3, label: "Reports", href: "/admin/reports" },
   { icon: Settings, label: "Settings", href: "/admin/settings" },
 ];
 

@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ShoppingCart, Loader2, Package, Truck, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, Loader2, Package, Truck, CheckCircle2, Eye } from "lucide-react";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface OrderItem {
   id: string;
@@ -93,7 +94,7 @@ export default function OrdersPage() {
                 return (
                   <tr key={order.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FAFC]/50 transition-colors">
                     <td className="py-4 px-4 align-top">
-                      <p className="text-sm md:text-base font-bold text-[#1A1A2E]">{order.order_number}</p>
+                      <Link href={`/seller/dashboard/orders/${order.id}`} className="text-sm md:text-base font-bold text-[#1A6FD4] hover:underline">{order.order_number}</Link>
                       <p className="text-xs md:text-sm text-[#6B7280] mt-1">
                         {new Date(order.placed_at).toLocaleDateString("en-IN", {
                           day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
@@ -126,6 +127,12 @@ export default function OrdersPage() {
                     </td>
                     <td className="py-4 px-4 align-top text-right">
                       <div className="flex flex-col gap-2 items-end">
+                        <Link
+                          href={`/seller/dashboard/orders/${order.id}`}
+                          className="flex items-center justify-center gap-2 bg-[#EAF2FF] hover:bg-[#D6E8FF] text-[#1A6FD4] text-xs md:text-sm font-semibold py-1.5 px-3 rounded-lg transition-colors w-[130px]"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> View Details
+                        </Link>
                         {orderStatus === 'confirmed' && (
                           <button
                             disabled={updating === order.id}

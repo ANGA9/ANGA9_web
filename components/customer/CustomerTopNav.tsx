@@ -211,12 +211,12 @@ export default function CustomerTopNav() {
                 <div className="w-20 h-6 bg-gray-200 animate-pulse rounded"></div>
               ) : isLoggedIn ? (
                 <Link
-                  href="/account"
+                  href="#"
                   className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:opacity-80"
                   style={{ color: t.bluePrimary, fontSize: '16px' }}
                 >
-                  <HandHeart style={{ width: 20, height: 20 }} />
-                  <span>Hii, Let&apos;s Shop</span>
+                  <Download style={{ width: 20, height: 20 }} />
+                  <span>Download the app</span>
                 </Link>
               ) : (
                 <>

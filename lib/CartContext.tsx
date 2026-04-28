@@ -17,6 +17,7 @@ interface CartItem {
   seller_id: string;
   images: string[];
   unit: string;
+  min_order_qty: number;
 }
 
 interface CartContextValue {

@@ -34,6 +34,7 @@ export default function CustomerCartPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponState, setCouponState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   const handleApplyCoupon = () => {
@@ -65,13 +66,21 @@ export default function CustomerCartPage() {
   const delivery = subtotal > 10000 ? 0 : 500;
   const total = subtotal + gst + delivery;
 
-  const handleUpdateQty = async (productId: string, currentQty: number, delta: number) => {
-    const newQty = Math.max(1, currentQty + delta);
-    await updateQty(productId, newQty);
+  const handleUpdateQty = async (productId: string, currentQty: number, delta: number, minOrderQty: number = 1) => {
+    const newQty = Math.max(minOrderQty, currentQty + delta);
+    if (newQty !== currentQty) {
+      await updateQty(productId, newQty);
+    }
   };
 
   const handleRemove = async (productId: string) => {
+    setRemovingItems(prev => new Set(prev).add(productId));
     await removeItem(productId);
+    setRemovingItems(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
   };
 
   if (loading && items.length === 0) {
@@ -139,53 +148,56 @@ export default function CustomerCartPage() {
                   ? Math.round(((item.base_price - price) / item.base_price) * 100)
                   : 0;
                 return (
-                  <div key={item.productId} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 relative group">
-                    {/* Remove Icon */}
+                  <div key={item.productId} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 relative group pt-10">
+                    {/* Remove Element (Top Right) */}
                     <button
                       onClick={() => handleRemove(item.productId)}
-                      className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all active:scale-90"
-                      aria-label="Remove item"
+                      disabled={removingItems.has(item.productId)}
+                      className="absolute top-4 right-4 flex items-center gap-1.5 text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
                     >
-                      <Trash2 className="w-[18px] h-[18px]" />
+                      {removingItems.has(item.productId) ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                      <span>Remove</span>
                     </button>
 
                     <div className="flex gap-4">
                       {/* Product Image */}
-                      <div
-                        className="w-[90px] h-[90px] shrink-0 rounded-xl flex items-center justify-center overflow-hidden border border-gray-50"
-                        style={{ background: "#F8FBFF" }}
-                      >
-                        {item.images?.[0] ? (
-                          <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <PackageOpen className="w-8 h-8" style={{ color: t.bluePrimary }} />
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0 pr-6">
-                        <h3 className="text-[15px] font-bold text-gray-900 leading-snug line-clamp-2">
-                          {item.name}
-                        </h3>
-                        <p className="text-[12px] text-gray-500 mt-0.5 font-medium">{item.unit || 'Unit pack'}</p>
-                        
-                        <div className="flex items-center flex-wrap gap-2 mt-2">
-                          <span className="text-[17px] font-black text-gray-900">
-                            {formatINR(price)}
-                          </span>
-                          {disc > 0 && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-[13px] text-gray-400 line-through font-medium">
-                                {formatINR(item.base_price)}
-                              </span>
-                              <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
-                                {disc}% off
-                              </span>
-                            </div>
+                      <Link href={`/products/${item.productId}`} className="shrink-0">
+                        <div
+                          className="w-[90px] h-[90px] rounded-xl flex items-center justify-center overflow-hidden border border-gray-50"
+                          style={{ background: "#F8FBFF" }}
+                        >
+                          {item.images?.[0] ? (
+                            <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <PackageOpen className="w-8 h-8" style={{ color: t.bluePrimary }} />
                           )}
                         </div>
+                      </Link>
 
+                      <div className="flex-1 min-w-0 pr-2">
+                        <Link href={`/products/${item.productId}`}>
+                          <h3 className="text-[15px] font-bold text-gray-900 leading-snug line-clamp-2 hover:underline">
+                            {item.name}
+                          </h3>
+                        </Link>
+                        <p className="text-[12px] text-gray-500 mt-0.5 font-medium">{item.unit || 'Unit pack'}</p>
+                        {disc > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[12px] text-gray-400 line-through font-medium">
+                              {formatINR(item.base_price)}
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded text-green-700 bg-green-50 text-[11px] font-bold">
+                              {disc}% off
+                            </span>
+                          </div>
+                        )}
+                        
                         {/* Delivery Info */}
-                        <div className="flex items-center gap-1.5 mt-2.5">
+                        <div className="flex items-center gap-1.5 mt-2">
                           <Truck className="w-3.5 h-3.5 text-gray-400" />
                           <span className="text-[12px] text-gray-600 font-medium">
                             {delivery === 0 ? (
@@ -198,12 +210,18 @@ export default function CustomerCartPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-5">
+                    <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+                      {/* Individual Price */}
+                      <div>
+                        <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Price</p>
+                        <span className="text-[16px] font-black text-gray-900">{formatINR(price)}</span>
+                      </div>
                       {/* Qty Selector */}
                       <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30">
                         <button
-                          onClick={() => handleUpdateQty(item.productId, item.qty, -1)}
-                          className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white active:bg-gray-100 text-gray-700"
+                          onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
+                          disabled={item.qty <= (item.min_order_qty || 1)}
+                          className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white active:bg-gray-100 text-gray-700 disabled:opacity-30 disabled:hover:bg-transparent"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
@@ -377,46 +395,47 @@ export default function CustomerCartPage() {
                   className="flex items-center gap-6 rounded-xl border p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative group"
                   style={{ borderColor: t.border }}
                 >
-                  <div
-                    className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
-                    style={{ background: t.bgBlueTint }}
-                  >
-                    {item.images?.[0] ? (
-                      <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary }} />
-                    )}
-                  </div>
- 
-                  <div className="flex-1 min-w-0 pr-10">
-                    <h3 className="text-[17px] font-bold text-gray-900 truncate">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">
-                      {item.unit || 'Unit pack'}
-                    </p>
-                    
-                    <div className="flex items-center gap-3 mt-3">
-                      <span className="text-[20px] font-black text-gray-900">
-                        {formatINR(price)}
-                      </span>
-                      {disc > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-400 line-through font-medium">
-                            {formatINR(item.base_price)}
-                          </span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
-                            {disc}% off
-                          </span>
-                        </div>
+                  <Link href={`/products/${item.productId}`} className="shrink-0">
+                    <div
+                      className="flex h-24 w-24 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
+                      style={{ background: t.bgBlueTint }}
+                    >
+                      {item.images?.[0] ? (
+                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                      ) : (
+                        <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary }} />
                       )}
                     </div>
+                  </Link>
+ 
+                  <div className="flex-1 min-w-0 pr-2">
+                    <Link href={`/products/${item.productId}`}>
+                      <h3 className="text-[17px] font-bold text-gray-900 truncate hover:underline">
+                        {item.name}
+                      </h3>
+                    </Link>
+                    <p className="text-[13px] font-medium text-gray-500 mt-1 uppercase tracking-wider">
+                      {item.unit || 'Unit pack'}
+                    </p>
+                  </div>
+ 
+                  {/* Individual Price */}
+                  <div className="shrink-0 text-left w-24">
+                    <span className="text-[18px] font-black text-gray-900 block">
+                      {formatINR(price)}
+                    </span>
+                    {disc > 0 && (
+                      <span className="text-[13px] text-gray-400 line-through font-medium">
+                        {formatINR(item.base_price)}
+                      </span>
+                    )}
                   </div>
  
                   <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30 shrink-0">
                     <button
-                      onClick={() => handleUpdateQty(item.productId, item.qty, -1)}
-                      className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100"
+                      onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
+                      disabled={item.qty <= (item.min_order_qty || 1)}
+                      className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent"
                     >
                       <Minus className="h-4 w-4 text-gray-600" />
                     </button>
@@ -434,16 +453,22 @@ export default function CustomerCartPage() {
                     </button>
                   </div>
  
-                  <p className="text-[20px] font-black shrink-0 w-32 text-right" style={{ color: t.textPrimary }}>
+                  <p className="text-[20px] font-black shrink-0 w-28 text-right" style={{ color: t.textPrimary }}>
                     {formatINR(price * item.qty)}
                   </p>
- 
+
+                  {/* Remove Element (Top Right) */}
                   <button
                     onClick={() => handleRemove(item.productId)}
-                    className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                    aria-label="Remove item"
+                    disabled={removingItems.has(item.productId)}
+                    className="absolute top-4 right-5 flex items-center gap-1.5 text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
                   >
-                    <Trash2 className="h-5 w-5" />
+                    {removingItems.has(item.productId) ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                    <span>Remove</span>
                   </button>
                 </div>
               );

@@ -61,7 +61,7 @@ function toCardProduct(p: SearchProduct): Product {
     category: p.category_name || "",
     originalPrice: p.base_price,
     price: p.sale_price ?? p.base_price,
-    minOrder: `${p.min_order_qty} ${p.unit}${p.min_order_qty > 1 ? "s" : ""}`,
+    minOrder: p.min_order_qty ? `${p.min_order_qty} ${p.unit || 'unit'}${p.min_order_qty > 1 ? "s" : ""}` : "Not specified",
   };
 }
 
@@ -320,26 +320,26 @@ function SearchPageContent() {
   return (
     <div className="py-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div>
-          <h1 className="font-bold text-xl md:text-2xl" style={{ color: t.textPrimary }}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 gap-3">
+        <div className="flex items-baseline gap-2">
+          <h1 className="font-bold text-[18px] md:text-2xl tracking-tight" style={{ color: t.textPrimary }}>
             {query ? `Results for "${query}"` : "All Products"}
           </h1>
           {!loading && (
-            <p className="text-sm md:text-base mt-1" style={{ color: t.textMuted }}>
-              {total} product{total !== 1 ? "s" : ""} found
-            </p>
+            <span className="text-[13px] md:text-base font-medium" style={{ color: t.textMuted }}>
+              ({total} found)
+            </span>
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
           {/* Mobile filter toggle */}
           <button
             onClick={() => setShowMobileFilters(true)}
-            className="flex md:hidden items-center gap-1.5 rounded-lg border px-3 py-2 text-sm md:text-base font-medium"
-            style={{ borderColor: t.border, color: t.textSecondary }}
+            className="flex-1 md:hidden flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-[13px] font-bold shadow-sm active:scale-95 transition-all bg-white"
+            style={{ borderColor: t.border, color: t.textPrimary }}
           >
-            <SlidersHorizontal className="w-4 h-4" />
+            <SlidersHorizontal className="w-3.5 h-3.5" />
             Filters
             {hasActiveFilters && (
               <span
@@ -353,8 +353,8 @@ function SearchPageContent() {
           <select
             value={sortParam}
             onChange={(e) => updateUrl({ sort: e.target.value })}
-            className="rounded-lg border px-3 py-2 text-sm md:text-base font-medium outline-none focus:border-[#1A6FD4]"
-            style={{ borderColor: t.border, color: t.textSecondary, background: "#FFFFFF" }}
+            className="flex-1 md:flex-none rounded-xl border px-3 py-2 text-[13px] md:text-base font-bold outline-none focus:border-[#1A6FD4] shadow-sm bg-white"
+            style={{ borderColor: t.border, color: t.textPrimary }}
           >
             {SORT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -381,16 +381,16 @@ function SearchPageContent() {
 
         {/* Mobile Filter Drawer */}
         {showMobileFilters && (
-          <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 z-[60] md:hidden">
             <div
-              className="absolute inset-0 bg-black/30"
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
               onClick={() => setShowMobileFilters(false)}
             />
             <div
-              className="absolute bottom-0 left-0 right-0 max-h-[80vh] overflow-y-auto rounded-t-2xl p-5"
+              className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-3xl p-5 pb-8 shadow-2xl transition-transform"
               style={{ background: t.bgCard }}
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-5">
                 <h3 className="font-bold text-base md:text-lg" style={{ color: t.textPrimary }}>
                   Filters
                 </h3>

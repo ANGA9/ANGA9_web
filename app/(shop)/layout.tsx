@@ -18,6 +18,9 @@ export default function CustomerShopLayout({
 }) {
   const pathname = usePathname();
   const isCheckout = pathname === "/checkout";
+  const isWishlist = pathname === "/wishlist";
+  const isCart = pathname === "/cart";
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart;
 
   return (
     <LoginSheetProvider>
@@ -37,7 +40,7 @@ export default function CustomerShopLayout({
             </div>
 
             {/* ══════════ MOBILE NAV (<md) ══════════ */}
-            {!isCheckout && (
+            {!hasOwnMobileHeader && (
               <div className="block md:hidden sticky top-0 z-40">
                 <MobileTopHeader />
               </div>

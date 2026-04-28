@@ -185,26 +185,7 @@ export default function ProductCard({
         </div>
       </Link>
 
-      {/* Dynamic Wishlist Actions */}
-      {isWishlistContext && (
-        <div className="p-3 pt-0 border-t mt-2 flex gap-2 bg-white" style={{ borderColor: t.border }}>
-          <button
-            onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-lg font-semibold text-[13px] transition-colors hover:bg-gray-50 border border-gray-300"
-            style={{ color: "#1A1A2E" }}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Add to Cart
-          </button>
-          <button
-            onClick={handleBuyNow}
-            className="flex-1 h-[44px] rounded-lg font-bold text-[13px] text-white transition-opacity hover:opacity-90 shadow-sm"
-            style={{ background: "#1A6FD4" }}
-          >
-            Buy Now
-          </button>
-        </div>
-      )}
+      {/* Wishlist context: no action buttons — cards are clean */}
     </div>
   );
 }

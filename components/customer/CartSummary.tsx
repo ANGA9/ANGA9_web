@@ -20,7 +20,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
 
   return (
     <div
-      className="rounded-xl border p-6 sticky top-28 bg-gray-100/80"
+      className="rounded-xl border p-6 sticky top-28 bg-white"
       style={{ borderColor: t.border }}
     >
       <h3

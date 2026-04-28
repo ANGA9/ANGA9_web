@@ -83,7 +83,7 @@ export default function CustomerCartPage() {
   }
 
   return (
-    <div className="w-full relative bg-[#F7F7F8]">
+    <div className="w-full relative bg-white">
       {/* ══════════ MOBILE VIEW ══════════ */}
       <div className="block md:hidden min-h-screen pb-32">
         {/* Header */}
@@ -91,14 +91,9 @@ export default function CustomerCartPage() {
           <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </Link>
-          <div className="flex flex-col">
-            <h1 className="text-[17px] font-bold text-gray-900 leading-tight">
-              Shopping Bag
-            </h1>
-            <span className="text-[12px] font-medium text-gray-500">
-              {items.length} {items.length === 1 ? "Item" : "Items"}
-            </span>
-          </div>
+          <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
+            Shopping Bag
+          </h1>
         </header>
 
         {items.length === 0 ? (
@@ -357,7 +352,7 @@ export default function CustomerCartPage() {
       <div className="hidden md:block mx-auto max-w-[1280px] px-8 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-baseline gap-3">
-            <h1 className="text-[32px] font-black text-gray-900 tracking-tight">
+            <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
               Shopping Bag
             </h1>
             <span className="text-[18px] font-bold text-gray-400">
@@ -445,7 +440,8 @@ export default function CustomerCartPage() {
  
                   <button
                     onClick={() => handleRemove(item.productId)}
-                    className="absolute top-5 right-5 p-2 rounded-full text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                    className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                    aria-label="Remove item"
                   >
                     <Trash2 className="h-5 w-5" />
                   </button>

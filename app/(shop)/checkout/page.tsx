@@ -69,21 +69,33 @@ export default function CheckoutPage() {
   const [cartBlocked, setCartBlocked] = useState(false);
   const [validating, setValidating] = useState(true);
 
+  // Validate cart against actual product status in Supabase
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.post<{ valid?: boolean; warnings?: string[]; unavailable?: { productId: string; reason: string }[] }>(
+        const res = await api.post<{ valid?: boolean; warnings?: string[]; items?: { productId: string; name: string; available: boolean }[] }>(
           "/api/cart/validate", {}, { silent: true }
         );
         const warnings: string[] = [];
         let blocked = false;
-        if (res?.unavailable?.length) {
-          blocked = true;
-          res.unavailable.forEach((u) => warnings.push(u.reason));
+
+        // Check actual item availability from validated response
+        if (res?.items?.length) {
+          const unavailableItems = res.items.filter(item => !item.available);
+          if (unavailableItems.length > 0) {
+            blocked = true;
+            unavailableItems.forEach(item => {
+              warnings.push(`"${item.name}" is currently unavailable.`);
+            });
+          }
         }
-        if (res?.warnings?.length) {
+
+        // Only show warnings if validation actually found issues
+        if (res?.valid === false && warnings.length === 0 && res?.warnings?.length) {
           warnings.push(...res.warnings);
+          blocked = true;
         }
+
         setCartWarnings(warnings);
         setCartBlocked(blocked);
       } catch { /* ignore — allow checkout if validation endpoint fails */ }
@@ -258,14 +270,14 @@ export default function CheckoutPage() {
         <Link href="/cart" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </Link>
-        <h1 className="text-[17px] font-bold text-gray-900 leading-tight">
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
           Checkout
         </h1>
       </header>
 
       <div className="mx-auto max-w-[900px] px-4 sm:px-8 py-6">
         <div className="hidden lg:block mb-6">
-          <h1 className="text-xl font-bold mb-1" style={{ color: t.textPrimary }}>
+          <h1 className="text-xl font-medium mb-1" style={{ color: t.textPrimary }}>
             Checkout
           </h1>
           <p className="text-sm" style={{ color: t.textSecondary }}>

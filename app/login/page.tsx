@@ -236,7 +236,7 @@ export default function CustomerLoginPage() {
         <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
           Email Address
         </label>
-        <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
+        <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] overflow-hidden">
           <span className="flex items-center pl-4 pr-2">
             <Mail className="w-4 h-4 text-[#9CA3AF]" />
           </span>
@@ -247,7 +247,8 @@ export default function CustomerLoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             autoFocus
             placeholder="Enter your email address"
-            className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+            className="flex-1 text-sm bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF] border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent"
+            style={{ boxShadow: "none", border: "none", outline: "none" }}
           />
         </div>
       </div>
@@ -285,7 +286,7 @@ export default function CustomerLoginPage() {
         <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
           Mobile Number
         </label>
-        <div className="flex items-center rounded-xl border border-[#E8EEF4] bg-[#F3F4F6] overflow-hidden opacity-60">
+        <div className="flex items-center rounded-xl border border-[#E8EEF4] bg-[#F3F4F6] opacity-60 overflow-hidden">
           <span className="flex items-center text-sm font-semibold text-[#9CA3AF] pl-4 pr-2 select-none">
             +91
           </span>
@@ -298,7 +299,8 @@ export default function CustomerLoginPage() {
             maxLength={14}
             disabled
             placeholder="Enter your phone number"
-            className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#9CA3AF] placeholder:text-[#9CA3AF] cursor-not-allowed"
+            className="flex-1 text-sm bg-transparent py-3.5 px-3 text-[#9CA3AF] placeholder:text-[#9CA3AF] cursor-not-allowed border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent"
+            style={{ boxShadow: "none", border: "none", outline: "none" }}
           />
         </div>
       </div>
@@ -479,16 +481,15 @@ export default function CustomerLoginPage() {
                 style={{ objectFit: "cover" }}
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A6FD4]/80 via-[#1A6FD4]/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-10">
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                  <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2">
-                    Shop from India&apos;s finest sellers
-                  </h2>
-                  <p className="text-sm md:text-base text-white/90 font-medium leading-relaxed">
-                    Get access to your Orders, Wishlist and Recommendations
-                  </p>
-                </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/90 via-[#0A192F]/40 to-transparent mix-blend-multiply" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-12">
+                <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">
+                  Shop from India&apos;s finest sellers
+                </h2>
+                <p className="text-base md:text-lg text-white/80 font-medium leading-relaxed max-w-sm">
+                  Get access to your Orders, Wishlist and Recommendations
+                </p>
               </div>
             </div>
 

@@ -346,10 +346,11 @@ export default function CustomerHomePage() {
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-24 right-5 z-50 p-3 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 text-gray-700 hover:text-[#1A6FD4] hover:bg-blue-50 transition-all animate-in fade-in slide-in-from-bottom-5"
+          className="fixed bottom-24 right-5 z-50 flex items-center gap-2 p-3 md:px-5 md:py-3 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 text-gray-700 hover:text-[#1A6FD4] hover:bg-blue-50 transition-all animate-in fade-in slide-in-from-bottom-5"
           aria-label="Back to top"
         >
           <ArrowUp className="w-5 h-5" />
+          <span className="hidden md:inline font-bold text-sm">Scroll to top</span>
         </button>
       )}
     </div>

@@ -14,6 +14,8 @@ interface WishlistItem {
   seller_id: string;
   seller_name: string;
   images: string[];
+  min_order_qty?: number;
+  unit?: string;
   addedAt: string;
 }
 

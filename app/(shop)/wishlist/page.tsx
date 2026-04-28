@@ -25,7 +25,7 @@ export default function CustomerWishlistPage() {
     category: "",
     originalPrice: item.base_price,
     price: item.sale_price ?? item.base_price,
-    minOrder: "1 pc",
+    minOrder: `${item.min_order_qty || 1} ${item.unit || 'pc'}${(item.min_order_qty || 1) > 1 ? "s" : ""}`,
     imageUrl: item.images?.[0] || undefined,
   }));
 

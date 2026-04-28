@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PackageOpen, Heart, ShoppingCart } from "lucide-react";
+import { PackageOpen, Heart, ShoppingCart, Loader2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/WishlistContext";
@@ -27,7 +27,7 @@ function formatINR(value: number) {
 interface ProductCardProps {
   product: Product;
   showWishlistHeart?: boolean; // Legacy
-  onRemoveWishlist?: () => void;
+  onRemoveWishlist?: () => Promise<void> | void;
   isWishlistContext?: boolean; // New context
 }
 
@@ -41,18 +41,30 @@ export default function ProductCard({
   const wishlist = useWishlist();
   const cart = useCart();
   const [adding, setAdding] = useState(false);
+  const [togglingWishlist, setTogglingWishlist] = useState(false);
   const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
   
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
   );
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    wishlist.toggleItem(product.id);
-    if (isSaved && onRemoveWishlist) {
-      onRemoveWishlist();
+    if (togglingWishlist) return;
+
+    setTogglingWishlist(true);
+    try {
+      if (isWishlistContext && onRemoveWishlist) {
+        await onRemoveWishlist();
+      } else {
+        await wishlist.toggleItem(product.id);
+        if (isSaved && onRemoveWishlist) {
+          await onRemoveWishlist();
+        }
+      }
+    } finally {
+      setTogglingWishlist(false);
     }
   };
 
@@ -129,14 +141,19 @@ export default function ProductCard({
           {/* Wishlist icon positioned top-right of the text area */}
           <button
             onClick={handleWishlistToggle}
-            className="absolute top-1 right-1 p-3 rounded-full hover:bg-gray-100 transition-colors z-20"
+            disabled={togglingWishlist}
+            className="absolute top-1 right-1 p-3 rounded-full hover:bg-gray-100 transition-colors z-20 disabled:opacity-70"
             aria-label="Toggle wishlist"
           >
-            <Heart
-              className="w-4 h-4 md:w-5 md:h-5 transition-colors"
-              style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }}
-              fill={isSaved ? "#DC2626" : "transparent"}
-            />
+            {togglingWishlist ? (
+              <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" style={{ color: "#9CA3AF" }} />
+            ) : (
+              <Heart
+                className="w-4 h-4 md:w-5 md:h-5 transition-colors"
+                style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }}
+                fill={isSaved ? "#DC2626" : "transparent"}
+              />
+            )}
           </button>
 
           <p className="text-[11px] md:text-xs mb-1 pr-7 md:pr-8 truncate" style={{ color: t.textSecondary }}>

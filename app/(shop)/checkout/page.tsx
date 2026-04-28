@@ -281,6 +281,9 @@ export default function CheckoutPage() {
             <h1 className="text-[32px] font-medium tracking-tight" style={{ color: t.textPrimary }}>
               Checkout
             </h1>
+            <span className="text-[18px] font-bold text-gray-400">
+              ({items.length} {items.length === 1 ? "Item" : "Items"})
+            </span>
           </div>
           <p className="text-sm font-medium" style={{ color: t.textSecondary }}>
             Review your order and pay securely with Razorpay
@@ -560,7 +563,8 @@ export default function CheckoutPage() {
         <button
           onClick={handlePayWithRazorpay}
           disabled={placing || !razorpayLoaded || cartBlocked || validating}
-          className="flex-1 h-[52px] bg-[#1A6FD4] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-blue-200"
+          className="flex-1 h-[52px] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-indigo-200"
+          style={{ background: t.primaryCta }}
         >
           {placing ? (
             <Loader2 className="w-6 h-6 animate-spin" />

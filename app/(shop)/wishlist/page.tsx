@@ -68,12 +68,17 @@ export default function CustomerWishlistPage() {
       <div className="mx-auto max-w-[1400px] px-2 sm:px-4 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 mt-2">
           <div>
-            <h1
-              className="hidden md:block text-[24px] md:text-[32px] font-medium tracking-tight mb-1"
-              style={{ color: t.textPrimary }}
-            >
-              My Wishlist
-            </h1>
+            <div className="flex items-baseline gap-3">
+              <h1
+                className="hidden md:block text-[24px] md:text-[32px] font-medium tracking-tight mb-1"
+                style={{ color: t.textPrimary }}
+              >
+                My Wishlist
+              </h1>
+              <span className="hidden md:block text-[18px] font-bold text-gray-400">
+                ({products.length} {products.length === 1 ? "Item" : "Items"})
+              </span>
+            </div>
             <p className="text-[14px] md:text-[16px] font-medium" style={{ color: t.textSecondary }}>
               {products.length} {products.length === 1 ? 'item' : 'items'} saved for later
             </p>

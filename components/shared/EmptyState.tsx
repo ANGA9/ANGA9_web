@@ -18,24 +18,19 @@ export default function EmptyState({
   accentColor = "#4338CA",
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      <div
-        className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl"
-        style={{ backgroundColor: `${accentColor}15` }}
-      >
-        <Icon className="h-8 w-8" style={{ color: accentColor }} />
-      </div>
-      <h3 className="text-base font-semibold text-anga-text">{title}</h3>
+    <div className="flex flex-col items-center justify-center py-24 px-4 bg-white rounded-xl border-none col-span-12 w-full text-center">
+      <Icon className="h-16 w-16 mb-6 text-gray-300" />
+      <h3 className="text-xl font-black text-gray-900">{title}</h3>
       {description && (
-        <p className="mt-1 max-w-sm text-sm text-anga-text-secondary">
+        <p className="mt-2 text-[15px] text-gray-500">
           {description}
         </p>
       )}
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="mt-4 rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
-          style={{ backgroundColor: accentColor }}
+          className="mt-8 rounded-xl px-10 py-3.5 text-[16px] font-black transition-all active:scale-95 shadow-lg shadow-indigo-100 text-white"
+          style={{ background: accentColor }}
         >
           {actionLabel}
         </button>

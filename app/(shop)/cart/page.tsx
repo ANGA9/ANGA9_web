@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
 import CartSummary from "@/components/customer/CartSummary";
+import EmptyState from "@/components/shared/EmptyState";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -106,27 +107,14 @@ export default function CustomerCartPage() {
         </header>
 
         {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center px-8 pt-24 pb-32">
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
-              style={{ background: "#EAF2FF" }}
-            >
-              <ShoppingBag className="w-9 h-9" style={{ color: t.bluePrimary }} />
-            </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
-              Your bag is empty
-            </h2>
-            <p className="text-[15px] text-gray-500 text-center mb-8">
-              There is nothing in your bag. Let&apos;s add some items.
-            </p>
-            <Link
-              href="/"
-              className="rounded-xl px-10 py-3.5 text-[16px] font-bold transition-all active:scale-95 shadow-sm"
-              style={{ background: t.primaryCta, color: t.ctaText }}
-            >
-              Shop Now
-            </Link>
-          </div>
+          <EmptyState
+            icon={ShoppingBag}
+            title="Your bag is empty"
+            description="There is nothing in your bag. Let's add some items."
+            actionLabel="Shop Now"
+            onAction={() => router.push("/")}
+            accentColor={t.primaryCta}
+          />
         ) : (
           <>
             {totalSavings > 0 && (
@@ -382,127 +370,114 @@ export default function CustomerCartPage() {
           </Link>
         </div>
  
-        <div className="grid grid-cols-12 gap-10">
-          <div className="col-span-12 xl:col-span-8 space-y-4">
-            {items.map((item) => {
-              const price = item.sale_price ?? item.base_price;
-              const disc = item.base_price > price
-                ? Math.round(((item.base_price - price) / item.base_price) * 100)
-                : 0;
-              return (
-                <div
-                  key={item.productId}
-                  className="flex items-center gap-6 rounded-xl border p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative group"
-                  style={{ borderColor: t.border }}
-                >
-                  <Link href={`/products/${item.productId}`} className="shrink-0">
-                    <div
-                      className="flex h-24 w-24 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
-                      style={{ background: t.bgBlueTint }}
-                    >
-                      {item.images?.[0] ? (
-                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform" />
-                      ) : (
-                        <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary }} />
+        {items.length === 0 ? (
+          <EmptyState
+            icon={ShoppingBag}
+            title="Your bag is empty"
+            description="Time to start shopping and fill it with wonderful things!"
+            actionLabel="Start Shopping"
+            onAction={() => router.push("/")}
+            accentColor={t.primaryCta}
+          />
+        ) : (
+          <div className="grid grid-cols-12 gap-10">
+            <div className="col-span-12 xl:col-span-8 space-y-4">
+              {items.map((item) => {
+                const price = item.sale_price ?? item.base_price;
+                const disc = item.base_price > price
+                  ? Math.round(((item.base_price - price) / item.base_price) * 100)
+                  : 0;
+                return (
+                  <div
+                    key={item.productId}
+                    className="flex items-center gap-6 rounded-xl border p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative group"
+                    style={{ borderColor: t.border }}
+                  >
+                    <Link href={`/products/${item.productId}`} className="shrink-0">
+                      <div
+                        className="flex h-24 w-24 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
+                        style={{ background: t.bgBlueTint }}
+                      >
+                        {item.images?.[0] ? (
+                          <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                        ) : (
+                          <PackageOpen className="h-8 w-8" style={{ color: t.bluePrimary }} />
+                        )}
+                      </div>
+                    </Link>
+   
+                    <div className="flex-1 min-w-0 pr-2">
+                      <Link href={`/products/${item.productId}`}>
+                        <h3 className="text-[17px] font-bold text-gray-900 truncate hover:underline">
+                          {item.name}
+                        </h3>
+                      </Link>
+                      <p className="text-[13px] font-medium text-gray-500 mt-1 uppercase tracking-wider">
+                        {item.unit || 'Unit pack'}
+                      </p>
+                    </div>
+   
+                    {/* Individual Price */}
+                    <div className="shrink-0 text-left w-24">
+                      <span className="text-[18px] font-black text-gray-900 block">
+                        {formatINR(price)}
+                      </span>
+                      {disc > 0 && (
+                        <span className="text-[13px] text-gray-400 line-through font-medium">
+                          {formatINR(item.base_price)}
+                        </span>
                       )}
                     </div>
-                  </Link>
- 
-                  <div className="flex-1 min-w-0 pr-2">
-                    <Link href={`/products/${item.productId}`}>
-                      <h3 className="text-[17px] font-bold text-gray-900 truncate hover:underline">
-                        {item.name}
-                      </h3>
-                    </Link>
-                    <p className="text-[13px] font-medium text-gray-500 mt-1 uppercase tracking-wider">
-                      {item.unit || 'Unit pack'}
-                    </p>
-                  </div>
- 
-                  {/* Individual Price */}
-                  <div className="shrink-0 text-left w-24">
-                    <span className="text-[18px] font-black text-gray-900 block">
-                      {formatINR(price)}
-                    </span>
-                    {disc > 0 && (
-                      <span className="text-[13px] text-gray-400 line-through font-medium">
-                        {formatINR(item.base_price)}
+   
+                    <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30 shrink-0">
+                      <button
+                        onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
+                        disabled={item.qty <= (item.min_order_qty || 1)}
+                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent"
+                      >
+                        <Minus className="h-4 w-4 text-gray-600" />
+                      </button>
+                      <span
+                        className="flex h-11 w-12 items-center justify-center text-[15px] font-black bg-white border-x border-gray-100"
+                        style={{ color: t.textPrimary }}
+                      >
+                        {item.qty}
                       </span>
-                    )}
-                  </div>
- 
-                  <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30 shrink-0">
+                      <button
+                        onClick={() => handleUpdateQty(item.productId, item.qty, 1)}
+                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100"
+                      >
+                        <Plus className="h-4 w-4 text-gray-600" />
+                      </button>
+                    </div>
+   
+                    <p className="text-[20px] font-black shrink-0 w-28 text-right" style={{ color: t.textPrimary }}>
+                      {formatINR(price * item.qty)}
+                    </p>
+  
+                    {/* Remove Element (Top Right) */}
                     <button
-                      onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
-                      disabled={item.qty <= (item.min_order_qty || 1)}
-                      className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent"
+                      onClick={() => handleRemove(item.productId)}
+                      disabled={removingItems.has(item.productId)}
+                      className="absolute top-4 right-5 flex items-center gap-1.5 text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
                     >
-                      <Minus className="h-4 w-4 text-gray-600" />
-                    </button>
-                    <span
-                      className="flex h-11 w-12 items-center justify-center text-[15px] font-black bg-white border-x border-gray-100"
-                      style={{ color: t.textPrimary }}
-                    >
-                      {item.qty}
-                    </span>
-                    <button
-                      onClick={() => handleUpdateQty(item.productId, item.qty, 1)}
-                      className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100"
-                    >
-                      <Plus className="h-4 w-4 text-gray-600" />
+                      {removingItems.has(item.productId) ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                      <span>Remove</span>
                     </button>
                   </div>
- 
-                  <p className="text-[20px] font-black shrink-0 w-28 text-right" style={{ color: t.textPrimary }}>
-                    {formatINR(price * item.qty)}
-                  </p>
-
-                  {/* Remove Element (Top Right) */}
-                  <button
-                    onClick={() => handleRemove(item.productId)}
-                    disabled={removingItems.has(item.productId)}
-                    className="absolute top-4 right-5 flex items-center gap-1.5 text-[13px] font-bold text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                  >
-                    {removingItems.has(item.productId) ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                    <span>Remove</span>
-                  </button>
-                </div>
-              );
-            })}
- 
-            {items.length === 0 && (
-              <div
-                className="flex flex-col items-center justify-center rounded-xl border py-24 bg-white"
-                style={{ borderColor: t.border }}
-              >
-                <ShoppingBag className="h-16 w-16 mb-6" style={{ color: t.textMuted }} />
-                <h3 className="text-xl font-black text-gray-900">
-                  Your bag is empty
-                </h3>
-                <p className="mt-2 text-[15px] text-gray-500">
-                  Time to start shopping and fill it with wonderful things!
-                </p>
-                <Link
-                  href="/"
-                  className="mt-8 rounded-xl px-10 py-3.5 text-[16px] font-black transition-all active:scale-95 shadow-lg shadow-indigo-100"
-                  style={{ background: t.primaryCta, color: t.ctaText }}
-                >
-                  Start Shopping
-                </Link>
-              </div>
-            )}
-          </div>
- 
-          {items.length > 0 && (
+                );
+              })}
+            </div>
+   
             <div className="col-span-12 xl:col-span-4">
               <CartSummary subtotal={subtotal} />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -107,7 +107,7 @@ export default function CustomerWishlistPage() {
             description="Save items you like to view them later."
             actionLabel="Continue Shopping"
             onAction={() => router.push("/")}
-            accentColor={t.bluePrimary}
+            accentColor={t.primaryCta}
           />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mt-4">

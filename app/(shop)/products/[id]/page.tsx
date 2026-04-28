@@ -83,6 +83,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [togglingWishlist, setTogglingWishlist] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
 
@@ -173,9 +174,14 @@ export default function ProductDetailPage() {
   };
 
   const isSaved = product ? wishlist.hasItem(product.id) : false;
-  const handleWishlistToggle = () => {
-    if (!product) return;
-    wishlist.toggleItem(product.id);
+  const handleWishlistToggle = async () => {
+    if (!product || togglingWishlist) return;
+    setTogglingWishlist(true);
+    try {
+      await wishlist.toggleItem(product.id);
+    } finally {
+      setTogglingWishlist(false);
+    }
   };
 
   if (loading) {
@@ -245,8 +251,12 @@ export default function ProductDetailPage() {
           <button onClick={handleShare} className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Share">
             <Share2 className="w-5 h-5 text-gray-600" />
           </button>
-          <button onClick={handleWishlistToggle} className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Toggle wishlist">
-            <Heart className="w-5 h-5 transition-colors" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+          <button onClick={handleWishlistToggle} disabled={togglingWishlist} className="p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-70" aria-label="Toggle wishlist">
+            {togglingWishlist ? (
+              <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+            ) : (
+              <Heart className="w-5 h-5 transition-colors" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+            )}
           </button>
         </div>
       </header>
@@ -446,10 +456,14 @@ export default function ProductDetailPage() {
               Buy Now
             </button>
 
-            <button onClick={handleWishlistToggle}
-              className="flex items-center justify-center w-14 rounded-xl border-2 transition-colors hover:bg-gray-50"
+            <button onClick={handleWishlistToggle} disabled={togglingWishlist}
+              className="flex items-center justify-center w-14 rounded-xl border-2 transition-colors hover:bg-gray-50 disabled:opacity-70"
               style={{ borderColor: isSaved ? "#DC2626" : t.border }} aria-label="Toggle wishlist">
-              <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+              {togglingWishlist ? (
+                <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+              ) : (
+                <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+              )}
             </button>
 
             <button onClick={handleShare}

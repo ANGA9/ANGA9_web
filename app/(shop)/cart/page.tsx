@@ -36,6 +36,7 @@ export default function CustomerCartPage() {
   const [couponCode, setCouponCode] = useState("");
   const [couponState, setCouponState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
+  const [updatingQty, setUpdatingQty] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   const handleApplyCoupon = () => {
@@ -70,7 +71,13 @@ export default function CustomerCartPage() {
   const handleUpdateQty = async (productId: string, currentQty: number, delta: number, minOrderQty: number = 1) => {
     const newQty = Math.max(minOrderQty, currentQty + delta);
     if (newQty !== currentQty) {
+      setUpdatingQty(prev => new Set(prev).add(productId));
       await updateQty(productId, newQty);
+      setUpdatingQty(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
     }
   };
 
@@ -208,17 +215,18 @@ export default function CustomerCartPage() {
                       <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30">
                         <button
                           onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
-                          disabled={item.qty <= (item.min_order_qty || 1)}
+                          disabled={item.qty <= (item.min_order_qty || 1) || updatingQty.has(item.productId)}
                           className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white active:bg-gray-100 text-gray-700 disabled:opacity-30 disabled:hover:bg-transparent"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <div className="w-11 h-11 flex items-center justify-center font-bold text-gray-900 bg-white text-[15px] border-x border-gray-100">
-                          {item.qty}
+                          {updatingQty.has(item.productId) ? <Loader2 className="w-4 h-4 animate-spin text-gray-400" /> : item.qty}
                         </div>
                         <button
                           onClick={() => handleUpdateQty(item.productId, item.qty, 1)}
-                          className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white active:bg-gray-100 text-gray-700"
+                          disabled={updatingQty.has(item.productId)}
+                          className="w-11 h-11 flex items-center justify-center transition-colors hover:bg-white active:bg-gray-100 text-gray-700 disabled:opacity-30 disabled:hover:bg-transparent"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -432,7 +440,7 @@ export default function CustomerCartPage() {
                     <div className="flex items-center rounded-xl overflow-hidden border border-gray-200 bg-gray-50/30 shrink-0">
                       <button
                         onClick={() => handleUpdateQty(item.productId, item.qty, -1, item.min_order_qty)}
-                        disabled={item.qty <= (item.min_order_qty || 1)}
+                        disabled={item.qty <= (item.min_order_qty || 1) || updatingQty.has(item.productId)}
                         className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent"
                       >
                         <Minus className="h-4 w-4 text-gray-600" />
@@ -441,11 +449,12 @@ export default function CustomerCartPage() {
                         className="flex h-11 w-12 items-center justify-center text-[15px] font-black bg-white border-x border-gray-100"
                         style={{ color: t.textPrimary }}
                       >
-                        {item.qty}
+                        {updatingQty.has(item.productId) ? <Loader2 className="w-4 h-4 animate-spin text-gray-400" /> : item.qty}
                       </span>
                       <button
                         onClick={() => handleUpdateQty(item.productId, item.qty, 1)}
-                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100"
+                        disabled={updatingQty.has(item.productId)}
+                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-white active:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent"
                       >
                         <Plus className="h-4 w-4 text-gray-600" />
                       </button>

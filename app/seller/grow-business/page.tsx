@@ -318,7 +318,7 @@ export default function GrowBusinessPage() {
           </div>
 
           <div className="mt-10 sm:mt-16 lg:mt-20 border-t border-[#E8EEF4] pt-6 sm:pt-10 text-center">
-            <p className="text-sm md:text-base text-[#6B7280]">&copy; 2024-25 ANGA9 Inc. All Rights Reserved.</p>
+            <p className="text-sm md:text-base text-[#6B7280]">&copy; 2024-26 ANGA9 Inc. All Rights Reserved.</p>
           </div>
         </div>
       </footer>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 type Tab = "email" | "phone";
@@ -447,14 +447,6 @@ export default function SellerLoginPage() {
             >
               <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Sell on ANGA9
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: '16px' }}
-            >
-              <Download style={{ width: 18, height: 18, color: "#1A6FD4" }} />
-              Download App
             </a>
           </div>
         </div>

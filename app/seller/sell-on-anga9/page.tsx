@@ -487,7 +487,7 @@ export default function SellerLandingPage() {
 
           <div className="mt-20 border-t border-[#E8EEF4] pt-10 text-center">
             <p className="text-sm md:text-base text-[#6B7280]">
-              &copy; 2024-25 ANGA9 Inc. All Rights Reserved.
+              &copy; 2024-26 ANGA9 Inc. All Rights Reserved.
             </p>
           </div>
         </div>

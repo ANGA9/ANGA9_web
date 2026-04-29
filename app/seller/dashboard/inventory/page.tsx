@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Package, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Package, AlertTriangle, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Product {
@@ -31,12 +31,14 @@ function formatINR(v: number) {
 }
 
 export default function InventoryPage() {
-  const [rows, setRows] = useState<InventoryRow[]>([]);
+  const [allRows, setAllRows] = useState<InventoryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editQty, setEditQty] = useState("");
   const [editThreshold, setEditThreshold] = useState("");
   const [saving, setSaving] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 20;
 
   useEffect(() => {
     fetchInventory();
@@ -45,23 +47,29 @@ export default function InventoryPage() {
   async function fetchInventory() {
     try {
       const prodRes = await api.get<{ products?: Product[]; data?: Product[]; total?: number }>(
-        "/api/products?seller_id=me&limit=100",
+        "/api/products?seller_id=me&limit=200",
         { silent: true }
       );
       const products = prodRes?.products || prodRes?.data || [];
 
-      const stockPromises = products.map(async (p) => {
-        try {
-          const s = await api.get<StockRecord | StockRecord[]>(`/api/inventory/${p.id}`, { silent: true });
-          const stock = Array.isArray(s) ? s[0] || null : s;
-          return { product: p, stock };
-        } catch {
-          return { product: p, stock: null };
-        }
-      });
-
-      const results = await Promise.all(stockPromises);
-      setRows(results);
+      const batchSize = 10;
+      const results: InventoryRow[] = [];
+      for (let i = 0; i < products.length; i += batchSize) {
+        const batch = products.slice(i, i + batchSize);
+        const batchResults = await Promise.all(
+          batch.map(async (p) => {
+            try {
+              const s = await api.get<StockRecord | StockRecord[]>(`/api/inventory/${p.id}`, { silent: true });
+              const stock = Array.isArray(s) ? s[0] || null : s;
+              return { product: p, stock };
+            } catch {
+              return { product: p, stock: null };
+            }
+          })
+        );
+        results.push(...batchResults);
+      }
+      setAllRows(results);
     } catch { /* ignore */ }
     setLoading(false);
   }
@@ -81,7 +89,7 @@ export default function InventoryPage() {
       });
       toast.success("Stock updated");
       setEditingId(null);
-      setRows((prev) =>
+      setAllRows((prev) =>
         prev.map((r) =>
           r.product.id === productId
             ? {
@@ -110,10 +118,13 @@ export default function InventoryPage() {
     );
   }
 
-  const lowStockCount = rows.filter(
+  const lowStockCount = allRows.filter(
     (r) => r.stock && r.stock.quantity > 0 && r.stock.quantity <= r.stock.low_stock_threshold
   ).length;
-  const outOfStockCount = rows.filter((r) => !r.stock || r.stock.quantity <= 0).length;
+  const outOfStockCount = allRows.filter((r) => !r.stock || r.stock.quantity <= 0).length;
+
+  const totalPages = Math.ceil(allRows.length / limit);
+  const paginated = allRows.slice((page - 1) * limit, page * limit);
 
   return (
     <div>
@@ -128,7 +139,7 @@ export default function InventoryPage() {
             <Package className="w-5 h-5 text-[#1A6FD4]" />
           </div>
           <div>
-            <p className="text-xl font-bold text-[#1A1A2E]">{rows.length}</p>
+            <p className="text-xl font-bold text-[#1A1A2E]">{allRows.length}</p>
             <p className="text-xs text-[#9CA3AF]">Total Products</p>
           </div>
         </div>
@@ -153,105 +164,144 @@ export default function InventoryPage() {
       </div>
 
       <div className="bg-white rounded-xl border border-[#E8EEF4] overflow-hidden">
-        {rows.length === 0 ? (
+        {allRows.length === 0 ? (
           <div className="p-8 text-center">
             <Package className="w-10 h-10 mx-auto mb-2 text-[#E8EEF4]" />
             <p className="text-sm text-[#9CA3AF]">No products found. Add products first.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#F8FBFF] border-b border-[#E8EEF4]">
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Product</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Price</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Stock</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Reserved</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Status</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => {
-                  const qty = row.stock?.quantity ?? 0;
-                  const threshold = row.stock?.low_stock_threshold ?? 10;
-                  const isEditing = editingId === row.product.id;
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-[#F8FBFF] border-b border-[#E8EEF4]">
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Product</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Price</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Stock</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Threshold</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Reserved</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Status</th>
+                    <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginated.map((row) => {
+                    const qty = row.stock?.quantity ?? 0;
+                    const threshold = row.stock?.low_stock_threshold ?? 10;
+                    const isEditing = editingId === row.product.id;
 
-                  let statusLabel = "In Stock";
-                  let statusBg = "#F0FDF4";
-                  let statusColor = "#22C55E";
-                  if (qty <= 0) {
-                    statusLabel = "Out of Stock";
-                    statusBg = "#FEF2F2";
-                    statusColor = "#EF4444";
-                  } else if (qty <= threshold) {
-                    statusLabel = "Low Stock";
-                    statusBg = "#FFFBEB";
-                    statusColor = "#F59E0B";
-                  }
+                    let statusLabel = "In Stock";
+                    let statusBg = "#F0FDF4";
+                    let statusColor = "#22C55E";
+                    if (qty <= 0) {
+                      statusLabel = "Out of Stock";
+                      statusBg = "#FEF2F2";
+                      statusColor = "#EF4444";
+                    } else if (qty <= threshold) {
+                      statusLabel = "Low Stock";
+                      statusBg = "#FFFBEB";
+                      statusColor = "#F59E0B";
+                    }
 
-                  return (
-                    <tr key={row.product.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FBFF]">
-                      <td className="px-5 py-3">
-                        <p className="font-medium text-[#1A1A2E] truncate max-w-[200px]">{row.product.name}</p>
-                      </td>
-                      <td className="px-5 py-3 text-[#1A1A2E]">{formatINR(row.product.base_price)}</td>
-                      <td className="px-5 py-3">
-                        {isEditing ? (
-                          <input
-                            type="number"
-                            value={editQty}
-                            onChange={(e) => setEditQty(e.target.value)}
-                            className="w-20 h-8 rounded border border-[#E8EEF4] px-2 text-sm focus:border-[#1A6FD4] focus:outline-none"
-                          />
-                        ) : (
-                          <span className="font-bold text-[#1A1A2E]">{qty}</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-3 text-[#9CA3AF]">{row.stock?.reserved ?? 0}</td>
-                      <td className="px-5 py-3">
-                        <span
-                          className="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold"
-                          style={{ background: statusBg, color: statusColor }}
-                        >
-                          {statusLabel}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        {isEditing ? (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleSave(row.product.id)}
-                              disabled={saving}
-                              className="px-3 py-1 rounded-lg text-xs font-bold text-white disabled:opacity-50"
-                              style={{ background: "#22C55E" }}
-                            >
-                              {saving ? <Loader2 className="w-3 h-3 animate-spin inline" /> : "Save"}
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="px-3 py-1 rounded-lg border text-xs font-bold"
-                              style={{ borderColor: "#E8EEF4", color: "#4B5563" }}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => startEdit(row)}
-                            className="text-xs font-semibold hover:underline"
-                            style={{ color: "#1A6FD4" }}
+                    return (
+                      <tr key={row.product.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FBFF]">
+                        <td className="px-5 py-3">
+                          <p className="font-medium text-[#1A1A2E] truncate max-w-[200px]">{row.product.name}</p>
+                        </td>
+                        <td className="px-5 py-3 text-[#1A1A2E]">{formatINR(row.product.base_price)}</td>
+                        <td className="px-5 py-3">
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              value={editQty}
+                              onChange={(e) => setEditQty(e.target.value)}
+                              className="w-20 h-8 rounded border border-[#E8EEF4] px-2 text-sm focus:border-[#1A6FD4] focus:outline-none"
+                            />
+                          ) : (
+                            <span className="font-bold text-[#1A1A2E]">{qty}</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3">
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              value={editThreshold}
+                              onChange={(e) => setEditThreshold(e.target.value)}
+                              className="w-20 h-8 rounded border border-[#E8EEF4] px-2 text-sm focus:border-[#1A6FD4] focus:outline-none"
+                              min="0"
+                            />
+                          ) : (
+                            <span className="text-[#9CA3AF]">{threshold}</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-[#9CA3AF]">{row.stock?.reserved ?? 0}</td>
+                        <td className="px-5 py-3">
+                          <span
+                            className="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold"
+                            style={{ background: statusBg, color: statusColor }}
                           >
-                            Edit Stock
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                            {statusLabel}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3">
+                          {isEditing ? (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleSave(row.product.id)}
+                                disabled={saving}
+                                className="px-3 py-1 rounded-lg text-xs font-bold text-white bg-[#22C55E] disabled:opacity-50"
+                              >
+                                {saving ? <Loader2 className="w-3 h-3 animate-spin inline" /> : "Save"}
+                              </button>
+                              <button
+                                onClick={() => setEditingId(null)}
+                                className="px-3 py-1 rounded-lg border border-[#E8EEF4] text-xs font-bold text-[#4B5563]"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => startEdit(row)}
+                              className="text-xs font-semibold text-[#1A6FD4] hover:underline"
+                            >
+                              Edit Stock
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-5 py-3 border-t border-[#E8EEF4]">
+                <p className="text-sm text-[#9CA3AF]">
+                  Showing {(page - 1) * limit + 1}-{Math.min(page * limit, allRows.length)} of {allRows.length}
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#E8EEF4] text-sm text-[#9CA3AF] hover:bg-[#F8FBFF] disabled:opacity-40 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" /> Prev
+                  </button>
+                  <span className="text-sm font-medium text-[#1A1A2E]">{page} / {totalPages}</span>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[#E8EEF4] text-sm text-[#9CA3AF] hover:bg-[#F8FBFF] disabled:opacity-40 transition-colors"
+                  >
+                    Next <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

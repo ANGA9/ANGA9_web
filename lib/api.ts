@@ -9,8 +9,12 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  // If in admin portal, send bypass token
-  if (typeof document !== 'undefined' && document.cookie.includes('portal=admin')) {
+  // If in admin portal AND actually on an admin page, send bypass token
+  if (
+    typeof window !== 'undefined' &&
+    window.location.pathname.startsWith('/admin') &&
+    document.cookie.includes('portal=admin')
+  ) {
     return { Authorization: 'Bearer ADMIN_BYPASS_TOKEN' };
   }
 

@@ -71,9 +71,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setCookies = useCallback((authUser: SupabaseUser | null) => {
-    // Never overwrite the admin portal cookie
-    const isAdminPage = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-    if (isAdminPage) return;
+    if (typeof window === "undefined") return;
+
+    const isAdminPage = window.location.pathname.startsWith("/admin");
+    const portalMatch = document.cookie.match(/(^| )portal=([^;]+)/);
+    const currentPortal = portalMatch ? portalMatch[2] : null;
+
+    // Never touch cookies when admin portal cookie is active or on admin pages
+    if (isAdminPage || currentPortal === "admin") return;
 
     if (authUser) {
       document.cookie = "portal=customer; path=/; max-age=86400";

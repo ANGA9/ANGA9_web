@@ -8,7 +8,6 @@ import {
   Package,
   ClipboardCheck,
 } from "lucide-react";
-import Header from "@/components/Header";
 import StatsCard from "@/components/StatsCard";
 import RevenueChart from "@/components/RevenueChart";
 import OrderStatusChart from "@/components/OrderStatusChart";
@@ -98,7 +97,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="p-6 xl:p-8">
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">

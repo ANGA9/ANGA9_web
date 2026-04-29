@@ -179,32 +179,29 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF] px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1A6FD4] text-white shadow-lg shadow-[#1A6FD4]/20">
-            <Image src="/anga9-logo.png" alt="ANGA9" width={36} height={36} priority style={{ objectFit: "contain" }} />
-          </div>
-          <h1 className="text-2xl font-bold text-[#1A1A2E] tracking-tight">ANGA9</h1>
-          <p className="mt-1 text-sm text-[#4B5563]">Admin Portal</p>
-        </div>
-
+    <div className="flex min-h-screen items-center justify-center bg-white px-4">
+      <div className="w-full max-w-[440px]">
         {/* Login Card */}
-        <div className="rounded-xl border border-[#E8EEF4] bg-white p-8 shadow-[0_8px_40px_rgba(26,111,212,0.08)]">
+        <div className="rounded-2xl border border-[#E8EEF4] bg-white px-10 py-12 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
+          {/* Logo */}
+          <div className="mb-8 text-center">
+            <div className="flex justify-center mb-6">
+              <Image src="/anga9-logo.png" alt="ANGA9" width={140} height={46} priority style={{ objectFit: "contain" }} />
+            </div>
+            <h1 className="text-2xl font-medium text-[#202124] mb-2 tracking-tight">Sign in</h1>
+            <p className="text-[15px] text-[#5f6368]">to continue to Admin Portal</p>
+          </div>
+
           {step === "email" ? (
             <>
-              <h2 className="mb-1 text-lg font-semibold text-[#1A1A2E]">Admin Sign In</h2>
-              <p className="mb-6 text-sm text-[#4B5563]">Enter your admin email to receive a verification code</p>
-
               {error && (
-                <div className="mb-4 flex items-start gap-2 rounded-lg bg-red-50 border border-red-100 px-3.5 py-3">
-                  <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="mb-6 flex items-start gap-2 rounded-lg bg-[#FCE8E6] px-4 py-3">
+                  <AlertCircle className="h-5 w-5 text-[#D93025] mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#D93025]">{error}</p>
                 </div>
               )}
 
-              <form onSubmit={handleEmailSubmit} className="space-y-4">
+              <form onSubmit={handleEmailSubmit} className="space-y-8">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-[#1A1A2E]">Email address</label>
                   <div className="flex items-center rounded-lg border border-[#E8EEF4] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-[#1A6FD4]/10 transition-all overflow-hidden">
@@ -234,26 +231,29 @@ export default function AdminLoginPage() {
             </>
           ) : (
             <>
-              <button
-                type="button"
-                onClick={() => { setStep("email"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                className="flex items-center gap-1.5 text-sm font-medium text-[#1A6FD4] hover:text-[#155bb5] transition-colors mb-4"
-              >
-                <ArrowLeft className="w-4 h-4" /> Change email
-              </button>
-
-              <h2 className="mb-1 text-lg font-semibold text-[#1A1A2E]">Verify OTP</h2>
-              <p className="mb-4 text-sm text-[#4B5563]">Enter the verification code sent to <span className="font-semibold text-[#1A1A2E]">{email}</span></p>
+              <div className="mb-8">
+                <button
+                  type="button"
+                  onClick={() => { setStep("email"); setOtp(["", "", "", "", "", ""]); setError(""); }}
+                  className="flex items-center gap-1.5 text-[15px] font-medium text-[#1A73E8] hover:text-[#174EA6] transition-colors mb-2"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Back
+                </button>
+                <p className="text-[15px] text-[#5f6368]">
+                  Enter the verification code sent to <br />
+                  <span className="font-medium text-[#202124]">{email}</span>
+                </p>
+              </div>
 
               {error && (
-                <div className="mb-4 flex items-start gap-2 rounded-lg bg-red-50 border border-red-100 px-3.5 py-3">
-                  <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="mb-6 flex items-start gap-2 rounded-lg bg-[#FCE8E6] px-4 py-3">
+                  <AlertCircle className="h-5 w-5 text-[#D93025] mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#D93025]">{error}</p>
                 </div>
               )}
 
-              <form onSubmit={handleVerify} className="space-y-4">
-                <div className="flex justify-center gap-3 py-2">
+              <form onSubmit={handleVerify} className="space-y-8">
+                <div className="flex justify-between gap-2 py-2">
                   {otp.map((d, i) => (
                     <input
                       key={i}
@@ -265,33 +265,35 @@ export default function AdminLoginPage() {
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
-                      className="h-12 w-11 rounded-lg border border-[#E8EEF4] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all"
+                      className="h-12 w-11 rounded-lg border border-[#DADCE0] bg-white focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 text-center text-xl font-bold text-[#202124] outline-none transition-all"
                     />
                   ))}
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="h-11 w-full rounded-lg bg-[#1A6FD4] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155bb5] hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none flex items-center justify-center gap-2"
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                  {loading ? "Verifying..." : "Verify & Sign In"}
-                </button>
+                <div className="flex flex-col gap-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="h-11 w-full rounded-lg bg-[#1A73E8] text-sm font-medium text-white shadow-sm transition-all hover:bg-[#1558D6] active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none flex items-center justify-center gap-2"
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? "Verifying..." : "Verify & Sign In"}
+                  </button>
 
-                <div className="text-center">
-                  <p className="text-sm text-[#4B5563]">
-                    Didn&apos;t receive the code?{" "}
-                    {canResend ? (
-                      <button type="button" onClick={handleResend} disabled={loading} className="font-bold text-[#1A6FD4] hover:underline disabled:opacity-50">
-                        Resend OTP
-                      </button>
-                    ) : (
-                      <span className="font-medium text-gray-400">
-                        Resend in <span className="font-bold text-gray-600">{resendTimer}s</span>
-                      </span>
-                    )}
-                  </p>
+                  <div className="text-center">
+                    <p className="text-[14px] text-[#5f6368]">
+                      Didn&apos;t receive the code?{" "}
+                      {canResend ? (
+                        <button type="button" onClick={handleResend} disabled={loading} className="font-medium text-[#1A73E8] hover:underline disabled:opacity-50">
+                          Resend OTP
+                        </button>
+                      ) : (
+                        <span className="font-medium text-[#5f6368]">
+                          Resend in <span className="font-bold">{resendTimer}s</span>
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
               </form>
             </>

@@ -25,7 +25,6 @@ interface Order {
   customer_name: string;
   total: number;
   status: string;
-  payment_status: string;
   placed_at: string;
   items_count: number;
 }
@@ -36,15 +35,15 @@ interface OrderDetail {
   status: string;
   total: number;
   placed_at: string;
-  shipping_address: Record<string, string> | null;
+  shipping_address_id: string | null;
   customer: { full_name: string; email: string; phone?: string };
   items: { id: string; product_name: string; quantity: number; unit_price: number; total_price: number; seller_id: string }[];
-  status_history: { from_status: string; to_status: string; changed_at: string; note?: string }[];
+  status_history: { from_status: string; to_status: string; created_at: string; reason?: string }[];
 }
 
 const STATUS_TABS = [
   { key: "all", label: "All" },
-  { key: "pending", label: "Pending" },
+  { key: "pending_payment", label: "Pending Payment" },
   { key: "confirmed", label: "Confirmed" },
   { key: "processing", label: "Processing" },
   { key: "shipped", label: "Shipped" },
@@ -53,19 +52,13 @@ const STATUS_TABS = [
 ];
 
 const STATUS_BADGE: Record<string, string> = {
-  pending: "bg-[#F3F4F6] text-[#9CA3AF]",
+  pending_payment: "bg-[#F3F4F6] text-[#9CA3AF]",
   confirmed: "bg-[#EDE9FE] text-[#6366F1]",
   processing: "bg-[#FFFBEB] text-[#F59E0B]",
   shipped: "bg-[#EAF2FF] text-[#1A6FD4]",
   delivered: "bg-[#F0FDF4] text-[#22C55E]",
   cancelled: "bg-[#FEF2F2] text-[#EF4444]",
-};
-
-const PAYMENT_BADGE: Record<string, string> = {
-  paid: "bg-[#F0FDF4] text-[#22C55E]",
-  pending: "bg-[#FFFBEB] text-[#F59E0B]",
-  failed: "bg-[#FEF2F2] text-[#EF4444]",
-  refunded: "bg-[#F3F4F6] text-[#6B7280]",
+  returned: "bg-[#FEF2F2] text-[#EF4444]",
 };
 
 function formatINR(value: number) {
@@ -81,11 +74,11 @@ function formatDate(d: string) {
 }
 
 function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+  return s.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
 const STATUS_ACTIONS: Record<string, { next: string; label: string; color: string; icon: typeof Truck }[]> = {
-  pending: [
+  pending_payment: [
     { next: "confirmed", label: "Confirm", color: "bg-[#6366F1] hover:bg-[#4F46E5]", icon: CheckCircle2 },
     { next: "cancelled", label: "Cancel", color: "bg-[#EF4444] hover:bg-[#DC2626]", icon: XCircle },
   ],
@@ -171,15 +164,15 @@ export default function AdminOrdersPage() {
   };
 
   const updateStatus = async (orderId: string, newStatus: string) => {
-    let note: string | undefined;
+    let reason: string | undefined;
     if (newStatus === "cancelled") {
-      const reason = prompt("Reason for cancellation:");
-      if (!reason) return;
-      note = reason;
+      const input = prompt("Reason for cancellation:");
+      if (!input) return;
+      reason = input;
     }
     setActionLoading(orderId);
     try {
-      await api.patch(`/api/admin/orders/${orderId}/status`, { status: newStatus, note });
+      await api.patch(`/api/admin/orders/${orderId}/status`, { status: newStatus, reason });
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
       );
@@ -290,7 +283,6 @@ export default function AdminOrdersPage() {
                     <th className="text-center px-4 py-3 font-semibold text-[#4B5563]">Items</th>
                     <th className="text-right px-4 py-3 font-semibold text-[#4B5563]">Total</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Status</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Payment</th>
                     <th className="text-right px-4 py-3 font-semibold text-[#4B5563]">Date</th>
                     <th className="text-center px-4 py-3 font-semibold text-[#4B5563]">Actions</th>
                   </tr>
@@ -326,16 +318,6 @@ export default function AdminOrdersPage() {
                             {capitalize(o.status)}
                           </span>
                         </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={cn(
-                              "inline-flex px-2 py-0.5 rounded-full text-xs font-semibold",
-                              PAYMENT_BADGE[o.payment_status] || "bg-gray-100 text-gray-600"
-                            )}
-                          >
-                            {capitalize(o.payment_status || "unknown")}
-                          </span>
-                        </td>
                         <td className="px-4 py-3 text-right text-anga-text-secondary">
                           {formatDate(o.placed_at)}
                         </td>
@@ -365,7 +347,7 @@ export default function AdminOrdersPage() {
                       {/* Expanded detail */}
                       {expandedId === o.id && (
                         <tr key={`${o.id}-detail`}>
-                          <td colSpan={9} className="px-6 py-4 bg-[#F8FBFF] border-b border-anga-border">
+                          <td colSpan={8} className="px-6 py-4 bg-[#F8FBFF] border-b border-anga-border">
                             {detailLoading ? (
                               <div className="flex items-center justify-center py-4">
                                 <Loader2 className="w-5 h-5 animate-spin text-[#1A6FD4]" />
@@ -432,13 +414,13 @@ export default function AdminOrdersPage() {
                                               <span className="font-medium text-anga-text">
                                                 {capitalize(h.from_status)} &rarr; {capitalize(h.to_status)}
                                               </span>
-                                              {h.note && (
+                                              {h.reason && (
                                                 <span className="text-anga-text-secondary ml-1">
-                                                  — {h.note}
+                                                  — {h.reason}
                                                 </span>
                                               )}
                                               <p className="text-anga-text-secondary">
-                                                {new Date(h.changed_at).toLocaleString("en-IN")}
+                                                {new Date(h.created_at).toLocaleString("en-IN")}
                                               </p>
                                             </div>
                                           </div>

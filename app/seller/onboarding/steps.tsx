@@ -10,15 +10,36 @@ const selectCls = inputCls + " appearance-none bg-[url('data:image/svg+xml;chars
 export function Step1({ form, set }: P) {
   return (
     <div className="space-y-5">
-      <div><label className={labelCls}>Full Name *</label>
-        <input className={inputCls} value={form.full_name} onChange={e => set("full_name", e.target.value)} placeholder="Enter your full name" /></div>
-      <div><label className={labelCls}>Email Address *</label>
-        <input className={inputCls} type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="you@example.com" /></div>
-      <div><label className={labelCls}>Phone Number</label>
-        <div className="flex">
-          <span className="flex items-center px-3 rounded-l-lg border border-r-0 border-[#E8EEF4] bg-[#F8FBFF] text-sm text-[#4B5563] font-medium">+91</span>
-          <input className={inputCls + " rounded-l-none"} type="tel" value={form.phone} onChange={e => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} placeholder="10-digit number" />
-        </div></div>
+      <div>
+        <label className={labelCls}>Full Name *</label>
+        <input className={inputCls} value={form.full_name} onChange={e => set("full_name", e.target.value)} placeholder="Enter your full name" />
+      </div>
+      <div>
+        <label className={labelCls}>Email Address *</label>
+        <input 
+          className={inputCls + " bg-[#F8FBFF] text-[#9CA3AF] cursor-not-allowed"} 
+          type="email" 
+          value={form.email} 
+          disabled 
+          readOnly 
+          placeholder="you@example.com" 
+        />
+        <p className="text-xs md:text-sm text-[#9CA3AF] mt-1.5">Associated with your account. Cannot be changed here.</p>
+      </div>
+      <div>
+        <label className={labelCls}>Phone Number</label>
+        <div className="flex items-center rounded-lg border border-[#E8EEF4] bg-white focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-[#1A6FD4]/10 transition-colors overflow-hidden">
+          <span className="flex items-center px-3 bg-[#F8FBFF] text-sm text-[#4B5563] font-medium self-stretch border-r border-[#E8EEF4]">+91</span>
+          <input 
+            className="flex-1 h-11 px-3 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] border-none outline-none focus:outline-none focus:ring-0 bg-transparent" 
+            style={{ boxShadow: "none" }}
+            type="tel" 
+            value={form.phone} 
+            onChange={e => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} 
+            placeholder="10-digit number" 
+          />
+        </div>
+      </div>
     </div>
   );
 }

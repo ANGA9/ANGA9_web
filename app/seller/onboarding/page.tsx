@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { ChevronLeft, ChevronRight, Save, CheckCircle2, Loader2, Send } from "lucide-react";
 import { SellerFormData, INITIAL_FORM, STEP_TITLES, validateStep } from "./types";
@@ -9,6 +10,7 @@ import { Step1, Step2, Step3, Step4, Step5, Step6, Step7 } from "./steps";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const { user, session, loading: authLoading, getToken } = useAuth();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<SellerFormData>(INITIAL_FORM);
@@ -51,7 +53,7 @@ export default function OnboardingPage() {
         if (sellerProfile) {
           setProfileExists(true);
           if (sellerProfile.onboarding_complete) {
-            window.location.href = "/seller/dashboard";
+            router.push("/seller/dashboard");
             return;
           }
           setStep(sellerProfile.onboarding_step || 0);
@@ -166,7 +168,7 @@ export default function OnboardingPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        window.location.href = "/seller/dashboard";
+        router.push("/seller/dashboard");
       }
     } catch { /* ignore */ }
     setSubmitting(false);
@@ -254,28 +256,30 @@ export default function OnboardingPage() {
       </div>
 
       {/* Navigation buttons */}
-      <div className="flex items-center justify-between mt-6 gap-3">
-        <button
-          onClick={handlePrev}
-          disabled={step === 0}
-          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none"
-        >
-          <ChevronLeft className="w-4 h-4" /> Previous
-        </button>
-
-        <button
-          onClick={saveProgress}
-          disabled={saving}
-          className="flex items-center gap-1.5 h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save Draft
-        </button>
+      <div className="flex flex-col-reverse md:flex-row md:items-center justify-between mt-8 gap-4">
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <button
+            onClick={handlePrev}
+            disabled={step === 0}
+            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none bg-white"
+          >
+            <ChevronLeft className="w-4 h-4" /> Previous
+          </button>
+          <button
+            onClick={saveProgress}
+            disabled={saving}
+            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60 bg-white"
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            <span className="hidden sm:inline">Save Draft</span>
+            <span className="sm:hidden">Save</span>
+          </button>
+        </div>
 
         {step < 6 ? (
           <button
             onClick={handleNext}
-            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+            className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
           >
             Next <ChevronRight className="w-4 h-4" />
           </button>
@@ -283,7 +287,7 @@ export default function OnboardingPage() {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex items-center gap-1.5 h-11 px-6 rounded-lg bg-[#4338CA] text-sm md:text-base font-semibold text-white hover:bg-[#3730A3] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
+            className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#4338CA] text-sm md:text-base font-semibold text-white hover:bg-[#3730A3] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Verification

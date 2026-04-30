@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 import { Loader2, Package, AlertTriangle, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 interface Product {
   id: string;
   name: string;
   status: string;
   base_price: number;
-  images?: { url: string }[];
+  images?: string[];
 }
 
 interface StockRecord {
@@ -31,6 +33,7 @@ function formatINR(v: number) {
 }
 
 export default function InventoryPage() {
+  const { loading: authLoading, getToken, dbUser } = useAuth();
   const [allRows, setAllRows] = useState<InventoryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -41,16 +44,26 @@ export default function InventoryPage() {
   const limit = 20;
 
   useEffect(() => {
-    fetchInventory();
-  }, []);
+    if (!authLoading && dbUser) fetchInventory();
+  }, [authLoading, dbUser]);
 
   async function fetchInventory() {
+    if (!dbUser) return;
     try {
-      const prodRes = await api.get<{ products?: Product[]; data?: Product[]; total?: number }>(
-        "/api/products?seller_id=me&limit=200",
-        { silent: true }
-      );
-      const products = prodRes?.products || prodRes?.data || [];
+      const token = await getToken();
+      if (!token) return;
+
+      const params = new URLSearchParams({
+        seller_id: dbUser.id,
+        status: "active,pending_review,draft,archived,rejected",
+        limit: "200",
+      });
+      const res = await fetch(`${API}/api/products?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) { setLoading(false); return; }
+      const prodRes = await res.json();
+      const products: Product[] = prodRes?.data || prodRes?.products || [];
 
       const batchSize = 10;
       const results: InventoryRow[] = [];
@@ -59,7 +72,11 @@ export default function InventoryPage() {
         const batchResults = await Promise.all(
           batch.map(async (p) => {
             try {
-              const s = await api.get<StockRecord | StockRecord[]>(`/api/inventory/${p.id}`, { silent: true });
+              const stockRes = await fetch(`${API}/api/inventory/${p.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              if (!stockRes.ok) return { product: p, stock: null };
+              const s = await stockRes.json();
               const stock = Array.isArray(s) ? s[0] || null : s;
               return { product: p, stock };
             } catch {
@@ -83,10 +100,20 @@ export default function InventoryPage() {
   const handleSave = async (productId: string) => {
     setSaving(true);
     try {
-      await api.patch(`/api/inventory/${productId}`, {
-        quantity: parseInt(editQty, 10),
-        low_stock_threshold: parseInt(editThreshold, 10),
+      const token = await getToken();
+      if (!token) { setSaving(false); return; }
+      const res = await fetch(`${API}/api/inventory/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          quantity: parseInt(editQty, 10),
+          low_stock_threshold: parseInt(editThreshold, 10),
+        }),
       });
+      if (!res.ok) throw new Error("Failed");
       toast.success("Stock updated");
       setEditingId(null);
       setAllRows((prev) =>

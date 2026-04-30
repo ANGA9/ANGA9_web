@@ -62,6 +62,7 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
     price: p.sale_price ?? p.base_price,
     minOrder: `${p.min_order_qty} ${p.unit}${p.min_order_qty > 1 ? "s" : ""}`,
     badge: undefined,
+    imageUrl: p.images?.[0] || undefined,
   };
 }
 

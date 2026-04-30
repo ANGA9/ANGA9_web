@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check,
-  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp,
+  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -47,6 +47,7 @@ interface ProductDetail {
   status: string;
   seller_id: string;
   images: string[];
+  videos?: string[];
   tags: string[];
   categories?: ProductCategory;
   product_variants?: ProductVariant[];
@@ -64,6 +65,10 @@ interface InventoryItem {
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
+}
+
+function isVideoUrl(url: string): boolean {
+  return /\.(mp4|webm|mov|avi|mkv)([?#]|$)/i.test(url);
 }
 
 export default function ProductDetailPage() {
@@ -275,36 +280,70 @@ export default function ProductDetailPage() {
       </nav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 lg:gap-12 px-0 md:px-4">
-        {/* ══════════ LEFT: Images ══════════ */}
-        <div>
-          <div
-            className="relative flex items-center justify-center overflow-hidden md:rounded-xl"
-            style={{ background: t.bgBlueTint, aspectRatio: "4/5" }}
-          >
-            {product.images && product.images.length > 0 ? (
-              <img src={product.images[selectedImage]} alt={product.name} className="w-full h-full object-contain" />
-            ) : (
-              <PackageOpen className="w-20 h-20" style={{ color: t.bluePrimary, opacity: 0.3 }} />
-            )}
-            {discount > 0 && (
-              <span className="absolute top-4 left-4 rounded-lg text-sm font-bold text-white px-3 py-1" style={{ background: t.bluePrimary }}>
-                -{discount}%
-              </span>
-            )}
-          </div>
+        {/* ══════════ LEFT: Media Gallery ══════════ */}
+        {(() => {
+          const allMedia = [
+            ...(product.images || []),
+            ...(product.videos || []),
+          ];
+          const currentUrl = allMedia[selectedImage] || "";
+          const currentIsVideo = isVideoUrl(currentUrl);
 
-          {product.images && product.images.length > 1 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto px-4 md:px-0">
-              {product.images.map((img, idx) => (
-                <button key={idx} onClick={() => setSelectedImage(idx)}
-                  className="shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors"
-                  style={{ borderColor: idx === selectedImage ? t.bluePrimary : t.border, background: t.bgBlueTint }}>
-                  <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-contain" />
-                </button>
-              ))}
+          return (
+            <div>
+              <div
+                className="relative flex items-center justify-center overflow-hidden md:rounded-xl"
+                style={{ background: t.bgBlueTint, aspectRatio: "4/5" }}
+              >
+                {allMedia.length > 0 ? (
+                  currentIsVideo ? (
+                    <video
+                      key={currentUrl}
+                      src={currentUrl}
+                      controls
+                      autoPlay
+                      className="w-full h-full object-contain"
+                      style={{ background: "#000" }}
+                    />
+                  ) : (
+                    <img src={currentUrl} alt={product.name} className="w-full h-full object-contain" />
+                  )
+                ) : (
+                  <PackageOpen className="w-20 h-20" style={{ color: t.bluePrimary, opacity: 0.3 }} />
+                )}
+                {discount > 0 && (
+                  <span className="absolute top-4 left-4 rounded-lg text-sm font-bold text-white px-3 py-1" style={{ background: t.bluePrimary }}>
+                    -{discount}%
+                  </span>
+                )}
+              </div>
+
+              {allMedia.length > 1 && (
+                <div className="flex gap-2 mt-3 overflow-x-auto px-4 md:px-0">
+                  {allMedia.map((url, idx) => {
+                    const isVid = isVideoUrl(url);
+                    return (
+                      <button key={idx} onClick={() => setSelectedImage(idx)}
+                        className="shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors relative"
+                        style={{ borderColor: idx === selectedImage ? t.bluePrimary : t.border, background: isVid ? "#111" : t.bgBlueTint }}>
+                        {isVid ? (
+                          <>
+                            <video src={url} muted preload="metadata" className="w-full h-full object-cover opacity-70" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Play className="w-5 h-5 text-white drop-shadow-md" fill="white" />
+                            </div>
+                          </>
+                        ) : (
+                          <img src={url} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-contain" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          );
+        })()}
 
         {/* ══════════ RIGHT: Product Info ══════════ */}
         <div className="px-4 md:px-0 mt-4 md:mt-0">

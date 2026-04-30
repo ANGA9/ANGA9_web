@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
 import {
   Loader2,
@@ -289,9 +289,8 @@ export default function AdminOrdersPage() {
                 </thead>
                 <tbody>
                   {orders.map((o) => (
-                    <>
+                    <React.Fragment key={o.id}>
                       <tr
-                        key={o.id}
                         className="border-b border-anga-border last:border-0 hover:bg-[#F8FBFF] transition-colors cursor-pointer"
                         onClick={() => toggleExpand(o.id)}
                       >
@@ -438,7 +437,7 @@ export default function AdminOrdersPage() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>

@@ -63,7 +63,7 @@ export default function MegaDropdown({
       `}</style>
 
       <div
-        className="flex items-start gap-10 rounded-b-xl border border-t-0 px-10 py-7"
+        className="flex items-stretch rounded-b-xl border border-t-0 overflow-hidden"
         style={{
           background: "#FFFFFF",
           borderColor: t.border,
@@ -71,8 +71,14 @@ export default function MegaDropdown({
           width: "max-content",
         }}
       >
-        {columns.map((col) => (
-          <div key={col.heading} className="min-w-[160px]">
+        {columns.map((col, idx) => (
+          <div 
+            key={col.heading} 
+            className="min-w-[190px] px-8 py-7"
+            style={{
+              background: idx % 2 === 1 ? t.bgBlueTint : "#FFFFFF"
+            }}
+          >
             <h4
               className="text-sm md:text-base font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5"
               style={{
@@ -82,11 +88,11 @@ export default function MegaDropdown({
             >
               {col.heading}
             </h4>
-            <ul>
+            <ul className="space-y-1">
               {col.items.map((item) => (
                 <li key={item}>
                   <button
-                    className="block text-sm md:text-base leading-[1.5] py-1 transition-colors hover:text-[#1A6FD4] text-left"
+                    className="block text-sm md:text-[15px] leading-[1.6] py-0.5 transition-colors hover:text-[#1A6FD4] text-left w-full"
                     style={{ color: t.textPrimary }}
                   >
                     {item}

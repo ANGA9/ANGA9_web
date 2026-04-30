@@ -54,9 +54,9 @@ export default function CategoryStrip() {
                   onMouseLeave={scheduleHide}
                   className="shrink-0 h-11 flex items-center px-4 text-sm font-medium transition-colors border-b-[3px] whitespace-nowrap"
                   style={{
-                    borderColor: isHovered ? t.bluePrimary : "transparent",
+                    borderColor: "transparent",
                     color: t.textPrimary,
-                    fontWeight: isHovered ? 600 : 500,
+                    fontWeight: 500,
                   }}
                 >
                   {tab}

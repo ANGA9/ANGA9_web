@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
@@ -28,9 +29,21 @@ const megaTabs = [
   "HOME DECOR & FLOORING",
 ];
 
+const MOBILE_TABS = ["ALL", "FASHION", "ACCESSORIES", "HOME LIVING"];
+
 export default function MobileTopHeader() {
+  return (
+    <Suspense fallback={<div className="h-[120px] w-full bg-[#E8F0FE]" />}>
+      <MobileTopHeaderContent />
+    </Suspense>
+  );
+}
+
+function MobileTopHeaderContent() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
   const { user } = useAuth();
   const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
@@ -132,207 +145,90 @@ export default function MobileTopHeader() {
   if (pathname === "/account" || pathname === "/cart") return null;
 
   return (
-    <div className="w-full">
-      {/* ── Row 1: Logo + Login ── */}
-      <div
-        className="flex items-center justify-between"
-        style={{
-          padding: "12px 16px",
-          background: t.bgCard,
-        }}
-      >
+    <div className="w-full bg-gradient-to-b from-[#CDE0FF] via-[#EAF2FF] to-white relative overflow-hidden">
+      {/* ── Row 1: Delivery Location (Top) ── */}
+      <button className="flex items-center w-full px-4 pt-4 pb-1">
+        <MapPin className="w-3.5 h-3.5 text-[#1A6FD4] shrink-0" />
+        <div className="flex items-center gap-1.5 ml-2 flex-1 min-w-0">
+          <span className="text-[13px] font-semibold text-[#1A1A2E] leading-tight truncate">
+            Deliver to [Location]
+          </span>
+        </div>
+        <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
+      </button>
+
+      {/* ── Row 2: Logo + Icons ── */}
+      <div className="flex items-center justify-between px-4 py-2.5">
         {/* Logo */}
         <Link href="/">
-          <Image
-            src="/anga9-logo.png"
-            alt="ANGA"
-            width={90}
-            height={31}
-            priority
-            style={{ objectFit: "contain" }}
-          />
+          <Image src="/anga9-logo.png" alt="ANGA" width={80} height={28} priority style={{ objectFit: "contain" }} />
         </Link>
 
         {/* Notifications + Wishlist + Cart + Login */}
         <div className="flex items-center gap-4">
-          {/* Notifications */}
           <NotificationBell portalType="customer" />
-
-          {/* Wishlist */}
           <Link href="/wishlist" className="relative">
-            <Heart style={{ width: 22, height: 22, color: t.textSecondary }} />
+            <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
             {wishlistCount > 0 && (
-              <span
-                className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                style={{ background: "#4338CA", color: "#FFFFFF" }}
-              >
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
                 {wishlistCount > 99 ? "99+" : wishlistCount}
               </span>
             )}
           </Link>
-
-          {/* Cart */}
           <Link href="/cart" className="relative">
-            <ShoppingCart style={{ width: 22, height: 22, color: t.textSecondary }} />
+            <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
             {cartCount > 0 && (
-              <span
-                className="absolute -top-1.5 -right-2 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                style={{ background: t.primaryCta, color: t.ctaText }}
-              >
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
           </Link>
-
-          {/* Login / User Greeting */}
           {isLoggedIn ? (
-          <Link
-            href="/account"
-            className="flex items-center justify-center rounded-full shrink-0 border"
-            style={{
-              width: 34,
-              height: 34,
-              borderColor: t.border,
-              background: "#FFFFFF",
-            }}
-          >
-            <User style={{ width: 18, height: 18, color: t.textPrimary }} />
-          </Link>
-        ) : (
-          <button
-            onClick={openLoginSheet}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <div
-              className="flex items-center justify-center rounded-full shrink-0"
-              style={{
-                width: 38,
-                height: 38,
-                background: "#EAF2FF",
-              }}
-            >
-              <User style={{ width: 18, height: 18, color: t.bluePrimary }} />
-            </div>
-            <span className="font-bold text-sm md:text-base leading-none" style={{ color: t.bluePrimary }}>
-              Login
-            </span>
-          </button>
-        )}
+            <Link href="/account" className="flex items-center justify-center rounded-full shrink-0 border border-[#E8EEF4] bg-white w-8 h-8">
+              <User className="w-[16px] h-[16px] text-[#1A1A2E]" />
+            </Link>
+          ) : (
+            <button onClick={openLoginSheet} className="flex items-center justify-center rounded-full shrink-0 bg-[#EAF2FF] w-8 h-8">
+              <User className="w-[16px] h-[16px] text-[#1A6FD4]" />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ── Row 2: Delivery Location ── */}
-      <button
-        className="flex items-center w-full border-b"
-        style={{
-          padding: "8px 16px",
-          borderColor: t.border,
-          background: t.bgCard,
-        }}
-      >
-        <MapPin
-          style={{
-            width: 16,
-            height: 16,
-            color: t.bluePrimary,
-            flexShrink: 0,
-          }}
-        />
-        <div className="flex items-center gap-1.5 ml-2 flex-1 min-w-0">
-          <span
-            className="text-sm md:text-base font-semibold leading-tight"
-            style={{ color: t.textPrimary }}
-          >
-            Location not set
-          </span>
-          <span
-            className="text-sm md:text-base font-medium leading-tight"
-            style={{ color: t.bluePrimary }}
-          >
-            Select delivery location
-          </span>
-        </div>
-        <ChevronDown
-          style={{
-            width: 14,
-            height: 14,
-            color: t.textMuted,
-            flexShrink: 0,
-          }}
-        />
-      </button>
-
-      {/* ── Row 3: Search Bar ── */}
-      <div style={{ padding: "10px 12px", background: t.bgCard }} ref={searchRef}>
-        <div
-          className="relative flex items-center gap-2.5"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: 6,
-            padding: "10px 14px",
-            border: `1.5px solid ${t.bluePrimary}`,
-          }}
-        >
-          <Search
-            style={{
-              width: 18,
-              height: 18,
-              color: t.bluePrimary,
-              flexShrink: 0,
-            }}
-          />
+      {/* ── Row 3: Elevated Search Bar ── */}
+      <div className="px-4 py-2 pb-4" ref={searchRef}>
+        <div className="relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent focus-within:border-[#1A6FD4]/30 focus-within:shadow-md transition-all">
+          <div className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-[#FFEAF0]">
+            <Image src="/anga9-logo.png" alt="" width={14} height={14} className="object-contain" style={{ filter: 'grayscale(100%) opacity(0.5)' }} />
+          </div>
           <input
             type="text"
-            placeholder="Search for products"
+            placeholder="Search for products, sellers..."
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
             onFocus={() => setShowSuggestions(true)}
-            className="flex-1 bg-transparent outline-none text-sm md:text-base"
-            style={{ color: t.textPrimary }}
+            className="flex-1 bg-transparent outline-none text-[15px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
           />
-          <Mic
-            style={{
-              width: 18,
-              height: 18,
-              color: t.textMuted,
-              flexShrink: 0,
-            }}
-          />
+          <Mic className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
+          <svg className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 
           {/* Autocomplete dropdown */}
           {showSuggestions && (
-            <div
-              className="absolute left-0 right-0 top-full mt-1 rounded-xl border overflow-hidden"
-              style={{
-                background: "#FFFFFF",
-                borderColor: t.border,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-                zIndex: 60,
-              }}
-            >
+            <div className="absolute left-0 right-0 top-[calc(100%+8px)] rounded-2xl border border-[#E8EEF4] overflow-hidden bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-60">
               {!searchQuery.trim() ? (
                 <div className="p-4 flex flex-col gap-4">
-                  {/* Recent Searches */}
                   {recentSearches.length > 0 && (
                     <div>
-                      <h4 className="text-[14px] font-bold text-gray-700 mb-2">Recent Searches</h4>
+                      <h4 className="text-[13px] font-bold text-[#4B5563] mb-2 uppercase tracking-wider">Recent Searches</h4>
                       <div className="flex flex-col">
                         {recentSearches.map((term) => (
                           <div key={term} className="flex items-center transition-colors hover:bg-gray-50 -mx-4 px-4">
-                            <button
-                              className="flex-1 flex items-center gap-3 py-2 text-left"
-                              onClick={() => handleTagClick(term)}
-                            >
-                              <History className="w-4 h-4 text-gray-500 shrink-0" />
-                              <span className="text-[14px] text-gray-600 font-medium truncate">
-                                {term}
-                              </span>
+                            <button className="flex-1 flex items-center gap-3 py-2.5 text-left" onClick={() => handleTagClick(term)}>
+                              <History className="w-[15px] h-[15px] text-[#9CA3AF] shrink-0" />
+                              <span className="text-[14.5px] text-[#4B5563] font-medium truncate">{term}</span>
                             </button>
-                            <button 
-                              onClick={(e) => removeRecentSearch(e, term)}
-                              className="p-2 text-gray-400 hover:text-red-500 rounded-full transition-colors"
-                            >
+                            <button onClick={(e) => removeRecentSearch(e, term)} className="p-2 text-[#9CA3AF] hover:text-[#EF4444] rounded-full transition-colors">
                               <X className="w-4 h-4" />
                             </button>
                           </div>
@@ -340,18 +236,11 @@ export default function MobileTopHeader() {
                       </div>
                     </div>
                   )}
-                  
-                  {/* Popular Searches */}
                   <div>
-                    <h4 className="text-[14px] font-bold text-gray-700 mb-2">Popular Searches</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <h4 className="text-[13px] font-bold text-[#4B5563] mb-2 uppercase tracking-wider">Popular Searches</h4>
+                    <div className="flex flex-wrap gap-2.5">
                       {(popularTags.length > 0 ? popularTags : ['Smartphones', 'Laptops', 'Headphones', 'Home Decor', 'Mens Wear']).map(tag => (
-                        <button
-                          key={tag}
-                          className="px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all hover:border-[#1A6FD4] cursor-pointer"
-                          style={{ borderColor: "#E5E7EB", background: "#F8F9FA", color: "#374151" }}
-                          onClick={() => handleTagClick(tag)}
-                        >
+                        <button key={tag} className="px-3.5 py-1.5 rounded-full border border-[#E8EEF4] text-[13.5px] font-medium text-[#4B5563] bg-[#F8FBFF] hover:border-[#1A6FD4] transition-colors" onClick={() => handleTagClick(tag)}>
                           {tag}
                         </button>
                       ))}
@@ -361,35 +250,20 @@ export default function MobileTopHeader() {
               ) : suggestions.length > 0 ? (
                 <div className="py-2">
                   {suggestions.map((s) => (
-                    <Link
-                      key={s.id}
-                      href={`/products/${s.id}`}
-                      onClick={() => setShowSuggestions(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#F8FBFF]"
-                    >
-                      <Search className="w-4 h-4 shrink-0 text-gray-400" />
+                    <Link key={s.id} href={`/products/${s.id}`} onClick={() => setShowSuggestions(false)} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[#F8FBFF]">
+                      <Search className="w-4 h-4 shrink-0 text-[#9CA3AF]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[14px] truncate font-medium" style={{ color: t.textPrimary }}>
-                          {s.name}
-                        </p>
-                        {s.category_name && (
-                          <p className="text-[12px] text-gray-500">
-                            {s.category_name}
-                          </p>
-                        )}
+                        <p className="text-[14.5px] truncate font-medium text-[#1A1A2E]">{s.name}</p>
+                        {s.category_name && <p className="text-[12px] text-[#6B7280]">{s.category_name}</p>}
                       </div>
                     </Link>
                   ))}
-                  <button
-                    onClick={handleSearchSubmit}
-                    className="w-full px-4 py-3 text-[14px] font-bold text-left border-t transition-colors hover:bg-[#F8FBFF]"
-                    style={{ borderColor: t.border, color: t.bluePrimary }}
-                  >
+                  <button onClick={handleSearchSubmit} className="w-full px-4 py-3 text-[14.5px] font-bold text-left border-t border-[#E8EEF4] text-[#1A6FD4] hover:bg-[#F8FBFF] transition-colors">
                     Search for &quot;{searchQuery}&quot;
                   </button>
                 </div>
               ) : (
-                <div className="px-4 py-5 text-[14px] text-gray-500 text-center font-medium">
+                <div className="px-4 py-6 text-[14.5px] text-[#9CA3AF] text-center font-medium">
                   {searchQuery.length < 2 ? "Type at least 2 characters..." : "No matches found"}
                 </div>
               )}
@@ -398,27 +272,26 @@ export default function MobileTopHeader() {
         </div>
       </div>
 
-      {/* ── Row 4: Category Tabs (static, no interaction) ── */}
-      <div
-        className="overflow-x-auto scrollbar-hide border-b"
-        style={{
-          background: t.bgCard,
-          borderColor: t.border,
-        }}
-      >
-        <div
-          className="flex items-center gap-0.5"
-          style={{ padding: "0 12px" }}
-        >
-          {megaTabs.map((tab) => (
-            <div
-              key={tab}
-              className="shrink-0 flex items-center h-[44px] px-3 text-xs md:text-sm font-medium whitespace-nowrap"
-              style={{ color: t.textPrimary }}
-            >
-              {tab}
-            </div>
-          ))}
+      {/* ── Row 4: Folder Tabs ── */}
+      <div className="w-full pt-1 bg-transparent">
+        <div className="flex items-center justify-between px-1 sm:px-2 border-b border-[#E5E7EB]">
+          {MOBILE_TABS.map((tab) => {
+            const isActive = currentTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => router.push(`/?tab=${tab.toLowerCase()}`)}
+                className={`relative flex-1 flex justify-center py-3 text-[11px] sm:text-[13px] font-bold tracking-wider transition-colors ${
+                  isActive ? "text-[#1A1A2E]" : "text-[#6B7280]"
+                }`}
+              >
+                {tab}
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 mx-auto w-[60%] h-[3.5px] bg-[#1A6FD4] rounded-t-full shadow-[0_-1px_4px_rgba(26,111,212,0.3)]" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

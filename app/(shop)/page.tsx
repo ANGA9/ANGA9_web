@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Home,
   Cpu,
@@ -216,61 +217,11 @@ export default function CustomerHomePage() {
       {/* Hero */}
       <HeroBanner />
 
-      {/* Shop by Category
-      <section style={{ marginTop: 40 }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
-          <h2
-            className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: '24px' }}
-          >
-            Shop by category
-          </h2>
-          <button
-            className="font-medium transition-opacity hover:opacity-80"
-            style={{ color: "#1A6FD4", fontSize: '14px' }}
-          >
-            View All
-          </button>
-        </div>
-        <div
-          className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-6 no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0"
-          style={{ gap: 12, scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {categoryIcons.map((cat) => (
-            <button
-              key={cat.name}
-              className="flex-shrink-0 snap-center w-[100px] md:w-auto flex flex-col items-center border cursor-pointer transition-all duration-150 hover:border-[#1A6FD4] hover:scale-[1.03]"
-              style={{
-                background: "#FFFFFF",
-                borderColor: "#E8EEF4",
-                borderRadius: 16,
-                padding: "20px 8px",
-                textAlign: "center",
-              }}
-            >
-              <div
-                className="flex items-center justify-center rounded-full transition-colors duration-150"
-                style={{
-                  width: 52,
-                  height: 52,
-                  background: "#EAF2FF",
-                  marginBottom: 10,
-                }}
-              >
-                <cat.icon
-                  style={{ width: 22, height: 22, color: "#1A6FD4" }}
-                />
-              </div>
-              <span
-                className="font-medium text-center leading-snug"
-                style={{ color: "#1A1A2E", fontSize: '13px' }}
-              >
-                {cat.name}
-              </span>
-            </button>
-          ))}
-        </div>
-      </section> */}
+      {/* ── Mobile Visual Category Strip (<md) ── */}
+      <Suspense fallback={<div className="h-[120px] bg-white w-full md:hidden" />}>
+        <MobileCategoryStrip />
+      </Suspense>
+
 
       {/* Discover Products */}
       <section className="px-4 sm:px-8" style={{ marginTop: 48 }}>
@@ -354,6 +305,58 @@ export default function CustomerHomePage() {
           <span className="hidden md:inline font-bold text-sm">Scroll to top</span>
         </button>
       )}
+    </div>
+  );
+}
+
+const MOBILE_CATEGORIES: Record<string, any[]> = {
+  ALL: [
+    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4" },
+    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
+    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563" },
+    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444" },
+  ],
+  FASHION: [
+    { name: "Men", icon: ShoppingBag, bg: "#1A1A2E", color: "white" },
+    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
+    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4" },
+  ],
+  ACCESSORIES: [
+    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563" },
+    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444" },
+    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4" },
+    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
+  ],
+  "HOME LIVING": [
+    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B" },
+    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4" },
+    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563" },
+    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444" },
+  ],
+};
+
+function MobileCategoryStrip() {
+  const searchParams = useSearchParams();
+  const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
+  const activeCategories = MOBILE_CATEGORIES[currentTab] || MOBILE_CATEGORIES.ALL;
+
+  return (
+    <div className="md:hidden w-full overflow-x-auto scrollbar-hide pt-4 pb-2 bg-white">
+      <div className="flex items-start gap-4 px-4 min-w-max">
+        {activeCategories.map((cat) => (
+          <button key={cat.name} className="flex flex-col items-center gap-2 w-[72px] shrink-0 group">
+            <div 
+              className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6]"
+              style={{ background: cat.bg }}
+            >
+              <cat.icon className="w-8 h-8" style={{ color: cat.color }} strokeWidth={1.5} />
+            </div>
+            <span className="text-[12px] font-semibold text-center leading-tight text-[#4B5563]">
+              {cat.name}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

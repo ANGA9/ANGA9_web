@@ -311,27 +311,27 @@ export default function CustomerHomePage() {
 
 const MOBILE_CATEGORIES: Record<string, any[]> = {
   ALL: [
-    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4" },
-    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
-    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563" },
-    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444" },
+    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/bed.png" },
+    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/fashion.png" },
+    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: "/categories/accessories.png" },
+    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: "/categories/home-living.png" },
   ],
   FASHION: [
-    { name: "Men", icon: ShoppingBag, bg: "#1A1A2E", color: "white" },
-    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
-    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4" },
+    { name: "Men", icon: ShoppingBag, bg: "#1A1A2E", color: "white", image: "/categories/men.png" },
+    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/women.png" },
+    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/kids.png" },
   ],
   ACCESSORIES: [
-    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563" },
-    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444" },
-    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4" },
-    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B" },
+    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: "/categories/watch.png" },
+    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444", image: "/categories/headwear.png" },
+    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/neckwear.png" },
+    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/bags.png" },
   ],
   "HOME LIVING": [
-    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B" },
-    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4" },
-    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563" },
-    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444" },
+    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/lamps.png" },
+    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/curtains.png" },
+    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563", image: "/categories/rugs.png" },
+    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: "/categories/decor.png" },
   ],
 };
 
@@ -346,10 +346,13 @@ function MobileCategoryStrip() {
         {activeCategories.map((cat) => (
           <button key={cat.name} className="flex flex-col items-center gap-2 w-[72px] shrink-0 group">
             <div 
-              className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6]"
+              className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6] overflow-hidden relative"
               style={{ background: cat.bg }}
             >
-              <cat.icon className="w-8 h-8" style={{ color: cat.color }} strokeWidth={1.5} />
+              {cat.image ? (
+                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+              ) : null}
+              <cat.icon className={`w-8 h-8 ${cat.image ? 'hidden' : ''}`} style={{ color: cat.color }} strokeWidth={1.5} />
             </div>
             <span className="text-[12px] font-semibold text-center leading-tight text-[#4B5563]">
               {cat.name}
@@ -360,4 +363,3 @@ function MobileCategoryStrip() {
     </div>
   );
 }
-

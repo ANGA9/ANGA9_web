@@ -62,6 +62,7 @@ function toCardProduct(p: SearchProduct): Product {
     originalPrice: p.base_price,
     price: p.sale_price ?? p.base_price,
     minOrder: p.min_order_qty ? `${p.min_order_qty} ${p.unit || 'unit'}${p.min_order_qty > 1 ? "s" : ""}` : "Not specified",
+    imageUrl: p.images?.[0] || undefined,
   };
 }
 

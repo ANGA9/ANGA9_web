@@ -195,9 +195,11 @@ export default function ProductCard({
               )}
             </div>
 
-            <p className="text-xs font-medium" style={{ color: t.textSecondary, marginTop: 4 }}>
-              Min order: {product.minOrder}
-            </p>
+            {/* {product.minOrder && (
+              <p className="text-xs font-medium" style={{ color: t.textSecondary, marginTop: 4 }}>
+                Min order: {product.minOrder}
+              </p>
+            )} */}
           </div>
         </div>
       </Link>

@@ -74,6 +74,7 @@ function formatDate(d: string) {
 }
 
 function capitalize(s: string) {
+  if (!s) return "Unknown";
   return s.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 

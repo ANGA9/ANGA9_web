@@ -19,6 +19,7 @@ interface EarningSummary {
   total: number;
   pending: number;
   available: number;
+  requested: number;
   paid: number;
 }
 
@@ -87,7 +88,7 @@ export default function PayoutsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
           <div className="w-11 h-11 rounded-lg flex items-center justify-center bg-[#EAF2FF]">
             <Wallet className="w-5 h-5 text-[#1A6FD4]" />
@@ -103,6 +104,15 @@ export default function PayoutsPage() {
           >
             {requesting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Request Payout"}
           </button>
+        </div>
+        <div className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-lg flex items-center justify-center bg-[#EDE9FE]">
+            <IndianRupee className="w-5 h-5 text-[#6C47FF]" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-[#1A1A2E]">{formatINR(summary?.requested || 0)}</p>
+            <p className="text-xs text-[#9CA3AF] font-medium">Payout Requested</p>
+          </div>
         </div>
         <div className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
           <div className="w-11 h-11 rounded-lg flex items-center justify-center bg-[#F0FDF4]">

@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, IndianRupee, Clock, CheckCircle2, Wallet, ArrowRight } from "lucide-react";
+import { Loader2, IndianRupee, Clock, CheckCircle2, Wallet, ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 
 interface EarningSummary {
   total: number;
   pending: number;
   available: number;
+  requested: number;
   paid: number;
 }
 
@@ -17,7 +18,7 @@ interface EarningRecord {
   amount: number;
   status: string;
   created_at: string;
-  order_items?: { product_name: string; quantity: number };
+  order_items?: { product_name: string; quantity: number; order_id?: string };
 }
 
 function formatINR(v: number) {
@@ -27,6 +28,7 @@ function formatINR(v: number) {
 const statusCfg: Record<string, { bg: string; text: string; label: string }> = {
   pending: { bg: "#FFFBEB", text: "#F59E0B", label: "Pending" },
   available: { bg: "#F0FDF4", text: "#22C55E", label: "Available" },
+  requested: { bg: "#EDE9FE", text: "#6C47FF", label: "Payout Requested" },
   paid: { bg: "#EAF2FF", text: "#1A6FD4", label: "Paid" },
 };
 
@@ -64,7 +66,8 @@ export default function EarningsPage() {
     { label: "Total Earnings", value: summary?.total || 0, icon: <IndianRupee className="w-5 h-5 text-[#22C55E]" />, bg: "bg-[#F0FDF4]" },
     { label: "Pending", value: summary?.pending || 0, icon: <Clock className="w-5 h-5 text-[#F59E0B]" />, bg: "bg-[#FFFBEB]" },
     { label: "Available", value: summary?.available || 0, icon: <Wallet className="w-5 h-5 text-[#1A6FD4]" />, bg: "bg-[#EAF2FF]" },
-    { label: "Paid Out", value: summary?.paid || 0, icon: <CheckCircle2 className="w-5 h-5 text-[#6C47FF]" />, bg: "bg-[#F3EEFF]" },
+    { label: "Payout Requested", value: summary?.requested || 0, icon: <FileText className="w-5 h-5 text-[#6C47FF]" />, bg: "bg-[#EDE9FE]" },
+    { label: "Paid Out", value: summary?.paid || 0, icon: <CheckCircle2 className="w-5 h-5 text-[#22C55E]" />, bg: "bg-[#F0FDF4]" },
   ];
 
   return (
@@ -82,12 +85,12 @@ export default function EarningsPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         {cards.map((c) => (
           <div key={c.label} className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
             <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${c.bg}`}>{c.icon}</div>
             <div>
-              <p className="text-2xl font-bold text-[#1A1A2E]">{formatINR(c.value)}</p>
+              <p className="text-xl font-bold text-[#1A1A2E]">{formatINR(c.value)}</p>
               <p className="text-xs text-[#9CA3AF] font-medium">{c.label}</p>
             </div>
           </div>
@@ -109,6 +112,7 @@ export default function EarningsPage() {
               <thead>
                 <tr className="bg-[#F8FBFF] border-b border-[#E8EEF4]">
                   <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Product</th>
+                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Qty</th>
                   <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Amount</th>
                   <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Status</th>
                   <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Date</th>
@@ -120,6 +124,7 @@ export default function EarningsPage() {
                   return (
                     <tr key={e.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FBFF]">
                       <td className="px-5 py-3 text-[#1A1A2E] font-medium">{e.order_items?.product_name || "Order earning"}</td>
+                      <td className="px-5 py-3 text-[#4B5563]">{e.order_items?.quantity ?? "—"}</td>
                       <td className="px-5 py-3 font-bold text-[#1A1A2E]">{formatINR(Number(e.amount))}</td>
                       <td className="px-5 py-3">
                         <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: sc.bg, color: sc.text }}>

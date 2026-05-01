@@ -214,13 +214,13 @@ export default function CustomerHomePage() {
   return (
     <div className="py-2 md:py-6">
 
-      {/* Hero */}
-      <HeroBanner />
-
-      {/* ── Mobile Visual Category Strip (<md) ── */}
+      {/* -- Mobile Visual Category Strip (<md) -- */}
       <Suspense fallback={<div className="h-[120px] bg-white w-full md:hidden" />}>
         <MobileCategoryStrip />
       </Suspense>
+
+      {/* Hero */}
+      <HeroBanner />
 
 
       {/* Discover Products */}
@@ -360,3 +360,4 @@ function MobileCategoryStrip() {
     </div>
   );
 }
+

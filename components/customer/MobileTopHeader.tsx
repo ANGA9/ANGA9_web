@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X } from "lucide-react";
@@ -147,15 +148,15 @@ function MobileTopHeaderContent() {
   return (
     <div className="w-full bg-gradient-to-b from-[#CDE0FF] via-[#EAF2FF] to-white relative overflow-hidden">
       {/* ── Row 1: Delivery Location (Top) ── */}
-      <button className="flex items-center w-full px-4 pt-4 pb-1">
-        <MapPin className="w-3.5 h-3.5 text-[#1A6FD4] shrink-0" />
-        <div className="flex items-center gap-1.5 ml-2 flex-1 min-w-0">
-          <span className="text-[13px] font-semibold text-[#1A1A2E] leading-tight truncate">
-            Deliver to [Location]
+      <div className="flex items-center px-4 pt-3 pb-1.5 w-full">
+        <button className="flex items-center gap-1.5 group">
+          <MapPin className="w-[15px] h-[15px] text-[#1A6FD4] stroke-[2.5]" />
+          <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight group-hover:text-[#1A6FD4] transition-colors">
+            Deliver to Kalkaji, 110019
           </span>
-        </div>
-        <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
-      </button>
+          <ChevronDown className="w-[15px] h-[15px] text-[#9CA3AF] group-hover:text-[#1A6FD4] transition-colors" />
+        </button>
+      </div>
 
       {/* ── Row 2: Logo + Icons ── */}
       <div className="flex items-center justify-between px-4 py-2.5">
@@ -198,8 +199,8 @@ function MobileTopHeaderContent() {
       {/* ── Row 3: Elevated Search Bar ── */}
       <div className="px-4 py-2 pb-4" ref={searchRef}>
         <div className="relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent focus-within:border-[#1A6FD4]/30 focus-within:shadow-md transition-all">
-          <div className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-[#FFEAF0]">
-            <Image src="/anga9-logo.png" alt="" width={14} height={14} className="object-contain" style={{ filter: 'grayscale(100%) opacity(0.5)' }} />
+          <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
+            <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
           </div>
           <input
             type="text"

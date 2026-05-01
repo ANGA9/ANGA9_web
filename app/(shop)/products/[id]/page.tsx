@@ -291,9 +291,58 @@ export default function ProductDetailPage() {
 
           return (
             <div>
+              {/* MOBILE SWIPE GALLERY (<md) */}
+              <div 
+                className="md:hidden flex overflow-x-auto snap-x snap-mandatory" 
+                style={{ background: t.bgBlueTint, scrollbarWidth: "none", msOverflowStyle: "none" }}
+                onScroll={(e) => {
+                  const scrollLeft = e.currentTarget.scrollLeft;
+                  const clientWidth = e.currentTarget.clientWidth;
+                  const index = Math.round(scrollLeft / clientWidth);
+                  if (index !== selectedImage && index >= 0 && index < allMedia.length) {
+                    setSelectedImage(index);
+                  }
+                }}
+              >
+                {allMedia.length > 0 ? (
+                  allMedia.map((url, idx) => {
+                    const isVid = isVideoUrl(url);
+                    return (
+                      <div key={idx} className="w-full shrink-0 snap-center flex items-center justify-center aspect-[4/5] relative">
+                        {isVid ? (
+                          <video src={url} controls className="w-full h-full object-contain bg-black" />
+                        ) : (
+                          <img src={url} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-contain" />
+                        )}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="w-full shrink-0 flex items-center justify-center aspect-[4/5]">
+                    <PackageOpen className="w-20 h-20" style={{ color: t.bluePrimary, opacity: 0.3 }} />
+                  </div>
+                )}
+              </div>
+
+              {/* MOBILE DOT INDICATORS */}
+              {allMedia.length > 1 && (
+                <div className="md:hidden flex items-center justify-center gap-1.5 mt-4 mb-2">
+                  {allMedia.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === selectedImage ? "w-5" : "w-1.5"
+                      }`}
+                      style={{ background: idx === selectedImage ? t.bluePrimary : "#D1D5DB" }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* DESKTOP SINGLE IMAGE (md+) */}
               <div
-                className="relative flex items-center justify-center overflow-hidden md:rounded-xl"
-                style={{ background: t.bgBlueTint, aspectRatio: "4/5" }}
+                className="hidden md:flex relative items-center justify-center overflow-hidden rounded-xl h-[550px]"
+                style={{ background: t.bgBlueTint }}
               >
                 {allMedia.length > 0 ? (
                   currentIsVideo ? (
@@ -311,15 +360,11 @@ export default function ProductDetailPage() {
                 ) : (
                   <PackageOpen className="w-20 h-20" style={{ color: t.bluePrimary, opacity: 0.3 }} />
                 )}
-                {discount > 0 && (
-                  <span className="absolute top-4 left-4 rounded-lg text-sm font-bold text-white px-3 py-1" style={{ background: t.bluePrimary }}>
-                    -{discount}%
-                  </span>
-                )}
               </div>
 
+              {/* DESKTOP THUMBNAILS (Hidden on mobile) */}
               {allMedia.length > 1 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto px-4 md:px-0">
+                <div className="hidden md:flex gap-2 mt-3 overflow-x-auto px-0" style={{ scrollbarWidth: "none" }}>
                   {allMedia.map((url, idx) => {
                     const isVid = isVideoUrl(url);
                     return (

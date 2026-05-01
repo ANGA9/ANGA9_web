@@ -317,7 +317,7 @@ const MOBILE_CATEGORIES: Record<string, any[]> = {
     { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: "/categories/home-living.png" },
   ],
   FASHION: [
-    { name: "Men", icon: ShoppingBag, bg: "#1A1A2E", color: "white", image: "/categories/men.png" },
+    { name: "Men", icon: ShoppingBag, bg: "#bbebecff", color: "white", image: "/categories/men.png" },
     { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/women.png" },
     { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/kids.png" },
   ],
@@ -342,7 +342,10 @@ function MobileCategoryStrip() {
 
   return (
     <div className="md:hidden w-full overflow-x-auto scrollbar-hide pt-4 pb-2 bg-white">
-      <div className="flex items-start gap-4 px-4 min-w-max">
+      <div 
+        key={currentTab}
+        className="flex items-start gap-4 px-4 min-w-max animate-in fade-in slide-in-from-right-8 duration-300 ease-out"
+      >
         {activeCategories.map((cat) => (
           <button key={cat.name} className="flex flex-col items-center gap-2 w-[72px] shrink-0 group">
             <div 

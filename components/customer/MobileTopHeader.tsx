@@ -185,12 +185,12 @@ function MobileTopHeaderContent() {
             )}
           </Link>
           {isLoggedIn ? (
-            <Link href="/account" className="flex items-center justify-center rounded-full shrink-0 border border-[#E8EEF4] bg-white w-8 h-8">
-              <User className="w-[16px] h-[16px] text-[#1A1A2E]" />
+            <Link href="/account" className="relative flex items-center justify-center">
+              <User className="w-[20px] h-[20px] text-[#4B5563]" />
             </Link>
           ) : (
-            <button onClick={openLoginSheet} className="flex items-center justify-center rounded-full shrink-0 bg-[#EAF2FF] w-8 h-8">
-              <User className="w-[16px] h-[16px] text-[#1A6FD4]" />
+            <button onClick={openLoginSheet} className="relative flex items-center justify-center">
+              <User className="w-[20px] h-[20px] text-[#4B5563]" />
             </button>
           )}
         </div>

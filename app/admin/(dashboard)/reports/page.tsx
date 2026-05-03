@@ -39,7 +39,7 @@ const TABS: { key: ReportTab; label: string; icon: typeof BarChart3 }[] = [
   { key: "payouts", label: "Payouts", icon: Wallet },
 ];
 
-const formatINR = (v: number) => "\u20B9" + v.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+const formatINR = (v?: number | string | null) => "\u20B9" + Number(v ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 });
 
 function getDefaultDateRange() {
   const now = new Date();

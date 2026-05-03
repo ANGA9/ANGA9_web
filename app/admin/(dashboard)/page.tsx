@@ -39,6 +39,7 @@ interface StatsData {
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatsData[]>([
     { title: "Total Revenue", value: "₹0", delta: "loading", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
+    { title: "Total Sales", value: "...", delta: "loading", deltaType: "positive", icon: ShoppingCart, iconColor: "#8B5CF6", iconBg: "#F5F3FF" },
     { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#4338CA", iconBg: "#F3EEFF" },
     { title: "Products Live", value: "...", delta: "loading", deltaType: "positive", icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
     { title: "Pending Reviews", value: "...", delta: "loading", deltaType: "positive", icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
@@ -50,7 +51,7 @@ export default function DashboardPage() {
         const res = await api.get<{
           totalSellers?: number; verifiedSellers?: number; pendingSellers?: number;
           totalProducts?: number; activeProducts?: number; pendingProducts?: number;
-          totalRevenue?: number;
+          totalRevenue?: number; totalOrders?: number;
         }>("/api/users/admin-stats", { silent: true });
 
         if (res) {
@@ -63,6 +64,15 @@ export default function DashboardPage() {
               icon: IndianRupee,
               iconColor: "#1A6FD4",
               iconBg: "#EAF2FF",
+            },
+            {
+              title: "Total Sales",
+              value: formatCount(res.totalOrders ?? 0),
+              delta: "completed orders",
+              deltaType: "positive",
+              icon: ShoppingCart,
+              iconColor: "#8B5CF6",
+              iconBg: "#F5F3FF",
             },
             {
               title: "Registered Sellers",
@@ -105,7 +115,7 @@ export default function DashboardPage() {
     <div className="min-h-screen">
       <main className="p-6 xl:p-8">
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-6">
           {stats.map((stat) => (
             <StatsCard key={stat.title} {...stat} />
           ))}

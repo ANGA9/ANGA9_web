@@ -20,6 +20,12 @@ function formatCount(n: number): string {
   return n.toLocaleString("en-IN");
 }
 
+function formatCurrency(n: number): string {
+  if (n >= 10000000) return `₹${(n / 10000000).toFixed(2)} Cr`;
+  if (n >= 100000) return `₹${(n / 100000).toFixed(2)} L`;
+  return `₹${n.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+}
+
 interface StatsData {
   title: string;
   value: string;
@@ -32,7 +38,7 @@ interface StatsData {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatsData[]>([
-    { title: "Total Revenue", value: "₹0", delta: "Coming soon", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
+    { title: "Total Revenue", value: "₹0", delta: "loading", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
     { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#4338CA", iconBg: "#F3EEFF" },
     { title: "Products Live", value: "...", delta: "loading", deltaType: "positive", icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
     { title: "Pending Reviews", value: "...", delta: "loading", deltaType: "positive", icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
@@ -51,8 +57,8 @@ export default function DashboardPage() {
           setStats([
             {
               title: "Total Revenue",
-              value: `₹${formatCount(res.totalRevenue ?? 0)}`,
-              delta: "Coming soon",
+              value: formatCurrency(res.totalRevenue ?? 0),
+              delta: "across confirmed orders",
               deltaType: "positive",
               icon: IndianRupee,
               iconColor: "#1A6FD4",

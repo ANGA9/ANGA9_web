@@ -57,7 +57,12 @@ export default function CustomerTopNav() {
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
+  const [pincodeOpen, setPincodeOpen] = useState(false);
+  const [pincodeInput, setPincodeInput] = useState("");
+  const [pincodeError, setPincodeError] = useState("");
+  const [pincodeLoading, setPincodeLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const pincodeRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
@@ -72,10 +77,23 @@ export default function CustomerTopNav() {
   }, []);
 
   useEffect(() => {
-    const CACHE_KEY = "ipLocation";
+    const IP_CACHE_KEY = "ipLocation";
+    const USER_KEY = "userPincode";
     const TTL_MS = 24 * 60 * 60 * 1000;
+
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
+      const userSaved = localStorage.getItem(USER_KEY);
+      if (userSaved) {
+        const parsed = JSON.parse(userSaved) as { city: string; pincode: string };
+        if (parsed.city && parsed.pincode) {
+          setLocation(parsed);
+          return;
+        }
+      }
+    } catch {}
+
+    try {
+      const cached = localStorage.getItem(IP_CACHE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached) as { city: string; pincode: string; ts: number };
         if (Date.now() - parsed.ts < TTL_MS && parsed.city && parsed.pincode) {
@@ -93,7 +111,7 @@ export default function CustomerTopNav() {
         const next = { city: data.city, pincode: data.postal };
         setLocation(next);
         try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ ...next, ts: Date.now() }));
+          localStorage.setItem(IP_CACHE_KEY, JSON.stringify({ ...next, ts: Date.now() }));
         } catch {}
       })
       .catch(() => {});
@@ -101,6 +119,53 @@ export default function CustomerTopNav() {
       cancelled = true;
     };
   }, []);
+
+  const submitPincode = async (raw: string) => {
+    const pin = raw.trim();
+    if (!/^\d{6}$/.test(pin)) {
+      setPincodeError("Enter a valid 6-digit pincode");
+      return;
+    }
+    setPincodeError("");
+    setPincodeLoading(true);
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+      const data = (await res.json()) as Array<{
+        Status: string;
+        PostOffice?: Array<{ Name: string; District: string; State: string }>;
+      }>;
+      const entry = data?.[0];
+      if (entry?.Status !== "Success" || !entry.PostOffice?.length) {
+        setPincodeError("Pincode not found");
+        return;
+      }
+      const office = entry.PostOffice[0];
+      const city = office.District || office.Name;
+      const next = { city, pincode: pin };
+      setLocation(next);
+      try {
+        localStorage.setItem("userPincode", JSON.stringify(next));
+      } catch {}
+      setPincodeOpen(false);
+      setPincodeInput("");
+    } catch {
+      setPincodeError("Could not look up pincode. Try again.");
+    } finally {
+      setPincodeLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!pincodeOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (pincodeRef.current && !pincodeRef.current.contains(e.target as Node)) {
+        setPincodeOpen(false);
+        setPincodeError("");
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [pincodeOpen]);
       
   useEffect(() => {
     // Load recent searches
@@ -223,13 +288,62 @@ export default function CustomerTopNav() {
 
           {/* Pincode + Become a Seller + Login */}
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
-            <button
-              className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
-              style={{ color: t.textSecondary, fontSize: '16px' }}
-            >
-              <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
-              {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
-            </button>
+            <div className="relative" ref={pincodeRef}>
+              <button
+                onClick={() => setPincodeOpen((v) => !v)}
+                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+                style={{ color: t.textSecondary, fontSize: '16px' }}
+              >
+                <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
+                {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
+                <ChevronDown style={{ width: 14, height: 14 }} />
+              </button>
+              {pincodeOpen && (
+                <div
+                  className="absolute right-0 top-[calc(100%+8px)] w-[320px] rounded-2xl border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-50 p-4"
+                  style={{ borderColor: t.border }}
+                >
+                  <div className="text-[14px] font-bold mb-1" style={{ color: t.textPrimary }}>
+                    Enter delivery pincode
+                  </div>
+                  <div className="text-[12.5px] mb-3" style={{ color: t.textMuted }}>
+                    We&apos;ll show prices and shipping times for your area.
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      autoFocus
+                      value={pincodeInput}
+                      onChange={(e) => {
+                        setPincodeInput(e.target.value.replace(/\D/g, ""));
+                        if (pincodeError) setPincodeError("");
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") submitPincode(pincodeInput);
+                      }}
+                      placeholder="6-digit pincode"
+                      className="flex-1 rounded-lg border px-3 py-2 text-[14px] outline-none focus:border-[#1A6FD4]"
+                      style={{ borderColor: t.borderSearch, color: t.textPrimary }}
+                    />
+                    <button
+                      onClick={() => submitPincode(pincodeInput)}
+                      disabled={pincodeLoading}
+                      className="rounded-lg px-3 py-2 text-[13px] font-bold text-white transition-opacity disabled:opacity-60"
+                      style={{ backgroundColor: t.bluePrimary }}
+                    >
+                      {pincodeLoading ? "..." : "Apply"}
+                    </button>
+                  </div>
+                  {pincodeError && (
+                    <div className="mt-2 text-[12.5px]" style={{ color: t.outOfStock }}>
+                      {pincodeError}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <Link
               href="/seller/sell-on-anga9"

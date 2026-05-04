@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cdnUrl } from "@/lib/utils";
 import {
   CheckCircle2,
   TrendingUp,
@@ -93,7 +94,7 @@ export default function SellerLandingPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[480px] w-full">
-              <Image src="/seller-why-sell.png" fill className="object-contain" alt="Sell on ANGA9" priority />
+              <Image src={cdnUrl("/seller-why-sell.png")} fill className="object-contain" alt="Sell on ANGA9" priority />
             </div>
           </div>
         </div>
@@ -141,7 +142,7 @@ export default function SellerLandingPage() {
               */}
               <div className="hidden lg:block relative w-full h-[300px] rounded-2xl overflow-hidden">
                 <Image
-                  src="/seller-benefits.png"
+                  src={cdnUrl("/seller-benefits.png")}
                   fill
                   sizes="400px"
                   quality={75}
@@ -320,7 +321,7 @@ export default function SellerLandingPage() {
                 quote:
                   "Within 3 months of joining ANGA9, my wholesale orders tripled. The 0% commission is a game-changer for my margins.",
                 growth: "3x orders",
-                avatar: "/seller-avatar-1.png",
+                avatar: cdnUrl("/seller-avatar-1.png"),
                 initials: "RK",
               },
               {
@@ -329,7 +330,7 @@ export default function SellerLandingPage() {
                 quote:
                   "I was skeptical at first, but the dashboard analytics helped me understand which products to push. Revenue is up 200%.",
                 growth: "200% revenue",
-                avatar: "/seller-avatar-2.png",
+                avatar: cdnUrl("/seller-avatar-2.png"),
                 initials: "PS",
               },
               {
@@ -338,7 +339,7 @@ export default function SellerLandingPage() {
                 quote:
                   "The shipping network reaches even remote pincodes. My customer base expanded to states I never imagined selling to.",
                 growth: "12 new states",
-                avatar: "/seller-avatar-3.png",
+                avatar: cdnUrl("/seller-avatar-3.png"),
                 initials: "AP",
               },
             ].map((story) => (
@@ -412,7 +413,7 @@ export default function SellerLandingPage() {
             <div className="lg:col-span-5 flex flex-col items-start">
               <Link href="/" className="mb-6 block">
                 <Image
-                  src="/anga9-logo.png"
+                  src={cdnUrl("/anga9-logo.png")}
                   alt="ANGA9 Logo"
                   width={130}
                   height={42}

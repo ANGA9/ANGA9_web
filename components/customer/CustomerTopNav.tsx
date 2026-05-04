@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cdnUrl } from "@/lib/utils";
 import {
   Search,
   Heart,
@@ -177,7 +178,7 @@ export default function CustomerTopNav() {
             style={{ minWidth: "fit-content" }}
           >
             <Image
-              src="/anga9-logo.png"
+              src={cdnUrl("/anga9-logo.png")}
               alt="ANGA"
               width={110}
               height={36}

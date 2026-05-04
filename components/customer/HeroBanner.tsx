@@ -3,54 +3,55 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cdnUrl } from "@/lib/utils";
 
 const BANNERS = [
   {
     id: 1,
-    desktop: "/banners/banner1.png",
-    mobile: "/banners/banner1mob.png",
+    desktop: cdnUrl("/banners/banner1.png"),
+    mobile: cdnUrl("/banners/banner1mob.png"),
     alt: "Elevate Your Style - Menswear from ₹799",
   },
   {
     id: 2,
-    desktop: "/banners/banner2.png",
-    mobile: "/banners/banner2mob.png",
+    desktop: cdnUrl("/banners/banner2.png"),
+    mobile: cdnUrl("/banners/banner2mob.png"),
     alt: "Sarees & Kurtas - Ethnic Festive Edit from ₹999",
   },
   {
     id: 3,
-    desktop: "/banners/banner3.png",
-    mobile: "/banners/banner3mob.png",
+    desktop: cdnUrl("/banners/banner3.png"),
+    mobile: cdnUrl("/banners/banner3mob.png"),
     alt: "Fun Fits for Little Ones - Kids Fashion from ₹299",
   },
   {
     id: 4,
-    desktop: "/banners/banner4.png",
-    mobile: "/banners/banner4mob.png",
+    desktop: cdnUrl("/banners/banner4.png"),
+    mobile: cdnUrl("/banners/banner4mob.png"),
     alt: "Train Harder Look Better - Activewear from ₹599",
   },
   {
     id: 5,
-    desktop: "/banners/banner5.png",
-    mobile: "/banners/banner5mob.png",
+    desktop: cdnUrl("/banners/banner5.png"),
+    mobile: cdnUrl("/banners/banner5mob.png"),
     alt: "Sleep in Pure Luxury - Bed Linen from ₹899",
   },
   {
     id: 6,
-    desktop: "/banners/banner6.png",
-    mobile: "/banners/banner6mob.png",
+    desktop: cdnUrl("/banners/banner6.png"),
+    mobile: cdnUrl("/banners/banner6mob.png"),
     alt: "Spa Comfort at Home - Bath Linen from ₹449",
   },
   {
     id: 7,
-    desktop: "/banners/banner7.png",
-    mobile: "/banners/banner7mob.png",
+    desktop: cdnUrl("/banners/banner7.png"),
+    mobile: cdnUrl("/banners/banner7mob.png"),
     alt: "Transform Your Living Space - Rugs & Curtains from ₹1299",
   },
   {
     id: 8,
-    desktop: "/banners/banner8.png",
-    mobile: "/banners/banner8mob.png",
+    desktop: cdnUrl("/banners/banner8.png"),
+    mobile: cdnUrl("/banners/banner8mob.png"),
     alt: "Style Every Corner - Living Decor from ₹349",
   },
 ];

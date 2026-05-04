@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cdnUrl } from "@/lib/utils";
 import {
   TrendingUp,
   BarChart3,
@@ -142,7 +143,7 @@ export default function GrowBusinessPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-grow-hero.png" fill className="object-contain" alt="Grow business" priority />
+              <Image src={cdnUrl("/seller-grow-hero.png")} fill className="object-contain" alt="Grow business" priority />
             </div>
           </div>
         </div>
@@ -208,7 +209,7 @@ export default function GrowBusinessPage() {
             </div>
 
             <div className="relative h-[280px] sm:h-[400px] lg:h-[520px] w-full">
-              <Image src="/seller-grow-b2b.png" fill className="object-contain" alt="B2B Features" />
+              <Image src={cdnUrl("/seller-grow-b2b.png")} fill className="object-contain" alt="B2B Features" />
             </div>
           </div>
         </div>
@@ -277,7 +278,7 @@ export default function GrowBusinessPage() {
           <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12">
             <div className="lg:col-span-5 flex flex-col items-start">
               <Link href="/" className="mb-6 block">
-                <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
+                <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
               <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
                 India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.

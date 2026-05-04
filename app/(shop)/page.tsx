@@ -17,6 +17,7 @@ import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
 import { api } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 
 const categoryIcons = [
   { name: "Home Decor", icon: Home },
@@ -311,27 +312,27 @@ export default function CustomerHomePage() {
 
 const MOBILE_CATEGORIES: Record<string, any[]> = {
   ALL: [
-    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/bed.png" },
-    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/fashion.png" },
-    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: "/categories/accessories.png" },
-    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: "/categories/home-living.png" },
+    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/bed.png") },
+    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/fashion.png") },
+    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/accessories.png") },
+    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/home-living.png") },
   ],
   FASHION: [
-    { name: "Men", icon: ShoppingBag, bg: "#bbebecff", color: "white", image: "/categories/men.png" },
-    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/women.png" },
-    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/kids.png" },
+    { name: "Men", icon: ShoppingBag, bg: "#bbebecff", color: "white", image: cdnUrl("/categories/men.png") },
+    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/women.png") },
+    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/kids.png") },
   ],
   ACCESSORIES: [
-    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: "/categories/watch.png" },
-    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444", image: "/categories/headwear.png" },
-    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/neckwear.png" },
-    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/bags.png" },
+    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/watch.png") },
+    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/headwear.png") },
+    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/neckwear.png") },
+    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/bags.png") },
   ],
   "HOME LIVING": [
-    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B", image: "/categories/lamps.png" },
-    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: "/categories/curtains.png" },
-    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563", image: "/categories/rugs.png" },
-    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: "/categories/decor.png" },
+    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/lamps.png") },
+    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/curtains.png") },
+    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/rugs.png") },
+    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/decor.png") },
   ],
 };
 

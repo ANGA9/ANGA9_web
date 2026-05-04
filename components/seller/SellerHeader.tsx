@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
 import { Menu, LogOut } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
+import { cdnUrl } from "@/lib/utils";
 
 export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => void }) {
   const { user, logout } = useAuth();
@@ -13,7 +14,7 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
         <Menu className="w-5 h-5" />
       </button>
       <Link href="/" className="shrink-0">
-        <Image src="/anga9-logo.png" alt="ANGA9" width={90} height={30} priority style={{ objectFit: "contain" }} />
+        <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={90} height={30} priority style={{ objectFit: "contain" }} />
       </Link>
       <span className="ml-2 text-xs md:text-sm font-bold text-[#1A6FD4] bg-[#EAF2FF] px-2 py-0.5 rounded hidden sm:inline">Seller</span>
       <div className="flex-1" />

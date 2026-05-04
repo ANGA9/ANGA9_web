@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
@@ -199,7 +200,7 @@ export default function SellerLoginPage() {
   /* ─── Logo ─── */
   const logo = (
     <a href="/" className="shrink-0">
-      <Image src="/anga9-logo.png" alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
+      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
     </a>
   );
 

@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
 import { api } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 import NotificationBell from "@/components/shared/NotificationBell";
 
 interface Suggestion {
@@ -171,7 +172,7 @@ function MobileTopHeaderContent() {
       <div className="flex items-center justify-between px-4 py-2.5">
         {/* Logo */}
         <Link href="/">
-          <Image src="/anga9-logo.png" alt="ANGA" width={80} height={28} priority style={{ objectFit: "contain" }} />
+          <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA" width={80} height={28} priority style={{ objectFit: "contain" }} />
         </Link>
 
         {/* Notifications + Wishlist + Cart + Login */}

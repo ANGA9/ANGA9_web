@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import toast from "react-hot-toast";
+import { cdnUrl } from "@/lib/utils";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
@@ -186,7 +187,7 @@ export default function CustomerLoginPage() {
   /* ─── Logo ─── */
   const logo = (
     <Link href="/" className="shrink-0">
-      <Image src="/anga9-logo.png" alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
+      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
     </Link>
   );
 
@@ -475,7 +476,7 @@ export default function CustomerLoginPage() {
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
             <div className="relative flex-1 min-w-[400px]">
               <Image
-                src="/login-hero.png"
+                src={cdnUrl("/login-hero.png")}
                 alt="Shopping illustration"
                 fill
                 style={{ objectFit: "cover" }}

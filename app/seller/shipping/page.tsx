@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cdnUrl } from "@/lib/utils";
 import {
   Truck,
   Package,
@@ -125,7 +126,7 @@ export default function ShippingPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-shipping-hero.png" fill className="object-contain" alt="Shipping" priority />
+              <Image src={cdnUrl("/seller-shipping-hero.png")} fill className="object-contain" alt="Shipping" priority />
             </div>
           </div>
         </div>
@@ -198,7 +199,7 @@ export default function ShippingPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full order-2 lg:order-1">
-              <Image src="/seller-shipping-process.png" fill className="object-contain" alt="Shipping process" />
+              <Image src={cdnUrl("/seller-shipping-process.png")} fill className="object-contain" alt="Shipping process" />
             </div>
 
             <div className="order-1 lg:order-2">
@@ -291,7 +292,7 @@ export default function ShippingPage() {
           <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12">
             <div className="lg:col-span-5 flex flex-col items-start">
               <Link href="/" className="mb-6 block">
-                <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
+                <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
               <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
                 India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight, User } from "lucide-react";
+import { cdnUrl } from "@/lib/utils";
 
 const navLinks = [
   { name: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
@@ -42,7 +43,7 @@ export default function SellerLandingHeader() {
           {/* Logo */}
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-80 flex items-center gap-1.5 sm:gap-2">
             <Image 
-              src="/anga9-logo.png" 
+              src={cdnUrl("/anga9-logo.png")}
               alt="ANGA9 Logo" 
               width={90} 
               height={28} 

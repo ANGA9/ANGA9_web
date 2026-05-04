@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cdnUrl } from "@/lib/utils";
 import {
   UserPlus,
   PackagePlus,
@@ -34,7 +35,7 @@ export default function HowItWorksPage() {
       icon: UserPlus,
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       highlights: ["Quick 10-minute setup", "Business verification within 24 hours", "Dedicated onboarding support"],
-      image: "/seller-step-register.png",
+      image: cdnUrl("/seller-step-register.png"),
     },
     {
       step: 2,
@@ -43,7 +44,7 @@ export default function HowItWorksPage() {
       icon: PackagePlus,
       color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
       highlights: ["Bulk catalog upload via CSV", "Set wholesale pricing tiers", "Configure minimum order quantities"],
-      image: "/seller-step-list.png",
+      image: cdnUrl("/seller-step-list.png"),
     },
     {
       step: 3,
@@ -52,7 +53,7 @@ export default function HowItWorksPage() {
       icon: ShoppingCart,
       color: "text-[#22C55E] bg-[#22C55E]/10",
       highlights: ["Real-time order notifications", "Doorstep pickup by logistics partner", "Order management dashboard"],
-      image: "/seller-step-orders.png",
+      image: cdnUrl("/seller-step-orders.png"),
     },
     {
       step: 4,
@@ -61,7 +62,7 @@ export default function HowItWorksPage() {
       icon: Wallet,
       color: "text-[#F59E0B] bg-[#F59E0B]/10",
       highlights: ["7-day payment cycle", "COD orders included", "Transparent payout tracking"],
-      image: "/seller-step-payment.png",
+      image: cdnUrl("/seller-step-payment.png"),
     },
   ];
 
@@ -106,7 +107,7 @@ export default function HowItWorksPage() {
             </div>
 
             <div className="relative h-[250px] sm:h-[350px] lg:h-[450px] w-full">
-              <Image src="/seller-how-hero.png" fill className="object-contain" alt="How it works" priority />
+              <Image src={cdnUrl("/seller-how-hero.png")} fill className="object-contain" alt="How it works" priority />
             </div>
           </div>
         </div>
@@ -216,7 +217,7 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12">
             <div className="lg:col-span-5 flex flex-col items-start">
               <Link href="/" className="mb-6 block">
-                <Image src="/anga9-logo.png" alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
+                <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
               <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
                 India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.

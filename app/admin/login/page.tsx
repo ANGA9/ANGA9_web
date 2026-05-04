@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { AlertCircle, ArrowLeft, Mail, ShieldCheck, Loader2 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 
 type Step = "email" | "otp";
 
@@ -186,7 +187,7 @@ export default function AdminLoginPage() {
           {/* Logo */}
           <div className="mb-8 text-center">
             <div className="flex justify-center mb-6">
-              <Image src="/anga9-logo.png" alt="ANGA9" width={140} height={46} priority style={{ objectFit: "contain" }} />
+              <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={140} height={46} priority style={{ objectFit: "contain" }} />
             </div>
             <h1 className="text-2xl font-medium text-[#202124] mb-2 tracking-tight">Sign in</h1>
             <p className="text-[15px] text-[#5f6368]">to continue to Admin Portal</p>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, LogOut, Bell } from "lucide-react";
+import { cdnUrl } from "@/lib/utils";
 
 interface AdminHeaderProps {
   onMenuToggle: () => void;
@@ -20,7 +21,7 @@ export default function AdminHeader({ onMenuToggle, pendingReviewsCount = 0, onL
 
       {/* Logo */}
       <Link href="/admin" className="shrink-0 flex items-center">
-        <Image src="/anga9-logo.png" alt="ANGA9" width={90} height={30} priority style={{ objectFit: "contain" }} />
+        <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={90} height={30} priority style={{ objectFit: "contain" }} />
       </Link>
 
       {/* Admin Tag */}

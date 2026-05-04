@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { cdnUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Seller Onboarding — ANGA9",
@@ -20,7 +21,7 @@ export default function OnboardingLayout({
         <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-4 sm:px-6">
           <Link href="/" className="shrink-0">
             <Image
-              src="/anga9-logo.png"
+              src={cdnUrl("/anga9-logo.png")}
               alt="ANGA9"
               width={100}
               height={34}

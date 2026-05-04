@@ -212,7 +212,7 @@ export default function CustomerHomePage() {
   }, [loading, hasMore, page, sortParam, categoryParam]);
 
   return (
-    <div className="py-2 md:py-6">
+    <div className="py-1 md:py-6">
 
       {/* -- Mobile Visual Category Strip (<md) -- */}
       <Suspense fallback={<div className="h-[120px] bg-white w-full md:hidden" />}>
@@ -224,11 +224,11 @@ export default function CustomerHomePage() {
 
 
       {/* Discover Products */}
-      <section className="px-4 sm:px-8" style={{ marginTop: 48 }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
+      <section className="px-3 sm:px-8" style={{ marginTop: 24 }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
           <h2
             className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: '24px' }}
+            style={{ color: "#1A1A2E", fontSize: '20px' }}
           >
             Trending Now
           </h2>
@@ -262,7 +262,7 @@ export default function CustomerHomePage() {
           </div>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-4">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

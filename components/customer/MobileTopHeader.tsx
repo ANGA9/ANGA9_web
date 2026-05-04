@@ -32,9 +32,9 @@ const megaTabs = [
 
 const MOBILE_TABS: { key: string; label: string; accent: string; gradientFrom: string; gradientVia: string }[] = [
   { key: "ALL",          label: "ALL",          accent: "#1A6FD4", gradientFrom: "#CDE0FF", gradientVia: "#EAF2FF" },
-  { key: "FASHION",      label: "FASHION",      accent: "#D97706", gradientFrom: "#FFF0D4", gradientVia: "#FFF8EC" },
-  { key: "ACCESSORIES",  label: "ACCESSORIES",  accent: "#C2185B", gradientFrom: "#FCE4EC", gradientVia: "#FFF0F5" },
-  { key: "HOME LIVING",  label: "HOME LIVING",  accent: "#2E7D32", gradientFrom: "#E8F5E9", gradientVia: "#F1F8F2" },
+  { key: "FASHION",      label: "FASHION",      accent: "#E0598B", gradientFrom: "#FDE8EF", gradientVia: "#FFF2F6" },
+  { key: "ACCESSORIES",  label: "ACCESSORIES",  accent: "#8B5CF6", gradientFrom: "#EDE9FE", gradientVia: "#F5F3FF" },
+  { key: "HOME LIVING",  label: "HOME LIVING",  accent: "#2E9D6A", gradientFrom: "#E2F6EC", gradientVia: "#F0FAF5" },
 ];
 
 export default function MobileTopHeader() {
@@ -188,7 +188,7 @@ function MobileTopHeaderContent() {
           <Link href="/cart" className="relative">
             <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white">
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}

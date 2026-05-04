@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, User, Package, Menu } from "lucide-react";
-import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -27,7 +26,7 @@ export default function MobileBottomNav() {
       role="navigation"
       aria-label="Main navigation"
       style={{
-        height: "calc(60px + env(safe-area-inset-bottom, 0px))",
+        height: "calc(56px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: "#FFFFFF",
         borderColor: "#F3F4F6",
@@ -48,29 +47,37 @@ export default function MobileBottomNav() {
             aria-current={isActive ? "page" : undefined}
             className="flex flex-col items-center justify-center flex-1 h-full transition-all active:scale-90"
             style={{
-              color: isActive ? "#1A6FD4" : "#9CA3AF",
               WebkitTapHighlightColor: "transparent",
               touchAction: "manipulation",
             }}
           >
-            <tab.icon
-              fill={isActive ? "currentColor" : "none"}
+            {/* Active pill indicator behind icon */}
+            <div
+              className="flex items-center justify-center rounded-full transition-all duration-200"
               style={{
-                width: 24,
-                height: 24,
-                strokeWidth: isActive ? 2.5 : 2,
-                transition: "all 0.2s ease",
-                opacity: isActive ? 1 : 0.7,
+                width: 36,
+                height: 28,
+                backgroundColor: isActive ? "#EEF2FF" : "transparent",
               }}
-            />
+            >
+              <tab.icon
+                fill="none"
+                style={{
+                  width: 20,
+                  height: 20,
+                  strokeWidth: isActive ? 2.4 : 1.8,
+                  color: isActive ? "#4338CA" : "#374151",
+                  transition: "all 0.2s ease",
+                }}
+              />
+            </div>
             <span
-              className="mt-1"
               style={{
-                fontSize: '11px',
-                fontWeight: isActive ? 900 : 600,
-                letterSpacing: "0.02em",
-                textTransform: 'uppercase',
-                color: isActive ? "#1A6FD4" : "#6B7280",
+                fontSize: '10px',
+                fontWeight: isActive ? 700 : 500,
+                letterSpacing: "0.03em",
+                color: isActive ? "#4338CA" : "#374151",
+                marginTop: 2,
                 transition: "all 0.2s ease",
               }}
             >

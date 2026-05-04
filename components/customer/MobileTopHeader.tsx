@@ -30,7 +30,12 @@ const megaTabs = [
   "HOME DECOR & FLOORING",
 ];
 
-const MOBILE_TABS = ["ALL", "FASHION", "ACCESSORIES", "HOME LIVING"];
+const MOBILE_TABS: { key: string; label: string; accent: string; gradientFrom: string; gradientVia: string }[] = [
+  { key: "ALL",          label: "ALL",          accent: "#1A6FD4", gradientFrom: "#CDE0FF", gradientVia: "#EAF2FF" },
+  { key: "FASHION",      label: "FASHION",      accent: "#D97706", gradientFrom: "#FFF0D4", gradientVia: "#FFF8EC" },
+  { key: "ACCESSORIES",  label: "ACCESSORIES",  accent: "#C2185B", gradientFrom: "#FCE4EC", gradientVia: "#FFF0F5" },
+  { key: "HOME LIVING",  label: "HOME LIVING",  accent: "#2E7D32", gradientFrom: "#E8F5E9", gradientVia: "#F1F8F2" },
+];
 
 export default function MobileTopHeader() {
   return (
@@ -45,6 +50,7 @@ function MobileTopHeaderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
+  const activeTabConfig = MOBILE_TABS.find(t => t.key === currentTab) || MOBILE_TABS[0];
   const { user } = useAuth();
   const isLoggedIn = !!user;
   const { open: openLoginSheet } = useLoginSheet();
@@ -146,7 +152,10 @@ function MobileTopHeaderContent() {
   if (pathname === "/account" || pathname === "/cart") return null;
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#CDE0FF] via-[#EAF2FF] to-white relative overflow-hidden">
+    <div
+      className="w-full relative overflow-hidden transition-all duration-500"
+      style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
+    >
       {/* ── Row 1: Delivery Location (Top) ── */}
       <div className="flex items-center px-4 pt-3 pb-1.5 w-full">
         <button className="flex items-center gap-1.5 group">
@@ -275,20 +284,24 @@ function MobileTopHeaderContent() {
 
       {/* ── Row 4: Folder Tabs ── */}
       <div className="w-full pt-1 bg-transparent">
-        <div className="flex items-center justify-between px-1 sm:px-2 border-b border-[#E5E7EB]">
+        <div className="flex items-center justify-around px-2 sm:px-3 border-b border-[#E5E7EB]">
           {MOBILE_TABS.map((tab) => {
-            const isActive = currentTab === tab;
+            const isActive = currentTab === tab.key;
             return (
               <button
-                key={tab}
-                onClick={() => router.push(`/?tab=${tab.toLowerCase()}`)}
-                className={`relative flex-1 flex justify-center py-3 text-[11px] sm:text-[13px] font-bold tracking-wider transition-colors ${
-                  isActive ? "text-[#1A1A2E]" : "text-[#6B7280]"
-                }`}
+                key={tab.key}
+                onClick={() => router.push(`/?tab=${tab.key.toLowerCase()}`)}
+                className="relative px-2 py-3 transition-colors"
+                style={{ color: isActive ? tab.accent : "#6B7280" }}
               >
-                {tab}
+                <span className={`text-[11px] sm:text-[13px] font-bold tracking-wider whitespace-nowrap`}>
+                  {tab.label}
+                </span>
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 mx-auto w-[60%] h-[3.5px] bg-[#1A6FD4] rounded-t-full shadow-[0_-1px_4px_rgba(26,111,212,0.3)]" />
+                  <div
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[3.5px] rounded-t-full"
+                    style={{ backgroundColor: tab.accent, boxShadow: `0 -1px 4px ${tab.accent}50` }}
+                  />
                 )}
               </button>
             );

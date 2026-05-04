@@ -6,7 +6,7 @@ import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw } from "lucide-react";
+import { User, MapPin, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw, Pencil } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -276,18 +276,20 @@ function MobileTopHeaderContent() {
 
   return (
     <div
-      className="w-full relative overflow-hidden transition-all duration-500"
+      className="w-full relative transition-all duration-500"
       style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
     >
-      {/* ── Row 1: Delivery Location (Top) ── */}
+      {/* ── Row 1: Delivery Location ── */}
       <div className="relative flex items-center px-4 pt-3 pb-1.5 w-full" ref={pincodeRef}>
         <button onClick={() => setPincodeOpen((v) => !v)} className="flex items-center gap-1.5 group">
-          <MapPin className="w-[15px] h-[15px] text-[#1A6FD4] stroke-[2.5]" />
-          <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight group-hover:text-[#1A6FD4] transition-colors">
-            {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
+          <MapPin className="w-[15px] h-[15px] text-[#1A1A2E] stroke-[2.5]" />
+          <span className="text-[13px] font-medium text-[#4B5563] tracking-tight">Deliver to</span>
+          <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight">
+            {location ? `${location.city}, ${location.pincode}` : "Set Pincode"}
           </span>
-          <ChevronDown className="w-[15px] h-[15px] text-[#9CA3AF] group-hover:text-[#1A6FD4] transition-colors" />
+          <Pencil className="w-[12px] h-[12px] text-[#1A6FD4] ml-0.5" />
         </button>
+
         {pincodeOpen && (
           <div className="absolute left-3 right-3 top-[calc(100%+6px)] rounded-2xl border border-[#E8EEF4] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-50 p-4">
             <div className="text-[14px] font-bold mb-1 text-[#1A1A2E]">Enter delivery pincode</div>

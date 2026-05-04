@@ -21,6 +21,7 @@ import {
   History,
   X,
   RotateCw,
+  Pencil,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { detectLocationFromBrowser } from "@/lib/detectLocation";
@@ -322,7 +323,7 @@ export default function CustomerTopNav() {
               >
                 <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
                 {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
-                <ChevronDown style={{ width: 14, height: 14 }} />
+                <Pencil style={{ width: 13, height: 13, color: t.bluePrimary }} />
               </button>
               {pincodeOpen && (
                 <div

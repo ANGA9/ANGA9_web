@@ -200,7 +200,7 @@ export default function ProductCard({
                 Min order: {product.minOrder}
               </p>
             )} */}
-          </div>3
+          </div>
         </div>
       </Link>
 

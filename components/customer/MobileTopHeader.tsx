@@ -72,6 +72,21 @@ function MobileTopHeaderContent() {
   const [ipDetected, setIpDetected] = useState<{ city: string; pincode: string } | null>(null);
   const [ipDetectError, setIpDetectError] = useState("");
   const [ipDetectLoading, setIpDetectLoading] = useState(false);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const SEARCH_PLACEHOLDERS = [
+    "Search for formal shirts",
+    "Search for accessories",
+    "Search for home decor",
+    "Search for footwear",
+    "Search for kitchenware",
+  ];
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPlaceholderIdx((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
+    }, 2200);
+    return () => clearInterval(id);
+  }, [SEARCH_PLACEHOLDERS.length]);
   const searchRef = useRef<HTMLDivElement>(null);
   const pincodeRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
@@ -391,19 +406,39 @@ function MobileTopHeaderContent() {
 
       {/* ── Row 3: Elevated Search Bar ── */}
       <div className="px-4 py-2 pb-4" ref={searchRef}>
+        <style>{`
+          @keyframes searchHintIn {
+            0% { transform: translateY(100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+          }
+          .mobile-search-input { -webkit-tap-highlight-color: transparent; }
+          .mobile-search-input:focus { outline: none !important; box-shadow: none !important; -webkit-appearance: none; }
+        `}</style>
         <div className="relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent focus-within:border-[#1A6FD4]/30 focus-within:shadow-md transition-all">
           <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
             <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
           </div>
-          <input
-            type="text"
-            placeholder="Search for products, sellers..."
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
-            onFocus={() => setShowSuggestions(true)}
-            className="flex-1 bg-transparent outline-none text-[15px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-          />
+          <div className="relative flex-1 min-w-0 h-[22px]">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
+              onFocus={() => setShowSuggestions(true)}
+              className="mobile-search-input absolute inset-0 w-full bg-transparent outline-none text-[15px] text-[#1A1A2E] placeholder:text-transparent border-0"
+            />
+            {!searchQuery && (
+              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
+                <span
+                  key={placeholderIdx}
+                  className="absolute inset-0 flex items-center truncate"
+                  style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                >
+                  {SEARCH_PLACEHOLDERS[placeholderIdx]}
+                </span>
+              </div>
+            )}
+          </div>
           <Mic className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
           <svg className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 

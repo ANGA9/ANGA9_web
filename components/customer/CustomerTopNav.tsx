@@ -56,6 +56,7 @@ export default function CustomerTopNav() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -68,6 +69,37 @@ export default function CustomerTopNav() {
         if (res?.tags) setPopularTags(res.tags.slice(0, 10)); // Show top 10
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const CACHE_KEY = "ipLocation";
+    const TTL_MS = 24 * 60 * 60 * 1000;
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as { city: string; pincode: string; ts: number };
+        if (Date.now() - parsed.ts < TTL_MS && parsed.city && parsed.pincode) {
+          setLocation({ city: parsed.city, pincode: parsed.pincode });
+          return;
+        }
+      }
+    } catch {}
+
+    let cancelled = false;
+    fetch("https://ipapi.co/json/")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { city?: string; postal?: string } | null) => {
+        if (cancelled || !data?.city || !data?.postal) return;
+        const next = { city: data.city, pincode: data.postal };
+        setLocation(next);
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ ...next, ts: Date.now() }));
+        } catch {}
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, []);
       
   useEffect(() => {
@@ -162,7 +194,7 @@ export default function CustomerTopNav() {
   }, [moreOpen]);
 
   return (
-    <header className="sticky top-0 z-40 w-full" style={{ background: t.bgCard }}>
+    <header className="sticky top-0 z-40 w-full" style={{ background: `linear-gradient(to bottom, ${t.bgBlueTint}, ${t.bgCard})` }}>
 
       {/* ── Row 1: full-width bg band ── */}
       <div className="w-full border-b" style={{ borderColor: t.border }}>
@@ -196,7 +228,7 @@ export default function CustomerTopNav() {
               style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
-              Select Pincode
+              {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
             </button>
 
             <Link

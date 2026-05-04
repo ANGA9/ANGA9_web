@@ -84,7 +84,7 @@ function MobileTopHeaderContent() {
   useEffect(() => {
     const id = setInterval(() => {
       setPlaceholderIdx((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
-    }, 2200);
+    }, 3500);
     return () => clearInterval(id);
   }, [SEARCH_PLACEHOLDERS.length]);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -434,11 +434,26 @@ function MobileTopHeaderContent() {
                   className="absolute inset-0 flex items-center truncate"
                   style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
                 >
-                  {SEARCH_PLACEHOLDERS[placeholderIdx]}
+                  {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
                 </span>
               </div>
             )}
           </div>
+          {showSuggestions && (
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                setSearchQuery("");
+                setSuggestions([]);
+                setShowSuggestions(false);
+              }}
+              className="shrink-0 flex items-center justify-center w-[22px] h-[22px] rounded-full text-[#9CA3AF] hover:text-[#1A1A2E] transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-[16px] h-[16px]" />
+            </button>
+          )}
           <Mic className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
           <svg className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 

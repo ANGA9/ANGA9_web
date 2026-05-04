@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2, ShoppingBag } from "lucide-react";
+import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -83,7 +83,18 @@ function OrdersContent() {
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
   return (
-    <div className="mx-auto max-w-4xl py-6 px-4 md:px-0">
+    <div className="mx-auto max-w-4xl py-0 md:py-6 px-0 md:px-0">
+      {/* ── Mobile Header ── */}
+      <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+        <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <ArrowLeft className="w-6 h-6 text-gray-800" />
+        </Link>
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
+          My Orders
+        </h1>
+      </header>
+
+      <div className="px-4 md:px-0 pt-4 md:pt-0">
       {showSuccess && (
         <div
           className="mb-4 flex items-center gap-3 rounded-xl border p-4"
@@ -99,7 +110,8 @@ function OrdersContent() {
         </div>
       )}
 
-      <div className="flex items-center gap-2 mb-6 lg:mb-8">
+      {/* Desktop-only heading */}
+      <div className="hidden md:flex items-center gap-2 mb-6 lg:mb-8">
         <h1 className="text-[24px] lg:text-[32px] font-black text-gray-900 tracking-tight">
           My Orders
         </h1>
@@ -173,6 +185,7 @@ function OrdersContent() {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }

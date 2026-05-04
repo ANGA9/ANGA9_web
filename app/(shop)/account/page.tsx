@@ -429,10 +429,18 @@ export default function CustomerAccountPage() {
       <div className="block md:hidden pb-24">
         {mobileMenuOpen ? (
           // --- Main Mobile Menu ---
-          <div className="w-full flex flex-col pt-4 px-4 gap-4">
-            <header className="mb-2">
-              <h1 className="text-[24px] font-black tracking-tight text-gray-900">Account</h1>
+          <div className="w-full flex flex-col">
+            {/* Sticky header matching Cart/Wishlist/Orders */}
+            <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+              <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+                <ArrowLeft className="w-6 h-6 text-gray-800" />
+              </Link>
+              <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
+                Account
+              </h1>
             </header>
+
+            <div className="px-4 pt-4 flex flex-col gap-3">
 
             {!isLoggedIn ? (
               <div className="bg-white rounded-xl p-5 flex items-center justify-between shadow-sm border border-gray-200">
@@ -502,24 +510,25 @@ export default function CustomerAccountPage() {
             {isLoggedIn && (
               <button
                 onClick={logout}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-red-100 bg-red-50 py-4 text-[15px] font-bold text-red-600 transition-all active:scale-[0.98] mt-2 mb-24"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-red-100 bg-red-50 py-4 text-[15px] font-bold text-red-600 transition-all active:scale-[0.98] mt-2 mb-8"
               >
                 <LogOut className="h-[18px] w-[18px]" />
                 Log Out
               </button>
             )}
+            </div>
           </div>
         ) : (
           // --- Mobile Drill-down View ---
           <div className="w-full flex flex-col min-h-screen bg-gray-50">
-            <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+            <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
               <button 
                 onClick={() => setMobileMenuOpen(true)} 
                 className="mr-3 p-1.5 -ml-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors shrink-0"
               >
                 <ArrowLeft className="w-6 h-6 text-gray-800" />
               </button>
-              <h1 className="text-[16px] font-bold text-gray-900 truncate">
+              <h1 className="text-[17px] font-medium text-gray-900 leading-tight truncate">
                 {activeNav}
               </h1>
             </header>

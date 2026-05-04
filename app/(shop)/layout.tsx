@@ -22,7 +22,9 @@ export default function CustomerShopLayout({
   const isCart = pathname === "/cart";
   const isNotifications = pathname === "/notifications";
   const isProductDetail = pathname?.startsWith("/products/");
-  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail;
+  const isOrders = pathname === "/orders";
+  const isAccount = pathname === "/account";
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount;
 
   return (
     <LoginSheetProvider>

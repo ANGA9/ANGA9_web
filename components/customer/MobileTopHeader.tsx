@@ -6,7 +6,7 @@ import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X } from "lucide-react";
+import { User, MapPin, ChevronDown, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -14,6 +14,7 @@ import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
 import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
+import { detectLocationFromBrowser } from "@/lib/detectLocation";
 import NotificationBell from "@/components/shared/NotificationBell";
 
 interface Suggestion {
@@ -63,7 +64,16 @@ function MobileTopHeaderContent() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
+  const [pincodeOpen, setPincodeOpen] = useState(false);
+  const [pincodeInput, setPincodeInput] = useState("");
+  const [pincodeError, setPincodeError] = useState("");
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [ipDetected, setIpDetected] = useState<{ city: string; pincode: string } | null>(null);
+  const [ipDetectError, setIpDetectError] = useState("");
+  const [ipDetectLoading, setIpDetectLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const pincodeRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
@@ -76,6 +86,118 @@ function MobileTopHeaderContent() {
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const IP_CACHE_KEY = "ipLocation";
+    const USER_KEY = "userPincode";
+    const TTL_MS = 24 * 60 * 60 * 1000;
+
+    try {
+      const userSaved = localStorage.getItem(USER_KEY);
+      if (userSaved) {
+        const parsed = JSON.parse(userSaved) as { city: string; pincode: string };
+        if (parsed.city && parsed.pincode) {
+          setLocation(parsed);
+          return;
+        }
+      }
+    } catch {}
+
+    try {
+      const cached = localStorage.getItem(IP_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as { city: string; pincode: string; ts: number };
+        if (Date.now() - parsed.ts < TTL_MS && parsed.city && parsed.pincode) {
+          setLocation({ city: parsed.city, pincode: parsed.pincode });
+          return;
+        }
+      }
+    } catch {}
+
+    let cancelled = false;
+    fetch("https://ipapi.co/json/")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { city?: string; postal?: string } | null) => {
+        if (cancelled || !data?.city || !data?.postal) return;
+        const next = { city: data.city, pincode: data.postal };
+        setLocation(next);
+        try {
+          localStorage.setItem(IP_CACHE_KEY, JSON.stringify({ ...next, ts: Date.now() }));
+        } catch {}
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const submitPincode = async (raw: string) => {
+    const pin = raw.trim();
+    if (!/^\d{6}$/.test(pin)) {
+      setPincodeError("Enter a valid 6-digit pincode");
+      return;
+    }
+    setPincodeError("");
+    setPincodeLoading(true);
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+      const data = (await res.json()) as Array<{
+        Status: string;
+        PostOffice?: Array<{ Name: string; District: string; State: string }>;
+      }>;
+      const entry = data?.[0];
+      if (entry?.Status !== "Success" || !entry.PostOffice?.length) {
+        setPincodeError("Pincode not found");
+        return;
+      }
+      const office = entry.PostOffice[0];
+      const city = office.District || office.Name;
+      const next = { city, pincode: pin };
+      setLocation(next);
+      try {
+        localStorage.setItem("userPincode", JSON.stringify(next));
+      } catch {}
+      setPincodeOpen(false);
+      setPincodeInput("");
+    } catch {
+      setPincodeError("Could not look up pincode. Try again.");
+    } finally {
+      setPincodeLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!pincodeOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (pincodeRef.current && !pincodeRef.current.contains(e.target as Node)) {
+        setPincodeOpen(false);
+        setPincodeError("");
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [pincodeOpen]);
+
+  const useMyLocation = async () => {
+    setIpDetectError("");
+    setIpDetected(null);
+    setIpDetectLoading(true);
+    try {
+      const next = await detectLocationFromBrowser();
+      setIpDetected(next);
+      setLocation(next);
+      try {
+        localStorage.setItem("userPincode", JSON.stringify(next));
+      } catch {}
+    } catch (err: unknown) {
+      const e = err as { code?: number; message?: string };
+      if (e?.code === 1) setIpDetectError("Permission denied. Enter pincode manually.");
+      else if (e?.code === 3) setIpDetectError("Location request timed out");
+      else setIpDetectError(e?.message || "Could not get location");
+    } finally {
+      setIpDetectLoading(false);
+    }
+  };
       
   useEffect(() => {
     // Load recent searches
@@ -158,14 +280,73 @@ function MobileTopHeaderContent() {
       style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
     >
       {/* ── Row 1: Delivery Location (Top) ── */}
-      <div className="flex items-center px-4 pt-3 pb-1.5 w-full">
-        <button className="flex items-center gap-1.5 group">
+      <div className="relative flex items-center px-4 pt-3 pb-1.5 w-full" ref={pincodeRef}>
+        <button onClick={() => setPincodeOpen((v) => !v)} className="flex items-center gap-1.5 group">
           <MapPin className="w-[15px] h-[15px] text-[#1A6FD4] stroke-[2.5]" />
           <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight group-hover:text-[#1A6FD4] transition-colors">
-            Deliver to Kalkaji, 110019
+            {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
           </span>
           <ChevronDown className="w-[15px] h-[15px] text-[#9CA3AF] group-hover:text-[#1A6FD4] transition-colors" />
         </button>
+        {pincodeOpen && (
+          <div className="absolute left-3 right-3 top-[calc(100%+6px)] rounded-2xl border border-[#E8EEF4] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-50 p-4">
+            <div className="text-[14px] font-bold mb-1 text-[#1A1A2E]">Enter delivery pincode</div>
+            <div className="text-[12.5px] mb-3 text-[#9CA3AF]">
+              We&apos;ll show prices and shipping times for your area.
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                autoFocus
+                value={pincodeInput}
+                onChange={(e) => {
+                  setPincodeInput(e.target.value.replace(/\D/g, ""));
+                  if (pincodeError) setPincodeError("");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") submitPincode(pincodeInput);
+                }}
+                placeholder="6-digit pincode"
+                className="flex-1 rounded-lg border border-[#D0E3F7] px-3 py-2 text-[14px] text-[#1A1A2E] outline-none focus:border-[#1A6FD4]"
+              />
+              <button
+                onClick={() => submitPincode(pincodeInput)}
+                disabled={pincodeLoading}
+                className="rounded-lg bg-[#1A6FD4] px-3 py-2 text-[13px] font-bold text-white transition-opacity disabled:opacity-60"
+              >
+                {pincodeLoading ? "..." : "Apply"}
+              </button>
+            </div>
+            <button
+              onClick={useMyLocation}
+              disabled={ipDetectLoading}
+              title="Use device location (asks for permission)"
+              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[#D0E3F7] px-3 py-2 text-[13px] font-bold text-[#1A6FD4] transition-opacity disabled:opacity-60"
+            >
+              <RotateCw className={`w-[13px] h-[13px] ${ipDetectLoading ? "animate-spin" : ""}`} />
+              {ipDetectLoading ? "Detecting…" : "Use my location"}
+            </button>
+            {pincodeError && (
+              <div className="mt-2 text-[12.5px] text-[#DC2626]">{pincodeError}</div>
+            )}
+            {(ipDetected || ipDetectError || ipDetectLoading) && (
+              <div className="mt-3 rounded-lg border border-[#E8EEF4] bg-[#EAF2FF] p-2.5 text-[12px]">
+                <div className="font-bold mb-0.5 text-[#4B5563]">Detection result</div>
+                {ipDetectLoading ? (
+                  <div className="text-[#9CA3AF]">Checking…</div>
+                ) : ipDetectError ? (
+                  <div className="text-[#DC2626]">{ipDetectError}</div>
+                ) : ipDetected ? (
+                  <div className="text-[#1A1A2E]">
+                    {ipDetected.city}, {ipDetected.pincode}
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Row 2: Logo + Icons ── */}

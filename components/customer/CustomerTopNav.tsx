@@ -20,8 +20,10 @@ import {
   CircleUserRound,
   History,
   X,
+  RotateCw,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { detectLocationFromBrowser } from "@/lib/detectLocation";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
@@ -61,6 +63,9 @@ export default function CustomerTopNav() {
   const [pincodeInput, setPincodeInput] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [ipDetected, setIpDetected] = useState<{ city: string; pincode: string } | null>(null);
+  const [ipDetectError, setIpDetectError] = useState("");
+  const [ipDetectLoading, setIpDetectLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const pincodeRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
@@ -166,6 +171,27 @@ export default function CustomerTopNav() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [pincodeOpen]);
+
+  const useMyLocation = async () => {
+    setIpDetectError("");
+    setIpDetected(null);
+    setIpDetectLoading(true);
+    try {
+      const next = await detectLocationFromBrowser();
+      setIpDetected(next);
+      setLocation(next);
+      try {
+        localStorage.setItem("userPincode", JSON.stringify(next));
+      } catch {}
+    } catch (err: unknown) {
+      const e = err as { code?: number; message?: string };
+      if (e?.code === 1) setIpDetectError("Permission denied. Enter pincode manually.");
+      else if (e?.code === 3) setIpDetectError("Location request timed out");
+      else setIpDetectError(e?.message || "Could not get location");
+    } finally {
+      setIpDetectLoading(false);
+    }
+  };
       
   useEffect(() => {
     // Load recent searches
@@ -336,9 +362,35 @@ export default function CustomerTopNav() {
                       {pincodeLoading ? "..." : "Apply"}
                     </button>
                   </div>
+                  <button
+                    onClick={useMyLocation}
+                    disabled={ipDetectLoading}
+                    title="Use device location (asks for permission)"
+                    className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-opacity disabled:opacity-60"
+                    style={{ borderColor: t.borderSearch, color: t.bluePrimary }}
+                  >
+                    <RotateCw style={{ width: 14, height: 14 }} className={ipDetectLoading ? "animate-spin" : ""} />
+                    {ipDetectLoading ? "Detecting…" : "Use my location"}
+                  </button>
                   {pincodeError && (
                     <div className="mt-2 text-[12.5px]" style={{ color: t.outOfStock }}>
                       {pincodeError}
+                    </div>
+                  )}
+                  {(ipDetected || ipDetectError || ipDetectLoading) && (
+                    <div className="mt-3 rounded-lg border p-2.5 text-[12px]" style={{ borderColor: t.border, backgroundColor: t.bgBlueTint }}>
+                      <div className="font-bold mb-0.5" style={{ color: t.textSecondary }}>
+                        Detection result
+                      </div>
+                      {ipDetectLoading ? (
+                        <div style={{ color: t.textMuted }}>Checking…</div>
+                      ) : ipDetectError ? (
+                        <div style={{ color: t.outOfStock }}>{ipDetectError}</div>
+                      ) : ipDetected ? (
+                        <div style={{ color: t.textPrimary }}>
+                          {ipDetected.city}, {ipDetected.pincode}
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>

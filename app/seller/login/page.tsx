@@ -100,13 +100,17 @@ export default function SellerLoginPage() {
 
       const { user, sellerProfile } = await res.json();
 
-      // Determine redirect based on role & onboarding status
+      const hostname = window.location.hostname;
+      const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+      const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
+      document.cookie = `portal=seller; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+
+      const sellerHost = hostname.endsWith("anga9.com") ? "https://seller.anga9.com" : "";
+
       if (user.role === "seller" && sellerProfile?.onboarding_complete) {
-        // Completed onboarding → dashboard
-        window.location.href = "/seller/dashboard";
+        window.location.href = `${sellerHost}/dashboard`;
       } else if (user.role === "seller" && !sellerProfile?.onboarding_complete) {
-        // Incomplete onboarding → continue onboarding
-        window.location.href = "/seller/onboarding";
+        window.location.href = `${sellerHost}/onboarding`;
       } else {
         // Customer or new user → upgrade to seller role, then onboarding
         try {
@@ -122,7 +126,7 @@ export default function SellerLoginPage() {
           // Role upgrade failed — still redirect to onboarding, backend will handle
           console.warn("Role upgrade request failed, proceeding to onboarding");
         }
-        window.location.href = "/seller/onboarding";
+        window.location.href = `${sellerHost}/onboarding`;
       }
     } catch (err: any) {
       console.error("OTP verify error:", err);

@@ -57,7 +57,9 @@ export default function proxy(request: NextRequest) {
     const portalCookie = request.cookies.get("portal");
 
     if (!portalCookie) {
-      const loginUrl = new URL("/seller/login", isSellerSubdomain ? `https://${SELLER_HOST}` : request.url);
+      const loginUrl = isSellerSubdomain
+        ? new URL("/login", `https://${SELLER_HOST}`)
+        : new URL("/seller/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
 

@@ -77,22 +77,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const portalMatch = document.cookie.match(/(^| )portal=([^;]+)/);
     const currentPortal = portalMatch ? portalMatch[2] : null;
 
-    // Never touch cookies when admin portal cookie is active or on admin pages
     if (isAdminPage || currentPortal === "admin") return;
 
+    const isSellerHost = window.location.hostname.startsWith("seller.");
+    const isSellerPath = window.location.pathname.startsWith("/seller");
+    if (currentPortal === "seller" || isSellerHost || isSellerPath) return;
+
+    const hostname = window.location.hostname;
+    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+    const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
+    const baseAttrs = `; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+    const expireAttrs = `; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT${domainAttr}`;
+
     if (authUser) {
-      document.cookie = "portal=customer; path=/; max-age=86400";
+      document.cookie = `portal=customer${baseAttrs}`;
       if (authUser.phone) {
         const purePhone = authUser.phone.replace(/[^\d]/g, "").slice(-10);
-        document.cookie = "customer_phone=" + purePhone + "; path=/; max-age=86400";
+        document.cookie = `customer_phone=${purePhone}${baseAttrs}`;
       }
       if (authUser.email) {
-        document.cookie = "customer_email=" + encodeURIComponent(authUser.email) + "; path=/; max-age=86400";
+        document.cookie = `customer_email=${encodeURIComponent(authUser.email)}${baseAttrs}`;
       }
     } else {
-      document.cookie = "portal=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "customer_phone=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "customer_email=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = `portal=${expireAttrs}`;
+      document.cookie = `customer_phone=${expireAttrs}`;
+      document.cookie = `customer_email=${expireAttrs}`;
     }
   }, []);
 

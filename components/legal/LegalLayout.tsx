@@ -45,44 +45,47 @@ export default function LegalLayout({
     <div className="legal-page-root">
       {/* ══════════ Header & Hero Wrapper ══════════ */}
       <div className="legal-hero-wrapper">
+        {/* ── Header ── */}
         <header className="legal-header">
-          <div className="legal-header-inner">
-            <div className="legal-header-left">
-              <button
-                onClick={() =>
-                  history.length > 1 ? router.back() : router.push("/")
-                }
-                aria-label="Go back"
-                className="legal-back-btn"
-              >
-                <ArrowLeft className="legal-back-icon" strokeWidth={2.5} />
-              </button>
-              <Link href="/" className="legal-logo-link">
-                <Image
-                  src="/anga9-logo.png"
-                  alt="ANGA9"
-                  width={110}
-                  height={34}
-                  className="legal-logo-img"
-                  priority
-                />
-              </Link>
-            </div>
-            {/* Breadcrumb on desktop */}
-            <div className="legal-breadcrumb">
-              <Link href="/" className="legal-breadcrumb-home">
-                Home
-              </Link>
-              <ChevronRight className="legal-breadcrumb-sep" strokeWidth={2.5} />
-              <span className="legal-breadcrumb-current">{title}</span>
+          <div className="legal-container">
+            <div className="legal-header-inner">
+              <div className="legal-header-left">
+                <button
+                  onClick={() =>
+                    history.length > 1 ? router.back() : router.push("/")
+                  }
+                  aria-label="Go back"
+                  className="legal-back-btn"
+                >
+                  <ArrowLeft className="legal-back-icon" strokeWidth={2.5} />
+                </button>
+                <Link href="/" className="legal-logo-link">
+                  <Image
+                    src="/anga9-logo.png"
+                    alt="ANGA9"
+                    width={110}
+                    height={34}
+                    className="legal-logo-img"
+                    priority
+                  />
+                </Link>
+              </div>
+              {/* Breadcrumb on desktop */}
+              <div className="legal-breadcrumb">
+                <Link href="/" className="legal-breadcrumb-home">
+                  Home
+                </Link>
+                <ChevronRight className="legal-breadcrumb-sep" strokeWidth={2.5} />
+                <span className="legal-breadcrumb-current">{title}</span>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* ══════════ Hero Banner ══════════ */}
+        {/* ── Hero Banner ── */}
         <section className="legal-hero">
-          <div className="legal-hero-inner">
-            <div className="legal-hero-content">
+          <div className="legal-container">
+            <div className="legal-hero-inner">
               <div className="legal-hero-icon-wrap">
                 <CurrentIcon className="legal-hero-icon" strokeWidth={2} />
               </div>
@@ -100,113 +103,117 @@ export default function LegalLayout({
 
       {/* ══════════ Body ══════════ */}
       <div className="legal-body">
-        <div className="legal-body-grid">
-          {/* ── Sidebar (desktop) ── */}
-          <aside className="legal-sidebar">
-            <div className="legal-sidebar-sticky">
-              <div className="legal-sidebar-card">
-                <p className="legal-sidebar-label">Quick Navigation</p>
-                <nav className="legal-sidebar-nav">
-                  {NAV.map((item) => {
-                    const active = pathname === item.href;
+        <div className="legal-container">
+          <div className="legal-body-grid">
+            {/* ── Sidebar (desktop) ── */}
+            <aside className="legal-sidebar">
+              <div className="legal-sidebar-sticky">
+                <div className="legal-sidebar-card">
+                  <p className="legal-sidebar-label">Quick Navigation</p>
+                  <nav className="legal-sidebar-nav">
+                    {NAV.map((item) => {
+                      const active = pathname === item.href;
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`legal-sidebar-link ${
+                            active ? "legal-sidebar-link--active" : ""
+                          }`}
+                        >
+                          <Icon className="legal-sidebar-link-icon" strokeWidth={active ? 2.5 : 2} />
+                          <span>{item.label}</span>
+                          {active && <div className="legal-sidebar-active-dot" />}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Help card */}
+                <div className="legal-sidebar-help">
+                  <p className="legal-sidebar-help-title">Need Help?</p>
+                  <p className="legal-sidebar-help-text">
+                    Can&apos;t find what you&apos;re looking for?
+                  </p>
+                  <Link href="/contact" className="legal-sidebar-help-btn">
+                    <MessageSquare
+                      className="legal-sidebar-help-btn-icon"
+                      strokeWidth={2}
+                    />
+                    Contact Support
+                  </Link>
+                </div>
+              </div>
+            </aside>
+
+            {/* ── Main content ── */}
+            <main className="legal-main">
+              <div className="legal-content-card">
+                <div className="legal-prose">{children}</div>
+              </div>
+
+              {/* ── Mobile-only nav at bottom ── */}
+              <div className="legal-mobile-nav">
+                <p className="legal-mobile-nav-label">More policies</p>
+                <div className="legal-mobile-nav-grid">
+                  {NAV.filter((i) => i.href !== pathname).map((item) => {
                     const Icon = item.icon;
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className={`legal-sidebar-link ${
-                          active ? "legal-sidebar-link--active" : ""
-                        }`}
+                        className="legal-mobile-nav-card"
                       >
-                        <Icon className="legal-sidebar-link-icon" strokeWidth={active ? 2.2 : 1.8} />
-                        <span>{item.label}</span>
-                        {active && <div className="legal-sidebar-active-dot" />}
+                        <Icon
+                          className="legal-mobile-nav-icon"
+                          strokeWidth={2}
+                        />
+                        <span className="legal-mobile-nav-text">
+                          {item.label}
+                        </span>
+                        <ChevronRight className="legal-mobile-nav-arrow" />
                       </Link>
                     );
                   })}
-                </nav>
+                </div>
               </div>
-
-              {/* Help card */}
-              <div className="legal-sidebar-help">
-                <p className="legal-sidebar-help-title">Need Help?</p>
-                <p className="legal-sidebar-help-text">
-                  Can&apos;t find what you&apos;re looking for?
-                </p>
-                <Link href="/contact" className="legal-sidebar-help-btn">
-                  <MessageSquare
-                    className="legal-sidebar-help-btn-icon"
-                    strokeWidth={2}
-                  />
-                  Contact Support
-                </Link>
-              </div>
-            </div>
-          </aside>
-
-          {/* ── Main content ── */}
-          <main className="legal-main">
-            <div className="legal-content-card">
-              <div className="legal-prose">{children}</div>
-            </div>
-
-            {/* ── Mobile-only nav at bottom ── */}
-            <div className="legal-mobile-nav">
-              <p className="legal-mobile-nav-label">More policies</p>
-              <div className="legal-mobile-nav-grid">
-                {NAV.filter((i) => i.href !== pathname).map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="legal-mobile-nav-card"
-                    >
-                      <Icon
-                        className="legal-mobile-nav-icon"
-                        strokeWidth={1.8}
-                      />
-                      <span className="legal-mobile-nav-text">
-                        {item.label}
-                      </span>
-                      <ChevronRight className="legal-mobile-nav-arrow" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
 
       {/* ══════════ Footer ══════════ */}
       <footer className="legal-footer">
-        <div className="legal-footer-inner">
-          <div className="legal-footer-brand">
-            <Image
-              src="/anga9-logo.png"
-              alt="ANGA9"
-              width={80}
-              height={26}
-              className="legal-footer-logo"
-            />
-            <p className="legal-footer-tagline">
-              India&apos;s B2B Wholesale Marketplace
-            </p>
-          </div>
-          <div className="legal-footer-links">
-            {NAV.slice(0, 5).map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="legal-footer-link"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-          <div className="legal-footer-copy">
-            <p>© {new Date().getFullYear()} ANGA9. All rights reserved.</p>
+        <div className="legal-container">
+          <div className="legal-footer-inner">
+            <div className="legal-footer-brand">
+              <Image
+                src="/anga9-logo.png"
+                alt="ANGA9"
+                width={80}
+                height={26}
+                className="legal-footer-logo"
+              />
+              <p className="legal-footer-tagline">
+                India&apos;s B2B Wholesale Marketplace
+              </p>
+            </div>
+            <div className="legal-footer-links">
+              {NAV.slice(0, 5).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="legal-footer-link"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <div className="legal-footer-copy">
+              <p>© {new Date().getFullYear()} ANGA9. All rights reserved.</p>
+            </div>
           </div>
         </div>
       </footer>
@@ -219,6 +226,18 @@ export default function LegalLayout({
           background: #F9FAFB;
           display: flex;
           flex-direction: column;
+        }
+
+        /* ── Strict Alignment Container ── */
+        .legal-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        @media (min-width: 768px) {
+          .legal-container { padding: 0 32px; }
         }
 
         /* ── Hero Wrapper ── */
@@ -242,17 +261,15 @@ export default function LegalLayout({
         .legal-header {
           position: relative;
           z-index: 10;
+          padding: 16px 0;
+        }
+        @media (min-width: 768px) {
+          .legal-header { padding: 24px 0; }
         }
         .legal-header-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 16px 20px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-        }
-        @media (min-width: 768px) {
-          .legal-header-inner { padding: 24px 32px; }
         }
         .legal-header-left {
           display: flex;
@@ -313,16 +330,12 @@ export default function LegalLayout({
         .legal-hero {
           position: relative;
           z-index: 10;
-          padding: 32px 20px 56px;
+          padding: 16px 0 56px;
         }
         @media (min-width: 768px) {
-          .legal-hero { padding: 40px 32px 80px; }
+          .legal-hero { padding: 16px 0 80px; }
         }
         .legal-hero-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-        .legal-hero-content {
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -330,7 +343,7 @@ export default function LegalLayout({
           max-width: 800px;
         }
         @media (min-width: 768px) {
-          .legal-hero-content {
+          .legal-hero-inner {
             flex-direction: row;
             align-items: center;
             gap: 28px;
@@ -378,15 +391,13 @@ export default function LegalLayout({
         /* ── Body ── */
         .legal-body {
           flex: 1;
-          max-width: 1200px;
           width: 100%;
-          margin: 0 auto;
-          padding: 0 16px 64px;
+          padding: 0 0 64px;
           position: relative;
           top: -32px;
         }
         @media (min-width: 768px) {
-          .legal-body { padding: 0 32px 80px; top: -48px; }
+          .legal-body { padding: 0 0 80px; top: -48px; }
         }
         .legal-body-grid {
           display: grid;
@@ -582,15 +593,13 @@ export default function LegalLayout({
           background: #fff;
           border-top: 1px solid #E5E7EB;
           margin-top: auto;
-        }
-        .legal-footer-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 40px 20px;
-          text-align: center;
+          padding: 40px 0;
         }
         @media (min-width: 768px) {
-          .legal-footer-inner { padding: 48px 32px; }
+          .legal-footer { padding: 48px 0; }
+        }
+        .legal-footer-inner {
+          text-align: center;
         }
         .legal-footer-brand {
           display: flex;

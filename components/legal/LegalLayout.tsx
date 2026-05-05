@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,6 +15,8 @@ import {
   MessageSquare,
   ChevronRight,
   Calendar,
+  Menu,
+  X,
 } from "lucide-react";
 
 const NAV = [
@@ -37,39 +40,77 @@ export default function LegalLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const currentNav = NAV.find((n) => n.href === pathname);
   const CurrentIcon = currentNav?.icon || FileText;
 
   return (
     <div className="legal-page-root">
-      {/* ══════════ Header & Hero Wrapper ══════════ */}
-      <div className="legal-hero-wrapper">
-        {/* ── Header ── */}
-        <header className="legal-header">
-          <div className="legal-container">
-            <div className="legal-header-inner">
-              <div className="legal-header-left">
-                <button
-                  onClick={() =>
-                    history.length > 1 ? router.back() : router.push("/")
-                  }
-                  aria-label="Go back"
-                  className="legal-back-btn"
-                >
-                  <ArrowLeft className="legal-back-icon" strokeWidth={2.5} />
-                </button>
-                <Link href="/" className="legal-logo-link">
-                  <Image
-                    src="/anga9-logo.png"
-                    alt="ANGA9"
-                    width={110}
-                    height={34}
-                    className="legal-logo-img"
-                    priority
-                  />
-                </Link>
-              </div>
+      {/* ── Mobile Menu Overlay ── */}
+      <div className={`legal-mobile-overlay ${isMobileMenuOpen ? "open" : ""}`}>
+        <div className="legal-mobile-overlay-header">
+          <span className="legal-mobile-overlay-title">Quick Navigation</span>
+          <button 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="legal-mobile-overlay-close"
+            aria-label="Close menu"
+          >
+            <X strokeWidth={2.5} size={24} />
+          </button>
+        </div>
+        <div className="legal-mobile-overlay-content">
+          {NAV.map((item) => {
+            const active = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`legal-mobile-overlay-link ${
+                  active ? "legal-mobile-overlay-link--active" : ""
+                }`}
+              >
+                <Icon className="legal-mobile-overlay-icon" strokeWidth={active ? 2.5 : 2} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Header ── */}
+      <header className="legal-header">
+        <div className="legal-container">
+          <div className="legal-header-inner">
+            <div className="legal-header-left">
+              <button
+                onClick={() => router.push("/")}
+                aria-label="Go to homepage"
+                className="legal-back-btn"
+              >
+                <ArrowLeft className="legal-back-icon" strokeWidth={2.5} />
+              </button>
+              <Link href="/" className="legal-logo-link">
+                <Image
+                  src="/anga9-logo.png"
+                  alt="ANGA9"
+                  width={110}
+                  height={34}
+                  className="legal-logo-img"
+                  priority
+                />
+              </Link>
+            </div>
+            <div className="legal-header-right">
+              <button 
+                className="legal-mobile-menu-btn"
+                onClick={() => setIsMobileMenuOpen(true)}
+                aria-label="Open menu"
+              >
+                <Menu className="legal-mobile-menu-icon" strokeWidth={2.5} size={24} />
+              </button>
               {/* Breadcrumb on desktop */}
               <div className="legal-breadcrumb">
                 <Link href="/" className="legal-breadcrumb-home">
@@ -80,8 +121,11 @@ export default function LegalLayout({
               </div>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
+      {/* ══════════ Hero Wrapper ══════════ */}
+      <div className="legal-hero-wrapper">
         {/* ── Hero Banner ── */}
         <section className="legal-hero">
           <div className="legal-container">
@@ -245,7 +289,6 @@ export default function LegalLayout({
           position: relative;
           background: #fff;
           overflow: hidden;
-          border-bottom: 1px solid #E5E7EB;
         }
         .legal-hero-wrapper::before {
           content: '';
@@ -259,12 +302,24 @@ export default function LegalLayout({
 
         /* ── Header ── */
         .legal-header {
-          position: relative;
-          z-index: 10;
+          position: sticky;
+          top: 0;
+          z-index: 40;
           padding: 16px 0;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(229, 231, 235, 0.5);
         }
         @media (min-width: 768px) {
-          .legal-header { padding: 24px 0; }
+          .legal-header { 
+            position: relative;
+            background: #fff;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-bottom: none;
+            padding: 24px 0; 
+          }
         }
         .legal-header-inner {
           display: flex;
@@ -299,9 +354,26 @@ export default function LegalLayout({
         .legal-logo-img { height: 28px; width: auto; }
         @media (min-width: 768px) { .legal-logo-img { height: 34px; } }
 
-        /* Breadcrumb */
+        /* Breadcrumb & Mobile Menu */
+        .legal-header-right {
+          display: flex;
+          align-items: center;
+        }
+        .legal-mobile-menu-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          background: transparent;
+          border: none;
+          color: #111827;
+          cursor: pointer;
+        }
         .legal-breadcrumb { display: none; }
         @media (min-width: 768px) {
+          .legal-mobile-menu-btn { display: none; }
           .legal-breadcrumb {
             display: flex;
             align-items: center;
@@ -330,22 +402,20 @@ export default function LegalLayout({
         .legal-hero {
           position: relative;
           z-index: 10;
-          padding: 16px 0 56px;
+          padding: 24px 0 40px;
         }
         @media (min-width: 768px) {
-          .legal-hero { padding: 16px 0 80px; }
+          .legal-hero { padding: 40px 0 64px; }
         }
         .legal-hero-inner {
           display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 20px;
+          flex-direction: row;
+          align-items: center;
+          gap: 16px;
           max-width: 800px;
         }
         @media (min-width: 768px) {
           .legal-hero-inner {
-            flex-direction: row;
-            align-items: center;
             gap: 28px;
           }
         }
@@ -353,31 +423,32 @@ export default function LegalLayout({
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 64px;
-          height: 64px;
-          border-radius: 20px;
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
           background: #F0F5FF;
           border: 1px solid #DBEAFE;
           box-shadow: 0 4px 12px rgba(26,111,212,0.08);
           flex-shrink: 0;
         }
         @media (min-width: 768px) { .legal-hero-icon-wrap { width: 80px; height: 80px; border-radius: 24px; } }
-        .legal-hero-icon { width: 32px; height: 32px; color: #1A6FD4; }
+        .legal-hero-icon { width: 24px; height: 24px; color: #1A6FD4; }
         @media (min-width: 768px) { .legal-hero-icon { width: 40px; height: 40px; } }
         .legal-hero-text {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 6px;
         }
+        @media (min-width: 768px) { .legal-hero-text { gap: 12px; } }
         .legal-hero-title {
-          font-size: 32px;
+          font-size: 24px;
           font-weight: 800;
           color: #111827;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.02em;
           line-height: 1.1;
           margin: 0;
         }
-        @media (min-width: 768px) { .legal-hero-title { font-size: 46px; } }
+        @media (min-width: 768px) { .legal-hero-title { font-size: 46px; letter-spacing: -0.03em; } }
         .legal-hero-meta {
           display: inline-flex;
           align-items: center;
@@ -393,11 +464,9 @@ export default function LegalLayout({
           flex: 1;
           width: 100%;
           padding: 0 0 64px;
-          position: relative;
-          top: -32px;
         }
         @media (min-width: 768px) {
-          .legal-body { padding: 0 0 80px; top: -48px; }
+          .legal-body { padding: 0 0 80px; }
         }
         .legal-body-grid {
           display: grid;
@@ -753,6 +822,81 @@ export default function LegalLayout({
             height: 20px;
             width: 4px;
           }
+        }
+
+        /* ── Mobile Overlay Menu Styles ── */
+        .legal-mobile-overlay {
+          position: fixed;
+          inset: 0;
+          background: #fff;
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          transform: translateY(100%);
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          pointer-events: none;
+        }
+        .legal-mobile-overlay.open {
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+        @media (min-width: 768px) {
+          .legal-mobile-overlay { display: none; }
+        }
+        .legal-mobile-overlay-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 20px;
+          border-bottom: 1px solid #E5E7EB;
+        }
+        .legal-mobile-overlay-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: #111827;
+        }
+        .legal-mobile-overlay-close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #F3F4F6;
+          border: none;
+          color: #4B5563;
+          cursor: pointer;
+        }
+        .legal-mobile-overlay-content {
+          padding: 24px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          overflow-y: auto;
+        }
+        .legal-mobile-overlay-link {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 16px;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 500;
+          color: #4B5563;
+          text-decoration: none;
+          background: #F9FAFB;
+          border: 1px solid #E5E7EB;
+        }
+        .legal-mobile-overlay-link--active {
+          background: #F0F5FF;
+          color: #1A6FD4;
+          border-color: #DBEAFE;
+          font-weight: 600;
+        }
+        .legal-mobile-overlay-icon {
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
         }
 
         /* ── FAQ item overrides ── */

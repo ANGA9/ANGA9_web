@@ -92,7 +92,7 @@ export default function PrivacyPage() {
       </ul>
       <p>
         To exercise these rights, email us at{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+        <a href="mailto:support@anga9.com">support@anga9.com</a>.
       </p>
 
       <h2>7. Data Security</h2>
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
       <h2>10. Contact</h2>
       <p>
         Privacy questions or requests:{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+        <a href="mailto:support@anga9.com">support@anga9.com</a>.
       </p>
     </LegalLayout>
   );

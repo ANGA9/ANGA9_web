@@ -95,7 +95,7 @@ export default function ShippingPolicyPage() {
       <h2>9. Contact</h2>
       <p>
         Shipping questions? Email{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+        <a href="mailto:support@anga9.com">support@anga9.com</a>.
       </p>
     </LegalLayout>
   );

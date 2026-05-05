@@ -120,7 +120,7 @@ export default function TermsPage() {
       <h2>14. Contact</h2>
       <p>
         For questions about these Terms, please contact us at{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a> or visit our{" "}
+        <a href="mailto:support@anga9.com">support@anga9.com</a> or visit our{" "}
         <a href="/contact">Contact</a> page.
       </p>
     </LegalLayout>

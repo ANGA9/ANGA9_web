@@ -132,7 +132,7 @@ export default function LegalLayout({
                 </div>
 
                 {/* Help card */}
-                <div className="legal-sidebar-help">
+                {/* <div className="legal-sidebar-help">
                   <p className="legal-sidebar-help-title">Need Help?</p>
                   <p className="legal-sidebar-help-text">
                     Can&apos;t find what you&apos;re looking for?
@@ -144,7 +144,7 @@ export default function LegalLayout({
                     />
                     Contact Support
                   </Link>
-                </div>
+                </div> */}
               </div>
             </aside>
 

@@ -82,7 +82,7 @@ export default function FAQPage() {
         <p>
           Quick answers to common questions about shopping, selling, and using ANGA9. Can&apos;t
           find what you&apos;re looking for? Reach us at{" "}
-          <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+          <a href="mailto:support@anga9.com">support@anga9.com</a>.
         </p>
 
         <FAQAccordion faqs={FAQS} />

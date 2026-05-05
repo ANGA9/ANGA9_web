@@ -99,7 +99,7 @@ export default function ReturnsPage() {
       <h2>9. Contact</h2>
       <p>
         Questions? Reach out at{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+        <a href="mailto:support@anga9.com">support@anga9.com</a>.
       </p>
     </LegalLayout>
   );

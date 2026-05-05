@@ -68,7 +68,7 @@ export default function CancellationPage() {
       <h2>6. Contact</h2>
       <p>
         Need help with a cancellation? Email{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
+        <a href="mailto:support@anga9.com">support@anga9.com</a>.
       </p>
     </LegalLayout>
   );

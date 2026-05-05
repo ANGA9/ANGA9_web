@@ -20,8 +20,8 @@ const CONTACTS = [
     details: [
       {
         icon: Mail,
-        label: "shawsumit6286@gmail.com",
-        href: "mailto:shawsumit6286@gmail.com",
+        label: "support@anga9.com",
+        href: "mailto:support@anga9.com",
       },
       { icon: Clock, label: "Mon–Sat, 10:00 AM – 7:00 PM IST" },
     ],
@@ -41,8 +41,8 @@ const CONTACTS = [
       },
       {
         icon: Mail,
-        label: "shawsumit6286@gmail.com",
-        href: "mailto:shawsumit6286@gmail.com",
+        label: "support@anga9.com",
+        href: "mailto:support@anga9.com",
       },
     ],
   },
@@ -55,8 +55,8 @@ const CONTACTS = [
     details: [
       {
         icon: Mail,
-        label: "shawsumit6286@gmail.com",
-        href: "mailto:shawsumit6286@gmail.com",
+        label: "support@anga9.com",
+        href: "mailto:support@anga9.com",
       },
     ],
   },
@@ -69,8 +69,8 @@ const CONTACTS = [
     details: [
       {
         icon: Mail,
-        label: "shawsumit6286@gmail.com",
-        href: "mailto:shawsumit6286@gmail.com",
+        label: "support@anga9.com",
+        href: "mailto:support@anga9.com",
       },
     ],
   },

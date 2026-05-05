@@ -30,7 +30,7 @@ export default function ContactPage() {
         <strong>Name:</strong> Sumit Shaw
         <br />
         <strong>Email:</strong>{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>
+        <a href="mailto:support@anga9.com">support@anga9.com</a>
         <br />
         <strong>Hours:</strong> Mon–Fri, 10:00 AM – 6:00 PM IST
       </p>

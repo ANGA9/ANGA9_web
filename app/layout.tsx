@@ -60,7 +60,7 @@ const rootOrganizationLd = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
-    email: "shawsumit6286@gmail.com",
+    email: "support@anga9.com",
     areaServed: "IN",
     availableLanguage: ["en", "hi"],
   },

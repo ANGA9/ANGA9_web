@@ -1,4 +1,4 @@
-const NOMINATIM_CONTACT = "shawsumit6286@gmail.com";
+const NOMINATIM_CONTACT = "support@anga9.com";
 
 type NominatimAddress = {
   postcode?: string;

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-/**
- * Seller landing pages that should always be public (no auth gate).
- * These are marketing/information pages, not seller dashboard pages.
- */
+const SELLER_HOST = "seller.anga9.com";
+
 const SELLER_PUBLIC_PATHS = [
   "/seller",
   "/seller/sell-on-anga9",
@@ -14,39 +12,56 @@ const SELLER_PUBLIC_PATHS = [
   "/seller/login",
 ];
 
-/**
- * Check if a path is a seller public page.
- */
 function isSellerPublicPath(pathname: string): boolean {
   return SELLER_PUBLIC_PATHS.includes(pathname);
 }
 
 export default function proxy(request: NextRequest) {
+  const host = (request.headers.get("host") || "").toLowerCase();
+  const isSellerSubdomain = host === SELLER_HOST || host.startsWith("seller.");
+  const url = request.nextUrl.clone();
   const { pathname } = request.nextUrl;
+
+  // ──────────────────────────────────────────────────
+  // Subdomain routing: seller.anga9.com → /seller/*
+  // ──────────────────────────────────────────────────
+  let effectivePath = pathname;
+  let rewroteForSubdomain = false;
+  if (isSellerSubdomain) {
+    if (!pathname.startsWith("/seller")) {
+      effectivePath = pathname === "/" ? "/seller/sell-on-anga9" : `/seller${pathname}`;
+      url.pathname = effectivePath;
+      rewroteForSubdomain = true;
+    }
+  } else {
+    // On main host (anga9.com) — redirect /seller/* to subdomain for SEO consolidation
+    if (pathname === "/seller" || pathname.startsWith("/seller/")) {
+      const subPath = pathname.replace(/^\/seller/, "") || "/";
+      return NextResponse.redirect(
+        `https://${SELLER_HOST}${subPath}${url.search}`,
+        301
+      );
+    }
+  }
 
   // ──────────────────────────────────────────────────
   // Seller portal
   // ──────────────────────────────────────────────────
-  if (pathname === "/seller" || pathname.startsWith("/seller/")) {
+  if (effectivePath === "/seller" || effectivePath.startsWith("/seller/")) {
     // Public seller pages — no auth required
-    if (isSellerPublicPath(pathname)) {
-      return NextResponse.next();
+    if (isSellerPublicPath(effectivePath)) {
+      return rewroteForSubdomain ? NextResponse.rewrite(url) : NextResponse.next();
     }
 
     // Protected seller routes (dashboard, onboarding, etc.)
-    // Check for portal cookie (set by AuthContext on login)
     const portalCookie = request.cookies.get("portal");
 
     if (!portalCookie) {
-      // No session → redirect to seller login
-      const loginUrl = new URL("/seller/login", request.url);
+      const loginUrl = new URL("/seller/login", isSellerSubdomain ? `https://${SELLER_HOST}` : request.url);
       return NextResponse.redirect(loginUrl);
     }
 
-    // Session exists → allow through
-    // Note: Role-based access (seller vs customer) is enforced
-    // on the client side and backend API layer, not in middleware.
-    return NextResponse.next();
+    return rewroteForSubdomain ? NextResponse.rewrite(url) : NextResponse.next();
   }
 
   // ──────────────────────────────────────────────────

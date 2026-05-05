@@ -398,14 +398,16 @@ export default function CustomerTopNav() {
               )}
             </div>
 
-            <Link
-              href="/seller/sell-on-anga9"
+            <a
+              href="https://seller.anga9.com/sell-on-anga9"
+              target="_blank"
+              rel="noopener"
               className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
               style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <Store style={{ width: 18, height: 18, color: t.bluePrimary }} />
               Sell on ANGA9
-            </Link>
+            </a>
             <div className="relative">
               {loading ? (
                 <div className="w-20 h-6 bg-gray-200 animate-pulse rounded"></div>
@@ -709,7 +711,7 @@ export default function CustomerTopNav() {
                 >
                   {[
                     { icon: Package, label: "My Orders", href: "/orders" },
-                    { icon: Store, label: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
+                    { icon: Store, label: "Sell on ANGA9", href: "https://seller.anga9.com/sell-on-anga9", external: true },
                     { icon: Megaphone, label: "Advertise on ANGA9" },
                     { icon: Download, label: "Download the App" },
                   ].map((item) => {
@@ -719,6 +721,20 @@ export default function CustomerTopNav() {
                         <span>{item.label}</span>
                       </>
                     );
+                    if (item.href && item.external) {
+                      return (
+                        <a
+                          key={item.label}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener"
+                          className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[#F3F4F6]"
+                          style={{ color: t.textPrimary, fontSize: '16px' }}
+                        >
+                          {inner}
+                        </a>
+                      );
+                    }
                     if (item.href) {
                       return (
                         <Link

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalLayout from "@/components/legal/LegalLayout";
+import ContactCards from "@/components/legal/ContactCards";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -18,48 +19,7 @@ export default function ContactPage() {
         to you.
       </p>
 
-      <h2>Customer Support</h2>
-      <p>
-        For order, payment, shipping, or refund queries — the fastest way is from your{" "}
-        <a href="/orders">Orders</a> page using &ldquo;Contact Seller&rdquo; or &ldquo;Need
-        Help&rdquo;. You can also email us directly:
-      </p>
-      <p>
-        <strong>Email:</strong>{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>
-        <br />
-        <strong>Hours:</strong> Mon–Sat, 10:00 AM – 7:00 PM IST
-      </p>
-
-      <h2>Seller Support</h2>
-      <p>
-        For seller onboarding, listing issues, payouts, or growth queries:
-      </p>
-      <p>
-        <strong>Seller Portal:</strong>{" "}
-        <a href="https://seller.anga9.com/sell-on-anga9">seller.anga9.com</a>
-        <br />
-        <strong>Email:</strong>{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>
-      </p>
-
-      <h2>Business & Partnerships</h2>
-      <p>
-        Logistics partnerships, brand collaborations, bulk procurement, integrations:
-      </p>
-      <p>
-        <strong>Email:</strong>{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>
-      </p>
-
-      <h2>Press & Media</h2>
-      <p>
-        For press inquiries, interviews, or company information:
-      </p>
-      <p>
-        <strong>Email:</strong>{" "}
-        <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>
-      </p>
+      <ContactCards />
 
       <h2>Grievance Officer</h2>
       <p>

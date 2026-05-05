@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalLayout from "@/components/legal/LegalLayout";
+import FAQAccordion from "@/components/legal/FAQAccordion";
 
 export const metadata: Metadata = {
   title: "FAQ — Frequently Asked Questions",
@@ -84,22 +85,7 @@ export default function FAQPage() {
           <a href="mailto:shawsumit6286@gmail.com">shawsumit6286@gmail.com</a>.
         </p>
 
-        {FAQS.map((f, i) => (
-          <div key={i} className="faq-item">
-            <h3>{f.q}</h3>
-            <p>{f.a}</p>
-          </div>
-        ))}
-
-        <style>{`
-          .faq-item {
-            border-bottom: 1px solid #EEF1F5;
-            padding-bottom: 14px;
-            margin-bottom: 14px;
-          }
-          .faq-item:last-child { border-bottom: none; }
-          .faq-item h3 { margin-top: 18px; }
-        `}</style>
+        <FAQAccordion faqs={FAQS} />
       </LegalLayout>
     </>
   );

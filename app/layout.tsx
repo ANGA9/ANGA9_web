@@ -31,6 +31,41 @@ export const metadata: Metadata = {
   },
 };
 
+const rootWebsiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "ANGA9",
+  alternateName: ["ANGA9 B2B", "ANGA9 Wholesale"],
+  url: "https://anga9.com",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://anga9.com/search?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const rootOrganizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ANGA9",
+  alternateName: "ANGA9 B2B Wholesale Marketplace",
+  url: "https://anga9.com",
+  logo: "https://anga9.com/favicon.ico",
+  description:
+    "ANGA9 is India's leading B2B wholesale marketplace connecting verified sellers with retailers across 19,000+ pin codes at 0% commission.",
+  sameAs: ["https://seller.anga9.com"],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    email: "shawsumit6286@gmail.com",
+    areaServed: "IN",
+    availableLanguage: ["en", "hi"],
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,6 +74,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full font-sans" style={{ fontFamily: '"Roboto", -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(rootWebsiteLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(rootOrganizationLd) }}
+        />
         <AuthProvider>
           <TooltipProvider>
             {children}

@@ -28,11 +28,18 @@ export default function proxy(request: NextRequest) {
   let effectivePath = pathname;
   let rewroteForSubdomain = false;
   if (isSellerSubdomain) {
-    if (!pathname.startsWith("/seller")) {
-      effectivePath = pathname === "/" ? "/seller/sell-on-anga9" : `/seller${pathname}`;
-      url.pathname = effectivePath;
-      rewroteForSubdomain = true;
+    if (pathname === "/seller" || pathname.startsWith("/seller/")) {
+      // 301 ugly /seller/* paths on the subdomain to clean URLs
+      const subPath = pathname.replace(/^\/seller/, "") || "/";
+      return NextResponse.redirect(
+        `https://${SELLER_HOST}${subPath}${url.search}`,
+        301
+      );
     }
+    // Clean path → rewrite to internal /seller/* without changing URL bar
+    effectivePath = pathname === "/" ? "/seller/sell-on-anga9" : `/seller${pathname}`;
+    url.pathname = effectivePath;
+    rewroteForSubdomain = true;
   } else {
     // On main host (anga9.com) — redirect /seller/* to subdomain for SEO consolidation
     if (pathname === "/seller" || pathname.startsWith("/seller/")) {

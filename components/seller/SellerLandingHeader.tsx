@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight, User } from "lucide-react";
 import { cdnUrl } from "@/lib/utils";
+import SellerLink from "@/components/seller/SellerLink";
+import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
 const navLinks = [
   { name: "Sell on ANGA9", href: "/seller/sell-on-anga9" },
@@ -17,6 +19,8 @@ const navLinks = [
 export default function SellerLandingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const onSub = useSellerSubdomain();
+  const isLinkActive = (href: string) => pathname === sellerHref(href, onSub);
 
   // Close menu on route change
   useEffect(() => {
@@ -60,23 +64,22 @@ export default function SellerLandingHeader() {
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8 xl:gap-10">
             {navLinks.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = isLinkActive(item.href);
               return (
-                <Link 
-                  key={item.name} 
-                  href={item.href} 
+                <SellerLink
+                  key={item.name}
+                  href={item.href}
                   className={`relative text-[15px] font-semibold transition-all py-1.5 group ${
-                    isActive 
-                      ? "text-[#4338CA]" 
+                    isActive
+                      ? "text-[#4338CA]"
                       : "text-[#4B5563] hover:text-[#4338CA]"
                   }`}
                 >
                   {item.name}
-                  {/* Line growing transition */}
                   <span className={`absolute bottom-0 left-0 h-0.5 bg-[#4338CA] transition-all duration-300 ease-out ${
                     isActive ? "w-full" : "w-0 group-hover:w-full"
                   }`} />
-                </Link>
+                </SellerLink>
               );
             })}
           </div>
@@ -84,18 +87,18 @@ export default function SellerLandingHeader() {
           {/* Actions */}
           <div className="flex items-center gap-2 lg:gap-4">
             {/* Desktop: Login & Start Selling */}
-            <Link 
-              href="/seller/login" 
+            <SellerLink
+              href="/seller/login"
               className="hidden lg:inline-flex rounded-lg border border-[#1A1A2E] px-5 py-2 text-sm font-bold text-[#1A1A2E] transition-all hover:bg-gray-50"
             >
               Login
-            </Link>
-            <Link 
-              href="/seller/login" 
+            </SellerLink>
+            <SellerLink
+              href="/seller/login"
               className="hidden lg:inline-flex h-[42px] items-center justify-center rounded-lg bg-[#4338CA] px-6 text-sm font-bold text-white shadow-md shadow-[#4338CA]/20 transition-all hover:-translate-y-[1px] hover:bg-[#3730A3]"
             >
               Start Selling
-            </Link>
+            </SellerLink>
 
 
             
@@ -140,21 +143,21 @@ export default function SellerLandingHeader() {
         <div className="flex-1 overflow-y-auto py-4 px-5">
           <div className="flex flex-col gap-2">
             {navLinks.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = isLinkActive(item.href);
               return (
-                <Link 
-                  key={item.name} 
-                  href={item.href} 
+                <SellerLink
+                  key={item.name}
+                  href={item.href}
                   className={`flex items-center justify-between p-4 rounded-xl font-semibold text-base transition-all ${
-                    isActive 
-                      ? "bg-[#4338CA]/10 text-[#4338CA]" 
+                    isActive
+                      ? "bg-[#4338CA]/10 text-[#4338CA]"
                       : "text-[#1A1A2E] hover:bg-[#F3F4F6]"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                   {isActive && <div className="w-1.5 h-1.5 rounded-full bg-[#4338CA]" />}
-                </Link>
+                </SellerLink>
               );
             })}
           </div>
@@ -162,20 +165,20 @@ export default function SellerLandingHeader() {
 
         {/* Drawer Footer Actions */}
         <div className="p-5 border-t border-[#E8EEF4] bg-white flex flex-col gap-3">
-          <Link 
-            href="/seller/login" 
+          <SellerLink
+            href="/seller/login"
             className="flex items-center justify-center w-full h-[52px] rounded-xl border-2 border-[#1A1A2E] font-bold text-[#1A1A2E] text-base hover:bg-gray-50 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             Login to Dashboard
-          </Link>
-          <Link 
-            href="/seller/login" 
+          </SellerLink>
+          <SellerLink
+            href="/seller/login"
             className="flex items-center justify-center gap-2 w-full h-[52px] rounded-xl bg-[#4338CA] font-bold text-white text-base shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             Start Selling <ArrowRight size={18} />
-          </Link>
+          </SellerLink>
         </div>
       </div>
     </>

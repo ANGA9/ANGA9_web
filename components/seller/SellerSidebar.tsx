@@ -1,7 +1,8 @@
 "use client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3 } from "lucide-react";
+import SellerLink from "@/components/seller/SellerLink";
+import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
 const NAV = [
   { label: "Dashboard", href: "/seller/dashboard", icon: LayoutDashboard },
@@ -17,8 +18,13 @@ const NAV = [
 
 export default function SellerSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/seller/dashboard" ? pathname === href : pathname.startsWith(href);
+  const onSub = useSellerSubdomain();
+  const isActive = (href: string) => {
+    const target = sellerHref(href, onSub);
+    return target === "/dashboard" || target === "/seller/dashboard"
+      ? pathname === target
+      : pathname.startsWith(target);
+  };
 
   return (
     <>
@@ -39,7 +45,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
           {NAV.map((item) => {
             const active = isActive(item.href);
             return (
-              <Link
+              <SellerLink
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
@@ -51,7 +57,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
               >
                 <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#1A6FD4]" : "text-[#9CA3AF]"}`} />
                 {item.label}
-              </Link>
+              </SellerLink>
             );
           })}
         </nav>

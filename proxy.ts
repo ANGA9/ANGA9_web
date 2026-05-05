@@ -25,6 +25,16 @@ export default function proxy(request: NextRequest) {
   // ──────────────────────────────────────────────────
   // Subdomain routing: seller.anga9.com → /seller/*
   // ──────────────────────────────────────────────────
+  const LEGAL_PATHS = [
+    "/terms",
+    "/privacy",
+    "/faq",
+    "/shipping-policy",
+    "/returns",
+    "/cancellation",
+    "/contact",
+  ];
+
   let effectivePath = pathname;
   let rewroteForSubdomain = false;
   if (isSellerSubdomain) {
@@ -33,6 +43,13 @@ export default function proxy(request: NextRequest) {
       const subPath = pathname.replace(/^\/seller/, "") || "/";
       return NextResponse.redirect(
         `https://${SELLER_HOST}${subPath}${url.search}`,
+        301
+      );
+    }
+    // Legal/policy pages live on main domain only — 301 to anga9.com
+    if (LEGAL_PATHS.includes(pathname)) {
+      return NextResponse.redirect(
+        `https://anga9.com${pathname}${url.search}`,
         301
       );
     }

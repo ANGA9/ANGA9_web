@@ -6,7 +6,7 @@ import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw, Pencil } from "lucide-react";
+import { User, MapPin, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw, Pencil, Gift, Download } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -88,6 +88,22 @@ function MobileTopHeaderContent() {
     }, 3500);
     return () => clearInterval(id);
   }, [SEARCH_PLACEHOLDERS.length]);
+
+  // Promo banner — visible until dismissed in this session
+  const [showPromoBanner, setShowPromoBanner] = useState(true);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("anga9_promo_dismissed") === "1") {
+      setShowPromoBanner(false);
+    }
+  }, []);
+  const dismissPromoBanner = () => {
+    setShowPromoBanner(false);
+    try {
+      sessionStorage.setItem("anga9_promo_dismissed", "1");
+    } catch {}
+  };
+
   const searchRef = useRef<HTMLDivElement>(null);
   const pincodeRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
@@ -322,6 +338,34 @@ function MobileTopHeaderContent() {
       className="w-full relative transition-all duration-500"
       style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
     >
+      {/* ── Promo Banner (above delivery row) ── */}
+      {showPromoBanner && (
+        <div className="flex items-center gap-2 px-3 py-2 bg-[#EAF2FF]/80 backdrop-blur-md border-b border-[#D0E3F7]/50">
+          <span className="shrink-0 inline-flex items-center justify-center w-[24px] h-[24px] rounded-full bg-[#1A6FD4]/10 text-[#1A6FD4]">
+            <Gift className="w-[13px] h-[13px]" strokeWidth={2.5} />
+          </span>
+          <span className="flex-1 text-[12.5px] leading-tight tracking-tight">
+            <span className="font-bold text-[#1A6FD4]">Extra 25% OFF</span>
+            <span className="text-[#4B5563] font-medium"> on your first order</span>
+          </span>
+          <button
+            type="button"
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A6FD4] text-white text-[11px] font-bold tracking-wide active:scale-95 transition-all shadow-sm shadow-[#1A6FD4]/20 hover:bg-[#155ab0]"
+          >
+            <Download className="w-[12px] h-[12px]" strokeWidth={2.5} />
+            Download
+          </button>
+          <button
+            type="button"
+            onClick={dismissPromoBanner}
+            aria-label="Dismiss banner"
+            className="shrink-0 -mr-1.5 p-1.5 rounded-full text-[#9CA3AF] hover:text-[#1A6FD4] hover:bg-[#1A6FD4]/10 transition-colors"
+          >
+            <X className="w-[14px] h-[14px]" strokeWidth={2.5} />
+          </button>
+        </div>
+      )}
+
       {/* ── Row 1: Delivery Location ── */}
       <div className="relative flex items-center px-4 pt-3 pb-1.5 w-full" ref={pincodeRef}>
         <button onClick={() => setPincodeOpen((v) => !v)} className="flex items-center gap-1.5 group">

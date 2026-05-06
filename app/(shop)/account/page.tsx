@@ -21,7 +21,9 @@ import {
   Plus,
   Trash2,
   X,
-  Save
+  Save,
+  Smartphone,
+  Store
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -63,14 +65,16 @@ function MenuItem({
   label,
   badge,
   onClick,
+  href,
 }: {
   icon: any;
   label: string;
   badge?: string | number;
   onClick?: () => void;
+  href?: string;
 }) {
-  return (
-    <button onClick={onClick} className="flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100 group border-b border-gray-50 last:border-b-0">
+  const content = (
+    <>
       <div className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center shrink-0 group-hover:bg-gray-100 transition-colors">
         <Icon className="w-[18px] h-[18px] text-gray-700" />
       </div>
@@ -83,6 +87,22 @@ function MenuItem({
         </span>
       )}
       <ChevronRight className="w-5 h-5 text-gray-400" />
+    </>
+  );
+
+  const className = "flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100 group border-b border-gray-50 last:border-b-0";
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button onClick={onClick} className={className}>
+      {content}
     </button>
   );
 }
@@ -111,6 +131,7 @@ export default function CustomerAccountPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
@@ -126,8 +147,23 @@ export default function CustomerAccountPage() {
   };
 
   useEffect(() => {
-    if (dbUser) fetchAddresses();
+    if (dbUser) {
+      fetchAddresses();
+      fetchUnreadNotifications();
+    }
   }, [dbUser]);
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const params = new URLSearchParams();
+      params.set("limit", "1");
+      params.set("read", "false");
+      const res = await api.get<{ total: number }>(`/api/notifications?${params.toString()}`, { silent: true });
+      if (res && typeof res.total === 'number') {
+        setUnreadNotificationsCount(res.total);
+      }
+    } catch { /* ignore */ }
+  };
 
   const openAddForm = () => {
     setEditingId(null);
@@ -492,8 +528,8 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Settings & Help</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={Bell} label="Notification Settings" badge={3} />
-                <MenuItem icon={Headset} label="Help Center" />
+                <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} href="/notifications" />
+                <MenuItem icon={Headset} label="Help Center" href="/contact" />
               </div>
             </div>
 
@@ -502,8 +538,18 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={FileText} label="Terms, Policies and Licenses" />
-                <MenuItem icon={HelpCircle} label="Browse FAQs" />
+                <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
+                <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">More from ANGA9</h2>
+              </div>
+              <div className="flex flex-col">
+                <MenuItem icon={Store} label="Sell on ANGA9" href="/seller/sell-on-anga9" />
+                <MenuItem icon={Smartphone} label="Download App" />
               </div>
             </div>
 

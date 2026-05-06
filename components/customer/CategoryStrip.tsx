@@ -5,9 +5,12 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import MegaDropdown from "./MegaDropdown";
 
 const megaTabs = [
-  "FASHION",
+  "WOMENSWEAR",
+  "MENSWEAR",
+  "KIDS & INFANTS",
+  "ACTIVEWEAR",
   "ACCESSORIES",
-  "BED & BATH LINEN",
+  "BED, BATH & KITCHEN",
   "HOME DECOR & FLOORING",
 ];
 

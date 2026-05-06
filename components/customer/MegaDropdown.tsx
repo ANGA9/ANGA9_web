@@ -6,29 +6,48 @@ interface Column {
 }
 
 const dropdownData: Record<string, Column[]> = {
-  FASHION: [
-    { heading: "Menswear", items: ["Tops", "Bottoms", "Outerwear", "Innerwear"] },
-    { heading: "Womenswear", items: ["Tops", "Bottoms", "Dresses", "Ethnic/Traditional", "Lingerie/Intimates"] },
-    { heading: "Kids & Infants", items: ["Boys", "Girls", "Infants/Toddlers"] },
-    { heading: "Activewear", items: ["Gym & Training", "Sports Specific"] },
-    { heading: "Menswear Items", items: ["T-shirts", "Polo shirts", "Jeans", "Chinos", "Blazers", "Hoodies", "Briefs", "Socks"] },
-    { heading: "Womenswear Items", items: ["Blouses", "Crop tops", "Skirts", "Leggings", "Sarees", "Kurtas", "Maxi dresses", "Gowns"] },
+  WOMENSWEAR: [
+    { heading: "Tops", items: ["Blouses", "Crop tops", "Tunics", "Bodysuits"] },
+    { heading: "Bottoms", items: ["Skirts", "Leggings", "Palazzos", "Jeans", "Culottes"] },
+    { heading: "Dresses", items: ["Maxi dresses", "Cocktail dresses", "Sundress", "Gowns"] },
+    { heading: "Ethnic/Traditional", items: ["Sarees", "Kurtas", "Kimonos", "Abayas"] },
+    { heading: "Lingerie/Intimates", items: ["Bras", "Panties", "Shapewear", "Nightgowns"] },
+  ],
+  MENSWEAR: [
+    { heading: "Tops", items: ["T-shirts", "Polo shirts", "Casual shirts", "Formal shirts"] },
+    { heading: "Bottoms", items: ["Jeans", "Chinos", "Dress pants", "Cargo pants", "Shorts"] },
+    { heading: "Outerwear", items: ["Blazers", "Leather jackets", "Hoodies", "Overcoats"] },
+    { heading: "Innerwear", items: ["Briefs", "Boxers", "Undershirts", "Socks"] },
+  ],
+  "KIDS & INFANTS": [
+    { heading: "Boys", items: ["Graphic tees", "Denim", "Rompers", "School uniforms"] },
+    { heading: "Girls", items: ["Frocks", "Leggings", "Tutus", "Hair accessories"] },
+    { heading: "Infants/Toddlers", items: ["Onesies", "Sleepsuits", "Bibs", "Swaddles"] },
+  ],
+  ACTIVEWEAR: [
+    { heading: "Gym & Training", items: ["Performance tees", "Compression leggings", "Tracksuits"] },
+    { heading: "Sports Specific", items: ["Football jerseys", "Swimwear", "Yoga wear"] },
   ],
   ACCESSORIES: [
     { heading: "Headwear", items: ["Beanies", "Caps", "Berets"] },
     { heading: "Neckwear", items: ["Ties", "Scarves", "Bowties"] },
     { heading: "Handwear", items: ["Gloves", "Mittens"] },
   ],
-  "BED & BATH LINEN": [
-    { heading: "Bedding", items: ["Bed Linen", "Bedding Essentials", "Decorative"] },
-    { heading: "Bath Linen", items: ["Towels", "Accessories"] },
-    { heading: "Table Linen", items: ["Dining Essentials", "Service Items"] },
-    { heading: "Kitchen Textiles", items: ["Utilities", "Cleaning"] },
+  "BED, BATH & KITCHEN": [
+    { heading: "Bed Linen", items: ["Bed sheets", "Pillowcases", "Duvet covers"] },
+    { heading: "Bedding Essentials", items: ["Pillows", "Quilts", "Comforters", "Mattress protectors"] },
+    { heading: "Decorative Bedding", items: ["Bed runners", "Euro shams", "Bed skirts"] },
+    { heading: "Bath Linen", items: ["Hand towels", "Bath towels", "Washcloths", "Shower curtains", "Bathrobes", "Toilet seat covers"] },
+    { heading: "Table Linen", items: ["Tablecloths", "Table runners", "Placemats", "Cloth napkins", "Coasters", "Tea cozies"] },
+    { heading: "Kitchen Textiles", items: ["Aprons", "Oven mitts", "Pot holders", "Dish towels", "Microfiber cloths"] },
   ],
   "HOME DECOR & FLOORING": [
-    { heading: "Window Treatments", items: ["Curtains", "Blinds & Shades", "Hardware"] },
-    { heading: "Floor Coverings", items: ["Rugs & Carpets", "Mats"] },
-    { heading: "Living & Decor", items: ["Cushions & Covers", "Upholstery", "Wall Textiles"] },
+    { heading: "Curtains & Hardware", items: ["Blackout curtains", "Sheers", "Cafe curtains", "Curtain rods", "Finials", "Tie-backs"] },
+    { heading: "Blinds & Shades", items: ["Roller blinds", "Roman shades", "Venetian blinds"] },
+    { heading: "Rugs & Carpets", items: ["Area rugs", "Runners", "Shag carpets", "Persian rugs"] },
+    { heading: "Floor Mats", items: ["Doormats", "Bath mats", "Kitchen mats"] },
+    { heading: "Cushions & Covers", items: ["Throw pillows", "Bolsters", "Floor cushions", "Sofa covers", "Chair pads", "Slipcovers"] },
+    { heading: "Wall Textiles", items: ["Tapestries", "Macramé wall hangings"] },
   ],
 };
 
@@ -74,7 +93,7 @@ export default function MegaDropdown({
         {columns.map((col, idx) => (
           <div 
             key={col.heading} 
-            className="min-w-[190px] px-8 py-7"
+            className="min-w-[160px] px-6 py-6"
             style={{
               background: idx % 2 === 1 ? t.bgBlueTint : "#FFFFFF"
             }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import LanguageSelector from "./LanguageSelector";
+import { type LangCode, DEFAULT_LANG, STORAGE_KEY, LangContext } from "@/lib/i18n";
 
 const NAV = [
   { href: "/terms", label: "Terms of Use", icon: FileText },
@@ -41,11 +43,23 @@ export default function LegalLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [lang, setLangState] = useState<LangCode>(DEFAULT_LANG);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY) as LangCode | null;
+    if (saved) setLangState(saved);
+  }, []);
+
+  const setLang = (l: LangCode) => {
+    setLangState(l);
+    localStorage.setItem(STORAGE_KEY, l);
+  };
 
   const currentNav = NAV.find((n) => n.href === pathname);
   const CurrentIcon = currentNav?.icon || FileText;
 
   return (
+    <LangContext.Provider value={{ lang, setLang }}>
     <div className="legal-page-root">
       {/* ── Mobile Menu Overlay ── */}
       <div className={`legal-mobile-overlay ${isMobileMenuOpen ? "open" : ""}`}>
@@ -104,6 +118,7 @@ export default function LegalLayout({
               </Link>
             </div>
             <div className="legal-header-right">
+              <LanguageSelector lang={lang} setLang={setLang} variant="mobile" />
               <button 
                 className="legal-mobile-menu-btn"
                 onClick={() => setIsMobileMenuOpen(true)}
@@ -119,6 +134,7 @@ export default function LegalLayout({
                 <ChevronRight className="legal-breadcrumb-sep" strokeWidth={2.5} />
                 <span className="legal-breadcrumb-current">{title}</span>
               </div>
+              <LanguageSelector lang={lang} setLang={setLang} variant="header" />
             </div>
           </div>
         </div>
@@ -358,6 +374,10 @@ export default function LegalLayout({
         .legal-header-right {
           display: flex;
           align-items: center;
+          gap: 8px;
+        }
+        @media (min-width: 768px) {
+          .legal-header-right { gap: 12px; }
         }
         .legal-mobile-menu-btn {
           display: flex;
@@ -928,5 +948,6 @@ export default function LegalLayout({
         }
       `}</style>
     </div>
+    </LangContext.Provider>
   );
 }

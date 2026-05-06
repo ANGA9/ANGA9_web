@@ -134,14 +134,13 @@ export default function SearchFilterStrip({
 
       {/* SORT MODAL */}
       {activeModal === "sort" && (
-        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
+        <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-x-0 top-0 bottom-[${BOTTOM_NAV_OFFSET}] md:inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
-            style={{ bottom: BOTTOM_NAV_OFFSET }}
+            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[400px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0 ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[400px] sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
@@ -183,14 +182,13 @@ export default function SearchFilterStrip({
 
       {/* CATEGORY MODAL */}
       {activeModal === "category" && (
-        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
+        <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-x-0 top-0 md:inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
-            style={{ bottom: BOTTOM_NAV_OFFSET }}
+            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[500px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0 ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[500px] sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
@@ -241,14 +239,13 @@ export default function SearchFilterStrip({
 
       {/* FILTERS MODAL */}
       {activeModal === "filters" && (
-        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
+        <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-x-0 top-0 md:inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
-            style={{ bottom: BOTTOM_NAV_OFFSET }}
+            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[75dvh] md:h-[600px] md:max-h-[80vh] w-full md:w-[700px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0 ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[75dvh] md:h-[600px] md:max-h-[80vh] w-full md:w-[700px] sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
@@ -426,12 +423,22 @@ function SheetAnimations() {
       @keyframes overlayIn  { from { opacity: 0; } to { opacity: 1; } }
       @keyframes overlayOut { from { opacity: 1; } to { opacity: 0; } }
 
+      /* Mobile: sheet sits flush above bottom nav, no shadow between them */
+      .sheet-panel {
+        margin-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      }
+
       .sheet-anim-in   { animation: sheetSlideUp 240ms cubic-bezier(0.22, 1, 0.36, 1); }
       .sheet-anim-out  { animation: sheetSlideDown 220ms ease-in forwards; }
       .overlay-anim-in  { animation: overlayIn 200ms ease-out; }
       .overlay-anim-out { animation: overlayOut 200ms ease-in forwards; }
 
       @media (min-width: 768px) {
+        .sheet-panel {
+          margin-bottom: 0;
+          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
         .sheet-anim-in  { animation: sheetFadeIn 200ms ease-out; }
         .sheet-anim-out { animation: sheetFadeOut 180ms ease-in forwards; }
       }

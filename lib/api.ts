@@ -1,6 +1,12 @@
 import { getSupabaseBrowserClient } from "./supabase";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+let API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+// Proxy localhost requests through Next.js on the client to avoid mobile PNA popups
+// and to allow mobile testing without exposing port 4000 separately.
+if (typeof window !== "undefined" && API_URL.includes("localhost")) {
+  API_URL = "";
+}
 
 interface ApiOptions extends Omit<RequestInit, "body"> {
   body?: unknown;

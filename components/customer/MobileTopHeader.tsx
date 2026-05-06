@@ -15,6 +15,7 @@ import { useWishlist } from "@/lib/WishlistContext";
 import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
 import { detectLocationFromBrowser } from "@/lib/detectLocation";
+import { useVoiceSearch } from "@/lib/useVoiceSearch";
 import NotificationBell from "@/components/shared/NotificationBell";
 
 interface Suggestion {
@@ -269,6 +270,33 @@ function MobileTopHeaderContent() {
     router.push(`/search?q=${encodeURIComponent(term)}`);
   };
 
+  // Voice search (Web Speech API — free, browser-built-in)
+  const voice = useVoiceSearch({
+    lang: "en-IN",
+    onResult: (text) => {
+      setSearchQuery(text);
+      setShowSuggestions(true);
+    },
+    onEnd: (finalText) => {
+      const term = finalText.trim();
+      if (!term) return;
+      saveRecentSearch(term);
+      setShowSuggestions(false);
+      router.push(`/search?q=${encodeURIComponent(term)}`);
+    },
+    onError: (msg) => {
+      console.warn("[voice]", msg);
+    },
+  });
+
+  const handleMicClick = () => {
+    if (!voice.isSupported) {
+      alert("Voice search isn't supported on this browser. Try Chrome or Edge.");
+      return;
+    }
+    voice.toggle();
+  };
+
   const handleTagClick = (tag: string) => {
     setSearchQuery(tag);
     saveRecentSearch(tag);
@@ -413,6 +441,15 @@ function MobileTopHeaderContent() {
           }
           .mobile-search-input { -webkit-tap-highlight-color: transparent; }
           .mobile-search-input:focus { outline: none !important; box-shadow: none !important; -webkit-appearance: none; }
+          @keyframes voiceMicPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+            70%  { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+          }
+          .voice-mic-active {
+            background: #EF4444;
+            animation: voiceMicPulse 1.4s ease-out infinite;
+          }
         `}</style>
         <div className="relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent focus-within:border-[#1A6FD4]/30 focus-within:shadow-md transition-all">
           <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
@@ -427,7 +464,7 @@ function MobileTopHeaderContent() {
               onFocus={() => setShowSuggestions(true)}
               className="mobile-search-input absolute inset-0 w-full bg-transparent outline-none text-[15px] text-[#1A1A2E] placeholder:text-transparent border-0"
             />
-            {!searchQuery && (
+            {!searchQuery && !voice.isListening && (
               <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
                 <span
                   key={placeholderIdx}
@@ -436,6 +473,11 @@ function MobileTopHeaderContent() {
                 >
                   {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
                 </span>
+              </div>
+            )}
+            {!searchQuery && voice.isListening && (
+              <div className="pointer-events-none absolute inset-0 flex items-center text-[15px] font-medium text-[#EF4444] truncate">
+                Listening…
               </div>
             )}
           </div>
@@ -454,7 +496,21 @@ function MobileTopHeaderContent() {
               <X className="w-[16px] h-[16px]" />
             </button>
           )}
-          <Mic className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
+          <button
+            type="button"
+            onClick={handleMicClick}
+            aria-label={voice.isListening ? "Stop voice search" : "Search by voice"}
+            aria-pressed={voice.isListening}
+            className={`shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full transition-colors ${
+              voice.isListening ? "voice-mic-active" : "hover:bg-[#F3F4F6]"
+            }`}
+          >
+            <Mic
+              className={`w-[18px] h-[18px] ${
+                voice.isListening ? "text-white" : "text-[#6B7280]"
+              }`}
+            />
+          </button>
           <svg className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 
           {/* Autocomplete dropdown */}

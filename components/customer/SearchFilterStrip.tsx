@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ArrowUpDown, List, SlidersHorizontal, X, Check, Search } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { CATEGORY_TREE, TOP_LEVEL_CATEGORIES } from "@/lib/categories";
+
+const FILTER_TABS = TOP_LEVEL_CATEGORIES;
 
 interface SearchFilterStripProps {
   sortParam: string;
@@ -30,6 +33,8 @@ export default function SearchFilterStrip({
   renderDesktopSidebar,
 }: SearchFilterStripProps) {
   const [activeModal, setActiveModal] = useState<"sort" | "category" | "filters" | null>(null);
+  const [activeFilterTab, setActiveFilterTab] = useState<string>(FILTER_TABS[0]);
+  const [filterSearch, setFilterSearch] = useState("");
 
   const handleSortChange = (val: string) => {
     updateUrl({ sort: val });
@@ -37,6 +42,15 @@ export default function SearchFilterStrip({
   };
 
   const handleClose = () => setActiveModal(null);
+
+  const filterTabSubItems = useMemo<string[]>(() => {
+    const cols = CATEGORY_TREE[activeFilterTab];
+    if (!cols) return [];
+    const items = cols.flatMap((c) => c.items);
+    if (!filterSearch.trim()) return items;
+    const q = filterSearch.toLowerCase();
+    return items.filter((i) => i.toLowerCase().includes(q));
+  }, [activeFilterTab, filterSearch]);
 
   return (
     <>
@@ -119,7 +133,7 @@ export default function SearchFilterStrip({
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-              {["Women Analog Watches", "Kids - Girls Frocks & Dresses", "Women Bra", "Women Dresses", "Kids - Boys Tshirts & Polos", "Women T-shirts", "Women Tops And Tunics"].map((cat) => (
+              {TOP_LEVEL_CATEGORIES.map((cat) => (
                 <label key={cat} className="flex items-center gap-3 py-2 cursor-pointer group">
                   <div className="relative flex items-center justify-center">
                     <input 
@@ -165,53 +179,103 @@ export default function SearchFilterStrip({
             </div>
             <div className="flex-1 flex overflow-hidden">
               {/* Sidebar */}
-              <div className="w-[120px] md:w-[160px] bg-[#F4F4F8] md:bg-gray-50 overflow-y-auto border-r border-[#E8EEF4]">
-                {["Category", "Gender", "Color", "Fabric", "Size", "Price", "Rating", "Occasion", "Combo", "Discount"].map((tab, i) => (
-                  <div 
-                    key={tab} 
-                    className={`p-4 md:px-5 md:py-4 text-sm md:text-base md:text-sm md:text-base cursor-pointer transition-colors ${i === 0 ? "bg-white border-l-4 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
-                    style={{ 
-                      borderLeftColor: i === 0 ? t.bluePrimary : "transparent",
-                      color: i === 0 ? t.bluePrimary : undefined
-                    }}
-                  >
-                    {tab}
-                  </div>
-                ))}
+              <div className="w-[140px] md:w-[200px] bg-[#F4F4F8] md:bg-gray-50 overflow-y-auto border-r border-[#E8EEF4]">
+                {FILTER_TABS.map((tab) => {
+                  const isActive = tab === activeFilterTab;
+                  return (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => {
+                        setActiveFilterTab(tab);
+                        setFilterSearch("");
+                      }}
+                      className={`w-full text-left p-3 md:px-4 md:py-3 text-xs md:text-sm cursor-pointer transition-colors uppercase tracking-wide ${
+                        isActive ? "bg-white border-l-4 font-semibold" : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                      style={{
+                        borderLeftColor: isActive ? t.bluePrimary : "transparent",
+                        color: isActive ? t.bluePrimary : undefined,
+                      }}
+                    >
+                      {tab}
+                    </button>
+                  );
+                })}
               </div>
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-white">
-                <h4 className="font-bold text-base md:text-lg mb-4">Category</h4>
+                <h4 className="font-bold text-base md:text-lg mb-4">{activeFilterTab}</h4>
                 <div className="relative mb-5">
-                  <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                  <input type="text" placeholder="Search categories..." className="w-full pl-9 pr-3 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors focus:ring-2 focus:ring-[#1A6FD4]/20 focus:border-[#1A6FD4]" style={{ borderColor: t.border }} />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={filterSearch}
+                    onChange={(e) => setFilterSearch(e.target.value)}
+                    placeholder={`Search in ${activeFilterTab.toLowerCase()}...`}
+                    className="w-full pl-9 pr-10 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors focus:ring-2 focus:ring-[#1A6FD4]/20 focus:border-[#1A6FD4]"
+                    style={{ borderColor: t.border }}
+                  />
+                  {filterSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setFilterSearch("")}
+                      aria-label="Clear search"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                    >
+                      <X className="w-4 h-4 text-gray-500" />
+                    </button>
+                  )}
                 </div>
-                <div className="space-y-4">
-                  {["Women T-shirts", "Women Tops And Tunics", "Analog Watches", "Appliance Covers", "Bangles & Bracelets"].map((cat) => (
-                     <label key={cat} className="flex items-center gap-3 py-2 cursor-pointer group">
-                     <div className="relative flex items-center justify-center">
-                       <input 
-                         type="checkbox" 
-                         checked={categoryParam === cat}
-                         onChange={() => {
-                           updateUrl({ category: categoryParam === cat ? "" : cat });
-                         }}
-                         className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
-                         style={{ 
-                           borderColor: categoryParam === cat ? t.bluePrimary : t.border,
-                           background: categoryParam === cat ? t.bluePrimary : "transparent"
-                         }}
-                       />
-                       {categoryParam === cat && <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />}
-                     </div>
-                     <span className="text-sm md:text-base md:text-base group-hover:text-black transition-colors" style={{ color: t.textSecondary }}>{cat}</span>
-                   </label>
-                  ))}
-                </div>
-                {/* Real Desktop Sidebar Placeholder */}
-                <div className="mt-8 pt-6 border-t" style={{ borderColor: t.border }}>
-                  <p className="text-sm font-semibold mb-4 text-gray-400">Additional Filters</p>
-                  {renderDesktopSidebar()}
+                <div className="space-y-5">
+                  {(CATEGORY_TREE[activeFilterTab] ?? []).map((col) => {
+                    const visibleItems = filterSearch.trim()
+                      ? col.items.filter((i) => i.toLowerCase().includes(filterSearch.toLowerCase()))
+                      : col.items;
+                    if (visibleItems.length === 0) return null;
+                    return (
+                      <div key={col.heading}>
+                        <p
+                          className="text-xs font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5 border-b"
+                          style={{ color: t.bluePrimary, borderColor: t.bluePrimary }}
+                        >
+                          {col.heading}
+                        </p>
+                        <div className="space-y-2">
+                          {visibleItems.map((item) => (
+                            <label key={item} className="flex items-center gap-3 py-1 cursor-pointer group">
+                              <div className="relative flex items-center justify-center">
+                                <input
+                                  type="checkbox"
+                                  checked={categoryParam === item}
+                                  onChange={() => {
+                                    updateUrl({ category: categoryParam === item ? "" : item });
+                                  }}
+                                  className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
+                                  style={{
+                                    borderColor: categoryParam === item ? t.bluePrimary : t.border,
+                                    background: categoryParam === item ? t.bluePrimary : "transparent",
+                                  }}
+                                />
+                                {categoryParam === item && (
+                                  <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />
+                                )}
+                              </div>
+                              <span
+                                className="text-sm md:text-base group-hover:text-black transition-colors"
+                                style={{ color: t.textSecondary }}
+                              >
+                                {item}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {filterTabSubItems.length === 0 && filterSearch.trim() && (
+                    <p className="text-sm text-gray-400">No items match &quot;{filterSearch}&quot;.</p>
+                  )}
                 </div>
               </div>
             </div>

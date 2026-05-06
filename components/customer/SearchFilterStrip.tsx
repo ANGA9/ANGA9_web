@@ -96,10 +96,10 @@ export default function SearchFilterStrip({
       
       {/* SORT MODAL */}
       {activeModal === "sort" && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end md:justify-center md:items-center">
+        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center">
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
-          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[400px] shadow-2xl">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b">
+          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[400px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0">
+            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
               <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Sort By</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
@@ -125,10 +125,10 @@ export default function SearchFilterStrip({
 
       {/* CATEGORY MODAL */}
       {activeModal === "category" && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end md:justify-center md:items-center">
+        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center">
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
-          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[500px] shadow-2xl">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b">
+          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[500px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0">
+            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
               <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Categories</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
@@ -154,7 +154,7 @@ export default function SearchFilterStrip({
                 </label>
               ))}
             </div>
-            <div className="p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
+            <div className="shrink-0 p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
               <span className="text-sm md:text-base font-medium text-gray-500">1000+ Products</span>
               <button 
                 onClick={handleClose}
@@ -170,10 +170,10 @@ export default function SearchFilterStrip({
 
       {/* FILTERS MODAL */}
       {activeModal === "filters" && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end md:justify-center md:items-center">
+        <div className="fixed inset-0 z-[10000] flex flex-col justify-end md:justify-center md:items-center">
           <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
-          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[80vh] w-full md:w-[700px] md:h-[600px] shadow-2xl">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b">
+          <div className="relative bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[75dvh] md:h-[600px] md:max-h-[80vh] w-full md:w-[700px] shadow-2xl mb-[calc(56px+env(safe-area-inset-bottom,0px))] md:mb-0">
+            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
               <h3 className="font-bold text-sm md:text-base md:text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>Filters</h3>
               <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors"><X className="w-5 h-5 text-gray-500" /></button>
             </div>
@@ -279,7 +279,7 @@ export default function SearchFilterStrip({
                 </div>
               </div>
             </div>
-            <div className="p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
+            <div className="shrink-0 p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
               <span className="text-sm md:text-base font-medium text-gray-500">1000+ Products</span>
               <button 
                 onClick={handleClose}

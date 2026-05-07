@@ -11,7 +11,21 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-export default function ContactCards() {
+export interface ContactCardsT {
+  hero: {
+    title: string;
+    desc: string;
+    ctaEmail: string;
+    hours: string;
+  };
+  channels: {
+    seller: { title: string; desc: string; linkLabel: string };
+    business: { title: string; desc: string };
+    press: { title: string; desc: string };
+  };
+}
+
+export default function ContactCards({ t }: { t: ContactCardsT }) {
   return (
     <>
       {/* ── Primary: Customer Support (hero-style) ── */}
@@ -20,18 +34,16 @@ export default function ContactCards() {
           <Headphones className="cc-hero-icon" strokeWidth={2} />
         </div>
         <div className="cc-hero-body">
-          <h3 className="cc-hero-title">Customer Support</h3>
-          <p className="cc-hero-desc">
-            Order tracking, payments, shipping, refunds — we&apos;ve got you.
-          </p>
-          <a href="mailto:support@anga9.com" className="cc-hero-cta">
+          <h3 className="cc-hero-title">{t.hero.title}</h3>
+          <p className="cc-hero-desc">{t.hero.desc}</p>
+          <a href={`mailto:${t.hero.ctaEmail}`} className="cc-hero-cta">
             <Mail style={{ width: 16, height: 16 }} strokeWidth={2} />
-            support@anga9.com
+            {t.hero.ctaEmail}
             <ArrowRight style={{ width: 14, height: 14, marginLeft: "auto" }} />
           </a>
           <div className="cc-hero-meta">
             <Clock style={{ width: 13, height: 13, color: "#9CA3AF", flexShrink: 0 }} strokeWidth={2} />
-            <span>Mon – Sat, 10:00 AM – 7:00 PM IST</span>
+            <span>{t.hero.hours}</span>
           </div>
         </div>
       </div>
@@ -42,9 +54,9 @@ export default function ContactCards() {
           icon={Store}
           color="#059669"
           bgColor="#ECFDF5"
-          title="Seller Support"
-          desc="Onboarding, listings, payouts, or growth queries"
-          link={{ label: "seller.anga9.com", href: "https://seller.anga9.com/sell-on-anga9", external: true }}
+          title={t.channels.seller.title}
+          desc={t.channels.seller.desc}
+          link={{ label: t.channels.seller.linkLabel, href: "https://seller.anga9.com/sell-on-anga9", external: true }}
           email="support@anga9.com"
         />
         <div className="cc-divider" />
@@ -52,8 +64,8 @@ export default function ContactCards() {
           icon={Handshake}
           color="#7C3AED"
           bgColor="#F5F3FF"
-          title="Business & Partnerships"
-          desc="Logistics, brand collaborations, bulk procurement"
+          title={t.channels.business.title}
+          desc={t.channels.business.desc}
           email="support@anga9.com"
         />
         <div className="cc-divider" />
@@ -61,8 +73,8 @@ export default function ContactCards() {
           icon={Newspaper}
           color="#D97706"
           bgColor="#FFFBEB"
-          title="Press & Media"
-          desc="Press inquiries, interviews, company info"
+          title={t.channels.press.title}
+          desc={t.channels.press.desc}
           email="support@anga9.com"
         />
       </div>

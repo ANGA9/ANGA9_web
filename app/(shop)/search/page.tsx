@@ -82,7 +82,7 @@ function SearchPageContent() {
   const [draftSort, setDraftSort] = useState(sortParam);
 
   // Desktop filter state
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ categories: true, price: true, sellers: false });
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ price: true, sellers: false });
   const [localMinPrice, setLocalMinPrice] = useState(minPriceParam);
   const [localMaxPrice, setLocalMaxPrice] = useState(maxPriceParam);
 
@@ -160,31 +160,11 @@ function SearchPageContent() {
   const sheetAnim = isClosing ? "srch-sheet-out" : "srch-sheet-in";
   const overlayAnim = isClosing ? "srch-overlay-out" : "srch-overlay-in";
 
-  /* ── Desktop filter sidebar (reused in mobile sheet) ── */
+  /* ── Filter content (reused in desktop sidebar + mobile sheet) ── */
   const FilterContent = () => (
     <div className="space-y-5">
-      {filters?.categories && filters.categories.length > 0 && (
-        <div>
-          <button onClick={() => toggleSection("categories")} className="flex items-center justify-between w-full mb-3">
-            <span className="text-sm font-semibold" style={{ color: t.textPrimary }}>Category</span>
-            {expandedSections.categories ? <ChevronUp className="w-4 h-4" style={{ color: t.textMuted }} /> : <ChevronDown className="w-4 h-4" style={{ color: t.textMuted }} />}
-          </button>
-          {expandedSections.categories && (
-            <div className="space-y-1">
-              {filters.categories.map((cat) => (
-                <button key={cat.name} onClick={() => updateUrl({ category: categoryParam === cat.name ? "" : cat.name })}
-                  className="flex items-center justify-between w-full text-left py-2 px-3 rounded-lg transition-colors hover:bg-gray-50"
-                  style={{ background: categoryParam === cat.name ? "#EEF2FF" : undefined }}
-                >
-                  <span className="text-sm" style={{ color: categoryParam === cat.name ? ACCENT : t.textSecondary, fontWeight: categoryParam === cat.name ? 600 : 400 }}>{cat.name}</span>
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: "#F3F4F6", color: t.textMuted }}>{cat.count}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-      <div className="border-t pt-4" style={{ borderColor: t.border }}>
+      {/* ── Price Range ── */}
+      <div>
         <button onClick={() => toggleSection("price")} className="flex items-center justify-between w-full mb-3">
           <span className="text-sm font-semibold" style={{ color: t.textPrimary }}>Price Range</span>
           {expandedSections.price ? <ChevronUp className="w-4 h-4" style={{ color: t.textMuted }} /> : <ChevronDown className="w-4 h-4" style={{ color: t.textMuted }} />}
@@ -202,6 +182,8 @@ function SearchPageContent() {
           </div>
         )}
       </div>
+
+      {/* ── Sellers ── */}
       {filters?.sellers && filters.sellers.length > 0 && (
         <div className="border-t pt-4" style={{ borderColor: t.border }}>
           <button onClick={() => toggleSection("sellers")} className="flex items-center justify-between w-full mb-3">

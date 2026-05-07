@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Lock } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
+import toast from "react-hot-toast";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -14,9 +18,20 @@ interface CartSummaryProps {
 
 export default function CartSummary({ subtotal }: CartSummaryProps) {
   const router = useRouter();
+  const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
   const gst = Math.round(subtotal * 0.18);
   const delivery = subtotal > 10000 ? 0 : 500;
   const total = subtotal + gst + delivery;
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast("Please login to place your order", { icon: <Lock size={18} color="#1A6FD4" /> });
+      openLoginSheet();
+      return;
+    }
+    router.push("/checkout");
+  };
 
   return (
     <div
@@ -69,7 +84,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       </div>
 
       <button
-        onClick={() => router.push("/checkout")}
+        onClick={handleCheckout}
         className="mt-8 flex w-full items-center justify-center rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] shadow-lg shadow-indigo-100"
         style={{ background: t.primaryCta, color: t.ctaText }}
       >
@@ -86,3 +101,4 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
     </div>
   );
 }
+

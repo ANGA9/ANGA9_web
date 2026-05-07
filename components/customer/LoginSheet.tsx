@@ -40,7 +40,7 @@ export default function LoginSheet() {
   useEffect(() => {
     if (user && isOpen && step === "otp") {
       setStep("success");
-      toast.success("Login successful! Welcome to ANGA9", { icon: "🎉" });
+      toast.success("Login successful! Welcome to ANGA9", { icon: <CheckCircle2 size={18} color="#059669" /> });
       const timer = setTimeout(() => {
         handleClose();
       }, 1500);
@@ -85,7 +85,7 @@ export default function LoginSheet() {
       const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
       if (otpErr) throw otpErr;
       setStep("otp");
-      toast.success("OTP sent to your email!", { icon: "📧" });
+      toast.success("OTP sent to your email!", { icon: <Mail size={18} color="#1A6FD4" /> });
     } catch (err: any) {
       console.error("Email OTP error:", err);
       if (err.message?.includes("rate limit")) {

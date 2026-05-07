@@ -18,13 +18,17 @@ import {
   CreditCard,
   Banknote,
   Check,
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 import CartSummary from "@/components/customer/CartSummary";
 import EmptyState from "@/components/shared/EmptyState";
+import toast from "react-hot-toast";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -32,12 +36,24 @@ function formatINR(value: number) {
 
 export default function CustomerCartPage() {
   const { items, loading, updateQty, removeItem, refreshCart } = useCart();
+  const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponState, setCouponState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const [updatingQty, setUpdatingQty] = useState<Set<string>>(new Set());
   const router = useRouter();
+
+  const handleProceedToCheckout = () => {
+    if (!user) {
+      toast("Please login to place your order", { icon: <Lock size={18} color="#1A6FD4" /> });
+      openLoginSheet();
+      return;
+    }
+    setIsPlacingOrder(true);
+    setTimeout(() => router.push("/checkout"), 800);
+  };
 
   const handleApplyCoupon = () => {
     if (!couponCode.trim()) return;
@@ -341,10 +357,7 @@ export default function CustomerCartPage() {
                 
                 <button
                   disabled={isPlacingOrder}
-                  onClick={() => {
-                    setIsPlacingOrder(true);
-                    setTimeout(() => router.push("/checkout"), 800);
-                  }}
+                  onClick={handleProceedToCheckout}
                   className="flex-1 h-[52px] bg-[#4338CA] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-indigo-200"
                 >
                   {isPlacingOrder ? (

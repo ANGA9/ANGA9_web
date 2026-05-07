@@ -1,8 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode, createElement } from "react";
+import { Heart } from "lucide-react";
 import { api } from "./api";
 import { useAuth } from "./AuthContext";
+import { useLoginSheet } from "./LoginSheetContext";
 import toast from "react-hot-toast";
 
 interface WishlistItem {
@@ -40,6 +42,7 @@ export function useWishlist() {
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -75,6 +78,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   const toggleItem = useCallback(
     async (productId: string) => {
+      if (!user) {
+        toast("Login to save items to your wishlist", { icon: createElement(Heart, { size: 18, color: "#DC2626", fill: "#DC2626" }) });
+        openLoginSheet();
+        return;
+      }
       try {
         const data = await api.post<{ message: string; added: boolean; count: number }>(
           "/api/wishlist/items",
@@ -86,7 +94,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         toast.error("Failed to update wishlist");
       }
     },
-    [refreshWishlist]
+    [user, openLoginSheet, refreshWishlist]
   );
 
   const removeItem = useCallback(

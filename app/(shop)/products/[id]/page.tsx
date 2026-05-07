@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check,
-  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play,
+  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -167,7 +167,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!user) {
-      toast.error("Please login to add products to cart", { icon: "\uD83D\uDD12", duration: 3500 });
+      toast.error("Please login to add products to cart", { icon: <Lock size={18} color="#1A6FD4" />, duration: 3500 });
       openLoginSheet();
       return;
     }
@@ -176,7 +176,7 @@ export default function ProductDetailPage() {
     try {
       await addItem(product!.id, quantity);
       setAdded(true);
-      toast.success(`${product!.name} added to cart!`, { icon: "\uD83D\uDED2" });
+      toast.success(`${product!.name} added to cart!`, { icon: <ShoppingCart size={18} color="#059669" /> });
       setTimeout(() => setAdded(false), 2000);
     } catch {
       toast.error("Failed to add item to cart");

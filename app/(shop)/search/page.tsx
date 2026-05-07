@@ -219,34 +219,49 @@ function SearchPageContent() {
         .srch-overlay-out { animation: srchOverlayOut 200ms ease-in forwards; }
       `}</style>
 
-      <div className="pb-6 md:py-6">
-        {/* ── Results header ── */}
+      <div className="pb-6 md:py-8">
+        {/* ── Results header bar ── */}
         <div className="px-4 md:px-0 pt-4 md:pt-0 pb-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-            <div className="flex items-baseline gap-2 flex-wrap">
-              <h1 className="font-bold text-[17px] md:text-2xl tracking-tight" style={{ color: t.textPrimary }}>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <h1 className="font-bold text-[17px] md:text-[22px] tracking-tight" style={{ color: t.textPrimary }}>
                 {query ? `Results for "${query}"` : "All Products"}
               </h1>
               {!loading && (
-                <span className="text-[12px] font-semibold px-2.5 py-0.5 rounded-full" style={{ background: "#EEF2FF", color: ACCENT }}>
+                <span className="text-[12px] md:text-[13px] font-semibold px-3 py-1 rounded-full" style={{ background: "#EEF2FF", color: ACCENT }}>
                   {total} found
                 </span>
               )}
             </div>
-            {/* Desktop sort */}
-            <select value={sortParam} onChange={(e) => updateUrl({ sort: e.target.value })}
-              className="hidden md:block rounded-xl border px-3 py-2 text-sm font-semibold outline-none focus:border-[#4338CA] shadow-sm bg-white"
-              style={{ borderColor: t.border, color: t.textPrimary }}>
-              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
+
+            {/* Desktop sort pills */}
+            <div className="hidden md:flex items-center gap-1.5 p-1 rounded-xl border" style={{ borderColor: t.border, background: "#FAFAFA" }}>
+              {SORT_OPTIONS.slice(0, 4).map((o) => (
+                <button key={o.value} onClick={() => updateUrl({ sort: o.value })}
+                  className="px-3.5 py-1.5 rounded-lg text-[13px] font-semibold transition-all whitespace-nowrap"
+                  style={{
+                    background: sortParam === o.value ? ACCENT : "transparent",
+                    color: sortParam === o.value ? "#FFF" : t.textSecondary,
+                    boxShadow: sortParam === o.value ? "0 1px 4px rgba(67,56,202,0.3)" : "none",
+                  }}>
+                  {o.label}
+                </button>
+              ))}
+              <select value={sortParam} onChange={(e) => updateUrl({ sort: e.target.value })}
+                className="px-2 py-1.5 rounded-lg text-[13px] font-semibold outline-none bg-transparent cursor-pointer"
+                style={{ color: t.textMuted }}>
+                <option value="" disabled>More…</option>
+                {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
           </div>
 
-          {/* Active filter chips */}
+          {/* Active filter chips (both mobile & desktop) */}
           {hasActiveFilters && (
             <div className="flex items-center gap-2 flex-wrap">
               {categoryParam && (
                 <button onClick={() => updateUrl({ category: "" })}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all hover:shadow-sm"
                   style={{ background: "#EEF2FF", color: ACCENT }}>
                   {categoryParam}
                   <X className="w-3 h-3" />
@@ -254,13 +269,13 @@ function SearchPageContent() {
               )}
               {(minPriceParam || maxPriceParam) && (
                 <button onClick={() => { updateUrl({ minPrice: "", maxPrice: "" }); setLocalMinPrice(""); setLocalMaxPrice(""); }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all hover:shadow-sm"
                   style={{ background: "#EEF2FF", color: ACCENT }}>
                   ₹{minPriceParam || "0"} – ₹{maxPriceParam || "∞"}
                   <X className="w-3 h-3" />
                 </button>
               )}
-              <button onClick={clearAllFilters} className="text-[12px] font-semibold ml-1" style={{ color: t.textMuted }}>
+              <button onClick={clearAllFilters} className="text-[12px] font-semibold ml-1 hover:underline" style={{ color: t.textMuted }}>
                 Clear all
               </button>
             </div>
@@ -289,14 +304,20 @@ function SearchPageContent() {
         </div>
 
         {/* ── Content Grid ── */}
-        <div className="flex gap-8 px-0 md:px-0">
+        <div className="flex gap-6 lg:gap-8 px-0 md:px-0">
           {/* Desktop Sidebar */}
-          <div className="hidden md:block shrink-0" style={{ width: 240 }}>
-            <div className="sticky top-[160px] rounded-2xl border p-5" style={{ borderColor: t.border, background: t.bgCard }}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-base" style={{ color: t.textPrimary }}>Filters</h3>
+          <div className="hidden md:block shrink-0" style={{ width: 260 }}>
+            <div className="sticky top-[160px] rounded-2xl border p-5 shadow-sm" style={{ borderColor: t.border, background: "#FAFBFC" }}>
+              {/* Sidebar header */}
+              <div className="flex items-center justify-between mb-5 pb-3 border-b" style={{ borderColor: t.border }}>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#EEF2FF" }}>
+                    <SlidersHorizontal className="w-4 h-4" style={{ color: ACCENT }} />
+                  </div>
+                  <h3 className="font-bold text-[15px]" style={{ color: t.textPrimary }}>Filters</h3>
+                </div>
                 {hasActiveFilters && (
-                  <button onClick={clearAllFilters} className="text-xs font-semibold" style={{ color: ACCENT }}>Clear all</button>
+                  <button onClick={clearAllFilters} className="text-[12px] font-bold hover:underline" style={{ color: ACCENT }}>Clear all</button>
                 )}
               </div>
               <FilterContent />
@@ -306,27 +327,27 @@ function SearchPageContent() {
           {/* Results */}
           <div className="flex-1 min-w-0">
             {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-4 px-1.5 sm:px-0">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="animate-pulse rounded-2xl border" style={{ background: "#F3F4F6", borderColor: t.border, height: 300 }} />
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-5 px-1.5 md:px-0">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="animate-pulse rounded-2xl border" style={{ background: "#F3F4F6", borderColor: t.border, height: 320 }} />
                 ))}
               </div>
             ) : products.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-4 px-1.5 sm:px-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-5 px-1.5 md:px-0">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-8 mb-4">
+                  <div className="flex items-center justify-center gap-2 mt-10 mb-4">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                       <button key={page} onClick={() => {
                         const params = new URLSearchParams(searchParams.toString());
                         params.set("page", String(page));
                         router.push(`/search?${params.toString()}`);
                       }}
-                        className="w-9 h-9 rounded-xl text-sm font-semibold transition-colors"
+                        className="w-10 h-10 rounded-xl text-sm font-semibold transition-all hover:shadow-sm"
                         style={{
                           background: page === pageParam ? ACCENT : "transparent",
                           color: page === pageParam ? "#FFF" : t.textSecondary,

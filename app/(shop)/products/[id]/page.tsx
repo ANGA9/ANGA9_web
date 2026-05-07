@@ -14,6 +14,8 @@ import { useWishlist } from "@/lib/WishlistContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import toast from "react-hot-toast";
+import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import RecentlyViewed from "@/components/customer/RecentlyViewed";
 
 interface ProductVariant {
   id: string;
@@ -91,6 +93,7 @@ export default function ProductDetailPage() {
   const [togglingWishlist, setTogglingWishlist] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
+  const { addItem: addRecentlyViewed } = useRecentlyViewed();
 
   const productId = params.id;
 
@@ -124,6 +127,20 @@ export default function ProductDetailPage() {
   useEffect(() => {
     fetchProduct();
   }, [fetchProduct]);
+
+  // Track recently viewed
+  useEffect(() => {
+    if (product) {
+      addRecentlyViewed({
+        id: product.id,
+        name: product.name,
+        price: product.sale_price ?? product.base_price,
+        originalPrice: product.base_price,
+        imageUrl: product.images?.[0],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?.id]);
 
   const getStockInfo = () => {
     const variantId = selectedVariant || null;
@@ -616,6 +633,9 @@ export default function ProductDetailPage() {
           </button>
         </div>
       </div>
+
+      {/* ══════════ RECENTLY VIEWED ══════════ */}
+      <RecentlyViewed excludeId={product.id} />
     </div>
   );
 }

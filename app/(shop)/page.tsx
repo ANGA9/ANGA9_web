@@ -16,6 +16,7 @@ import {
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
+import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
 
@@ -222,6 +223,9 @@ export default function CustomerHomePage() {
 
       {/* Hero */}
       <HeroBanner />
+
+      {/* Recently Viewed (only visible if user has history) */}
+      <RecentlyViewed />
 
 
       {/* Discover Products */}

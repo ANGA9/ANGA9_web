@@ -128,7 +128,15 @@ export default function MobileMenuPage() {
   const columns: CategoryColumn[] = CATEGORY_TREE[activeCategory] || [];
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-white md:hidden">
+    <div
+      className="flex flex-col bg-white md:hidden"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 45,
+        overflow: "hidden",
+      }}
+    >
       {/* ── Sticky Header ── */}
       <header className="flex items-center gap-3 px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-50 shrink-0">
         <button
@@ -157,6 +165,8 @@ export default function MobileMenuPage() {
             background: "#F8F9FB",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            overscrollBehavior: "contain",
+            paddingBottom: "calc(56px + env(safe-area-inset-bottom, 0px))",
           }}
         >
           <style>{`
@@ -238,6 +248,7 @@ export default function MobileMenuPage() {
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            overscrollBehavior: "contain",
           }}
         >
           <style>{`
@@ -249,9 +260,12 @@ export default function MobileMenuPage() {
           `}</style>
 
           <div
-            className="subcat-panel p-4 pb-8"
+            className="subcat-panel p-4"
             key={activeCategory}
-            style={{ animation: "subcatSlideIn 200ms ease" }}
+            style={{
+              paddingBottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
+              animation: "subcatSlideIn 200ms ease",
+            }}
           >
             {activeCategory === "POPULAR" ? (
               /* ── Popular Tab Content ── */

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Globe, Check, ChevronDown } from "lucide-react";
 import { LANGUAGES, getLangOption, type LangCode } from "@/lib/i18n";
+import { getChrome } from "@/lib/legalTranslations";
 
 interface LanguageSelectorProps {
   lang: LangCode;
@@ -58,7 +59,7 @@ export default function LanguageSelector({
       {open && (
         <div className="lang-sel-dropdown" role="listbox" aria-label="Select language">
           <div className="lang-sel-dropdown-header">
-            <span>Select Language</span>
+            <span>{getChrome(lang).selectLanguage}</span>
           </div>
           <div className="lang-sel-dropdown-list">
             {LANGUAGES.map((opt) => {

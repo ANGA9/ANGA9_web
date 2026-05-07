@@ -507,12 +507,27 @@ export default function CustomerTopNav() {
                 background: "#FFFFFF",
                 border: `1.5px solid ${t.bluePrimary}`,
                 borderRadius: 4,
-                padding: "12px 48px 12px 16px",
+                padding: "12px 84px 12px 16px",
                 fontSize: '16px',
                 color: t.textPrimary,
                 lineHeight: "1.4",
               }}
             />
+            {/* Clear button (X) */}
+            {searchQuery && (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSuggestions([]);
+                }}
+                className="absolute top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center"
+                style={{ right: 54, color: t.textMuted }}
+                aria-label="Clear search"
+              >
+                <X style={{ width: 18, height: 18 }} />
+              </button>
+            )}
+
             {/* Icon with left-border separator */}
             <button
               onClick={handleSearchSubmit}

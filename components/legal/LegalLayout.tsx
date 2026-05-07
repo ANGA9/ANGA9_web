@@ -19,7 +19,8 @@ import {
   X,
 } from "lucide-react";
 import LanguageSelector from "./LanguageSelector";
-import { type LangCode, DEFAULT_LANG, STORAGE_KEY, LangContext } from "@/lib/i18n";
+import { useLang, LANGUAGES } from "@/lib/i18n";
+import { getChrome } from "@/lib/legalTranslations";
 
 const NAV = [
   { href: "/terms", label: "Terms of Use", icon: FileText },
@@ -43,28 +44,30 @@ export default function LegalLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [lang, setLangState] = useState<LangCode>(DEFAULT_LANG);
+  const { lang, setLang } = useLang();
 
+  // Update <html lang> and dir for SEO + RTL
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as LangCode | null;
-    if (saved) setLangState(saved);
-  }, []);
+    document.documentElement.lang = lang;
+    const isRtl = LANGUAGES.find((lo) => lo.code === lang)?.rtl;
+    document.documentElement.dir = isRtl ? "rtl" : "ltr";
+  }, [lang]);
 
-  const setLang = (l: LangCode) => {
-    setLangState(l);
-    localStorage.setItem(STORAGE_KEY, l);
-  };
+  const chrome = getChrome(lang);
+  const isRtl = LANGUAGES.find((lo) => lo.code === lang)?.rtl;
+
+  // Auto-resolve translated page title from chrome dictionary
+  const resolvedTitle = chrome.pageTitles[pathname] || title;
 
   const currentNav = NAV.find((n) => n.href === pathname);
   const CurrentIcon = currentNav?.icon || FileText;
 
   return (
-    <LangContext.Provider value={{ lang, setLang }}>
     <div className="legal-page-root">
       {/* ── Mobile Menu Overlay ── */}
       <div className={`legal-mobile-overlay ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="legal-mobile-overlay-header">
-          <span className="legal-mobile-overlay-title">Quick Navigation</span>
+          <span className="legal-mobile-overlay-title">{chrome.quickNavigation}</span>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
             className="legal-mobile-overlay-close"
@@ -87,7 +90,7 @@ export default function LegalLayout({
                 }`}
               >
                 <Icon className="legal-mobile-overlay-icon" strokeWidth={active ? 2.5 : 2} />
-                <span>{item.label}</span>
+                <span>{chrome.navLabels[item.href] || item.label}</span>
               </Link>
             );
           })}
@@ -129,10 +132,10 @@ export default function LegalLayout({
               {/* Breadcrumb on desktop */}
               <div className="legal-breadcrumb">
                 <Link href="/" className="legal-breadcrumb-home">
-                  Home
+                  {chrome.home}
                 </Link>
                 <ChevronRight className="legal-breadcrumb-sep" strokeWidth={2.5} />
-                <span className="legal-breadcrumb-current">{title}</span>
+                <span className="legal-breadcrumb-current">{resolvedTitle}</span>
               </div>
               <LanguageSelector lang={lang} setLang={setLang} variant="header" />
             </div>
@@ -150,10 +153,10 @@ export default function LegalLayout({
                 <CurrentIcon className="legal-hero-icon" strokeWidth={2} />
               </div>
               <div className="legal-hero-text">
-                <h1 className="legal-hero-title">{title}</h1>
+                <h1 className="legal-hero-title">{resolvedTitle}</h1>
                 <div className="legal-hero-meta">
                   <Calendar className="legal-hero-cal-icon" strokeWidth={2.5} />
-                  <span>Last updated: {lastUpdated}</span>
+                  <span>{chrome.lastUpdated}: {lastUpdated}</span>
                 </div>
               </div>
             </div>
@@ -169,7 +172,7 @@ export default function LegalLayout({
             <aside className="legal-sidebar">
               <div className="legal-sidebar-sticky">
                 <div className="legal-sidebar-card">
-                  <p className="legal-sidebar-label">Quick Navigation</p>
+                  <p className="legal-sidebar-label">{chrome.quickNavigation}</p>
                   <nav className="legal-sidebar-nav">
                     {NAV.map((item) => {
                       const active = pathname === item.href;
@@ -183,7 +186,7 @@ export default function LegalLayout({
                           }`}
                         >
                           <Icon className="legal-sidebar-link-icon" strokeWidth={active ? 2.5 : 2} />
-                          <span>{item.label}</span>
+                          <span>{chrome.navLabels[item.href] || item.label}</span>
                           {active && <div className="legal-sidebar-active-dot" />}
                         </Link>
                       );
@@ -211,12 +214,19 @@ export default function LegalLayout({
             {/* ── Main content ── */}
             <main className="legal-main">
               <div className="legal-content-card">
-                <div className="legal-prose">{children}</div>
+                {/* MT disclaimer banner */}
+                {lang !== "en" && (
+                  <div className="legal-mt-banner">
+                    <span className="legal-mt-banner-icon">🌐</span>
+                    <span>{chrome.mtDisclaimer}</span>
+                  </div>
+                )}
+                <div className="legal-prose" dir={isRtl ? "rtl" : "ltr"}>{children}</div>
               </div>
 
               {/* ── Mobile-only nav at bottom ── */}
               <div className="legal-mobile-nav">
-                <p className="legal-mobile-nav-label">More policies</p>
+                <p className="legal-mobile-nav-label">{chrome.morePolicies}</p>
                 <div className="legal-mobile-nav-grid">
                   {NAV.filter((i) => i.href !== pathname).map((item) => {
                     const Icon = item.icon;
@@ -231,7 +241,7 @@ export default function LegalLayout({
                           strokeWidth={2}
                         />
                         <span className="legal-mobile-nav-text">
-                          {item.label}
+                          {chrome.navLabels[item.href] || item.label}
                         </span>
                         <ChevronRight className="legal-mobile-nav-arrow" />
                       </Link>
@@ -257,7 +267,7 @@ export default function LegalLayout({
                 className="legal-footer-logo"
               />
               <p className="legal-footer-tagline">
-                India&apos;s B2B Wholesale Marketplace
+                {chrome.tagline}
               </p>
             </div>
             <div className="legal-footer-links">
@@ -267,12 +277,12 @@ export default function LegalLayout({
                   href={item.href}
                   className="legal-footer-link"
                 >
-                  {item.label}
+                  {chrome.navLabels[item.href] || item.label}
                 </Link>
               ))}
             </div>
             <div className="legal-footer-copy">
-              <p>© {new Date().getFullYear()} ANGA9. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} ANGA9. {chrome.copyright}</p>
             </div>
           </div>
         </div>
@@ -625,6 +635,49 @@ export default function LegalLayout({
           .legal-content-card { padding: 48px 56px; }
         }
 
+        /* ── MT Disclaimer Banner ── */
+        .legal-mt-banner {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          padding: 12px 16px;
+          margin-bottom: 24px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #FFF7ED, #FFF3E0);
+          border: 1px solid #FDBA74;
+          font-size: 13.5px;
+          line-height: 1.5;
+          color: #92400E;
+          font-weight: 500;
+        }
+        .legal-mt-banner-icon {
+          font-size: 18px;
+          flex-shrink: 0;
+          line-height: 1;
+          margin-top: 1px;
+        }
+
+        /* ── RTL Support ── */
+        [dir="rtl"] .legal-prose {
+          text-align: right;
+        }
+        [dir="rtl"] .legal-prose ul li,
+        [dir="rtl"] .legal-prose ol li {
+          padding-left: 0;
+          padding-right: 28px;
+        }
+        [dir="rtl"] .legal-prose ul li::before {
+          left: auto;
+          right: 6px;
+        }
+        [dir="rtl"] .legal-prose ol li::before {
+          left: auto;
+          right: 0;
+        }
+        [dir="rtl"] .legal-breadcrumb-sep {
+          transform: scaleX(-1);
+        }
+
         /* ── Mobile bottom nav ── */
         .legal-mobile-nav { display: block; margin-top: 40px; }
         @media (min-width: 768px) { .legal-mobile-nav { display: none; } }
@@ -948,6 +1001,5 @@ export default function LegalLayout({
         }
       `}</style>
     </div>
-    </LangContext.Provider>
   );
 }

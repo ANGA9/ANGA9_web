@@ -42,7 +42,7 @@ export default function CategoryStrip() {
   return (
     <>
       <div
-        className="sticky top-[145px] z-30 border-b"
+        className="sticky top-[145px] z-[35] border-b"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
         <div className="mx-auto relative" style={{ maxWidth: 1400, padding: "0 48px" }}>
@@ -80,10 +80,10 @@ export default function CategoryStrip() {
 
       </div>
 
-      {/* Dark overlay behind mega dropdown */}
+      {/* Dark overlay — z-[34] covers SearchFilterStrip (z-30) but stays below CategoryStrip (z-[35]) and CustomerTopNav (z-40) */}
       {hoveredTab && (
         <div
-          className="fixed inset-0 z-20"
+          className="fixed inset-0 z-[34]"
           style={{ background: "rgba(0,0,0,0.45)" }}
           onMouseEnter={scheduleHide}
         />
@@ -91,3 +91,4 @@ export default function CategoryStrip() {
     </>
   );
 }
+

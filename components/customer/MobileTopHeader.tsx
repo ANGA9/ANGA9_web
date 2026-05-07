@@ -573,7 +573,8 @@ function MobileTopHeaderContent() {
         </div>
       </div>
 
-      {/* ── Row 4: Folder Tabs ── */}
+      {/* ── Row 4: Folder Tabs (hidden on search results) ── */}
+      {pathname !== "/search" && (
       <div className="w-full pt-1 bg-transparent">
         <div className="flex items-center justify-around px-2 sm:px-3 border-b border-[#E5E7EB]">
           {MOBILE_TABS.map((tab) => {
@@ -599,6 +600,7 @@ function MobileTopHeaderContent() {
           })}
         </div>
       </div>
+      )}
     </div>
   );
 }

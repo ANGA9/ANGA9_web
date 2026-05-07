@@ -24,7 +24,8 @@ export default function CustomerShopLayout({
   const isProductDetail = pathname?.startsWith("/products/");
   const isOrders = pathname === "/orders";
   const isAccount = pathname === "/account";
-  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount;
+  const isMenu = pathname === "/menu";
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu;
 
   return (
     <LoginSheetProvider>
@@ -53,8 +54,8 @@ export default function CustomerShopLayout({
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
               id="main-content"
-              className={`mx-auto ${isCheckout ? "pb-0" : "pb-20 md:pb-0"}`}
-              style={{ maxWidth: 1400 }}
+              className={`${isMenu ? '' : 'mx-auto'} ${isCheckout || isMenu ? "pb-0" : "pb-20 md:pb-0"}`}
+              style={isMenu ? undefined : { maxWidth: 1400 }}
             >
               {children}
             </main>

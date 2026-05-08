@@ -1,10 +1,10 @@
-# ANGA Dashboard
+# ANGA9 Dashboard
 
-A multi-portal e-commerce dashboard for the ANGA platform, serving customers, sellers, and administrators from a single Next.js application. The project ships a unified design system, role-based routing, and analytics surfaces backed by Supabase and Firebase.
+A multi-portal e-commerce dashboard for the ANGA9 platform, serving customers, sellers, and administrators from a single Next.js application. The project ships a unified design system, role-based routing, and analytics surfaces backed by Supabase and Firebase.
 
 ## Overview
 
-ANGA Dashboard is the web control plane for the ANGA marketplace. It exposes three distinct experiences under one codebase:
+ANGA9 Dashboard is the web control plane for the ANGA9 marketplace. It exposes three distinct experiences under one codebase:
 
 - **Customer portal** — browsing, ordering, and account management
 - **Seller portal** — catalog, orders, and revenue analytics
@@ -112,7 +112,7 @@ npm run lint
 
 ## Design System
 
-Colors, typography, spacing, elevation, and component patterns are documented in [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md). It is the source of truth shared between this dashboard and the ANGA Android client — keep both in sync when introducing new tokens or components.
+Colors, typography, spacing, elevation, and component patterns are documented in [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md). It is the source of truth shared between this dashboard and the ANGA9 Android client — keep both in sync when introducing new tokens or components.
 
 Each portal has a distinct primary color:
 
@@ -132,4 +132,4 @@ The app targets Vercel by default. Any platform with first-class Next.js 16 supp
 
 ## License
 
-Proprietary — © ANGA. All rights reserved.
+Proprietary — © ANGA9. All rights reserved.

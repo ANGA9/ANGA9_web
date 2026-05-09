@@ -117,7 +117,7 @@ function OrdersContent() {
         </h1>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-2">
+      <div className="grid grid-cols-2 gap-2 mb-6">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           const statusMatch = tab.replace("Active", "Processing");
@@ -129,15 +129,17 @@ function OrdersContent() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="px-5 py-2.5 text-[14px] font-bold rounded-full transition-all whitespace-nowrap border"
+              className="flex items-center justify-center gap-2 py-3 md:py-3.5 text-center rounded-xl transition-all border-2"
               style={{
-                backgroundColor: isActive ? "#1A6FD4" : "#FFFFFF",
-                borderColor: isActive ? "#1A6FD4" : t.border,
-                color: isActive ? "#FFFFFF" : t.textSecondary,
-                boxShadow: isActive ? "0 4px 14px rgba(26, 111, 212, 0.2)" : "none",
+                backgroundColor: isActive ? "#F9FAFB" : "transparent",
+                borderColor: isActive ? "#1A1A2E" : "#E5E7EB",
+                color: isActive ? "#1A1A2E" : "#9CA3AF",
               }}
             >
-              {tab} <span className="opacity-80 ml-1.5 text-[12px]">{count}</span>
+              <span className="text-[13px] md:text-[14px] font-bold leading-tight">
+                {tab}
+              </span>
+              <span className="text-[11px] md:text-[12px] font-medium opacity-60">{count}</span>
             </button>
           );
         })}

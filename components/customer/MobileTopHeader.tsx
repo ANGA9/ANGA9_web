@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, Search, Heart, ShoppingCart, RotateCw, Pencil, Mic } from "lucide-react";
+import { User, MapPin, Search, Heart, ShoppingCart, Pencil, Mic, X, Loader2 } from "lucide-react";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
 import { cdnUrl } from "@/lib/utils";
-import { detectLocationFromBrowser } from "@/lib/detectLocation";
 import NotificationBell from "@/components/shared/NotificationBell";
 
 const MOBILE_TABS: { key: string; label: string; accent: string; gradientFrom: string; gradientVia: string }[] = [
@@ -47,9 +46,8 @@ function MobileTopHeaderContent() {
   const [pincodeInput, setPincodeInput] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [pincodeLoading, setPincodeLoading] = useState(false);
-  const [ipDetected, setIpDetected] = useState<{ city: string; pincode: string } | null>(null);
-  const [ipDetectError, setIpDetectError] = useState("");
-  const [ipDetectLoading, setIpDetectLoading] = useState(false);
+  const [detectedLocality, setDetectedLocality] = useState("");
+  const [isClosingSheet, setIsClosingSheet] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const SEARCH_PLACEHOLDERS = [
     "Search for formal shirts",
@@ -66,7 +64,7 @@ function MobileTopHeaderContent() {
     return () => clearInterval(id);
   }, [SEARCH_PLACEHOLDERS.length]);
 
-  const pincodeRef = useRef<HTMLDivElement>(null);
+  const pincodeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const IP_CACHE_KEY = "ipLocation";
@@ -112,14 +110,11 @@ function MobileTopHeaderContent() {
     };
   }, []);
 
-  const submitPincode = async (raw: string) => {
-    const pin = raw.trim();
-    if (!/^\d{6}$/.test(pin)) {
-      setPincodeError("Enter a valid 6-digit pincode");
-      return;
-    }
+  const lookupPincode = useCallback(async (pin: string) => {
+    if (!/^\d{6}$/.test(pin)) return;
     setPincodeError("");
     setPincodeLoading(true);
+    setDetectedLocality("");
     try {
       const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
       const data = (await res.json()) as Array<{
@@ -133,52 +128,51 @@ function MobileTopHeaderContent() {
       }
       const office = entry.PostOffice[0];
       const city = office.District || office.Name;
+      const locality = office.Name;
+      const state = office.State;
+      setDetectedLocality(`${locality}, ${city}, ${state}`);
       const next = { city, pincode: pin };
       setLocation(next);
       try {
         localStorage.setItem("userPincode", JSON.stringify(next));
       } catch {}
-      setPincodeOpen(false);
-      setPincodeInput("");
+      // Auto-close after a brief moment so user sees the result
+      setTimeout(() => closeSheet(), 800);
     } catch {
       setPincodeError("Could not look up pincode. Try again.");
     } finally {
       setPincodeLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => {
-    if (!pincodeOpen) return;
-    function handleClick(e: MouseEvent) {
-      if (pincodeRef.current && !pincodeRef.current.contains(e.target as Node)) {
-        setPincodeOpen(false);
-        setPincodeError("");
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [pincodeOpen]);
-
-  const useMyLocation = async () => {
-    setIpDetectError("");
-    setIpDetected(null);
-    setIpDetectLoading(true);
-    try {
-      const next = await detectLocationFromBrowser();
-      setIpDetected(next);
-      setLocation(next);
-      try {
-        localStorage.setItem("userPincode", JSON.stringify(next));
-      } catch {}
-    } catch (err: unknown) {
-      const e = err as { code?: number; message?: string };
-      if (e?.code === 1) setIpDetectError("Permission denied. Enter pincode manually.");
-      else if (e?.code === 3) setIpDetectError("Location request timed out");
-      else setIpDetectError(e?.message || "Could not get location");
-    } finally {
-      setIpDetectLoading(false);
+  const handlePincodeChange = (raw: string) => {
+    const val = raw.replace(/\D/g, "").slice(0, 6);
+    setPincodeInput(val);
+    setPincodeError("");
+    setDetectedLocality("");
+    if (val.length === 6) {
+      lookupPincode(val);
     }
   };
+
+  const openSheet = () => {
+    setIsClosingSheet(false);
+    setPincodeInput("");
+    setPincodeError("");
+    setDetectedLocality("");
+    setPincodeOpen(true);
+    setTimeout(() => pincodeInputRef.current?.focus(), 100);
+  };
+
+  const closeSheet = useCallback(() => {
+    setIsClosingSheet(true);
+    setTimeout(() => {
+      setPincodeOpen(false);
+      setIsClosingSheet(false);
+    }, 250);
+  }, []);
+
+
       
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;
@@ -189,79 +183,146 @@ function MobileTopHeaderContent() {
       style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
     >
       {/* ── Row 1: Delivery Location ── */}
-      <div className="relative px-4 pt-2 pb-1 w-full" ref={pincodeRef}>
+      <div className="px-4 pt-4 pb-1 w-full" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 12px))' }}>
         <button
-          onClick={() => setPincodeOpen((v) => !v)}
-          className="flex items-center w-full gap-1.5 group rounded-lg px-2 py-2.5 -mx-2 active:bg-black/5 transition-colors"
+          onClick={openSheet}
+          className="flex items-center gap-1.5 group active:opacity-70 transition-opacity"
         >
           <MapPin className="w-4 h-4 text-[#1A6FD4] stroke-[2.5] shrink-0" />
           <span className="text-[13px] font-medium text-[#4B5563] tracking-tight">Deliver to</span>
           <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight truncate">
             {location ? `${location.city}, ${location.pincode}` : "Set Pincode"}
           </span>
-          <Pencil className="w-3 h-3 text-[#1A6FD4] ml-auto shrink-0" />
+          <Pencil className="w-3 h-3 text-[#1A6FD4] shrink-0 ml-0.5" />
         </button>
-
-        {pincodeOpen && (
-          <div className="absolute left-3 right-3 top-[calc(100%+6px)] rounded-2xl border border-[#E8EEF4] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-50 p-4">
-            <div className="text-[14px] font-bold mb-1 text-[#1A1A2E]">Enter delivery pincode</div>
-            <div className="text-[12.5px] mb-3 text-[#9CA3AF]">
-              We&apos;ll show prices and shipping times for your area.
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                autoFocus
-                value={pincodeInput}
-                onChange={(e) => {
-                  setPincodeInput(e.target.value.replace(/\D/g, ""));
-                  if (pincodeError) setPincodeError("");
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") submitPincode(pincodeInput);
-                }}
-                placeholder="6-digit pincode"
-                className="flex-1 rounded-lg border border-[#D0E3F7] px-3 py-2 text-[14px] text-[#1A1A2E] outline-none focus:border-[#1A6FD4]"
-              />
-              <button
-                onClick={() => submitPincode(pincodeInput)}
-                disabled={pincodeLoading}
-                className="rounded-lg bg-[#1A6FD4] px-3 py-2 text-[13px] font-bold text-white transition-opacity disabled:opacity-60"
-              >
-                {pincodeLoading ? "..." : "Apply"}
-              </button>
-            </div>
-            <button
-              onClick={useMyLocation}
-              disabled={ipDetectLoading}
-              title="Use device location (asks for permission)"
-              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[#D0E3F7] px-3 py-2 text-[13px] font-bold text-[#1A6FD4] transition-opacity disabled:opacity-60"
-            >
-              <RotateCw className={`w-[13px] h-[13px] ${ipDetectLoading ? "animate-spin" : ""}`} />
-              {ipDetectLoading ? "Detecting…" : "Use my location"}
-            </button>
-            {pincodeError && (
-              <div className="mt-2 text-[12.5px] text-[#DC2626]">{pincodeError}</div>
-            )}
-            {(ipDetected || ipDetectError || ipDetectLoading) && (
-              <div className="mt-3 rounded-lg border border-[#E8EEF4] bg-[#EAF2FF] p-2.5 text-[12px]">
-                <div className="font-bold mb-0.5 text-[#4B5563]">Detection result</div>
-                {ipDetectLoading ? (
-                  <div className="text-[#9CA3AF]">Checking…</div>
-                ) : ipDetectError ? (
-                  <div className="text-[#DC2626]">{ipDetectError}</div>
-                ) : ipDetected ? (
-                  <div className="text-[#1A1A2E]">
-                    {ipDetected.city}, {ipDetected.pincode}
-                  </div>
-                ) : null}
-              </div>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* ── Pincode Bottom Sheet (mobile + desktop) ── */}
+      {pincodeOpen && (
+        <>
+          <style>{`
+            @keyframes sheetUp {
+              from { transform: translateY(100%); }
+              to   { transform: translateY(0); }
+            }
+            @keyframes sheetDown {
+              from { transform: translateY(0); }
+              to   { transform: translateY(100%); }
+            }
+            @keyframes overlayFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes overlayFadeOut { from { opacity: 1; } to { opacity: 0; } }
+          `}</style>
+          <div className="fixed inset-0 z-[9999] flex flex-col justify-end md:justify-center md:items-center">
+            {/* Overlay */}
+            <div
+              className="absolute inset-0 bg-black/40"
+              style={{ animation: `${isClosingSheet ? 'overlayFadeOut' : 'overlayFadeIn'} 200ms ease forwards` }}
+              onClick={closeSheet}
+            />
+            {/* Sheet */}
+            <div
+              className="relative bg-white rounded-t-2xl md:rounded-2xl w-full md:w-[420px] flex flex-col"
+              style={{
+                animation: `${isClosingSheet ? 'sheetDown 250ms ease-in forwards' : 'sheetUp 280ms cubic-bezier(0.22,1,0.36,1)'}`,
+                boxShadow: '0 -8px 30px rgba(0,0,0,0.1)',
+                marginBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
+              }}
+            >
+              {/* Grabber (mobile) */}
+              <div className="md:hidden flex justify-center pt-2 pb-1">
+                <span className="block w-10 h-1 rounded-full bg-gray-300" />
+              </div>
+
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 pt-3 md:pt-5 pb-3 border-b border-gray-100">
+                <div>
+                  <h3 className="text-[16px] font-bold text-gray-900">Enter delivery pincode</h3>
+                  <p className="text-[12px] text-gray-400 mt-0.5">We'll show prices and delivery times for your area</p>
+                </div>
+                <button onClick={closeSheet} className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+
+              {/* 6 Digit Boxes */}
+              <div className="px-5 pt-6 pb-8">
+                <div className="flex items-center justify-center gap-2.5">
+                  {[0, 1, 2, 3, 4, 5].map((idx) => (
+                    <input
+                      key={idx}
+                      id={`pin-${idx}`}
+                      ref={idx === 0 ? pincodeInputRef : undefined}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={pincodeInput[idx] || ""}
+                      autoFocus={idx === 0}
+                      onChange={(e) => {
+                        const digit = e.target.value.replace(/\D/g, "").slice(-1);
+                        const arr = pincodeInput.split("");
+                        arr[idx] = digit;
+                        // Fill gaps with empty string
+                        while (arr.length < 6) arr.push("");
+                        const newVal = arr.join("").replace(/[^0-9]/g, "").slice(0, 6);
+                        handlePincodeChange(newVal);
+                        // Auto-focus next box
+                        if (digit && idx < 5) {
+                          const next = document.getElementById(`pin-${idx + 1}`) as HTMLInputElement;
+                          next?.focus();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Backspace" && !pincodeInput[idx] && idx > 0) {
+                          const prev = document.getElementById(`pin-${idx - 1}`) as HTMLInputElement;
+                          prev?.focus();
+                          const arr = pincodeInput.split("");
+                          arr[idx - 1] = "";
+                          handlePincodeChange(arr.join("").replace(/[^0-9]/g, ""));
+                        }
+                      }}
+                      className="w-11 h-12 md:w-12 md:h-14 rounded-xl border-2 text-center text-[18px] md:text-[20px] font-bold text-gray-900 outline-none transition-all focus:border-[#1A1A2E] focus:shadow-[0_0_0_3px_rgba(26,26,46,0.08)]"
+                      style={{
+                        borderColor: pincodeError
+                          ? '#DC2626'
+                          : pincodeInput[idx]
+                            ? '#1A1A2E'
+                            : '#E5E7EB',
+                        background: pincodeInput[idx] ? '#F9FAFB' : '#FFFFFF',
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Loading */}
+                {pincodeLoading && (
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                    <span className="text-[12px] text-gray-400 font-medium">Looking up pincode...</span>
+                  </div>
+                )}
+
+                {/* Error */}
+                {pincodeError && (
+                  <p className="mt-3 text-[12.5px] font-medium text-red-600 text-center">{pincodeError}</p>
+                )}
+
+                {/* Detected locality */}
+                {detectedLocality && (
+                  <div className="mt-4 flex items-center gap-2 rounded-xl bg-green-50 border border-green-100 px-4 py-3">
+                    <MapPin className="w-4 h-4 text-green-600 shrink-0" />
+                    <p className="text-[13px] font-semibold text-green-800">{detectedLocality}</p>
+                  </div>
+                )}
+
+                {/* Helper text */}
+                <p className="mt-4 text-[11px] text-gray-400 text-center">
+                  Type your pincode and we'll detect your locality automatically
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ── Row 2: Logo + Icons ── */}
       <div className="flex items-center justify-between px-4 py-2.5">

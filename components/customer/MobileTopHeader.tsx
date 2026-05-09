@@ -335,7 +335,19 @@ function MobileTopHeaderContent() {
             {/* Mic button — right inside of search bar */}
             <button
               type="button"
-              onClick={() => router.push("/search/explore?voice=1")}
+              onClick={() => {
+                const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                if (SR) {
+                  const rec = new SR();
+                  rec.lang = "en-IN";
+                  rec.continuous = false;
+                  rec.interimResults = true;
+                  rec.maxAlternatives = 1;
+                  (window as any)._globalVoiceRec = rec;
+                  try { rec.start(); } catch {}
+                }
+                router.push("/search/explore?voice=1");
+              }}
               aria-label="Voice search"
               className="p-1.5 rounded-full text-[#4338CA] hover:bg-gray-100 transition-colors active:scale-95"
             >

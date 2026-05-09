@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, Suspense } from "react";
+import { useEffect, useState, useCallback, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
   SlidersHorizontal,
   ArrowUpDown,
+  ArrowLeft,
   X,
   Check,
   ChevronDown,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import EmptyState from "@/components/shared/EmptyState";
 
@@ -62,6 +64,7 @@ type SheetKind = "sort" | "filters" | null;
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuth();
 
   const query = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category") || "";
@@ -85,6 +88,22 @@ function SearchPageContent() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ price: true, sellers: false });
   const [localMinPrice, setLocalMinPrice] = useState(minPriceParam);
   const [localMaxPrice, setLocalMaxPrice] = useState(maxPriceParam);
+
+  // Mobile inline search input — kept in sync with URL `q`
+  const [mobileQuery, setMobileQuery] = useState(query);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => { setMobileQuery(query); }, [query]);
+  const submitMobileSearch = (raw: string) => {
+    const term = raw.trim();
+    if (!term) return;
+    try {
+      const key = `recentSearches_${user?.id || "guest"}`;
+      const saved = JSON.parse(localStorage.getItem(key) || "[]") as string[];
+      const next = [term, ...saved.filter((x) => x !== term)].slice(0, 5);
+      localStorage.setItem(key, JSON.stringify(next));
+    } catch {}
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
 
   const updateUrl = useCallback(
     (updates: Record<string, string>) => {
@@ -219,12 +238,51 @@ function SearchPageContent() {
         .srch-overlay-out { animation: srchOverlayOut 200ms ease-in forwards; }
       `}</style>
 
+      {/* ── Mobile slim header (back + editable search) ── */}
+      <div className="md:hidden sticky top-0 z-40 bg-white border-b" style={{ borderColor: t.border }}>
+        <div className="flex items-center gap-2 px-3 py-2.5">
+          <button
+            type="button"
+            aria-label="Back"
+            onClick={() => router.back()}
+            className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" style={{ color: t.textPrimary }} />
+          </button>
+          <div
+            className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-transparent focus-within:border-[#1A6FD4]/40 focus-within:bg-white transition-colors"
+          >
+            <Search className="w-4 h-4 text-[#6B7280] shrink-0" />
+            <input
+              ref={mobileInputRef}
+              type="text"
+              value={mobileQuery}
+              onChange={(e) => setMobileQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") submitMobileSearch(mobileQuery); }}
+              placeholder="Search products"
+              className="flex-1 min-w-0 bg-transparent outline-none text-[14.5px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+              enterKeyHint="search"
+            />
+            {mobileQuery && (
+              <button
+                type="button"
+                aria-label="Clear"
+                onClick={() => { setMobileQuery(""); mobileInputRef.current?.focus(); }}
+                className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-[#9CA3AF] hover:text-[#1A1A2E]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="pb-6 md:py-8">
         {/* ── Results header bar ── */}
         <div className="px-4 md:px-0 pt-4 md:pt-0 pb-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
             <div className="flex items-baseline gap-3 flex-wrap">
-              <h1 className="font-bold text-[17px] md:text-[22px] tracking-tight" style={{ color: t.textPrimary }}>
+              <h1 className="hidden md:block font-bold text-[17px] md:text-[22px] tracking-tight" style={{ color: t.textPrimary }}>
                 {query ? `Results for "${query}"` : "All Products"}
               </h1>
               {!loading && (

@@ -105,19 +105,19 @@ const FEATURED_ITEMS: PopularItem[] = [
   { label: "Gift Ideas", icon: Gift, color: "#DC2626", bgColor: "#FEE2E2", href: "/search?q=gifts" },
 ];
 
-const POPULAR_CATEGORIES: { label: string; href: string }[] = [
-  { label: "Sarees", href: "/search?q=sarees" },
-  { label: "Kurtas & Kurtis", href: "/search?q=kurtas" },
-  { label: "T-shirts", href: "/search?q=t-shirts" },
-  { label: "Jeans", href: "/search?q=jeans" },
-  { label: "Dresses", href: "/search?q=dresses" },
-  { label: "Jewellery", href: "/search?q=jewellery" },
-  { label: "Footwear", href: "/search?q=footwear" },
-  { label: "Bed Sheets", href: "/search?q=bed+sheets" },
-  { label: "Cushions", href: "/search?q=cushions" },
-  { label: "Curtains", href: "/search?q=curtains" },
-  { label: "Towels", href: "/search?q=towels" },
-  { label: "Home Decor", href: "/search?q=home+decor" },
+const POPULAR_CATEGORIES: { label: string; emoji: string; href: string }[] = [
+  { label: "Sarees",       emoji: "🥻", href: "/search?q=sarees" },
+  { label: "Kurtas",       emoji: "👘", href: "/search?q=kurtas" },
+  { label: "T-Shirts",     emoji: "👕", href: "/search?q=t-shirts" },
+  { label: "Jeans",        emoji: "👖", href: "/search?q=jeans" },
+  { label: "Dresses",      emoji: "👗", href: "/search?q=dresses" },
+  { label: "Jewellery",    emoji: "💍", href: "/search?q=jewellery" },
+  { label: "Footwear",     emoji: "👟", href: "/search?q=footwear" },
+  { label: "Bed Sheets",   emoji: "🛏️", href: "/search?q=bed+sheets" },
+  { label: "Cushions",     emoji: "🛋️", href: "/search?q=cushions" },
+  { label: "Curtains",     emoji: "🪟", href: "/search?q=curtains" },
+  { label: "Towels",       emoji: "🧺", href: "/search?q=towels" },
+  { label: "Home Decor",   emoji: "🪴", href: "/search?q=home+decor" },
 ];
 
 export default function MobileMenuPage() {
@@ -195,40 +195,36 @@ export default function MobileMenuPage() {
                 <button
                   key={cat.key}
                   onClick={() => setActiveCategory(cat.key)}
-                  className="relative flex flex-col items-center gap-1.5 py-4 px-1 transition-all"
+                  className="relative flex flex-col items-center gap-1.5 py-3.5 px-2 transition-all"
                   style={{
                     background: isActive ? "#FFFFFF" : "transparent",
                   }}
                 >
-                  {/* Active indicator bar */}
+                  {/* Active indicator — filled colored chip behind icon */}
                   {isActive && (
                     <div
-                      className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full"
-                      style={{ background: cat.color }}
+                      className="absolute inset-x-2 top-2 bottom-2 rounded-xl"
+                      style={{ background: cat.bgColor }}
                     />
                   )}
 
                   {/* Icon circle */}
                   <div
-                    className="flex items-center justify-center rounded-full transition-all"
+                    className="relative flex items-center justify-center rounded-full transition-all"
                     style={{
-                      width: 44,
-                      height: 44,
-                      background: isActive ? cat.bgColor : "#F0F1F3",
-                      boxShadow: isActive
-                        ? `0 2px 8px ${cat.color}20`
-                        : "none",
-                      animation: isActive
-                        ? "catIconBounce 0.3s ease"
-                        : "none",
+                      width: 42,
+                      height: 42,
+                      background: isActive ? cat.bgColor : `${cat.color}18`,
+                      boxShadow: isActive ? `0 2px 8px ${cat.color}30` : "none",
+                      animation: isActive ? "catIconBounce 0.3s ease" : "none",
                     }}
                   >
                     <Icon
                       className="transition-colors"
                       style={{
-                        width: 20,
-                        height: 20,
-                        color: isActive ? cat.color : "#9CA3AF",
+                        width: 19,
+                        height: 19,
+                        color: isActive ? cat.color : `${cat.color}AA`,
                         strokeWidth: isActive ? 2.2 : 1.8,
                       }}
                     />
@@ -236,7 +232,7 @@ export default function MobileMenuPage() {
 
                   {/* Label */}
                   <span
-                    className="text-center leading-tight transition-colors"
+                    className="relative text-center leading-tight transition-colors"
                     style={{
                       fontSize: "10px",
                       fontWeight: isActive ? 700 : 500,
@@ -293,30 +289,35 @@ export default function MobileMenuPage() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 bg-white hover:shadow-md active:scale-[0.97] transition-all"
+                          className="relative flex flex-col justify-end overflow-hidden rounded-2xl active:scale-[0.97] transition-all"
                           style={{
-                            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                            height: 110,
+                            background: `linear-gradient(145deg, ${item.bgColor}, ${item.bgColor}88)`,
+                            border: `1px solid ${item.color}20`,
+                            boxShadow: `0 2px 12px ${item.color}15`,
                           }}
                         >
+                          {/* Large decorative icon — top-right */}
+                          <Icon
+                            className="absolute top-3 right-3 opacity-20"
+                            style={{ width: 52, height: 52, color: item.color }}
+                          />
+                          {/* Foreground icon — top-left */}
                           <div
-                            className="flex items-center justify-center rounded-xl"
-                            style={{
-                              width: 48,
-                              height: 48,
-                              background: item.bgColor,
-                            }}
+                            className="absolute top-3 left-3 flex items-center justify-center rounded-xl"
+                            style={{ width: 36, height: 36, background: `${item.color}25` }}
                           >
-                            <Icon
-                              style={{
-                                width: 22,
-                                height: 22,
-                                color: item.color,
-                              }}
-                            />
+                            <Icon style={{ width: 18, height: 18, color: item.color }} />
                           </div>
-                          <span className="text-[12px] font-bold text-gray-700 text-center leading-tight">
-                            {item.label}
-                          </span>
+                          {/* Label at bottom */}
+                          <div className="px-3 pb-3 pt-2">
+                            <span
+                              className="text-[12px] font-black leading-tight block"
+                              style={{ color: item.color }}
+                            >
+                              {item.label}
+                            </span>
+                          </div>
                         </Link>
                       );
                     })}
@@ -333,11 +334,10 @@ export default function MobileMenuPage() {
                       <Link
                         key={item.label}
                         href={item.href}
-                        className="flex items-center justify-center p-3 rounded-xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm active:scale-[0.97] transition-all text-center"
+                        className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm active:scale-[0.97] transition-all text-center"
                       >
-                        <span className="text-[11.5px] font-semibold text-gray-700 leading-tight">
-                          {item.label}
-                        </span>
+                        <span className="text-[18px] leading-none">{item.emoji}</span>
+                        <span className="text-[10.5px] font-semibold text-gray-700 leading-tight">{item.label}</span>
                       </Link>
                     ))}
                   </div>

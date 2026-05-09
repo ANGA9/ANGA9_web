@@ -89,19 +89,14 @@ function ExploreContent() {
     setListening(false);
   }, []);
 
-  const startListening = useCallback(() => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      alert("Voice search is not supported in this browser.");
-      return;
-    }
-    const rec = new SR();
+  // Auto-start if ?voice=1
+  const voiceParam = searchParams?.get("voice");
+  const voiceStarted = useRef(false);
+  
+  const attachToRecognition = useCallback((rec: any) => {
     recognitionRef.current = rec;
-    rec.lang = "en-IN";
-    rec.continuous = false;
-    rec.interimResults = true;
-    rec.maxAlternatives = 1;
-
+    setListening(true);
+    
     rec.onstart = () => setListening(true);
     rec.onend = () => setListening(false);
     rec.onerror = () => setListening(false);
@@ -127,6 +122,21 @@ function ExploreContent() {
         setTimeout(() => submitSearch(final.trim()), 400);
       }
     };
+  }, []);
+
+  const startListening = useCallback(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      alert("Voice search is not supported in this browser.");
+      return;
+    }
+    const rec = new SR();
+    rec.lang = "en-IN";
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+    
+    attachToRecognition(rec);
 
     try {
       rec.start();
@@ -134,18 +144,24 @@ function ExploreContent() {
       setListening(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [attachToRecognition]);
 
-  // Auto-start if ?voice=1
-  const voiceParam = searchParams?.get("voice");
-  const voiceStarted = useRef(false);
   useEffect(() => {
     if (voiceParam === "1" && !voiceStarted.current) {
       voiceStarted.current = true;
-      const id = setTimeout(() => startListening(), 300);
-      return () => clearTimeout(id);
+      
+      const globalRec = (window as any)._globalVoiceRec;
+      if (globalRec) {
+        // Handoff from the home page click to bypass user-gesture requirement
+        attachToRecognition(globalRec);
+        delete (window as any)._globalVoiceRec;
+      } else {
+        // Fallback (e.g. page refreshed with ?voice=1)
+        const id = setTimeout(() => startListening(), 300);
+        return () => clearTimeout(id);
+      }
     }
-  }, [voiceParam, startListening]);
+  }, [voiceParam, attachToRecognition, startListening]);
 
   const recentSearchesKey = useMemo(
     () => `recentSearches_${user?.id || "guest"}`,

@@ -60,13 +60,18 @@ export default function CustomerWishlistPage() {
         <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </Link>
-        <h1 className="text-[17px] font-medium text-gray-900 leading-tight">
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
           Wishlist
         </h1>
+        {products.length > 0 && (
+          <span className="text-[12px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
+            {products.length}
+          </span>
+        )}
       </header>
 
-      <div className="mx-auto max-w-[1400px] px-2 sm:px-4 py-6 md:py-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 mt-2">
+      <div className="mx-auto max-w-[1400px] px-2 sm:px-4 py-4 md:py-10 pb-24 md:pb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 md:mb-8 mt-1 md:mt-2">
           <div>
             <div className="flex items-baseline gap-3">
               <h1
@@ -79,16 +84,16 @@ export default function CustomerWishlistPage() {
                 ({products.length} {products.length === 1 ? "Item" : "Items"})
               </span>
             </div>
-            <p className="text-[14px] md:text-[16px] font-medium" style={{ color: t.textSecondary }}>
-              {products.length} {products.length === 1 ? 'item' : 'items'} saved for later
+            <p className="text-[13px] md:text-[15px]" style={{ color: t.textSecondary }}>
+              {products.length} {products.length === 1 ? "item" : "items"} saved for later
             </p>
           </div>
-          
+
           {products.length > 0 && (
             <button
               onClick={handleMoveAllToCart}
               disabled={movingAll}
-              className="mt-4 md:mt-0 flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[14px] font-semibold transition-all hover:bg-gray-50 border border-gray-200 active:scale-95 shadow-sm bg-white text-[#1A1A2E] disabled:opacity-60"
+              className="mt-3 md:mt-0 flex items-center justify-center gap-2 rounded-full md:rounded-xl px-5 py-2 md:px-6 md:py-3 text-[13px] md:text-[14px] font-semibold transition-all hover:bg-gray-50 border border-gray-200 active:scale-95 shadow-sm bg-white text-[#1A1A2E] disabled:opacity-60 w-fit"
             >
               {movingAll ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -104,13 +109,13 @@ export default function CustomerWishlistPage() {
           <EmptyState
             icon={Heart}
             title="Your wishlist is empty"
-            description="Save items you like to view them later."
+            description="Save items you love to view them later."
             actionLabel="Continue Shopping"
             onAction={() => router.push("/")}
             accentColor={t.primaryCta}
           />
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-5 mt-2 md:mt-4">
             {products.map((product) => (
               <ProductCard
                 key={product.id}
@@ -125,3 +130,4 @@ export default function CustomerWishlistPage() {
     </div>
   );
 }
+

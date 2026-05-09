@@ -493,7 +493,7 @@ export default function CustomerAccountPage() {
               </div>
             ) : (
               <button 
-                onClick={() => { setActiveNav("Profile"); setMobileMenuOpen(false); }}
+                onClick={() => { setActiveNav("Profile"); setIsEditingProfile(true); setMobileMenuOpen(false); }}
                 className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-gray-200 active:scale-[0.98] transition-all text-left w-full"
               >
                 <div
@@ -501,10 +501,15 @@ export default function CustomerAccountPage() {
                   style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
                 >
                   {initials}
+                  {/* Edit pencil overlay */}
+                  <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+                    <Pencil className="w-2.5 h-2.5 text-gray-600" />
+                  </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
-                  <p className="text-[14px] font-medium text-gray-500 truncate mt-0.5">{displayEmail}</p>
+                  <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail}</p>
+                  <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>Edit profile →</p>
                 </div>
                 <ChevronRight className="w-6 h-6 text-gray-300" />
               </button>

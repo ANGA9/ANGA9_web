@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft, Package, XCircle } from "lucide-react";
 import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -163,26 +163,59 @@ function OrdersContent() {
             />
           ))}
 
-          {filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: "#EAF2FF" }}>
-                <ShoppingBag className="w-10 h-10 text-[#1A6FD4]" />
+          {filtered.length === 0 && (() => {
+            const emptyConfig = {
+              "Delivered": {
+                Icon: CheckCircle2,
+                color: "#16A34A",
+                bg: "#DCFCE7",
+                title: "No delivered orders yet",
+                desc: "Orders you've received will appear here.",
+              },
+              "Cancelled": {
+                Icon: XCircle,
+                color: "#DC2626",
+                bg: "#FEE2E2",
+                title: "No cancelled orders",
+                desc: "You haven't cancelled any orders. That's great!",
+              },
+              "Active": {
+                Icon: Package,
+                color: "#D97706",
+                bg: "#FEF3C7",
+                title: "No active orders",
+                desc: "Orders in progress will show up here.",
+              },
+              "All Orders": {
+                Icon: ShoppingBag,
+                color: "#1A6FD4",
+                bg: "#EAF2FF",
+                title: "No orders yet",
+                desc: "Your orders will appear here after you place your first purchase.",
+              },
+            }[activeTab] ?? {
+              Icon: ShoppingBag, color: "#1A6FD4", bg: "#EAF2FF",
+              title: "No orders found",
+              desc: "You haven't placed any orders matching this filter yet.",
+            };
+            const { Icon, color, bg, title, desc } = emptyConfig;
+            return (
+              <div className="flex flex-col items-center justify-center py-16 md:py-24 text-center px-4">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-5" style={{ background: bg }}>
+                  <Icon className="w-10 h-10 md:w-12 md:h-12" style={{ color }} />
+                </div>
+                <h3 className="text-[17px] md:text-[20px] font-bold text-gray-900 mb-2">{title}</h3>
+                <p className="text-[13px] md:text-[15px] text-gray-500 mb-8 max-w-[280px]">{desc}</p>
+                <Link
+                  href="/"
+                  className="rounded-full md:rounded-xl px-6 py-2 md:px-10 md:py-3.5 text-[13px] md:text-[16px] font-bold text-white transition-all active:scale-95 shadow-sm"
+                  style={{ background: color }}
+                >
+                  Start Shopping
+                </Link>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
-                No orders found
-              </h3>
-              <p className="text-[15px] text-gray-500 mb-8 max-w-[280px]">
-                You haven't placed any orders matching this filter yet.
-              </p>
-              <Link
-                href="/"
-                className="rounded-xl px-10 py-3.5 text-[16px] font-bold text-white transition-all active:scale-95 shadow-sm"
-                style={{ background: "#1A6FD4" }}
-              >
-                Start Shopping
-              </Link>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
       </div>

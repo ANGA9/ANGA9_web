@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cdnUrl } from "@/lib/utils";
 
-const BANNERS = [
+const ALL_BANNERS = [
   {
     id: 1,
     desktop: cdnUrl("/banners/banner1.png"),
@@ -56,20 +56,38 @@ const BANNERS = [
   },
 ];
 
+// Mobile: cap at 4 for cleaner UX. Desktop: show all.
+const MOBILE_BANNERS = ALL_BANNERS.slice(0, 4);
+const AUTO_PLAY_MS = 4500;
+
 export default function HeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const BANNERS = isMobile ? MOBILE_BANNERS : ALL_BANNERS;
   const length = BANNERS.length;
 
   /* ── Desktop UI ── */
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scrollToIndex = useCallback((index: number) => {
-    if (!scrollRef.current) return;
-    const el = scrollRef.current;
-    const scrollAmount = el.clientWidth * index;
-    el.scrollTo({ left: scrollAmount, behavior: "smooth" });
-    setCurrentIndex(index);
-  }, []);
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      if (!scrollRef.current) return;
+      const el = scrollRef.current;
+      const scrollAmount = el.clientWidth * index;
+      el.scrollTo({ left: scrollAmount, behavior: "smooth" });
+      setCurrentIndex(index);
+    },
+    []
+  );
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -84,17 +102,36 @@ export default function HeroBanner() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      scrollToIndex((currentIndex + 1) % length);
-    }, 4000);
+      setCurrentIndex((prev) => {
+        const next = (prev + 1) % length;
+        scrollToIndex(next);
+        return next;
+      });
+    }, AUTO_PLAY_MS);
     return () => clearInterval(id);
-  }, [currentIndex, length, scrollToIndex]);
+  }, [length, scrollToIndex]);
 
   const handleNext = () => scrollToIndex((currentIndex + 1) % length);
   const handlePrev = () => scrollToIndex((currentIndex - 1 + length) % length);
 
+  // Progress percentage for timer bar
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    setProgress(0);
+    const start = performance.now();
+    let raf: number;
+    const tick = () => {
+      const elapsed = performance.now() - start;
+      const pct = Math.min((elapsed / AUTO_PLAY_MS) * 100, 100);
+      setProgress(pct);
+      if (pct < 100) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [currentIndex]);
+
   return (
     <div className="w-full pb-6 pt-2">
-
       {/* ══════ UNIFIED NATIVE SWIPE CAROUSEL ══════ */}
       <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto">
         <div
@@ -154,19 +191,37 @@ export default function HeroBanner() {
         </button>
       </div>
 
-      {/* Dots Indicator */}
-      <div className="mt-4 sm:mt-6 flex justify-center items-center gap-1.5 sm:gap-2">
+      {/* ══════ PROGRESS BAR INDICATORS ══════ */}
+      <div className="mt-3 sm:mt-5 flex justify-center items-center gap-1.5 sm:gap-2 px-4">
         {BANNERS.map((_, i) => (
           <button
             key={i}
             onClick={() => scrollToIndex(i)}
-            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-              i === currentIndex
-                ? "w-6 sm:w-8 bg-blue-600"
-                : "w-1.5 sm:w-2 bg-gray-300 hover:bg-gray-400"
-            }`}
+            className="relative h-[3px] sm:h-1 rounded-full overflow-hidden transition-all duration-300"
+            style={{
+              width: i === currentIndex ? (isMobile ? 32 : 48) : (isMobile ? 16 : 20),
+              background: i === currentIndex ? "transparent" : "#D1D5DB",
+            }}
             aria-label={`Go to banner ${i + 1}`}
-          />
+          >
+            {/* Track */}
+            {i === currentIndex && (
+              <>
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{ background: "#CBD5E1" }}
+                />
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full"
+                  style={{
+                    width: `${progress}%`,
+                    background: "#1A6FD4",
+                    transition: "none",
+                  }}
+                />
+              </>
+            )}
+          </button>
         ))}
       </div>
     </div>

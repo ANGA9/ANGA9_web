@@ -352,7 +352,7 @@ function MobileCategoryStrip() {
         className="flex items-start gap-4 px-4 min-w-max animate-in fade-in slide-in-from-right-8 duration-300 ease-out"
       >
         {activeCategories.map((cat) => (
-          <button key={cat.name} className="flex flex-col items-center gap-2 w-[72px] shrink-0 group">
+          <button key={cat.name} className="flex flex-col items-center gap-2 w-[76px] shrink-0 group">
             <div 
               className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6] overflow-hidden relative"
               style={{ background: cat.bg }}
@@ -362,7 +362,7 @@ function MobileCategoryStrip() {
               ) : null}
               <cat.icon className={`w-8 h-8 ${cat.image ? 'hidden' : ''}`} style={{ color: cat.color }} strokeWidth={1.5} />
             </div>
-            <span className="text-[12px] font-semibold text-center leading-tight text-[#4B5563]">
+            <span className="text-[12px] font-bold text-center leading-tight text-[#374151]">
               {cat.name}
             </span>
           </button>

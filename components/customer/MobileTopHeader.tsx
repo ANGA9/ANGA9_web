@@ -189,14 +189,17 @@ function MobileTopHeaderContent() {
       style={{ background: `linear-gradient(to bottom, ${activeTabConfig.gradientFrom}, ${activeTabConfig.gradientVia}, #ffffff)` }}
     >
       {/* ── Row 1: Delivery Location ── */}
-      <div className="relative flex items-center px-4 pt-3 pb-1.5 w-full" ref={pincodeRef}>
-        <button onClick={() => setPincodeOpen((v) => !v)} className="flex items-center gap-1.5 group">
-          <MapPin className="w-[15px] h-[15px] text-[#1A1A2E] stroke-[2.5]" />
+      <div className="relative px-4 pt-2 pb-1 w-full" ref={pincodeRef}>
+        <button
+          onClick={() => setPincodeOpen((v) => !v)}
+          className="flex items-center w-full gap-1.5 group rounded-lg px-2 py-2.5 -mx-2 active:bg-black/5 transition-colors"
+        >
+          <MapPin className="w-4 h-4 text-[#1A6FD4] stroke-[2.5] shrink-0" />
           <span className="text-[13px] font-medium text-[#4B5563] tracking-tight">Deliver to</span>
-          <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight">
+          <span className="text-[13px] font-bold text-[#1A1A2E] tracking-tight truncate">
             {location ? `${location.city}, ${location.pincode}` : "Set Pincode"}
           </span>
-          <Pencil className="w-[12px] h-[12px] text-[#1A6FD4] ml-0.5" />
+          <Pencil className="w-3 h-3 text-[#1A6FD4] ml-auto shrink-0" />
         </button>
 
         {pincodeOpen && (
@@ -317,7 +320,7 @@ function MobileTopHeaderContent() {
               <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
             </div>
             <div className="relative flex-1 min-w-0 h-[22px]">
-              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#6B7280]">
                 <span
                   key={placeholderIdx}
                   className="absolute inset-0 flex items-center truncate"
@@ -327,7 +330,7 @@ function MobileTopHeaderContent() {
                 </span>
               </div>
             </div>
-            <Search className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" />
+            <Search className="w-[18px] h-[18px] text-[#4B5563] shrink-0 ml-1" />
           </button>
 
           <div className="shrink-0 flex items-center pr-3">

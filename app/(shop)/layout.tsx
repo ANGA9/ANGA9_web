@@ -25,7 +25,8 @@ export default function CustomerShopLayout({
   const isOrders = pathname === "/orders";
   const isAccount = pathname === "/account";
   const isMenu = pathname === "/menu";
-  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu;
+  const isSearchExplore = pathname === "/search/explore";
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu || isSearchExplore;
 
   return (
     <LoginSheetProvider>

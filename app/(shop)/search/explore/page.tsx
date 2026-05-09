@@ -1,0 +1,438 @@
+"use client";
+
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, History, Search, TrendingUp, X, Clock } from "lucide-react";
+import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
+import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import ProductCard, { type Product } from "@/components/customer/ProductCard";
+
+interface SearchProduct {
+  id: string;
+  name: string;
+  slug: string;
+  seller_id: string;
+  category_id?: string;
+  base_price: number;
+  sale_price?: number | null;
+  min_order_qty: number;
+  unit: string;
+  status: string;
+  images: string[];
+  tags: string[];
+  category_name?: string;
+  seller_name?: string;
+}
+
+interface SearchResponse {
+  data: SearchProduct[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+const ACCENT = "#4338CA";
+const TRENDING_PAGE_SIZE = 12;
+
+function toCardProduct(p: SearchProduct): Product {
+  return {
+    id: p.id,
+    name: p.name,
+    seller: p.seller_name || "",
+    category: p.category_name || "",
+    originalPrice: p.base_price,
+    price: p.sale_price ?? p.base_price,
+    minOrder: p.min_order_qty
+      ? `${p.min_order_qty} ${p.unit || "unit"}${p.min_order_qty > 1 ? "s" : ""}`
+      : "Not specified",
+    imageUrl: p.images?.[0] || undefined,
+  };
+}
+
+function ExploreContent() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { items: recentlyViewed } = useRecentlyViewed();
+
+  const recentSearchesKey = useMemo(
+    () => `recentSearches_${user?.id || "guest"}`,
+    [user?.id]
+  );
+
+  const [query, setQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // ── Trending (infinite scroll) ──
+  const [trending, setTrending] = useState<Product[]>([]);
+  const [trendingPage, setTrendingPage] = useState(1);
+  const [trendingTotalPages, setTrendingTotalPages] = useState(1);
+  const [trendingLoading, setTrendingLoading] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // Autofocus search input on mount
+  useEffect(() => {
+    const id = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(id);
+  }, []);
+
+  // Load recent searches
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(recentSearchesKey);
+      setRecentSearches(saved ? JSON.parse(saved) : []);
+    } catch {
+      setRecentSearches([]);
+    }
+  }, [recentSearchesKey]);
+
+  const persistRecentSearches = useCallback(
+    (next: string[]) => {
+      setRecentSearches(next);
+      try {
+        localStorage.setItem(recentSearchesKey, JSON.stringify(next));
+      } catch {}
+    },
+    [recentSearchesKey]
+  );
+
+  const saveRecentSearch = useCallback(
+    (term: string) => {
+      const t = term.trim();
+      if (!t) return;
+      const next = [t, ...recentSearches.filter((x) => x !== t)].slice(0, 5);
+      persistRecentSearches(next);
+    },
+    [recentSearches, persistRecentSearches]
+  );
+
+  const removeRecentSearch = (term: string) => {
+    persistRecentSearches(recentSearches.filter((x) => x !== term));
+  };
+
+  const clearAllRecentSearches = () => persistRecentSearches([]);
+
+  const submitSearch = (raw: string) => {
+    const term = raw.trim();
+    if (!term) return;
+    saveRecentSearch(term);
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
+
+  // ── Trending fetch ──
+  const fetchTrending = useCallback(
+    async (page: number) => {
+      if (trendingLoading) return;
+      if (page > 1 && page > trendingTotalPages) return;
+      setTrendingLoading(true);
+      try {
+        const params = new URLSearchParams({
+          sort: "ratings",
+          page: String(page),
+          limit: String(TRENDING_PAGE_SIZE),
+        });
+        const res = await api.get<SearchResponse>(
+          `/api/search?${params.toString()}`,
+          { silent: true }
+        );
+        if (!res) return;
+        const next = (res.data ?? []).map(toCardProduct);
+        setTrending((prev) => {
+          if (page === 1) return next;
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...next.filter((p) => !seen.has(p.id))];
+        });
+        setTrendingTotalPages(res.totalPages || 1);
+        setTrendingPage(res.page || page);
+      } catch {
+        // silent — empty state will show
+      } finally {
+        setTrendingLoading(false);
+      }
+    },
+    [trendingLoading, trendingTotalPages]
+  );
+
+  // Initial trending load
+  useEffect(() => {
+    fetchTrending(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting) return;
+        if (trendingLoading) return;
+        if (trendingPage >= trendingTotalPages) return;
+        fetchTrending(trendingPage + 1);
+      },
+      { rootMargin: "400px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [trendingPage, trendingTotalPages, trendingLoading, fetchTrending]);
+
+  const hasMoreTrending = trendingPage < trendingTotalPages;
+
+  return (
+    <div className="min-h-[100dvh]" style={{ background: t.bgPage }}>
+      {/* ── Top bar with search ── */}
+      <div className="sticky top-0 z-40 bg-white border-b" style={{ borderColor: t.border }}>
+        <div className="flex items-center gap-2 px-3 py-2.5">
+          <button
+            type="button"
+            aria-label="Back"
+            onClick={() => router.back()}
+            className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
+          </button>
+          <div
+            className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-transparent focus-within:border-[#1A6FD4]/40 focus-within:bg-white transition-colors"
+          >
+            <Search className="w-4 h-4 text-[#6B7280] shrink-0" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submitSearch(query);
+              }}
+              placeholder="Search for products, brands and more"
+              className="flex-1 min-w-0 bg-transparent outline-none text-[14.5px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+              enterKeyHint="search"
+            />
+            {query && (
+              <button
+                type="button"
+                aria-label="Clear"
+                onClick={() => {
+                  setQuery("");
+                  inputRef.current?.focus();
+                }}
+                className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-[#9CA3AF] hover:text-[#1A1A2E]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Section 1: Recent Searches ── */}
+      {recentSearches.length > 0 && (
+        <section className="px-4 pt-4 pb-2">
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-2">
+              <History className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
+              <h2
+                className="text-[12px] font-bold uppercase tracking-wider"
+                style={{ color: t.textSecondary }}
+              >
+                Recent Searches
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={clearAllRecentSearches}
+              className="text-[12px] font-bold hover:underline"
+              style={{ color: ACCENT }}
+            >
+              Clear all
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {recentSearches.map((term) => (
+              <span
+                key={term}
+                className="inline-flex items-center gap-1 pl-3 pr-1 py-1.5 rounded-full border bg-white"
+                style={{ borderColor: t.border }}
+              >
+                <button
+                  type="button"
+                  onClick={() => submitSearch(term)}
+                  className="text-[13px] font-medium"
+                  style={{ color: t.textPrimary }}
+                >
+                  {term}
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Remove ${term}`}
+                  onClick={() => removeRecentSearch(term)}
+                  className="ml-0.5 flex items-center justify-center w-5 h-5 rounded-full text-[#9CA3AF] hover:text-[#EF4444] hover:bg-gray-50"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Section 2: Recently Viewed Products ── */}
+      {recentlyViewed.length > 0 && (
+        <section className="pt-4 pb-2">
+          <div className="px-4 flex items-center gap-2 mb-2.5">
+            <Clock className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
+            <h2
+              className="text-[12px] font-bold uppercase tracking-wider"
+              style={{ color: t.textSecondary }}
+            >
+              Recently Viewed
+            </h2>
+          </div>
+          <div className="overflow-x-auto overscroll-x-contain no-scrollbar">
+            <div className="flex gap-3 px-4 pb-1">
+              {recentlyViewed.map((item) => {
+                const discount =
+                  item.originalPrice > item.price && item.originalPrice > 0
+                    ? Math.round(
+                        ((item.originalPrice - item.price) / item.originalPrice) * 100
+                      )
+                    : 0;
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/products/${item.id}`}
+                    className="shrink-0 w-[124px] rounded-xl border bg-white overflow-hidden transition-shadow hover:shadow-sm"
+                    style={{ borderColor: t.border }}
+                  >
+                    <div className="relative w-full h-[124px] bg-[#F8FAFC]">
+                      {item.imageUrl ? (
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          fill
+                          sizes="124px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#D1D5DB] text-[10px]">
+                          No image
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <p
+                        className="text-[12px] font-medium leading-tight line-clamp-2"
+                        style={{ color: t.textPrimary }}
+                      >
+                        {item.name}
+                      </p>
+                      <div className="mt-1 flex items-baseline gap-1">
+                        <span
+                          className="text-[12.5px] font-bold"
+                          style={{ color: t.textPrimary }}
+                        >
+                          ₹{item.price.toLocaleString("en-IN")}
+                        </span>
+                        {discount > 0 && (
+                          <span className="text-[10px] font-semibold" style={{ color: "#16A34A" }}>
+                            {discount}% off
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Section 3: Trending Products (infinite scroll) ── */}
+      <section className="pt-4 pb-10">
+        <div className="px-4 flex items-center gap-2 mb-3">
+          <TrendingUp className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
+          <h2
+            className="text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: t.textSecondary }}
+          >
+            Trending Products
+          </h2>
+        </div>
+
+        {trending.length === 0 && trendingLoading ? (
+          <div className="grid grid-cols-2 gap-1.5 px-1.5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-2xl border"
+                style={{ background: "#F3F4F6", borderColor: t.border, height: 280 }}
+              />
+            ))}
+          </div>
+        ) : trending.length === 0 ? (
+          <div
+            className="mx-4 rounded-2xl border p-6 text-center text-[13px]"
+            style={{ borderColor: t.border, color: t.textMuted }}
+          >
+            No trending products right now. Check back soon.
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 gap-1.5 px-1.5">
+              {trending.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            {/* Sentinel + loader */}
+            <div ref={sentinelRef} className="h-10 w-full" />
+            {trendingLoading && trending.length > 0 && (
+              <div className="flex items-center justify-center py-4">
+                <div
+                  className="animate-spin rounded-full h-6 w-6 border-b-2"
+                  style={{ borderColor: ACCENT }}
+                />
+              </div>
+            )}
+            {!hasMoreTrending && (
+              <div
+                className="text-center text-[12px] py-4"
+                style={{ color: t.textMuted }}
+              >
+                You&apos;re all caught up
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { scrollbar-width: none; }
+      `}</style>
+    </div>
+  );
+}
+
+export default function SearchExplorePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="py-10 flex justify-center items-center">
+          <div
+            className="animate-spin rounded-full h-7 w-7 border-b-2"
+            style={{ borderColor: ACCENT }}
+          />
+        </div>
+      }
+    >
+      <ExploreContent />
+    </Suspense>
+  );
+}

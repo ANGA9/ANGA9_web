@@ -1,37 +1,19 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, Search, Mic, HandHeart, Heart, ShoppingCart, History, X, RotateCw, Pencil } from "lucide-react";
-import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
+import { User, MapPin, Search, Heart, ShoppingCart, RotateCw, Pencil } from "lucide-react";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
-import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
 import { detectLocationFromBrowser } from "@/lib/detectLocation";
-import { useVoiceSearch } from "@/lib/useVoiceSearch";
 import NotificationBell from "@/components/shared/NotificationBell";
-
-interface Suggestion {
-  id: string;
-  name: string;
-  slug: string;
-  category_name?: string;
-  base_price: number;
-}
-
-const megaTabs = [
-  "FASHION",
-  "ACCESSORIES",
-  "BED & BATH LINEN",
-  "HOME DECOR & FLOORING",
-];
 
 const MOBILE_TABS: { key: string; label: string; accent: string; gradientFrom: string; gradientVia: string }[] = [
   { key: "ALL",          label: "ALL",          accent: "#1A6FD4", gradientFrom: "#CDE0FF", gradientVia: "#EAF2FF" },
@@ -60,11 +42,6 @@ function MobileTopHeaderContent() {
   const { count: cartCount } = useCart();
   const { count: wishlistCount } = useWishlist();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [popularTags, setPopularTags] = useState<string[]>([]);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
   const [pincodeOpen, setPincodeOpen] = useState(false);
   const [pincodeInput, setPincodeInput] = useState("");
@@ -89,20 +66,7 @@ function MobileTopHeaderContent() {
     return () => clearInterval(id);
   }, [SEARCH_PLACEHOLDERS.length]);
 
-  const searchRef = useRef<HTMLDivElement>(null);
   const pincodeRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
-
-  const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
-
-  useEffect(() => {
-    // Fetch popular tags on mount
-    api.get<{ tags?: string[] }>("/api/search/filters", { silent: true })
-      .then(res => {
-        if (res?.tags) setPopularTags(res.tags.slice(0, 10)); // Show top 10
-      })
-      .catch(() => {});
-  }, []);
 
   useEffect(() => {
     const IP_CACHE_KEY = "ipLocation";
@@ -216,105 +180,6 @@ function MobileTopHeaderContent() {
     }
   };
       
-  useEffect(() => {
-    // Load recent searches
-    try {
-      const saved = localStorage.getItem(searchStorageKey);
-      if (saved) setRecentSearches(JSON.parse(saved));
-      else setRecentSearches([]);
-    } catch {}
-  }, [searchStorageKey]);
-
-  const saveRecentSearch = (term: string) => {
-    if (!term.trim()) return;
-    try {
-      const updated = [term, ...recentSearches.filter(t => t !== term)].slice(0, 5);
-      setRecentSearches(updated);
-      localStorage.setItem(searchStorageKey, JSON.stringify(updated));
-    } catch {}
-  };
-
-  const removeRecentSearch = (e: React.MouseEvent, term: string) => {
-    e.stopPropagation();
-    try {
-      const updated = recentSearches.filter(t => t !== term);
-      setRecentSearches(updated);
-      localStorage.setItem(searchStorageKey, JSON.stringify(updated));
-    } catch {}
-  };
-
-  const fetchSuggestions = useCallback(async (q: string) => {
-    if (q.length < 2) { setSuggestions([]); return; }
-    try {
-      const res = await api.get<{ suggestions: Suggestion[] }>(
-        `/api/search/autocomplete?q=${encodeURIComponent(q)}&limit=5`,
-        { silent: true }
-      );
-      setSuggestions(res?.suggestions ?? []);
-    } catch {
-      setSuggestions([]);
-    }
-  }, []);
-
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setShowSuggestions(true);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchSuggestions(value), 300);
-  };
-
-  const handleSearchSubmit = () => {
-    const term = searchQuery.trim();
-    if (!term) return;
-    saveRecentSearch(term);
-    setShowSuggestions(false);
-    router.push(`/search?q=${encodeURIComponent(term)}`);
-  };
-
-  // Voice search (Web Speech API — free, browser-built-in)
-  const voice = useVoiceSearch({
-    lang: "en-IN",
-    onResult: (text) => {
-      setSearchQuery(text);
-      setShowSuggestions(true);
-    },
-    onEnd: (finalText) => {
-      const term = finalText.trim();
-      if (!term) return;
-      saveRecentSearch(term);
-      setShowSuggestions(false);
-      router.push(`/search?q=${encodeURIComponent(term)}`);
-    },
-    onError: (msg) => {
-      console.warn("[voice]", msg);
-    },
-  });
-
-  const handleMicClick = () => {
-    if (!voice.isSupported) {
-      alert("Voice search isn't supported on this browser. Try Chrome or Edge.");
-      return;
-    }
-    voice.toggle();
-  };
-
-  const handleTagClick = (tag: string) => {
-    setSearchQuery(tag);
-    saveRecentSearch(tag);
-    setShowSuggestions(false);
-    router.push(`/search?q=${encodeURIComponent(tag)}`);
-  };
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   // Hide the home header on dedicated sub-pages
   if (pathname === "/account" || pathname === "/cart") return null;
 
@@ -433,144 +298,36 @@ function MobileTopHeaderContent() {
         </div>
       </div>
 
-      {/* ── Row 3: Elevated Search Bar ── */}
-      <div className="px-4 py-2 pb-4" ref={searchRef}>
+      {/* ── Row 3: Elevated Search Bar (taps open /search/explore) ── */}
+      <div className="px-4 py-2 pb-4">
         <style>{`
           @keyframes searchHintIn {
             0% { transform: translateY(100%); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
           }
-          .mobile-search-input { -webkit-tap-highlight-color: transparent; }
-          .mobile-search-input:focus { outline: none !important; box-shadow: none !important; -webkit-appearance: none; }
-          @keyframes voiceMicPulse {
-            0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
-            70%  { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-          }
-          .voice-mic-active {
-            background: #EF4444;
-            animation: voiceMicPulse 1.4s ease-out infinite;
-          }
         `}</style>
-        <div className="relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent focus-within:border-[#1A6FD4]/30 focus-within:shadow-md transition-all">
+        <button
+          type="button"
+          onClick={() => router.push("/search/explore")}
+          aria-label="Open search"
+          className="w-full relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent transition-all text-left"
+        >
           <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
             <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
           </div>
           <div className="relative flex-1 min-w-0 h-[22px]">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
-              onFocus={() => setShowSuggestions(true)}
-              className="mobile-search-input absolute inset-0 w-full bg-transparent outline-none text-[15px] text-[#1A1A2E] placeholder:text-transparent border-0"
-            />
-            {!searchQuery && !voice.isListening && (
-              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
-                <span
-                  key={placeholderIdx}
-                  className="absolute inset-0 flex items-center truncate"
-                  style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
-                >
-                  {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
-                </span>
-              </div>
-            )}
-            {!searchQuery && voice.isListening && (
-              <div className="pointer-events-none absolute inset-0 flex items-center text-[15px] font-medium text-[#EF4444] truncate">
-                Listening…
-              </div>
-            )}
-          </div>
-          {showSuggestions && (
-            <button
-              type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                setSearchQuery("");
-                setSuggestions([]);
-                setShowSuggestions(false);
-              }}
-              className="shrink-0 flex items-center justify-center w-[22px] h-[22px] rounded-full text-[#9CA3AF] hover:text-[#1A1A2E] transition-colors"
-              aria-label="Clear search"
-            >
-              <X className="w-[16px] h-[16px]" />
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleMicClick}
-            aria-label={voice.isListening ? "Stop voice search" : "Search by voice"}
-            aria-pressed={voice.isListening}
-            className={`shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full transition-colors ${
-              voice.isListening ? "voice-mic-active" : "hover:bg-[#F3F4F6]"
-            }`}
-          >
-            <Mic
-              className={`w-[18px] h-[18px] ${
-                voice.isListening ? "text-white" : "text-[#6B7280]"
-              }`}
-            />
-          </button>
-          <svg className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-
-          {/* Autocomplete dropdown */}
-          {showSuggestions && (
-            <div className="absolute left-0 right-0 top-[calc(100%+8px)] rounded-2xl border border-[#E8EEF4] overflow-hidden bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-60">
-              {!searchQuery.trim() ? (
-                <div className="p-4 flex flex-col gap-4">
-                  {recentSearches.length > 0 && (
-                    <div>
-                      <h4 className="text-[13px] font-bold text-[#4B5563] mb-2 uppercase tracking-wider">Recent Searches</h4>
-                      <div className="flex flex-col">
-                        {recentSearches.map((term) => (
-                          <div key={term} className="flex items-center transition-colors hover:bg-gray-50 -mx-4 px-4">
-                            <button className="flex-1 flex items-center gap-3 py-2.5 text-left" onClick={() => handleTagClick(term)}>
-                              <History className="w-[15px] h-[15px] text-[#9CA3AF] shrink-0" />
-                              <span className="text-[14.5px] text-[#4B5563] font-medium truncate">{term}</span>
-                            </button>
-                            <button onClick={(e) => removeRecentSearch(e, term)} className="p-2 text-[#9CA3AF] hover:text-[#EF4444] rounded-full transition-colors">
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="text-[13px] font-bold text-[#4B5563] mb-2 uppercase tracking-wider">Popular Searches</h4>
-                    <div className="flex flex-wrap gap-2.5">
-                      {(popularTags.length > 0 ? popularTags : ['Smartphones', 'Laptops', 'Headphones', 'Home Decor', 'Mens Wear']).map(tag => (
-                        <button key={tag} className="px-3.5 py-1.5 rounded-full border border-[#E8EEF4] text-[13.5px] font-medium text-[#4B5563] bg-[#F8FBFF] hover:border-[#1A6FD4] transition-colors" onClick={() => handleTagClick(tag)}>
-                          {tag}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : suggestions.length > 0 ? (
-                <div className="py-2">
-                  {suggestions.map((s) => (
-                    <Link key={s.id} href={`/products/${s.id}`} onClick={() => setShowSuggestions(false)} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[#F8FBFF]">
-                      <Search className="w-4 h-4 shrink-0 text-[#9CA3AF]" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[14.5px] truncate font-medium text-[#1A1A2E]">{s.name}</p>
-                        {s.category_name && <p className="text-[12px] text-[#6B7280]">{s.category_name}</p>}
-                      </div>
-                    </Link>
-                  ))}
-                  <button onClick={handleSearchSubmit} className="w-full px-4 py-3 text-[14.5px] font-bold text-left border-t border-[#E8EEF4] text-[#1A6FD4] hover:bg-[#F8FBFF] transition-colors">
-                    Search for &quot;{searchQuery}&quot;
-                  </button>
-                </div>
-              ) : (
-                <div className="px-4 py-6 text-[14.5px] text-[#9CA3AF] text-center font-medium">
-                  {searchQuery.length < 2 ? "Type at least 2 characters..." : "No matches found"}
-                </div>
-              )}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
+              <span
+                key={placeholderIdx}
+                className="absolute inset-0 flex items-center truncate"
+                style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+              >
+                {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+          <Search className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
+        </button>
       </div>
 
       {/* ── Row 4: Folder Tabs (hidden on search results) ── */}

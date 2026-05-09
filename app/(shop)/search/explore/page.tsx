@@ -3,8 +3,8 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, History, Search, TrendingUp, X, Clock } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft, History, Search, TrendingUp, X, Clock, Mic, MicOff } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
@@ -64,6 +64,7 @@ function toCardProduct(p: SearchProduct): Product {
 
 function ExploreContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const { items: recentlyViewed } = useRecentlyViewed();
 
@@ -77,6 +78,74 @@ function ExploreContent() {
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
   }, [router]);
+
+  // ── Voice search state ──
+  const [listening, setListening] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const recognitionRef = useRef<any>(null);
+
+  const stopListening = useCallback(() => {
+    try { recognitionRef.current?.stop(); } catch {}
+    setListening(false);
+  }, []);
+
+  const startListening = useCallback(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      alert("Voice search is not supported in this browser.");
+      return;
+    }
+    const rec = new SR();
+    recognitionRef.current = rec;
+    rec.lang = "en-IN";
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => setListening(true);
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+
+    rec.onresult = (event: any) => {
+      let interim = "";
+      let final = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const text = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          final += text;
+        } else {
+          interim += text;
+        }
+      }
+      const current = final || interim;
+      if (current) {
+        setVoiceTranscript(current);
+        handleQueryChange(current);
+      }
+      // Auto-submit on final result
+      if (final.trim()) {
+        setTimeout(() => submitSearch(final.trim()), 400);
+      }
+    };
+
+    try {
+      rec.start();
+    } catch {
+      setListening(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-start if ?voice=1
+  const voiceParam = searchParams?.get("voice");
+  const voiceStarted = useRef(false);
+  useEffect(() => {
+    if (voiceParam === "1" && !voiceStarted.current) {
+      voiceStarted.current = true;
+      const id = setTimeout(() => startListening(), 300);
+      return () => clearTimeout(id);
+    }
+  }, [voiceParam, startListening]);
 
   const recentSearchesKey = useMemo(
     () => `recentSearches_${user?.id || "guest"}`,
@@ -290,6 +359,7 @@ function ExploreContent() {
                 aria-label="Clear"
                 onClick={() => {
                   handleQueryChange("");
+                  setVoiceTranscript("");
                   inputRef.current?.focus();
                 }}
                 className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-[#9CA3AF] hover:text-[#1A1A2E]"
@@ -297,8 +367,46 @@ function ExploreContent() {
                 <X className="w-4 h-4" />
               </button>
             )}
+
+            <div className="w-px h-5 bg-gray-300 mx-1" />
+
+            {/* Mic button inside search bar */}
+            <button
+              type="button"
+              aria-label={listening ? "Stop listening" : "Voice search"}
+              onClick={() => listening ? stopListening() : startListening()}
+              className="shrink-0 flex items-center justify-center w-7 h-7 rounded-full transition-all active:scale-90 mr-1"
+              style={{
+                background: listening ? "#4338CA" : "transparent",
+                color: listening ? "white" : "#4338CA"
+              }}
+            >
+              {listening
+                ? <MicOff className="w-4 h-4" />
+                : <Mic className="w-4 h-4" />
+              }
+            </button>
           </div>
         </div>
+
+        {/* Listening indicator bar */}
+        {listening && (
+          <div className="flex items-center gap-2 px-4 py-2 border-t" style={{ borderColor: t.border, background: "#F5F3FF" }}>
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4338CA] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4338CA]" />
+            </span>
+            <p className="text-[13px] font-semibold text-[#4338CA] flex-1">
+              {voiceTranscript ? `"${voiceTranscript}"` : "Listening… speak now"}
+            </p>
+            <button
+              onClick={stopListening}
+              className="text-[11px] font-bold text-[#6B7280] hover:text-gray-900"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ── Autocomplete results (shown while typing) ── */}

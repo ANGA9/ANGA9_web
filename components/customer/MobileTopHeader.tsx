@@ -6,7 +6,7 @@ import Link from "next/link";
 import logoo from "@/assets/logoo.png";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { User, MapPin, Search, Heart, ShoppingCart, RotateCw, Pencil } from "lucide-react";
+import { User, MapPin, Search, Heart, ShoppingCart, RotateCw, Pencil, Mic } from "lucide-react";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
@@ -306,28 +306,43 @@ function MobileTopHeaderContent() {
             100% { transform: translateY(0); opacity: 1; }
           }
         `}</style>
-        <button
-          type="button"
-          onClick={() => router.push("/search/explore")}
-          aria-label="Open search"
-          className="w-full relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all text-left"
-        >
-          <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
-            <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
-          </div>
-          <div className="relative flex-1 min-w-0 h-[22px]">
-            <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
-              <span
-                key={placeholderIdx}
-                className="absolute inset-0 flex items-center truncate"
-                style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
-              >
-                {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
-              </span>
+        <div className="relative flex items-center bg-white rounded-full shadow-sm border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all">
+          <button
+            type="button"
+            onClick={() => router.push("/search/explore")}
+            aria-label="Open search"
+            className="flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-l-full text-left bg-transparent"
+          >
+            <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
+              <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
             </div>
+            <div className="relative flex-1 min-w-0 h-[22px]">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#9CA3AF]">
+                <span
+                  key={placeholderIdx}
+                  className="absolute inset-0 flex items-center truncate"
+                  style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                >
+                  {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
+                </span>
+              </div>
+            </div>
+            <Search className="w-[18px] h-[18px] text-[#6B7280] shrink-0 ml-1" />
+          </button>
+
+          <div className="shrink-0 flex items-center pr-3">
+            <div className="w-px h-5 bg-gray-200 mx-2" />
+            {/* Mic button — right inside of search bar */}
+            <button
+              type="button"
+              onClick={() => router.push("/search/explore?voice=1")}
+              aria-label="Voice search"
+              className="p-1.5 rounded-full text-[#4338CA] hover:bg-gray-100 transition-colors active:scale-95"
+            >
+              <Mic className="w-[18px] h-[18px]" />
+            </button>
           </div>
-          <Search className="w-[18px] h-[18px] text-[#6B7280] shrink-0" />
-        </button>
+        </div>
       </div>
 
       {/* ── Row 4: Folder Tabs (hidden on search results) ── */}

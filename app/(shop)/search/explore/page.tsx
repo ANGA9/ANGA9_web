@@ -267,7 +267,8 @@ function ExploreContent() {
             <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
           </button>
           <div
-            className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-transparent focus-within:border-[#1A6FD4]/40 focus-within:bg-white transition-colors"
+            className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-black/[0.15] focus-within:border-black/60 focus-within:bg-white transition-all duration-150"
+            style={{ outline: "none" }}
           >
             <Search className="w-4 h-4 text-[#6B7280] shrink-0" />
             <input
@@ -279,7 +280,8 @@ function ExploreContent() {
                 if (e.key === "Enter") submitSearch(query);
               }}
               placeholder="Search for products, brands and more"
-              className="flex-1 min-w-0 bg-transparent outline-none text-[14.5px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+              className="flex-1 min-w-0 bg-transparent text-[14.5px] text-[#1A1A2E] placeholder:text-[#9CA3AF] outline-none ring-0 focus:outline-none focus:ring-0 [box-shadow:none!important] [-webkit-appearance:none]"
+              style={{ WebkitTapHighlightColor: "transparent" }}
               enterKeyHint="search"
             />
             {query && (
@@ -556,6 +558,10 @@ function ExploreContent() {
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { scrollbar-width: none; }
+        /* Kill browser blue focus glow on search input */
+        input[type="text"]:focus { outline: none !important; box-shadow: none !important; }
+        input:-webkit-autofill { box-shadow: 0 0 0 1000px #fff inset !important; -webkit-text-fill-color: #1A1A2E !important; }
+        * { -webkit-tap-highlight-color: transparent; }
       `}</style>
     </div>
   );

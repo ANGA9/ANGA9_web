@@ -156,7 +156,7 @@ export default function MobileMenuPage() {
         >
           <ArrowLeft className="w-5 h-5 text-gray-800" />
         </button>
-        <h1 className="text-[17px] font-semibold text-gray-900 tracking-tight flex-1">
+        <h1 className="text-[17px] font-medium text-gray-900 tracking-tight flex-1">
           Categories
         </h1>
         <Link

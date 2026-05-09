@@ -310,7 +310,7 @@ function MobileTopHeaderContent() {
           type="button"
           onClick={() => router.push("/search/explore")}
           aria-label="Open search"
-          className="w-full relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-transparent transition-all text-left"
+          className="w-full relative flex items-center gap-2.5 bg-white rounded-full px-4 py-2.5 shadow-sm border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all text-left"
         >
           <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
             <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />

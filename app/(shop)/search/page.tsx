@@ -1,20 +1,24 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
   SlidersHorizontal,
   ArrowUpDown,
   ArrowLeft,
   X,
-  Check,
   ChevronDown,
   ChevronUp,
+  Heart,
+  ShoppingCart,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
-import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
+import { useWishlist } from "@/lib/WishlistContext";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import EmptyState from "@/components/shared/EmptyState";
 
@@ -64,7 +68,8 @@ type SheetKind = "sort" | "filters" | null;
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { count: cartCount } = useCart();
+  const { count: wishlistCount } = useWishlist();
 
   const query = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category") || "";
@@ -88,22 +93,6 @@ function SearchPageContent() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ price: true, sellers: false });
   const [localMinPrice, setLocalMinPrice] = useState(minPriceParam);
   const [localMaxPrice, setLocalMaxPrice] = useState(maxPriceParam);
-
-  // Mobile inline search input — kept in sync with URL `q`
-  const [mobileQuery, setMobileQuery] = useState(query);
-  const mobileInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => { setMobileQuery(query); }, [query]);
-  const submitMobileSearch = (raw: string) => {
-    const term = raw.trim();
-    if (!term) return;
-    try {
-      const key = `recentSearches_${user?.id || "guest"}`;
-      const saved = JSON.parse(localStorage.getItem(key) || "[]") as string[];
-      const next = [term, ...saved.filter((x) => x !== term)].slice(0, 5);
-      localStorage.setItem(key, JSON.stringify(next));
-    } catch {}
-    router.push(`/search?q=${encodeURIComponent(term)}`);
-  };
 
   const updateUrl = useCallback(
     (updates: Record<string, string>) => {
@@ -236,50 +225,73 @@ function SearchPageContent() {
         .srch-sheet-out { animation: srchSlideDown 220ms ease-in forwards; }
         .srch-overlay-in { animation: srchOverlayIn 200ms ease-out; }
         .srch-overlay-out { animation: srchOverlayOut 200ms ease-in forwards; }
+        * { -webkit-tap-highlight-color: transparent; }
       `}</style>
 
-      {/* ── Mobile slim header (back + editable search) ── */}
+      {/* ── Mobile slim header (back + logo + query + actions) ── */}
       <div className="md:hidden sticky top-0 z-40 bg-white border-b" style={{ borderColor: t.border }}>
         <div className="flex items-center gap-2 px-3 py-2.5">
           <button
             type="button"
-            aria-label="Back"
-            onClick={() => router.back()}
+            aria-label="Back to explore"
+            onClick={() => router.push("/search/explore")}
             className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" style={{ color: t.textPrimary }} />
           </button>
-          <div
-            className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-transparent focus-within:border-[#1A6FD4]/40 focus-within:bg-white transition-colors"
+
+          <div className="shrink-0 w-7 h-7 rounded-md overflow-hidden flex items-center justify-center bg-white">
+            <Image src="/favicon.ico" alt="Anga9" width={28} height={28} className="object-contain" />
+          </div>
+
+          <h1
+            className="flex-1 min-w-0 truncate uppercase tracking-[0.14em] text-[12px] font-medium"
+            style={{ color: t.textSecondary, fontFamily: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto" }}
+            title={query}
           >
-            <Search className="w-4 h-4 text-[#6B7280] shrink-0" />
-            <input
-              ref={mobileInputRef}
-              type="text"
-              value={mobileQuery}
-              onChange={(e) => setMobileQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") submitMobileSearch(mobileQuery); }}
-              placeholder="Search products"
-              className="flex-1 min-w-0 bg-transparent outline-none text-[14.5px] text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-              enterKeyHint="search"
-            />
-            {mobileQuery && (
-              <button
-                type="button"
-                aria-label="Clear"
-                onClick={() => { setMobileQuery(""); mobileInputRef.current?.focus(); }}
-                className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-[#9CA3AF] hover:text-[#1A1A2E]"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+            {query || "All products"}
+          </h1>
+
+          <div className="shrink-0 flex items-center gap-1">
+            <button
+              type="button"
+              aria-label="Search"
+              onClick={() => router.push("/search/explore")}
+              className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <Search className="w-[20px] h-[20px] text-[#4B5563]" />
+            </button>
+            <Link
+              href="/wishlist"
+              aria-label="Wishlist"
+              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
+              {wishlistCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/cart"
+              aria-label="Cart"
+              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
+              {cartCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       </div>
 
-      <div className="pb-6 md:py-8">
+      <div className="pb-[calc(56px+env(safe-area-inset-bottom,0px)+16px)] md:pb-6 md:py-8">
         {/* ── Results header bar ── */}
-        <div className="px-4 md:px-0 pt-4 md:pt-0 pb-3">
+        <div className="px-4 md:px-0 pt-3 md:pt-0 pb-2">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
             <div className="flex items-baseline gap-3 flex-wrap">
               <h1 className="hidden md:block font-bold text-[17px] md:text-[22px] tracking-tight" style={{ color: t.textPrimary }}>
@@ -341,7 +353,7 @@ function SearchPageContent() {
         </div>
 
         {/* ── Mobile Sort/Filter bar ── */}
-        <div className="md:hidden sticky top-[60px] z-30 px-3 pb-2">
+        <div className="md:hidden sticky top-[56px] z-30 px-3 pb-2 pt-1 bg-white/80 backdrop-blur-sm">
           <div className="flex items-center bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
             <button onClick={() => openSheet("sort")}
               className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-bold border-r border-gray-100 active:bg-gray-50 transition-colors"

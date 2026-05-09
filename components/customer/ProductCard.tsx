@@ -164,18 +164,18 @@ export default function ProductCard({
         <div className="flex flex-col p-3 md:p-4 relative bg-white min-h-[138px] md:min-h-[150px]">
           {/* Wishlist / Remove controls — top-right */}
           {isWishlistContext ? (
-            /* In wishlist context: show a clear "×" remove button */
+            /* In wishlist context: always-visible red × remove button */
             <button
               onClick={handleWishlistToggle}
               disabled={togglingWishlist}
-              className="absolute top-1 right-1 p-2 rounded-full bg-white border border-gray-100 shadow-sm hover:bg-red-50 hover:border-red-200 transition-colors z-20 disabled:opacity-60"
+              className="absolute top-2 right-2 p-1.5 rounded-full bg-white border border-gray-900/20 hover:border-gray-900/50 transition-colors z-20 disabled:opacity-60 shadow-sm"
               aria-label="Remove from wishlist"
               title="Remove from wishlist"
             >
               {togglingWishlist ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-gray-400" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-gray-500" />
               ) : (
-                <X className="w-3.5 h-3.5 text-gray-400 group-hover:text-red-400 transition-colors" />
+                <X className="w-3.5 h-3.5 text-gray-700" />
               )}
             </button>
           ) : (

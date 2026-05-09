@@ -63,11 +63,6 @@ export default function CustomerWishlistPage() {
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
           Wishlist
         </h1>
-        {products.length > 0 && (
-          <span className="text-[12px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
-            {products.length}
-          </span>
-        )}
       </header>
 
       <div className="mx-auto max-w-[1400px] px-2 sm:px-4 py-4 md:py-10 pb-24 md:pb-10">

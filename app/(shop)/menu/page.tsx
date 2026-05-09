@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search } from "lucide-react";
@@ -123,6 +123,17 @@ const POPULAR_CATEGORIES: { label: string; href: string }[] = [
 export default function MobileMenuPage() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("POPULAR");
+
+  // Redirect desktop visitors to home — this page is mobile-only
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    if (mq.matches) router.replace("/");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) router.replace("/");
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [router]);
 
   const activeMeta = CATEGORIES.find((c) => c.key === activeCategory);
   const columns: CategoryColumn[] = CATEGORY_TREE[activeCategory] || [];

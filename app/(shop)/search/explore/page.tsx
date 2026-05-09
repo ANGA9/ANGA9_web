@@ -36,6 +36,14 @@ interface SearchResponse {
   totalPages: number;
 }
 
+interface Suggestion {
+  id: string;
+  name: string;
+  slug: string;
+  category_name?: string;
+  base_price: number;
+}
+
 const ACCENT = "#4338CA";
 const TRENDING_PAGE_SIZE = 12;
 
@@ -59,6 +67,17 @@ function ExploreContent() {
   const { user } = useAuth();
   const { items: recentlyViewed } = useRecentlyViewed();
 
+  // Redirect desktop visitors to home — this page is mobile-only
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    if (mq.matches) router.replace("/");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) router.replace("/");
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [router]);
+
   const recentSearchesKey = useMemo(
     () => `recentSearches_${user?.id || "guest"}`,
     [user?.id]
@@ -67,6 +86,12 @@ function ExploreContent() {
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // ── Autocomplete (Elasticsearch via /api/search/autocomplete) ──
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suggestReqId = useRef(0);
 
   // ── Trending (infinite scroll) ──
   const [trending, setTrending] = useState<Product[]>([]);
@@ -116,6 +141,50 @@ function ExploreContent() {
   };
 
   const clearAllRecentSearches = () => persistRecentSearches([]);
+
+  // Debounced autocomplete fetch
+  const fetchSuggestions = useCallback(async (raw: string) => {
+    const q = raw.trim();
+    if (q.length < 2) {
+      setSuggestions([]);
+      setSuggestLoading(false);
+      return;
+    }
+    const reqId = ++suggestReqId.current;
+    setSuggestLoading(true);
+    try {
+      const res = await api.get<{ suggestions: Suggestion[] }>(
+        `/api/search/autocomplete?q=${encodeURIComponent(q)}&limit=8`,
+        { silent: true }
+      );
+      // Drop stale responses
+      if (reqId !== suggestReqId.current) return;
+      setSuggestions(res?.suggestions ?? []);
+    } catch {
+      if (reqId === suggestReqId.current) setSuggestions([]);
+    } finally {
+      if (reqId === suggestReqId.current) setSuggestLoading(false);
+    }
+  }, []);
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!value.trim()) {
+      // Cancel any in-flight result and clear immediately
+      suggestReqId.current++;
+      setSuggestions([]);
+      setSuggestLoading(false);
+      return;
+    }
+    debounceRef.current = setTimeout(() => fetchSuggestions(value), 250);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const submitSearch = (raw: string) => {
     const term = raw.trim();
@@ -205,7 +274,7 @@ function ExploreContent() {
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => handleQueryChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") submitSearch(query);
               }}
@@ -218,7 +287,7 @@ function ExploreContent() {
                 type="button"
                 aria-label="Clear"
                 onClick={() => {
-                  setQuery("");
+                  handleQueryChange("");
                   inputRef.current?.focus();
                 }}
                 className="shrink-0 flex items-center justify-center w-6 h-6 rounded-full text-[#9CA3AF] hover:text-[#1A1A2E]"
@@ -230,6 +299,76 @@ function ExploreContent() {
         </div>
       </div>
 
+      {/* ── Autocomplete results (shown while typing) ── */}
+      {query.trim().length > 0 && (
+        <div className="bg-white">
+          {query.trim().length < 2 ? (
+            <div className="px-4 py-6 text-[13px] text-center" style={{ color: t.textMuted }}>
+              Type at least 2 characters…
+            </div>
+          ) : suggestLoading && suggestions.length === 0 ? (
+            <div className="flex items-center justify-center py-6">
+              <div
+                className="animate-spin rounded-full h-5 w-5 border-b-2"
+                style={{ borderColor: ACCENT }}
+              />
+            </div>
+          ) : suggestions.length > 0 ? (
+            <div>
+              {suggestions.map((s) => (
+                <Link
+                  key={s.id}
+                  href={`/products/${s.id}`}
+                  onClick={() => saveRecentSearch(s.name)}
+                  className="flex items-center gap-3 px-4 py-3 border-b transition-colors active:bg-[#F8FBFF]"
+                  style={{ borderColor: t.border }}
+                >
+                  <Search className="w-4 h-4 shrink-0" style={{ color: t.textMuted }} />
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-[14.5px] truncate font-medium"
+                      style={{ color: t.textPrimary }}
+                    >
+                      {s.name}
+                    </p>
+                    {s.category_name && (
+                      <p className="text-[12px]" style={{ color: t.textMuted }}>
+                        in {s.category_name}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+              <button
+                type="button"
+                onClick={() => submitSearch(query)}
+                className="w-full px-4 py-3.5 text-[14.5px] font-bold text-left transition-colors active:bg-[#F8FBFF]"
+                style={{ color: ACCENT }}
+              >
+                Search for &quot;{query.trim()}&quot;
+              </button>
+            </div>
+          ) : (
+            <div className="px-4 py-6 text-center">
+              <p className="text-[14px] font-medium" style={{ color: t.textPrimary }}>
+                No matches found
+              </p>
+              <button
+                type="button"
+                onClick={() => submitSearch(query)}
+                className="mt-2 text-[13.5px] font-bold"
+                style={{ color: ACCENT }}
+              >
+                Search anyway for &quot;{query.trim()}&quot;
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Default sections (hidden while typing) ── */}
+      {query.trim().length === 0 && (
+      <>
       {/* ── Section 1: Recent Searches ── */}
       {recentSearches.length > 0 && (
         <section className="px-4 pt-4 pb-2">
@@ -411,6 +550,8 @@ function ExploreContent() {
           </>
         )}
       </section>
+      </>
+      )}
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

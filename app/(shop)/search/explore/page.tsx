@@ -260,8 +260,8 @@ function ExploreContent() {
         <div className="flex items-center gap-2 px-3 py-2.5">
           <button
             type="button"
-            aria-label="Back"
-            onClick={() => router.back()}
+            aria-label="Back to home"
+            onClick={() => router.push("/")}
             className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />

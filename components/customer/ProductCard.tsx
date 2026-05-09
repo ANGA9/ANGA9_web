@@ -137,7 +137,7 @@ export default function ProductCard({
         </div>
 
         {/* Body area */}
-        <div className="flex-1 flex flex-col p-3 md:p-4 relative bg-white">
+        <div className="flex-1 flex flex-col p-3 md:p-4 relative bg-white min-h-[138px] md:min-h-[150px]">
           {/* Wishlist icon positioned top-right of the text area */}
           <button
             onClick={handleWishlistToggle}

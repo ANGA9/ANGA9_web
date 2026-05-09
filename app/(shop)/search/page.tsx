@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +14,8 @@ import {
   ChevronUp,
   Heart,
   ShoppingCart,
+  MessageCircleQuestion,
+  Sparkles,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -83,6 +85,8 @@ function SearchPageContent() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<SearchFilters | null>(null);
+  const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const suggestFetched = useRef(false);
 
   // Sheet state
   const [activeSheet, setActiveSheet] = useState<SheetKind>(null);
@@ -125,10 +129,25 @@ function SearchPageContent() {
           filters ? Promise.resolve(filters) : api.get<SearchFilters>("/api/search/filters", { silent: true }),
         ]);
         if (cancelled) return;
-        setProducts((searchRes?.data ?? []).map(toCardProduct));
+        const mapped = (searchRes?.data ?? []).map(toCardProduct);
+        setProducts(mapped);
         setTotal(searchRes?.total ?? 0);
         setTotalPages(searchRes?.totalPages ?? 0);
         if (filtersRes && !filters) setFilters(filtersRes);
+        // Fetch "You might also like" when sparse results
+        if (!cancelled && mapped.length < 6 && !suggestFetched.current) {
+          suggestFetched.current = true;
+          try {
+            const sugRes = await api.get<SearchResponse>(
+              `/api/search?sort=ratings&limit=6&page=1`,
+              { silent: true }
+            );
+            if (!cancelled) setSuggestions((sugRes?.data ?? []).map(toCardProduct));
+          } catch { /* silent */ }
+        } else if (mapped.length >= 6) {
+          suggestFetched.current = false;
+          setSuggestions([]);
+        }
       } catch {
         if (!cancelled) { setProducts([]); setTotal(0); }
       } finally {
@@ -353,8 +372,8 @@ function SearchPageContent() {
         </div>
 
         {/* ── Mobile Sort/Filter bar ── */}
-        <div className="md:hidden sticky top-[56px] z-30 px-3 pb-2 pt-1 bg-white/80 backdrop-blur-sm">
-          <div className="flex items-center bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+        <div className="md:hidden sticky top-[56px] z-30 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+          <div className="flex items-center border-b border-gray-100">
             <button onClick={() => openSheet("sort")}
               className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-bold border-r border-gray-100 active:bg-gray-50 transition-colors"
               style={{ color: t.textPrimary }}>
@@ -363,14 +382,36 @@ function SearchPageContent() {
             </button>
             <button onClick={() => openSheet("filters")}
               className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-bold active:bg-gray-50 transition-colors relative"
-              style={{ color: t.textPrimary }}>
-              <SlidersHorizontal className="w-4 h-4" style={{ color: t.textSecondary }} />
+              style={{ color: hasActiveFilters ? ACCENT : t.textPrimary }}>
+              <SlidersHorizontal className="w-4 h-4" style={{ color: hasActiveFilters ? ACCENT : t.textSecondary }} />
               Filters
               {hasActiveFilters && (
-                <span className="w-2 h-2 rounded-full absolute top-2.5 right-[calc(50%-28px)]" style={{ background: ACCENT }} />
+                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full text-white" style={{ background: ACCENT }}>
+                  {[categoryParam, minPriceParam || maxPriceParam].filter(Boolean).length}
+                </span>
               )}
             </button>
           </div>
+          {/* Active filter chips on mobile */}
+          {hasActiveFilters && (
+            <div className="flex items-center gap-2 flex-wrap px-3 py-2">
+              {categoryParam && (
+                <button onClick={() => updateUrl({ category: "" })}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                  style={{ background: "#EEF2FF", color: ACCENT }}>
+                  {categoryParam} <X className="w-3 h-3" />
+                </button>
+              )}
+              {(minPriceParam || maxPriceParam) && (
+                <button onClick={() => { updateUrl({ minPrice: "", maxPrice: "" }); setLocalMinPrice(""); setLocalMaxPrice(""); }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                  style={{ background: "#EEF2FF", color: ACCENT }}>
+                  ₹{minPriceParam || "0"}–{maxPriceParam || "∞"} <X className="w-3 h-3" />
+                </button>
+              )}
+              <button onClick={clearAllFilters} className="text-[11px] font-semibold" style={{ color: t.textMuted }}>Clear all</button>
+            </div>
+          )}
         </div>
 
         {/* ── Content Grid ── */}
@@ -428,11 +469,56 @@ function SearchPageContent() {
                     ))}
                   </div>
                 )}
+                {/* ── You might also like (sparse results) ── */}
+                {suggestions.length > 0 && (
+                  <div className="mt-8 md:mt-10 px-1.5 md:px-0">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="w-4 h-4" style={{ color: ACCENT }} />
+                      <h2 className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider" style={{ color: t.textSecondary }}>
+                        You might also like
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-5">
+                      {suggestions.map((p) => (
+                        <ProductCard key={p.id} product={p} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* ── Can't find it nudge ── */}
+                <div className="mt-8 md:mt-10 mx-1.5 md:mx-0 rounded-2xl border px-5 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4" style={{ borderColor: t.border, background: "#FAFBFF" }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#EEF2FF" }}>
+                    <MessageCircleQuestion className="w-5 h-5" style={{ color: ACCENT }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] md:text-[14px] font-bold" style={{ color: t.textPrimary }}>Can&apos;t find what you need?</p>
+                    <p className="text-[12px] md:text-[13px] mt-0.5" style={{ color: t.textSecondary }}>Let us know what you&apos;re looking for — we&apos;ll notify you when it&apos;s available.</p>
+                  </div>
+                  <a href="mailto:support@anga9.com?subject=Product%20Request"
+                    className="shrink-0 px-4 py-2 md:px-5 md:py-2.5 rounded-full md:rounded-xl text-[13px] md:text-[14px] font-semibold md:font-bold text-white transition-all hover:opacity-90"
+                    style={{ background: ACCENT }}>
+                    Tell us
+                  </a>
+                </div>
               </>
             ) : (
-              <EmptyState icon={Search} title="No products found"
-                description={query ? `We couldn't find any products matching "${query}". Try different keywords or filters.` : "No products match the current filters."}
-                actionLabel="Clear Filters" onAction={clearAllFilters} accentColor={ACCENT} />
+              <>
+                <EmptyState icon={Search} title="No products found"
+                  description={query ? `We couldn't find any products matching "${query}". Try different keywords or filters.` : "No products match the current filters."}
+                  actionLabel="Clear Filters" onAction={clearAllFilters} accentColor={ACCENT} />
+                {/* Suggestions even on empty results */}
+                {suggestions.length > 0 && (
+                  <div className="mt-6 px-1.5 md:px-0">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="w-4 h-4" style={{ color: ACCENT }} />
+                      <h2 className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider" style={{ color: t.textSecondary }}>Trending products</h2>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-5">
+                      {suggestions.map((p) => <ProductCard key={p.id} product={p} />)}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

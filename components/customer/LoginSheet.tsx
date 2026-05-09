@@ -188,11 +188,12 @@ export default function LoginSheet() {
         onClick={handleClose}
       />
 
-      {/* Sheet */}
+      {/* Sheet — sits above the bottom nav bar */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
+        className="fixed left-0 right-0 z-50 md:hidden bg-white rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
         style={{
-          maxHeight: "65vh",
+          bottom: "calc(56px + env(safe-area-inset-bottom, 0px))",
+          maxHeight: "min(90dvh, calc(100dvh - 56px - env(safe-area-inset-bottom, 0px)))",
           transform: visible ? "translateY(0)" : "translateY(100%)",
         }}
         onClick={(e) => e.stopPropagation()}
@@ -202,7 +203,7 @@ export default function LoginSheet() {
           <div className="w-10 h-1 rounded-full bg-gray-300" />
         </div>
 
-        <div className="px-6 pb-8 pt-2 overflow-y-auto" style={{ maxHeight: "calc(65vh - 24px)" }}>
+        <div className="px-6 pb-6 pt-2 overflow-y-auto" style={{ maxHeight: "calc(min(90dvh, calc(100dvh - 56px - env(safe-area-inset-bottom, 0px))) - 28px)" }}>
 
           {/* ── Success State ── */}
           {step === "success" && (
@@ -344,15 +345,15 @@ export default function LoginSheet() {
                 Change email
               </button>
 
-              <div className="flex items-center gap-2 rounded-lg bg-[#EAF2FF] px-3 py-2 mb-5">
-                <Mail className="w-4 h-4 text-[#1A6FD4]" />
-                <p className="text-sm md:text-base text-[#4B5563]">
+              <div className="flex items-center gap-2 rounded-lg bg-[#EAF2FF] px-3 py-2 mb-3">
+                <Mail className="w-4 h-4 text-[#1A6FD4] shrink-0" />
+                <p className="text-sm text-[#4B5563] truncate">
                   OTP sent to <span className="font-semibold text-[#1A1A2E]">{email}</span>
                 </p>
               </div>
 
-              <form onSubmit={handleVerify} className="space-y-4">
-                <div className="flex justify-center gap-3">
+              <form onSubmit={handleVerify} className="space-y-3">
+                <div className="flex justify-center gap-2">
                   {otp.map((d, i) => (
                     <input
                       key={i}
@@ -365,7 +366,7 @@ export default function LoginSheet() {
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
-                      className="h-11 w-10 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-lg font-bold text-[#1A1A2E] outline-none transition-all"
+                      className="h-10 w-10 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-lg font-bold text-[#1A1A2E] outline-none transition-all"
                     />
                   ))}
                 </div>

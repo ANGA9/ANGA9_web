@@ -534,7 +534,7 @@ export default function CustomerAccountPage() {
               </div>
               <div className="flex flex-col">
                 <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} href="/notifications" />
-                <MenuItem icon={Headset} label="Help Center" href="/contact" />
+                <MenuItem icon={Headset} label="Help Center" href="/help" />
               </div>
             </div>
 

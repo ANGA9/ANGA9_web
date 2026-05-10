@@ -11,6 +11,7 @@ import {
   Wallet,
   BarChart3,
   Settings,
+  LifeBuoy,
   X,
 } from "lucide-react";
 
@@ -22,6 +23,7 @@ const NAV = [
   { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck },
   { label: "Users", href: "/admin/users", icon: Users },
   { label: "Payouts", href: "/admin/payouts", icon: Wallet },
+  { label: "Support", href: "/admin/support", icon: LifeBuoy },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];

@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3, LifeBuoy } from "lucide-react";
 import SellerLink from "@/components/seller/SellerLink";
 import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
@@ -12,6 +12,7 @@ const NAV = [
   { label: "Earnings", href: "/seller/dashboard/earnings", icon: IndianRupee },
   { label: "Payouts", href: "/seller/dashboard/payouts", icon: Wallet },
   { label: "Notifications", href: "/seller/dashboard/notifications", icon: Bell },
+  { label: "Help & Support", href: "/seller/dashboard/help", icon: LifeBuoy },
   { label: "Profile", href: "/seller/dashboard/profile", icon: UserCircle },
   { label: "Settings", href: "/seller/dashboard/settings", icon: Settings },
 ];

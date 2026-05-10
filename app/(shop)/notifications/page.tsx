@@ -18,6 +18,9 @@ import {
   ArrowLeft,
   ArrowRight,
   XCircle,
+  LifeBuoy,
+  MessageSquare,
+  AlertTriangle,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -141,6 +144,23 @@ function getNotificationStyle(type: string): IconStyle {
 
     case "product.rejected":
       return { Icon: XCircle,      bg: "#FEF2F2", fg: "#DC2626" };
+
+    // ── Support tickets ───────────────────────────────────────
+    case "support.ticket.created":
+    case "support.ticket.admin_initiated":
+    case "support.ticket.escalated_from_chatbot":
+      return { Icon: LifeBuoy,        bg: "#EAF2FF", fg: "#1A6FD4" };
+
+    case "support.ticket.message_added":
+    case "support.ticket.assigned":
+      return { Icon: MessageSquare,   bg: "#EDE9FE", fg: "#7C3AED" };
+
+    case "support.ticket.status_changed":
+    case "support.ticket.resolved":
+      return { Icon: CheckCheck,      bg: "#DCFCE7", fg: "#16A34A" };
+
+    case "support.ticket.sla_breached":
+      return { Icon: AlertTriangle,   bg: "#FEE2E2", fg: "#DC2626" };
 
     // ── Fallback ──────────────────────────────────────────────
     default:

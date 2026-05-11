@@ -151,12 +151,37 @@ export default function TicketDetailPage() {
               </button>
             )}
           </div>
+
+          {/* Activity Log (Sidebar) */}
+          {events.length > 0 && (
+            <div className="pt-5 border-t border-gray-100 hidden md:block">
+              <h3 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">
+                Activity Log
+              </h3>
+              <ul className="space-y-4 text-[13px] text-gray-500">
+                {events.map((e) => (
+                  <li key={e.id} className="flex items-start gap-3">
+                    <span className="mt-1.5 h-2 w-2 rounded-full bg-gray-300 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-gray-700 block truncate">{e.event_type.replace(/_/g, " ")}</span>
+                      {e.from_value && e.to_value && (
+                        <span className="block mt-0.5 text-[12px]">
+                          changed from <span className="font-semibold text-gray-900">{e.from_value}</span> to <span className="font-semibold text-gray-900">{e.to_value}</span>
+                        </span>
+                      )}
+                      <div className="text-[12px] text-gray-400 mt-1">{timeAgo(e.created_at)}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Right Main Column: Chat Thread & Reply */}
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           {/* Thread */}
-          <section className="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm min-h-[300px]">
+          <section className="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm min-h-[300px] max-h-[500px] overflow-y-auto custom-scrollbar">
             <TicketThread messages={messages} currentUserId={dbUser?.id} />
           </section>
 
@@ -221,33 +246,33 @@ export default function TicketDetailPage() {
               <TicketReplyBox onSend={handleSend} />
             </section>
           )}
+
+          {/* Activity Log (Mobile) */}
+          {events.length > 0 && (
+            <div className="mt-4 pt-6 border-t border-gray-100 md:hidden">
+              <h3 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">
+                Activity Log
+              </h3>
+              <ul className="space-y-4 text-[13px] text-gray-500">
+                {events.map((e) => (
+                  <li key={e.id} className="flex items-start gap-3">
+                    <span className="mt-1.5 h-2 w-2 rounded-full bg-gray-300 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-gray-700 block truncate">{e.event_type.replace(/_/g, " ")}</span>
+                      {e.from_value && e.to_value && (
+                        <span className="block mt-0.5 text-[12px]">
+                          changed from <span className="font-semibold text-gray-900">{e.from_value}</span> to <span className="font-semibold text-gray-900">{e.to_value}</span>
+                        </span>
+                      )}
+                      <div className="text-[12px] text-gray-400 mt-1">{timeAgo(e.created_at)}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Activity */}
-      {events.length > 0 && (
-        <section className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-100">
-          <h3 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">
-            Activity Log
-          </h3>
-          <ul className="space-y-3 text-[13px] text-gray-500">
-            {events.map((e) => (
-              <li key={e.id} className="flex items-start gap-3">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gray-300 shrink-0" />
-                <div className="flex-1">
-                  <span className="font-bold text-gray-700">{e.event_type.replace(/_/g, " ")}</span>
-                  {e.from_value && e.to_value && (
-                    <span className="ml-1">
-                      changed from <span className="font-semibold text-gray-900">{e.from_value}</span> to <span className="font-semibold text-gray-900">{e.to_value}</span>
-                    </span>
-                  )}
-                  <div className="text-[12px] text-gray-400 mt-0.5">{timeAgo(e.created_at)}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
     </main>
   );
 }

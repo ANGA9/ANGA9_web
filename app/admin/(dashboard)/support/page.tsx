@@ -24,7 +24,9 @@ import TicketStatusBadge from "@/components/support/TicketStatusBadge";
 import TicketPriorityBadge from "@/components/support/TicketPriorityBadge";
 import SlaCountdown from "@/components/support/SlaCountdown";
 
-const STATUS_TABS: { key: TicketStatus | "all"; label: string }[] = [
+type StatusTabKey = TicketStatus | "all" | "active";
+const STATUS_TABS: { key: StatusTabKey; label: string }[] = [
+  { key: "active",       label: "Active" },
   { key: "all",          label: "All" },
   { key: "open",         label: "Open" },
   { key: "in_progress",  label: "In progress" },
@@ -33,11 +35,13 @@ const STATUS_TABS: { key: TicketStatus | "all"; label: string }[] = [
   { key: "closed",       label: "Closed" },
 ];
 
+const ACTIVE_STATUSES: TicketStatus[] = ["open", "in_progress", "pending_user", "reopened"];
+
 export default function AdminSupportInboxPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [status, setStatus] = useState<TicketStatus | "all">("open");
+  const [status, setStatus] = useState<StatusTabKey>("active");
   const [priority, setPriority] = useState<TicketPriority | "">("");
   const [requesterRole, setRequesterRole] = useState<RequesterRole | "">("");
   const [slaBreached, setSlaBreached] = useState(false);
@@ -47,9 +51,10 @@ export default function AdminSupportInboxPage() {
   useEffect(() => {
     let active = true;
     setLoading(true);
+    const backendStatus: TicketStatus | "all" = status === "active" ? "all" : status;
     supportAdminApi
       .listTickets({
-        status,
+        status: backendStatus,
         priority: priority || undefined,
         requester_role: requesterRole || undefined,
         sla_breached: slaBreached || undefined,
@@ -57,7 +62,13 @@ export default function AdminSupportInboxPage() {
         q: q || undefined,
         limit: 50,
       })
-      .then((res) => { if (active) setTickets(res.data); })
+      .then((res) => {
+        if (!active) return;
+        const filtered = status === "active"
+          ? res.data.filter((tk) => ACTIVE_STATUSES.includes(tk.status))
+          : res.data;
+        setTickets(filtered);
+      })
       .catch(() => { if (active) setTickets([]); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };

@@ -233,6 +233,10 @@ export const supportAdminApi = {
     return api.post<{ id: string }>(`/api/admin/support/tickets/${id}/internal-note`, { body });
   },
 
+  deleteTicket(id: string) {
+    return api.delete<{ success: boolean }>(`/api/admin/support/tickets/${id}`);
+  },
+
   createAdminTicket(body: {
     recipient_id: string;
     recipient_role: RequesterRole;

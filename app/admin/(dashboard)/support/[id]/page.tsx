@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, UserPlus, ChevronDown } from "lucide-react";
+import { ArrowLeft, UserPlus, ChevronDown, Trash2 } from "lucide-react";
 import {
   supportApi,
   supportAdminApi,
@@ -27,6 +27,7 @@ const PRIORITIES: TicketPriority[] = ["low", "normal", "high", "urgent"];
 
 export default function AdminTicketDetailPage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const id = params.id;
   const { dbUser } = useAuth();
 
@@ -34,6 +35,7 @@ export default function AdminTicketDetailPage() {
   const [macros, setMacros] = useState<Macro[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -70,6 +72,22 @@ export default function AdminTicketDetailPage() {
   async function handleAssignToMe() {
     if (!dbUser?.id) return;
     await handlePatch({ assignee_id: dbUser.id });
+  }
+
+  async function handleDelete() {
+    if (!detail) return;
+    const ok = window.confirm(
+      `Delete ticket ${detail.ticket.ticket_number}? This permanently removes the ticket and its entire message history. This cannot be undone.`,
+    );
+    if (!ok) return;
+    setDeleting(true);
+    try {
+      await supportAdminApi.deleteTicket(id);
+      router.push("/admin/support");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete ticket");
+      setDeleting(false);
+    }
   }
 
   if (loading) {
@@ -286,6 +304,23 @@ export default function AdminTicketDetailPage() {
               {ticket.csat_comment && (
                 <div className="mt-1 text-xs text-[#92400E]">&ldquo;{ticket.csat_comment}&rdquo;</div>
               )}
+            </div>
+          )}
+
+          {(ticket.status === "resolved" || ticket.status === "closed") && (
+            <div className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#DC2626] mb-1">Danger zone</div>
+              <p className="text-xs text-[#7F1D1D] mb-2">
+                Permanently delete this ticket and its entire message history. This cannot be undone.
+              </p>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="inline-flex items-center gap-1.5 rounded-md border border-[#DC2626] bg-white px-3 py-1.5 text-xs font-semibold text-[#DC2626] hover:bg-[#FEE2E2] disabled:opacity-50"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {deleting ? "Deleting…" : "Delete ticket"}
+              </button>
             </div>
           )}
         </aside>

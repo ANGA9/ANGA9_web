@@ -46,7 +46,7 @@ export default function TicketDetailPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  async function handleSend(body: string) {
+  async function handleSend(body: string, _opts?: { isInternal: boolean }) {
     await supportApi.postMessage(id, { body });
     await load();
   }

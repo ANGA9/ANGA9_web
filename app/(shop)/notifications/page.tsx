@@ -152,6 +152,7 @@ function getNotificationStyle(type: string): IconStyle {
       return { Icon: LifeBuoy,        bg: "#EAF2FF", fg: "#1A6FD4" };
 
     case "support.ticket.message_added":
+    case "support.ticket.replied":
     case "support.ticket.assigned":
       return { Icon: MessageSquare,   bg: "#EDE9FE", fg: "#7C3AED" };
 

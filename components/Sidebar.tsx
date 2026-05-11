@@ -12,6 +12,7 @@ import {
   ClipboardCheck,
   Wallet,
   BarChart3,
+  LifeBuoy,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -30,6 +31,7 @@ const navItems = [
   { icon: Users, label: "Users", href: "/admin/users" },
   { icon: Wallet, label: "Payouts", href: "/admin/payouts" },
   { icon: BarChart3, label: "Reports", href: "/admin/reports" },
+  { icon: LifeBuoy, label: "Support", href: "/admin/support" },
   { icon: Settings, label: "Settings", href: "/admin/settings" },
 ];
 

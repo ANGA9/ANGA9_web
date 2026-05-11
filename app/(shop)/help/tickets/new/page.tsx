@@ -52,8 +52,8 @@ function NewTicketInner() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-6 md:py-10" style={{ color: t.textPrimary }}>
-      <Link href="/help" className="inline-flex items-center gap-1 text-sm text-[#1A6FD4]">
+    <main className="w-full mx-auto max-w-2xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white min-h-screen" style={{ color: t.textPrimary }}>
+      <Link href="/help" className="inline-flex items-center gap-1 text-sm font-semibold text-[#1A6FD4] hover:underline mb-2">
         <ArrowLeft className="h-4 w-4" /> Back to Help Center
       </Link>
 

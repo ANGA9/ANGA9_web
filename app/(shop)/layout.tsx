@@ -30,7 +30,8 @@ export default function CustomerShopLayout({
   const isSearchExplore = pathname === "/search/explore";
   const isSearch = pathname === "/search";
   const isHomepage = pathname === "/";
-  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu || isSearchExplore || isSearch;
+  const isHelp = pathname?.startsWith("/help");
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu || isSearchExplore || isSearch || isHelp;
 
   return (
     <LoginSheetProvider>

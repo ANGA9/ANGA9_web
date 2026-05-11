@@ -216,6 +216,7 @@ export default function AdminLoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoFocus
+                      autoComplete="off"
                       className="flex-1 h-11 text-sm outline-none bg-transparent px-2 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
                     />
                   </div>
@@ -266,6 +267,7 @@ export default function AdminLoginPage() {
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
+                      autoComplete="one-time-code"
                       className="h-12 w-11 rounded-lg border border-[#DADCE0] bg-white focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 text-center text-xl font-bold text-[#202124] outline-none transition-all"
                     />
                   ))}

@@ -263,6 +263,7 @@ export default function SellerLoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoFocus
+            autoComplete="off"
             placeholder="Enter your email address"
             className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
           />
@@ -314,6 +315,7 @@ export default function SellerLoginPage() {
             onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
             maxLength={14}
             disabled
+            autoComplete="off"
             placeholder="Enter your phone number"
             className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#9CA3AF] placeholder:text-[#9CA3AF] cursor-not-allowed"
           />
@@ -374,6 +376,7 @@ export default function SellerLoginPage() {
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
             onFocus={(e) => e.target.select()}
             autoFocus={i === 0}
+            autoComplete="one-time-code"
             className="h-12 w-11 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all"
           />
         ))}

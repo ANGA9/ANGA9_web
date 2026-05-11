@@ -111,8 +111,8 @@ export default function MyTicketsPage() {
                     <div className="min-w-0 flex-1 pr-4">
                       <div className="flex items-center gap-2 text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                         <span>{tk.ticket_number}</span>
-                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                        <span className="text-gray-500">{tk.category}</span>
+                        <span className="hidden md:inline-block w-1 h-1 rounded-full bg-gray-300"></span>
+                        <span className="hidden md:inline text-gray-500">{tk.category}</span>
                       </div>
                       <h3 className="truncate text-[16px] md:text-[18px] font-bold text-gray-900 group-hover:text-[#1A6FD4] transition-colors leading-tight">
                         {tk.subject}

@@ -77,88 +77,93 @@ export default function HelpCenterPage() {
         </div>
       </section>
 
-      {/* ── CTAs ── */}
-      <section className="mb-10 md:mb-12 grid md:grid-cols-2 gap-3 md:gap-4">
-        <Link
-          href="/help/tickets/new"
-          className="flex items-center justify-between rounded-2xl bg-[#1A6FD4] px-5 py-6 md:px-8 md:py-8 text-white hover:bg-[#155bb5] transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer"
-        >
-          <div>
-            <div className="text-[18px] md:text-[22px] font-black tracking-tight mb-1">Raise a new ticket</div>
-            <div className="text-[13px] md:text-[15px] text-blue-100 font-medium">Get help directly from our support team.</div>
-          </div>
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
-            <Plus className="h-6 w-6 md:h-7 md:w-7" />
-          </div>
-        </Link>
-        <Link
-          href="/help/tickets"
-          className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-5 py-6 md:px-8 md:py-8 hover:shadow-md hover:border-[#1A6FD4]/30 transition-all active:scale-[0.98] group cursor-pointer"
-        >
-          <div>
-            <div className="text-[18px] md:text-[22px] font-black text-gray-900 tracking-tight mb-1 group-hover:text-[#1A6FD4] transition-colors">My tickets</div>
-            <div className="text-[13px] md:text-[15px] text-gray-500 font-medium">View and reply to your existing tickets.</div>
-          </div>
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
-            <MessageSquare className="h-6 w-6 md:h-7 md:w-7 text-[#1A6FD4]" />
-          </div>
-        </Link>
-      </section>
-
-      {/* ── Articles ── */}
-      <section className="mb-10">
-        <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">
-          {q ? "Search results" : "Popular articles"}
-        </h2>
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="text-[15px] font-bold text-gray-400 animate-pulse flex items-center gap-2">
-              <LifeBuoy className="w-5 h-5 animate-spin" />
-              Loading articles...
+      <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-10 mb-10 md:mb-12">
+        {/* ── Articles (Left Column on Desktop, Bottom on Mobile) ── */}
+        <section className="flex-1 min-w-0">
+          <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">
+            {q ? "Search results" : "Popular articles"}
+          </h2>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="text-[15px] font-bold text-gray-400 animate-pulse flex items-center gap-2">
+                <LifeBuoy className="w-5 h-5 animate-spin" />
+                Loading articles...
+              </div>
             </div>
-          </div>
-        ) : articles.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-12 text-center flex flex-col items-center justify-center">
-            <Search className="w-10 h-10 text-gray-300 mb-4" />
-            <div className="text-[16px] font-bold text-gray-900 mb-1">
-              {q ? "No articles match your search." : "No articles found."}
+          ) : articles.length === 0 ? (
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-10 md:p-12 text-center flex flex-col items-center justify-center">
+              <Search className="w-10 h-10 text-gray-300 mb-4" />
+              <div className="text-[16px] font-bold text-gray-900 mb-1">
+                {q ? "No articles match your search." : "No articles found."}
+              </div>
+              <div className="text-[14px] text-gray-500 font-medium">
+                You can still raise a ticket to get help.
+              </div>
             </div>
-            <div className="text-[14px] text-gray-500 font-medium">
-              You can still raise a ticket to get help.
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-            <ul className="divide-y divide-gray-100">
-              {articles.map((a) => (
-                <li key={a.id}>
-                  <Link
-                    href={`/help/articles/${a.slug}`}
-                    className="flex items-center gap-4 px-5 py-4 md:px-6 md:py-5 hover:bg-gray-50 active:bg-gray-100 transition-colors group cursor-pointer"
-                  >
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:text-[#1A6FD4] transition-colors text-gray-400">
-                      <FileText className="h-5 w-5 md:h-6 md:w-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[15px] md:text-[17px] font-bold text-gray-900 truncate group-hover:text-[#1A6FD4] transition-colors leading-tight">
-                        {a.title}
+          ) : (
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+              <ul className="divide-y divide-gray-100">
+                {articles.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      href={`/help/articles/${a.slug}`}
+                      className="flex items-center gap-4 px-5 py-4 md:px-6 md:py-5 hover:bg-gray-50 active:bg-gray-100 transition-colors group cursor-pointer"
+                    >
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:text-[#1A6FD4] transition-colors text-gray-400">
+                        <FileText className="h-5 w-5 md:h-6 md:w-6" />
                       </div>
-                      {a.category && (
-                        <div className="text-[13px] md:text-[14px] font-medium text-gray-500 mt-1">
-                          {a.category}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[15px] md:text-[16px] font-bold text-gray-900 truncate group-hover:text-[#1A6FD4] transition-colors leading-tight">
+                          {a.title}
                         </div>
-                      )}
-                    </div>
-                    <div className="shrink-0 text-gray-300 group-hover:text-[#1A6FD4] group-hover:translate-x-1 transition-all">
-                      <ChevronRight className="w-5 h-5" />
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </section>
+                        {a.category && (
+                          <div className="text-[13px] font-medium text-gray-500 mt-1">
+                            {a.category}
+                          </div>
+                        )}
+                      </div>
+                      <div className="shrink-0 text-gray-300 group-hover:text-[#1A6FD4] group-hover:translate-x-1 transition-all">
+                        <ChevronRight className="w-5 h-5" />
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+
+        {/* ── CTAs (Right Sidebar on Desktop, Top on Mobile) ── */}
+        <section className="md:w-[340px] shrink-0 flex flex-col gap-3 md:gap-4">
+          <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
+            Need more help?
+          </h2>
+          <Link
+            href="/help/tickets/new"
+            className="flex items-center gap-4 rounded-2xl bg-[#1A6FD4] p-5 md:p-6 text-white hover:bg-[#155bb5] transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
+              <Plus className="h-6 w-6" />
+            </div>
+            <div>
+              <div className="text-[16px] md:text-[17px] font-bold tracking-tight mb-0.5">Raise a new ticket</div>
+              <div className="text-[13px] text-blue-100 font-medium leading-tight">Get help directly from our team.</div>
+            </div>
+          </Link>
+          <Link
+            href="/help/tickets"
+            className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 md:p-6 hover:shadow-md hover:border-[#1A6FD4]/30 transition-all active:scale-[0.98] group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
+              <MessageSquare className="h-6 w-6 text-[#1A6FD4]" />
+            </div>
+            <div>
+              <div className="text-[16px] md:text-[17px] font-bold text-gray-900 tracking-tight mb-0.5 group-hover:text-[#1A6FD4] transition-colors">My tickets</div>
+              <div className="text-[13px] text-gray-500 font-medium leading-tight">View your existing tickets.</div>
+            </div>
+          </Link>
+        </section>
+      </div>
     </main>
   );
 }

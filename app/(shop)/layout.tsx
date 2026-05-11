@@ -10,6 +10,8 @@ import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function CustomerShopLayout({
   children,
@@ -44,7 +46,22 @@ export default function CustomerShopLayout({
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
             <div className="hidden md:block">
               <CustomerTopNav />
-              {isHomepage && <CategoryStrip />}
+              {isHomepage ? (
+                <CategoryStrip />
+              ) : (
+                <div className="border-b bg-white" style={{ borderColor: t.border }}>
+                  <div className="mx-auto flex h-11 items-center" style={{ maxWidth: 1400, padding: "0 48px" }}>
+                    <Link
+                      href="/"
+                      className="inline-flex items-center gap-2 font-medium text-gray-500 hover:text-[#1A6FD4] transition-colors"
+                      style={{ fontSize: '16px' }}
+                    >
+                      <ArrowLeft style={{ width: 18, height: 18 }} />
+                      Back to Home
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* ══════════ MOBILE NAV (<md) ══════════ */}

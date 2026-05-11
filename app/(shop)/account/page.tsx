@@ -639,6 +639,30 @@ export default function CustomerAccountPage() {
               })}
 
               <div className="h-px bg-gray-200 my-4 mx-4" />
+              
+              <Link
+                href="/notifications"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
+                <div className="flex items-center gap-3">
+                  <Bell className="h-5 w-5 text-gray-400" />
+                  Notifications
+                </div>
+                {unreadNotificationsCount > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                    {unreadNotificationsCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                href="/help"
+                className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
+                <Headset className="h-5 w-5 text-gray-400" />
+                Help & Support
+              </Link>
+
               <button
                 onClick={logout}
                 className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-red-500 hover:bg-red-50 border border-transparent"

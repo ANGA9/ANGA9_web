@@ -27,6 +27,7 @@ export default function CustomerShopLayout({
   const isMenu = pathname === "/menu";
   const isSearchExplore = pathname === "/search/explore";
   const isSearch = pathname === "/search";
+  const isHomepage = pathname === "/";
   const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu || isSearchExplore || isSearch;
 
   return (
@@ -43,7 +44,7 @@ export default function CustomerShopLayout({
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
             <div className="hidden md:block">
               <CustomerTopNav />
-              <CategoryStrip />
+              {isHomepage && <CategoryStrip />}
             </div>
 
             {/* ══════════ MOBILE NAV (<md) ══════════ */}

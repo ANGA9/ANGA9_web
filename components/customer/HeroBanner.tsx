@@ -14,19 +14,41 @@ const DEFAULT_SLIDES = [
     id: "1",
     image: cdnUrl("/banners/banner1.png"),
     title: "Elevate Your Style - Menswear from ₹799",
-    cta: "Shop Now",
   },
   {
     id: "2",
     image: cdnUrl("/banners/banner2.png"),
     title: "Sarees & Kurtas - Ethnic Festive Edit from ₹999",
-    cta: "Shop Now",
   },
   {
     id: "3",
     image: cdnUrl("/banners/banner3.png"),
     title: "Fun Fits for Little Ones - Kids Fashion from ₹299",
-    cta: "Shop Now",
+  },
+  {
+    id: "4",
+    image: cdnUrl("/banners/banner4.png"),
+    title: "Train Harder Look Better - Activewear from ₹599",
+  },
+  {
+    id: "5",
+    image: cdnUrl("/banners/banner5.png"),
+    title: "Sleep in Pure Luxury - Bed Linen from ₹899",
+  },
+  {
+    id: "6",
+    image: cdnUrl("/banners/banner6.png"),
+    title: "Spa Comfort at Home - Bath Linen from ₹449",
+  },
+  {
+    id: "7",
+    image: cdnUrl("/banners/banner7.png"),
+    title: "Transform Your Living Space - Rugs & Curtains from ₹1299",
+  },
+  {
+    id: "8",
+    image: cdnUrl("/banners/banner8.png"),
+    title: "Style Every Corner - Living Decor from ₹349",
   },
 ];
 
@@ -91,41 +113,28 @@ export default function HeroBanner() {
     <div className="w-full pb-6 pt-2">
       <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y">
-          {loading ? (
-             <div className="flex-[0_0_100%] min-w-0 relative px-1">
-               <div className="w-full h-[180px] md:h-[400px] bg-gray-100 animate-pulse rounded-2xl md:rounded-3xl" />
-             </div>
-          ) : (
-            currentSlides.map((slide, index) => (
-              <div
-                key={slide.id}
-                onClick={() => handleSlideClick(slide)}
-                className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
-              >
+          {currentSlides.map((slide, index) => (
+            <div
+              key={slide.id}
+              onClick={() => handleSlideClick(slide)}
+              className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
+            >
                 <div className="relative w-full h-[180px] md:h-[400px] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
                   <img
                     src={(slide as AdCampaign).banner_url || (slide as typeof DEFAULT_SLIDES[0]).image}
                     alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${loading ? 'opacity-50' : 'opacity-100'}`}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                  
-                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 z-10 flex flex-col justify-end h-full pointer-events-none">
-                    <h2 className="text-xl md:text-5xl font-black text-white leading-[1.1] mb-3 tracking-tight">
-                      {(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
-                    </h2>
-                    
-                    <button className="self-start mt-2 pointer-events-auto bg-white/90 backdrop-blur-md text-gray-900 font-bold px-6 py-2.5 rounded-xl hover:bg-white transition-all flex items-center gap-2">
-                      {(slide as AdCampaign).cta_text || (slide as typeof DEFAULT_SLIDES[0]).cta}
-                    </button>
-                    {ads.length > 0 && (
-                      <span className="absolute top-4 right-4 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2 py-1 rounded">Ad</span>
-                    )}
-                  </div>
+                  {ads.length > 0 && (
+                    <span className="absolute top-4 right-4 z-20 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2 py-1 rounded shadow-sm">Ad</span>
+                  )}
                 </div>
               </div>
             ))
-          )}
+          }
         </div>
 
         <button

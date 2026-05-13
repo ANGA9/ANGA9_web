@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import Link from "next/link";
-import { IndianRupee, ShoppingCart, Package, Plus, Clock, CheckCircle2, Store, Loader2, Eye, Truck } from "lucide-react";
+import { IndianRupee, ShoppingCart, Package, Plus, Clock, CheckCircle2, Store, Loader2, Eye, Truck, ArrowRight, TrendingUp } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -13,7 +13,7 @@ interface RecentOrder {
   order_number: string;
   status: string;
   placed_at: string;
-  items: { id: string; product_name: string; quantity: number; total_price: number; status: string }[];
+  items: { id: string; product_name: string; quantity: number; total_price: number; status: string; product_image?: string }[];
 }
 
 interface EarningEntry {
@@ -27,25 +27,13 @@ interface RevenuePoint {
   revenue: number;
 }
 
-function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string | number; color: string }) {
-  return (
-    <div className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
-      <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${color}`}>{icon}</div>
-      <div>
-        <p className="text-2xl md:text-3xl font-bold text-[#1A1A2E]">{value}</p>
-        <p className="text-xs md:text-sm text-[#9CA3AF] font-medium">{label}</p>
-      </div>
-    </div>
-  );
-}
-
 const STATUS_BADGE: Record<string, string> = {
-  confirmed: "bg-[#EDE9FE] text-[#6366F1]",
-  processing: "bg-[#FFFBEB] text-[#F59E0B]",
-  shipped: "bg-[#EAF2FF] text-[#1A6FD4]",
-  delivered: "bg-[#F0FDF4] text-[#22C55E]",
-  cancelled: "bg-[#FEF2F2] text-[#EF4444]",
-  pending: "bg-[#F3F4F6] text-[#9CA3AF]",
+  confirmed: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  processing: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  shipped: "bg-blue-50 text-blue-700 border-blue-200",
+  delivered: "bg-green-50 text-green-700 border-green-200",
+  cancelled: "bg-red-50 text-red-700 border-red-200",
+  pending: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -68,9 +56,9 @@ interface TooltipPayloadItem {
 function ChartTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border border-[#E8EEF4] bg-white px-3 py-2 shadow-lg">
-        <p className="text-xs text-[#9CA3AF]">{payload[0].payload.month}</p>
-        <p className="text-sm font-bold text-[#1A1A2E]">{formatINR(payload[0].value)}</p>
+      <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
+        <p className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1">{payload[0].payload.month}</p>
+        <p className="text-[18px] font-bold text-gray-900">{formatINR(payload[0].value)}</p>
       </div>
     );
   }
@@ -168,152 +156,329 @@ export default function DashboardHome() {
   }, [authLoading, getToken]);
 
   if (authLoading || !loaded) {
-    return <div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-8 h-8 animate-spin text-[#1A6FD4]" /></div>;
-  }
-
-  if (status !== "verified") {
-    const cfg: Record<string, { icon: React.ReactNode; bg: string; title: string; desc: string }> = {
-      unverified: { icon: <Store className="w-10 h-10 text-[#9CA3AF]" />, bg: "bg-[#F3F4F6] border-[#E8EEF4]", title: "Complete Your Onboarding", desc: "Please complete the onboarding to start selling." },
-      pending: { icon: <Clock className="w-10 h-10 text-[#F59E0B]" />, bg: "bg-[#FFFBEB] border-[#FDE68A]", title: "Your Profile is Under Review", desc: "Our team is reviewing your profile. You'll get access to list products once verified. This typically takes 1-2 business days." },
-      rejected: { icon: <CheckCircle2 className="w-10 h-10 text-[#EF4444]" />, bg: "bg-[#FEF2F2] border-[#FECACA]", title: "Verification Unsuccessful", desc: "Please contact sell@anga9.com for assistance." },
-    };
-    const c = cfg[status || "unverified"];
     return (
-      <div className="max-w-lg mx-auto mt-12">
-        <div className={`rounded-2xl border-2 p-8 text-center ${c.bg}`}>
-          <div className="flex justify-center mb-4">{c.icon}</div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2">{c.title}</h1>
-          {bizName && status === "pending" && <p className="text-sm md:text-base font-medium text-[#1A6FD4] mb-1">{bizName}</p>}
-          <p className="text-sm md:text-base text-[#4B5563] leading-relaxed mb-6">{c.desc}</p>
-          {status === "unverified" && <Link href="/seller/onboarding" className="inline-flex h-10 px-5 bg-[#1A6FD4] text-white text-sm md:text-base font-semibold rounded-lg items-center hover:bg-[#155bb5] transition-colors">Continue Onboarding</Link>}
-          {status === "pending" && (
-            <div className="mt-4 pt-4 border-t border-[#FDE68A] flex justify-center gap-6">
-              {[{ l: "Submitted", d: true }, { l: "Under Review", d: false }, { l: "Verified", d: false }].map(s => (
-                <div key={s.l} className="flex flex-col items-center gap-1">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${s.d ? "bg-[#22C55E] text-white" : "bg-white text-[#9CA3AF] border"}`}>{s.d ? "\u2713" : "\u2026"}</div>
-                  <span className={`text-xs md:text-sm ${s.d ? "text-[#1A1A2E]" : "text-[#9CA3AF]"}`}>{s.l}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+        <Loader2 className="w-10 h-10 animate-spin text-[#1A6FD4] mb-4" />
+        <span className="text-[15px] font-bold">Loading dashboard...</span>
       </div>
     );
   }
 
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Welcome{bizName ? `, ${bizName}` : ""}!</h1>
-          <p className="text-sm md:text-base text-[#9CA3AF]">Here&apos;s an overview of your store</p>
-        </div>
-        <Link
-          href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-10 px-5 bg-[#4338CA] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#3730A3] transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" /> Add Product
-        </Link>
-      </div>
+  // ── Onboarding / Unverified State ──
+  if (status !== "verified") {
+    const cfg: Record<string, { icon: React.ReactNode; bg: string; iconBg: string; title: string; desc: string }> = {
+      unverified: { 
+        icon: <Store className="w-10 h-10 text-gray-400" />, 
+        bg: "border-gray-200 bg-white shadow-sm", 
+        iconBg: "bg-gray-100",
+        title: "Complete Your Store Profile", 
+        desc: "You're almost there! Complete your seller onboarding to start listing products and making sales." 
+      },
+      pending: { 
+        icon: <Clock className="w-10 h-10 text-yellow-500" />, 
+        bg: "border-yellow-200 bg-yellow-50/50", 
+        iconBg: "bg-yellow-100",
+        title: "Profile Under Review", 
+        desc: "Our team is currently reviewing your profile to ensure marketplace quality. This typically takes 1-2 business days." 
+      },
+      rejected: { 
+        icon: <CheckCircle2 className="w-10 h-10 text-red-500" />, 
+        bg: "border-red-200 bg-red-50", 
+        iconBg: "bg-red-100",
+        title: "Verification Unsuccessful", 
+        desc: "Unfortunately, we couldn't verify your store at this time. Please contact seller support for more details." 
+      },
+    };
+    const c = cfg[status || "unverified"];
+    return (
+      <main className="w-full mx-auto max-w-7xl px-4 py-12 md:py-20 flex justify-center">
+        <div className={`max-w-xl w-full rounded-3xl border ${c.bg} p-8 md:p-12 text-center flex flex-col items-center`}>
+          <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 ${c.iconBg}`}>
+            {c.icon}
+          </div>
+          <h1 className="text-[28px] md:text-[32px] font-bold text-gray-900 tracking-tight mb-3">
+            {c.title}
+          </h1>
+          {bizName && status === "pending" && (
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-800 text-[14px] font-bold mb-4">
+              {bizName}
+            </div>
+          )}
+          <p className="text-[16px] text-gray-500 font-medium leading-relaxed mb-8">
+            {c.desc}
+          </p>
+          
+          {status === "unverified" && (
+            <Link 
+              href="/seller/onboarding" 
+              className="inline-flex items-center justify-center h-14 px-8 bg-[#1A6FD4] text-white text-[16px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md hover:shadow-lg active:scale-95 w-full sm:w-auto"
+            >
+              Continue Onboarding <ArrowRight className="w-5 h-5 ml-2" />
+            </Link>
+          )}
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={<IndianRupee className="w-5 h-5 text-[#22C55E]" />} label="Total Revenue" value={formatINR(revenue)} color="bg-[#F0FDF4]" />
-        <StatCard icon={<ShoppingCart className="w-5 h-5 text-[#1A6FD4]" />} label="Total Orders" value={orderCount} color="bg-[#EAF2FF]" />
-        <StatCard icon={<Package className="w-5 h-5 text-[#4338CA]" />} label="Products" value={stats.products} color="bg-[#F3EEFF]" />
-        <StatCard icon={<Clock className="w-5 h-5 text-[#F59E0B]" />} label="Pending Orders" value={pendingOrderCount} color="bg-[#FFFBEB]" />
-      </div>
-
-      {/* Revenue Chart + Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Revenue Chart */}
-        <div className="bg-white rounded-xl border border-[#E8EEF4] p-6">
-          <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-1">Revenue Trend</h2>
-          <p className="text-xs md:text-sm text-[#9CA3AF] mb-4">Monthly earnings overview</p>
-          {revenueChart.length > 0 ? (
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={revenueChart} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="sellerRevGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#4338CA" stopOpacity={0.1} />
-                    <stop offset="100%" stopColor="#4338CA" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 11 }} tickFormatter={formatINRShort} />
-                <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="revenue" stroke="#4338CA" strokeWidth={2} fill="url(#sellerRevGrad)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-[200px] text-sm text-[#9CA3AF]">
-              No revenue data yet
+          {status === "pending" && (
+            <div className="w-full max-w-sm mt-4 pt-8 border-t border-yellow-200 flex justify-between relative">
+              <div className="absolute top-[48px] left-[10%] right-[10%] h-1 bg-yellow-200 -z-10" />
+              <div className="absolute top-[48px] left-[10%] w-[40%] h-1 bg-green-500 -z-10" />
+              
+              <div className="flex flex-col items-center gap-3 bg-yellow-50/50 px-2">
+                <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-sm">✓</div>
+                <span className="text-[12px] font-bold text-gray-900 uppercase tracking-wide">Submitted</span>
+              </div>
+              <div className="flex flex-col items-center gap-3 bg-yellow-50/50 px-2">
+                <div className="w-8 h-8 rounded-full bg-yellow-400 text-white flex items-center justify-center font-bold shadow-sm animate-pulse">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <span className="text-[12px] font-bold text-gray-900 uppercase tracking-wide">Reviewing</span>
+              </div>
+              <div className="flex flex-col items-center gap-3 bg-yellow-50/50 px-2">
+                <div className="w-8 h-8 rounded-full bg-white border-2 border-yellow-200 text-gray-300 flex items-center justify-center font-bold">3</div>
+                <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wide">Live</span>
+              </div>
             </div>
           )}
         </div>
+      </main>
+    );
+  }
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl border border-[#E8EEF4] p-6">
-          <h2 className="text-base md:text-lg font-bold text-[#1A1A2E] mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 gap-3">
-            <Link href="/seller/dashboard/products/new" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#4338CA]/30 transition-colors">
-              <Package className="w-5 h-5 text-[#4338CA]" />
-              <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">Add Product</p><p className="text-xs md:text-sm text-[#9CA3AF]">List a new product for sale</p></div>
+  // ── Verified Dashboard State ──
+  return (
+    <main className="w-full mx-auto max-w-7xl px-3 sm:px-4 py-6 md:px-8 md:py-10 text-[#1A1A2E]">
+      
+      {/* ── Desktop Header ── */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+            Welcome back{bizName ? `, ${bizName}` : ""}!
+          </h1>
+          <p className="text-[15px] text-gray-500 font-medium">Here&apos;s what&apos;s happening with your store today.</p>
+        </div>
+        <Link
+          href="/seller/dashboard/products/new"
+          className="flex items-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-[0.98]"
+        >
+          <Plus className="w-5 h-5" /> Add New Product
+        </Link>
+      </div>
+
+      {/* ── Mobile Header ── */}
+      <div className="md:hidden flex flex-col gap-4 mb-8">
+        <div>
+          <h1 className="text-[24px] font-bold tracking-tight text-gray-900">
+            Welcome{bizName ? `, ${bizName}` : ""}!
+          </h1>
+          <p className="text-[14px] text-gray-500 font-medium mt-1">Here&apos;s your store overview.</p>
+        </div>
+        <Link
+          href="/seller/dashboard/products/new"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl shadow-md"
+        >
+          <Plus className="w-5 h-5" /> Add New Product
+        </Link>
+      </div>
+
+      {/* ── Metric Cards ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="bg-white rounded-3xl border border-blue-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="relative z-10 flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100">
+              <IndianRupee className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(revenue)}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Revenue</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="relative z-10 flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 border border-indigo-100">
+              <ShoppingCart className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{orderCount}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Orders</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="relative z-10 flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-50 text-purple-600 border border-purple-100">
+              <Package className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.products}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Active Products</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="relative z-10 flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-yellow-50 text-yellow-600 border border-yellow-100">
+              <Clock className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{pendingOrderCount}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Orders to Fulfill</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mb-8">
+        
+        {/* ── Revenue Chart ── */}
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm flex flex-col">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[#1A6FD4]" /> Revenue Trend
+              </h2>
+              <p className="text-[13px] text-gray-500 font-medium mt-1">Your monthly earnings overview</p>
+            </div>
+          </div>
+          
+          <div className="flex-1 min-h-[250px]">
+            {revenueChart.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueChart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="sellerRevGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1A6FD4" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#1A6FD4" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 600 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 600 }} tickFormatter={formatINRShort} />
+                  <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#E8EEF4', strokeWidth: 2, strokeDasharray: '4 4' }} />
+                  <Area type="monotone" dataKey="revenue" stroke="#1A6FD4" strokeWidth={3} fill="url(#sellerRevGrad)" activeDot={{ r: 6, fill: '#1A6FD4', stroke: '#fff', strokeWidth: 3 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center py-10">
+                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+                  <TrendingUp className="w-6 h-6 text-gray-300" />
+                </div>
+                <p className="text-[15px] font-bold text-gray-900">Not enough data</p>
+                <p className="text-[13px] font-medium text-gray-500">Revenue charts will appear once you complete sales.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Quick Actions ── */}
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+          <h2 className="text-[18px] font-bold text-gray-900 mb-6">Quick Actions</h2>
+          <div className="flex flex-col gap-4">
+            <Link href="/seller/dashboard/products/new" className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Package className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[15px] font-bold text-gray-900">Add Product</p>
+                <p className="text-[13px] font-medium text-gray-500">List a new item for sale</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
             </Link>
-            <Link href="/seller/dashboard/products" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#1A6FD4]/30 transition-colors">
-              <Eye className="w-5 h-5 text-[#1A6FD4]" />
-              <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">View Products</p><p className="text-xs md:text-sm text-[#9CA3AF]">Manage your listings</p></div>
+            
+            <Link href="/seller/dashboard/orders" className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ShoppingCart className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[15px] font-bold text-gray-900">Fulfill Orders</p>
+                <p className="text-[13px] font-medium text-gray-500">Process pending shipments</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-indigo-500 transition-colors" />
             </Link>
-            <Link href="/seller/dashboard/inventory" className="flex items-center gap-3 p-4 rounded-lg border border-[#E8EEF4] hover:border-[#F59E0B]/30 transition-colors">
-              <Truck className="w-5 h-5 text-[#F59E0B]" />
-              <div><p className="text-sm md:text-base font-semibold text-[#1A1A2E]">Manage Inventory</p><p className="text-xs md:text-sm text-[#9CA3AF]">Update stock levels</p></div>
+            
+            <Link href="/seller/dashboard/inventory" className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-yellow-200 hover:bg-yellow-50/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-yellow-50 text-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Truck className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[15px] font-bold text-gray-900">Manage Inventory</p>
+                <p className="text-[13px] font-medium text-gray-500">Update your stock levels</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-yellow-500 transition-colors" />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Recent Orders */}
+      {/* ── Recent Orders ── */}
       {recentOrders.length > 0 && (
-        <div className="bg-white rounded-xl border border-[#E8EEF4] p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base md:text-lg font-bold text-[#1A1A2E]">Recent Orders</h2>
-            <Link href="/seller/dashboard/orders" className="text-sm font-medium text-[#1A6FD4] hover:underline">
-              View All
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm mb-8">
+          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#1A6FD4]" /> Recent Orders
+            </h2>
+            <Link href="/seller/dashboard/orders" className="text-[14px] font-bold text-[#1A6FD4] hover:underline">
+              View All Orders
             </Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-[#E8EEF4]">
-                  <th className="text-left py-2 font-semibold text-[#4B5563]">Order</th>
-                  <th className="text-left py-2 font-semibold text-[#4B5563]">Product</th>
-                  <th className="text-right py-2 font-semibold text-[#4B5563]">Amount</th>
-                  <th className="text-left py-2 font-semibold text-[#4B5563]">Status</th>
-                  <th className="text-right py-2 font-semibold text-[#4B5563]">Date</th>
+                <tr className="bg-white border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Order ID</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Primary Item</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[10%]">Date</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-50">
                 {recentOrders.map((o) => {
                   const total = o.items.reduce((s, i) => s + i.total_price, 0);
                   const orderStatus = o.items[0]?.status || o.status;
                   return (
-                    <tr key={o.id} className="border-b border-[#E8EEF4] last:border-0">
-                      <td className="py-2.5">
-                        <Link href={`/seller/dashboard/orders/${o.id}`} className="font-medium text-[#1A6FD4] hover:underline">
-                          {o.order_number}
+                    <tr key={o.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <Link href={`/seller/dashboard/orders/${o.id}`} className="font-bold text-[14px] text-[#1A6FD4] hover:underline">
+                          #{o.order_number}
                         </Link>
                       </td>
-                      <td className="py-2.5 text-[#4B5563] truncate max-w-[160px]">
-                        {o.items[0]?.product_name || "—"}
-                        {o.items.length > 1 && <span className="text-[#9CA3AF]"> +{o.items.length - 1}</span>}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 overflow-hidden">
+                            {o.items[0]?.product_image ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={o.items[0].product_image} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <Package className="w-5 h-5 text-gray-400" />
+                            )}
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="font-bold text-[14px] text-gray-900 truncate max-w-[200px]">
+                              {o.items[0]?.product_name || "Unknown Item"}
+                            </span>
+                            {o.items.length > 1 && (
+                              <span className="text-[12px] font-medium text-gray-400">
+                                +{o.items.length - 1} more item{o.items.length - 1 > 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </td>
-                      <td className="py-2.5 text-right font-medium text-[#1A1A2E]">{formatINR(total)}</td>
-                      <td className="py-2.5">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${STATUS_BADGE[orderStatus] || "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                      <td className="px-6 py-4 font-bold text-[15px] text-gray-900">
+                        {formatINR(total)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wide ${STATUS_BADGE[orderStatus] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
                           {orderStatus}
                         </span>
                       </td>
-                      <td className="py-2.5 text-right text-[#9CA3AF]">
+                      <td className="px-6 py-4 text-right text-[13px] font-medium text-gray-500">
                         {new Date(o.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                       </td>
                     </tr>
@@ -324,6 +489,6 @@ export default function DashboardHome() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

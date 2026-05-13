@@ -59,7 +59,9 @@ export default function proxy(request: NextRequest) {
     rewroteForSubdomain = true;
   } else {
     // On main host (anga9.com) — redirect /seller/* to subdomain for SEO consolidation
-    if (pathname === "/seller" || pathname.startsWith("/seller/")) {
+    // Bypass this redirect on localhost for local development testing
+    const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+    if (!isLocalhost && (pathname === "/seller" || pathname.startsWith("/seller/"))) {
       const subPath = pathname.replace(/^\/seller/, "") || "/";
       return NextResponse.redirect(
         `https://${SELLER_HOST}${subPath}${url.search}`,

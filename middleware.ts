@@ -17,10 +17,16 @@ function isSellerPublicPath(pathname: string): boolean {
 }
 
 export default function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Bypass middleware for API routes so Next.js or next.config.ts rewrites can handle them
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
   const host = (request.headers.get("host") || "").toLowerCase();
   const isSellerSubdomain = host === SELLER_HOST || host.startsWith("seller.");
   const url = request.nextUrl.clone();
-  const { pathname } = request.nextUrl;
 
   // ──────────────────────────────────────────────────
   // Subdomain routing: seller.anga9.com → /seller/*
@@ -41,15 +47,21 @@ export default function proxy(request: NextRequest) {
     if (pathname === "/seller" || pathname.startsWith("/seller/")) {
       // 301 ugly /seller/* paths on the subdomain to clean URLs
       const subPath = pathname.replace(/^\/seller/, "") || "/";
+      const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+      const protocol = isLocalhost ? "http" : "https";
+      const targetHost = isLocalhost ? host : SELLER_HOST;
       return NextResponse.redirect(
-        `https://${SELLER_HOST}${subPath}${url.search}`,
+        `${protocol}://${targetHost}${subPath}${url.search}`,
         301
       );
     }
     // Legal/policy pages live on main domain only — 301 to anga9.com
     if (LEGAL_PATHS.includes(pathname)) {
+      const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+      const protocol = isLocalhost ? "http" : "https";
+      const targetHost = isLocalhost ? host.replace(/^seller\./, "") : "anga9.com";
       return NextResponse.redirect(
-        `https://anga9.com${pathname}${url.search}`,
+        `${protocol}://${targetHost}${pathname}${url.search}`,
         301
       );
     }
@@ -83,8 +95,11 @@ export default function proxy(request: NextRequest) {
     const portalCookie = request.cookies.get("portal");
 
     if (!portalCookie) {
+      const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+      const protocol = isLocalhost ? "http" : "https";
+      const targetHost = isLocalhost ? host : SELLER_HOST;
       const loginUrl = isSellerSubdomain
-        ? new URL("/login", `https://${SELLER_HOST}`)
+        ? new URL("/login", `${protocol}://${targetHost}`)
         : new URL("/seller/login", request.url);
       return NextResponse.redirect(loginUrl);
     }

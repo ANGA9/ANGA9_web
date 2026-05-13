@@ -1,4 +1,4 @@
-import { request } from "./api";
+import { api } from "./api";
 
 export type AdStatus = 'pending' | 'approved' | 'active' | 'rejected' | 'completed';
 
@@ -44,20 +44,17 @@ export interface RequestAdBody {
 export const adsApi = {
   // Public
   listActive: (placement: string) =>
-    request<{ ads: AdCampaign[] }>(`/api/products/ads/active?placement=${encodeURIComponent(placement)}`),
+    api.get<{ ads: AdCampaign[] }>(`/api/products/ads/active?placement=${encodeURIComponent(placement)}`),
   recordClick: (adId: string) =>
-    request<{ success: boolean }>(`/api/products/ads/${adId}/click`, { method: "POST" }),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/click`),
   recordImpression: (adId: string) =>
-    request<{ success: boolean }>(`/api/products/ads/${adId}/impression`, { method: "POST" }),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/impression`),
 
   // Seller
   requestAd: (payload: RequestAdBody) =>
-    request<{ ad: AdCampaign }>("/api/seller/ads/request", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+    api.post<{ ad: AdCampaign }>("/api/seller/ads/request", payload),
   listMine: () =>
-    request<{ ads: AdCampaign[] }>("/api/seller/ads"),
+    api.get<{ ads: AdCampaign[] }>("/api/seller/ads"),
 
   // Admin
   adminList: (params?: { page?: number; limit?: number; status?: AdStatus }) => {
@@ -65,16 +62,10 @@ export const adsApi = {
     if (params?.page) q.set("page", String(params.page));
     if (params?.limit) q.set("limit", String(params.limit));
     if (params?.status) q.set("status", params.status);
-    return request<AdListResponse>(`/api/admin/ads?${q.toString()}`);
+    return api.get<AdListResponse>(`/api/admin/ads?${q.toString()}`);
   },
   adminApprove: (adId: string, fee_inr: number) =>
-    request<{ ad: AdCampaign }>(`/api/admin/ads/${adId}/approve`, {
-      method: "PATCH",
-      body: JSON.stringify({ fee_inr }),
-    }),
+    api.patch<{ ad: AdCampaign }>(`/api/admin/ads/${adId}/approve`, { fee_inr }),
   adminReject: (adId: string, reason: string) =>
-    request<{ ad: AdCampaign }>(`/api/admin/ads/${adId}/reject`, {
-      method: "PATCH",
-      body: JSON.stringify({ reason }),
-    }),
+    api.patch<{ ad: AdCampaign }>(`/api/admin/ads/${adId}/reject`, { reason }),
 };

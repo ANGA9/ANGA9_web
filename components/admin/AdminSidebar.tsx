@@ -13,12 +13,14 @@ import {
   Settings,
   LifeBuoy,
   X,
+  AlertTriangle,
 } from "lucide-react";
 
 const NAV = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Disputes", href: "/admin/orders/disputes", icon: AlertTriangle },
   { label: "Sellers", href: "/admin/sellers", icon: Store },
   { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck },
   { label: "Users", href: "/admin/users", icon: Users },

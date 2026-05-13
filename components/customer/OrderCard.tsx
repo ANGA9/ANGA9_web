@@ -3,7 +3,7 @@ import Link from "next/link";
 import {
   PackageOpen, Download, Loader2, XCircle,
   RotateCcw, MapPin, FileText, Package,
-  ShoppingBag, CheckCircle2,
+  ShoppingBag, CheckCircle2, AlertTriangle
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -162,13 +162,23 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         >
           {/* PRIMARY: Reorder (Delivered) or Track (Processing) */}
           {order.status === "Delivered" && (
-            <button
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold transition-all active:scale-95 shadow-sm text-white"
-              style={{ background: t.primaryCta }}
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reorder
-            </button>
+            <>
+              <button
+                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold transition-all active:scale-95 shadow-sm text-white"
+                style={{ background: t.primaryCta }}
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reorder
+              </button>
+              <Link
+                href={`/orders/${order.internalId || order.id}`}
+                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold border transition-all active:scale-95 hover:bg-gray-50"
+                style={{ borderColor: t.border, color: t.textSecondary }}
+              >
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Report Issue
+              </Link>
+            </>
           )}
 
           {order.status === "Processing" && (

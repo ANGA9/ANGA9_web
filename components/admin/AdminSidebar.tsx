@@ -14,11 +14,13 @@ import {
   LifeBuoy,
   X,
   AlertTriangle,
+  Megaphone,
 } from "lucide-react";
 
 const NAV = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Ad Campaigns", href: "/admin/ads", icon: Megaphone },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Disputes", href: "/admin/orders/disputes", icon: AlertTriangle },
   { label: "Sellers", href: "/admin/sellers", icon: Store },

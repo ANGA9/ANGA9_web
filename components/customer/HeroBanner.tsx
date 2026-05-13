@@ -3,178 +3,131 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { cdnUrl } from "@/lib/utils";
+import { adsApi, AdCampaign } from "@/lib/adsApi";
+import { useRouter } from "next/navigation";
 
-const ALL_BANNERS = [
+const DEFAULT_SLIDES = [
   {
-    id: 1,
-    desktop: cdnUrl("/banners/banner1.png"),
-    mobile: cdnUrl("/banners/banner1mob.png"),
-    alt: "Elevate Your Style - Menswear from ₹799",
+    id: "1",
+    image: cdnUrl("/banners/banner1.png"),
+    title: "Elevate Your Style - Menswear from ₹799",
+    cta: "Shop Now",
   },
   {
-    id: 2,
-    desktop: cdnUrl("/banners/banner2.png"),
-    mobile: cdnUrl("/banners/banner2mob.png"),
-    alt: "Sarees & Kurtas - Ethnic Festive Edit from ₹999",
+    id: "2",
+    image: cdnUrl("/banners/banner2.png"),
+    title: "Sarees & Kurtas - Ethnic Festive Edit from ₹999",
+    cta: "Shop Now",
   },
   {
-    id: 3,
-    desktop: cdnUrl("/banners/banner3.png"),
-    mobile: cdnUrl("/banners/banner3mob.png"),
-    alt: "Fun Fits for Little Ones - Kids Fashion from ₹299",
-  },
-  {
-    id: 4,
-    desktop: cdnUrl("/banners/banner4.png"),
-    mobile: cdnUrl("/banners/banner4mob.png"),
-    alt: "Train Harder Look Better - Activewear from ₹599",
-  },
-  {
-    id: 5,
-    desktop: cdnUrl("/banners/banner5.png"),
-    mobile: cdnUrl("/banners/banner5mob.png"),
-    alt: "Sleep in Pure Luxury - Bed Linen from ₹899",
-  },
-  {
-    id: 6,
-    desktop: cdnUrl("/banners/banner6.png"),
-    mobile: cdnUrl("/banners/banner6mob.png"),
-    alt: "Spa Comfort at Home - Bath Linen from ₹449",
-  },
-  {
-    id: 7,
-    desktop: cdnUrl("/banners/banner7.png"),
-    mobile: cdnUrl("/banners/banner7mob.png"),
-    alt: "Transform Your Living Space - Rugs & Curtains from ₹1299",
-  },
-  {
-    id: 8,
-    desktop: cdnUrl("/banners/banner8.png"),
-    mobile: cdnUrl("/banners/banner8mob.png"),
-    alt: "Style Every Corner - Living Decor from ₹349",
+    id: "3",
+    image: cdnUrl("/banners/banner3.png"),
+    title: "Fun Fits for Little Ones - Kids Fashion from ₹299",
+    cta: "Shop Now",
   },
 ];
 
-// Mobile: cap at 4 for cleaner UX. Desktop: show all.
-const MOBILE_BANNERS = ALL_BANNERS.slice(0, 4);
-const AUTO_PLAY_MS = 4500;
-
 export default function HeroBanner() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
+    Autoplay({ delay: 5000, stopOnInteraction: true }),
+  ]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [ads, setAds] = useState<AdCampaign[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    async function fetchAds() {
+      try {
+        const res = await adsApi.listActive('home_hero');
+        setAds(res.ads);
+      } catch (err) {
+        console.error("Failed to load hero ads:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAds();
   }, []);
 
-  const BANNERS = isMobile ? MOBILE_BANNERS : ALL_BANNERS;
-  const length = BANNERS.length;
+  const currentSlides = ads.length > 0 ? ads : DEFAULT_SLIDES;
 
-  /* ── Desktop UI ── */
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scrollToIndex = useCallback(
-    (index: number) => {
-      if (!scrollRef.current) return;
-      const el = scrollRef.current;
-      const scrollAmount = el.clientWidth * index;
-      el.scrollTo({ left: scrollAmount, behavior: "smooth" });
-      setCurrentIndex(index);
-    },
-    []
-  );
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const handleScroll = () => {
-      const index = Math.round(el.scrollLeft / el.clientWidth);
-      setCurrentIndex(index);
-    };
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    const idx = emblaApi.selectedScrollSnap();
+    setSelectedIndex(idx);
+    
+    if (ads.length > 0) {
+      const ad = ads[idx];
+      if (ad && !trackedImpressions.current.has(ad.id)) {
+        trackedImpressions.current.add(ad.id);
+        adsApi.recordImpression(ad.id).catch(console.error);
+      }
+    }
+  }, [emblaApi, ads]);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const next = (prev + 1) % length;
-        scrollToIndex(next);
-        return next;
-      });
-    }, AUTO_PLAY_MS);
-    return () => clearInterval(id);
-  }, [length, scrollToIndex]);
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    onSelect();
+  }, [emblaApi, onSelect]);
 
-  const handleNext = () => scrollToIndex((currentIndex + 1) % length);
-  const handlePrev = () => scrollToIndex((currentIndex - 1 + length) % length);
+  const handleSlideClick = (slide: any) => {
+    if (ads.length > 0) {
+      adsApi.recordClick(slide.id).catch(console.error);
+      router.push(slide.target_url || `/products/${slide.product_id}`);
+    }
+  };
 
-  // Progress percentage for timer bar
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    setProgress(0);
-    const start = performance.now();
-    let raf: number;
-    const tick = () => {
-      const elapsed = performance.now() - start;
-      const pct = Math.min((elapsed / AUTO_PLAY_MS) * 100, 100);
-      setProgress(pct);
-      if (pct < 100) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [currentIndex]);
+  const handleNext = () => emblaApi?.scrollNext();
+  const handlePrev = () => emblaApi?.scrollPrev();
 
   return (
     <div className="w-full pb-6 pt-2">
-      {/* ══════ UNIFIED NATIVE SWIPE CAROUSEL ══════ */}
-      <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto">
-        <div
-          ref={scrollRef}
-          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide no-scrollbar w-full"
-          style={{ scrollBehavior: "smooth", msOverflowStyle: "none", scrollbarWidth: "none" }}
-        >
-          {BANNERS.map((b, i) => (
-            <div
-              key={b.id}
-              className="w-full flex-shrink-0 snap-center px-1"
-            >
-              <div className="relative w-full h-[180px] md:h-[360px] lg:h-[400px] overflow-hidden rounded-xl">
-                {/* Mobile Image */}
-                <Image
-                  src={b.mobile}
-                  alt={b.alt}
-                  fill
-                  sizes="100vw"
-                  className="object-cover object-center md:hidden"
-                  draggable={false}
-                  priority={i === 0}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  quality={75}
-                />
-                {/* Desktop Image */}
-                <Image
-                  src={b.desktop}
-                  alt={b.alt}
-                  fill
-                  sizes="100vw"
-                  className="hidden md:block object-cover object-center"
-                  draggable={false}
-                  priority={i === 0}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  quality={85}
-                />
+      <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto overflow-hidden" ref={emblaRef}>
+        <div className="flex touch-pan-y">
+          {loading ? (
+             <div className="flex-[0_0_100%] min-w-0 relative px-1">
+               <div className="w-full h-[180px] md:h-[400px] bg-gray-100 animate-pulse rounded-2xl md:rounded-3xl" />
+             </div>
+          ) : (
+            currentSlides.map((slide, index) => (
+              <div
+                key={slide.id}
+                onClick={() => handleSlideClick(slide)}
+                className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
+              >
+                <div className="relative w-full h-[180px] md:h-[400px] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
+                  <img
+                    src={(slide as AdCampaign).banner_url || (slide as typeof DEFAULT_SLIDES[0]).image}
+                    alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  
+                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 z-10 flex flex-col justify-end h-full pointer-events-none">
+                    <h2 className="text-xl md:text-5xl font-black text-white leading-[1.1] mb-3 tracking-tight">
+                      {(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
+                    </h2>
+                    
+                    <button className="self-start mt-2 pointer-events-auto bg-white/90 backdrop-blur-md text-gray-900 font-bold px-6 py-2.5 rounded-xl hover:bg-white transition-all flex items-center gap-2">
+                      {(slide as AdCampaign).cta_text || (slide as typeof DEFAULT_SLIDES[0]).cta}
+                    </button>
+                    {ads.length > 0 && (
+                      <span className="absolute top-4 right-4 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2 py-1 rounded">Ad</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
-        {/* Arrow buttons - hidden on mobile, visible on desktop hover */}
         <button
           onClick={handlePrev}
           className="hidden md:flex absolute top-1/2 left-6 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/90 hover:bg-white active:bg-gray-100 shadow-md border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
@@ -193,35 +146,17 @@ export default function HeroBanner() {
 
       {/* ══════ PROGRESS BAR INDICATORS ══════ */}
       <div className="mt-3 sm:mt-5 flex justify-center items-center gap-1.5 sm:gap-2 px-4">
-        {BANNERS.map((_, i) => (
+        {currentSlides.map((_, i) => (
           <button
             key={i}
-            onClick={() => scrollToIndex(i)}
+            onClick={() => emblaApi?.scrollTo(i)}
             className="relative h-[3px] sm:h-1 rounded-full overflow-hidden transition-all duration-300"
             style={{
-              width: i === currentIndex ? (isMobile ? 32 : 48) : (isMobile ? 16 : 20),
-              background: i === currentIndex ? "transparent" : "#D1D5DB",
+              width: i === selectedIndex ? 32 : 16,
+              background: i === selectedIndex ? "#1A6FD4" : "#D1D5DB",
             }}
             aria-label={`Go to banner ${i + 1}`}
-          >
-            {/* Track */}
-            {i === currentIndex && (
-              <>
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{ background: "#CBD5E1" }}
-                />
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full"
-                  style={{
-                    width: `${progress}%`,
-                    background: "#1A6FD4",
-                    transition: "none",
-                  }}
-                />
-              </>
-            )}
-          </button>
+          />
         ))}
       </div>
     </div>

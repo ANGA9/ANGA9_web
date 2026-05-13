@@ -62,7 +62,7 @@ export default function AdminDashboardLayout({
         onLogout={handleLogout}
       />
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="lg:ml-[220px] min-h-[calc(100vh-56px)]">
+      <main className="lg:ml-[260px] min-h-[calc(100vh-72px)] bg-[#F8FBFF]">
         {children}
       </main>
     </div>

@@ -12,9 +12,7 @@ import {
   StarOff,
   Archive,
 } from "lucide-react";
-import Header from "@/components/Header";
 import toast from "react-hot-toast";
-import { cn } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -35,26 +33,26 @@ interface Product {
 }
 
 const STATUS_TABS = [
-  { key: "all", label: "All" },
+  { key: "all", label: "All Products" },
   { key: "active", label: "Active" },
   { key: "draft", label: "Draft" },
-  { key: "pending_review", label: "Pending Review" },
+  { key: "pending_review", label: "Pending" },
   { key: "archived", label: "Archived" },
   { key: "rejected", label: "Rejected" },
 ];
 
 const STATUS_BADGE: Record<string, string> = {
-  active: "bg-[#F0FDF4] text-[#22C55E]",
-  draft: "bg-[#F3F4F6] text-[#9CA3AF]",
-  pending_review: "bg-[#FFFBEB] text-[#F59E0B]",
-  archived: "bg-[#F3F4F6] text-[#6B7280]",
-  rejected: "bg-[#FEF2F2] text-[#EF4444]",
+  active: "bg-green-50 text-green-700 border-green-200",
+  draft: "bg-gray-100 text-gray-700 border-gray-200",
+  pending_review: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  archived: "bg-gray-100 text-gray-500 border-gray-200",
+  rejected: "bg-red-50 text-red-700 border-red-200",
 };
 
 const MOD_BADGE: Record<string, string> = {
-  approved: "bg-[#F0FDF4] text-[#22C55E]",
-  pending: "bg-[#FFFBEB] text-[#F59E0B]",
-  rejected: "bg-[#FEF2F2] text-[#EF4444]",
+  approved: "bg-green-50 text-green-700 border-green-200",
+  pending: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  rejected: "bg-red-50 text-red-700 border-red-200",
 };
 
 function formatINR(value: number) {
@@ -144,229 +142,199 @@ export default function AdminProductsPage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="p-6 xl:p-8">
-        <div className="mb-6">
-          <h1 className="text-xl md:text-2xl font-bold text-anga-text">Products</h1>
-          <p className="text-sm md:text-base text-anga-text-secondary">
-            {total} product{total !== 1 ? "s" : ""} total
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Products Registry</h1>
+          <p className="text-[15px] text-gray-500 font-medium">{total} product{total !== 1 ? "s" : ""} on platform</p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+          {/* Status Tabs */}
+          <div className="flex items-center gap-1 p-1 bg-white border border-gray-200 rounded-2xl shadow-sm w-full sm:w-auto overflow-x-auto no-scrollbar">
+            {STATUS_TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => handleTabChange(tab.key)}
+                className={`whitespace-nowrap px-4 py-2 rounded-xl text-[14px] font-bold transition-all ${
+                  statusFilter === tab.key
+                    ? "bg-[#8B5CF6] text-white shadow-md shadow-purple-500/20"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
+          <div className="relative w-full sm:w-[280px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className="w-full h-11 pl-10 pr-16 bg-white border border-gray-200 rounded-2xl text-[14px] font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
+            />
+            <button
+              onClick={handleSearch}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 px-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-[13px] font-bold transition-colors"
+            >
+              Go
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Content ── */}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-10 h-10 animate-spin text-[#8B5CF6]" />
+        </div>
+      ) : products.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <Package className="w-10 h-10 text-gray-300" />
+          </div>
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Products Found</h2>
+          <p className="text-[15px] text-gray-500 font-medium">
+            {search ? "Try adjusting your search query." : "There are no products matching this filter."}
           </p>
         </div>
-
-        {/* Filters */}
-        <div className="bg-white rounded-xl border border-anga-border p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            {/* Status tabs */}
-            <div className="flex flex-wrap gap-1">
-              {STATUS_TABS.map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => handleTabChange(tab.key)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors",
-                    statusFilter === tab.key
-                      ? "bg-[#1A6FD4] text-white"
-                      : "text-anga-text-secondary hover:bg-anga-bg"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {/* Search */}
-            <div className="flex gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-anga-text-secondary" />
-                <input
-                  type="text"
-                  placeholder="Search by name..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  className="h-9 w-full rounded-lg border border-anga-border bg-white pl-9 pr-3 text-sm text-anga-text placeholder:text-anga-text-secondary/60 focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
-                />
-              </div>
-              <button
-                onClick={handleSearch}
-                className="h-9 px-4 rounded-lg bg-[#1A6FD4] text-white text-sm font-medium hover:bg-[#155bb5] transition-colors"
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Table */}
-        {loading ? (
-          <div className="flex items-center justify-center min-h-[40vh]">
-            <Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" />
-          </div>
-        ) : products.length === 0 ? (
-          <div className="bg-white rounded-xl border border-anga-border p-12 text-center">
-            <Package className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-            <h2 className="text-base md:text-lg font-bold text-anga-text mb-2">No Products Found</h2>
-            <p className="text-sm md:text-base text-anga-text-secondary">
-              {search ? "Try a different search term" : "No products match the selected filter"}
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-anga-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-anga-border bg-[#F8FBFF]">
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Product</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Seller</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Category</th>
-                    <th className="text-right px-4 py-3 font-semibold text-[#4B5563]">Price</th>
-                    <th className="text-center px-4 py-3 font-semibold text-[#4B5563]">Stock</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Status</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Moderation</th>
-                    <th className="text-center px-4 py-3 font-semibold text-[#4B5563]">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((p) => (
-                    <tr
-                      key={p.id}
-                      className="border-b border-anga-border last:border-0 hover:bg-[#F8FBFF] transition-colors"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
+      ) : (
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[1000px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Product</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Seller</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Price</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-center">Stock</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {products.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
                           {p.image ? (
-                            <img
-                              src={p.image}
-                              alt=""
-                              className="w-10 h-10 rounded-lg object-cover border border-anga-border"
-                            />
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-10 h-10 rounded-lg bg-anga-bg flex items-center justify-center">
-                              <Package className="w-5 h-5 text-anga-text-secondary" />
-                            </div>
+                            <Package className="w-6 h-6 text-gray-400" />
                           )}
-                          <div className="min-w-0">
-                            <p className="font-medium text-anga-text truncate max-w-[200px]">{p.name}</p>
-                            {p.is_featured && (
-                              <span className="text-xs text-[#F59E0B] font-medium flex items-center gap-0.5">
-                                <Star className="w-3 h-3 fill-current" /> Featured
-                              </span>
-                            )}
-                          </div>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 text-anga-text-secondary truncate max-w-[140px]">
-                        {p.seller_name}
-                      </td>
-                      <td className="px-4 py-3 text-anga-text-secondary">{p.category_name}</td>
-                      <td className="px-4 py-3 text-right font-medium text-anga-text">
-                        {p.sale_price ? (
-                          <div>
-                            <span className="text-[#EF4444]">{formatINR(p.sale_price)}</span>
-                            <span className="block text-xs text-anga-text-secondary line-through">
-                              {formatINR(p.base_price)}
+                        <div className="min-w-0 flex flex-col justify-center">
+                          <p className="font-bold text-[14px] text-gray-900 truncate max-w-[200px]">{p.name}</p>
+                          {p.is_featured && (
+                            <span className="text-[11px] font-black tracking-wide uppercase text-yellow-600 flex items-center gap-1 mt-0.5">
+                              <Star className="w-3 h-3 fill-current" /> Featured
                             </span>
-                          </div>
-                        ) : (
-                          formatINR(p.base_price)
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span
-                          className={cn(
-                            "font-medium",
-                            p.stock <= 0
-                              ? "text-[#EF4444]"
-                              : p.stock < 10
-                              ? "text-[#F59E0B]"
-                              : "text-anga-text"
                           )}
-                        >
-                          {p.stock}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={cn(
-                            "inline-flex px-2 py-0.5 rounded-full text-xs font-semibold",
-                            STATUS_BADGE[p.status] || "bg-gray-100 text-gray-600"
-                          )}
-                        >
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-[14px] font-medium text-gray-600 truncate max-w-[150px] block">
+                        {p.seller_name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 text-[12px] font-bold">
+                        {p.category_name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {p.sale_price ? (
+                        <div className="flex flex-col items-end">
+                          <span className="font-bold text-[15px] text-red-600">{formatINR(p.sale_price)}</span>
+                          <span className="text-[12px] font-medium text-gray-400 line-through">{formatINR(p.base_price)}</span>
+                        </div>
+                      ) : (
+                        <span className="font-bold text-[15px] text-gray-900">{formatINR(p.base_price)}</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`text-[15px] font-black ${p.stock <= 0 ? 'text-red-500' : p.stock < 10 ? 'text-yellow-500' : 'text-gray-900'}`}>
+                        {p.stock}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1.5 items-start">
+                        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wide ${STATUS_BADGE[p.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
                           {capitalize(p.status)}
                         </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={cn(
-                            "inline-flex px-2 py-0.5 rounded-full text-xs font-semibold",
-                            MOD_BADGE[p.moderation_status] || "bg-gray-100 text-gray-600"
-                          )}
+                        {(p.moderation_status === "pending" || p.moderation_status === "rejected") && (
+                          <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wide ${MOD_BADGE[p.moderation_status]}`}>
+                            Mod: {capitalize(p.moderation_status)}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => toggleFeatured(p.id, p.is_featured)}
+                          disabled={actionLoading === p.id}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-yellow-50 text-gray-400 hover:text-yellow-500 transition-colors disabled:opacity-50"
+                          title={p.is_featured ? "Remove featured" : "Mark featured"}
                         >
-                          {capitalize(p.moderation_status)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-center gap-1">
+                          {actionLoading === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : p.is_featured ? <StarOff className="w-4 h-4" /> : <Star className="w-4 h-4" />}
+                        </button>
+                        {p.status !== "archived" && (
                           <button
-                            onClick={() => toggleFeatured(p.id, p.is_featured)}
+                            onClick={() => archiveProduct(p.id)}
                             disabled={actionLoading === p.id}
-                            className="p-1.5 rounded-md hover:bg-anga-bg transition-colors disabled:opacity-50"
-                            title={p.is_featured ? "Remove featured" : "Mark featured"}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                            title="Archive product"
                           >
-                            {p.is_featured ? (
-                              <StarOff className="w-4 h-4 text-[#F59E0B]" />
-                            ) : (
-                              <Star className="w-4 h-4 text-anga-text-secondary" />
-                            )}
+                            {actionLoading === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Archive className="w-4 h-4" />}
                           </button>
-                          {p.status !== "archived" && (
-                            <button
-                              onClick={() => archiveProduct(p.id)}
-                              disabled={actionLoading === p.id}
-                              className="p-1.5 rounded-md hover:bg-anga-bg transition-colors disabled:opacity-50"
-                              title="Archive product"
-                            >
-                              <Archive className="w-4 h-4 text-anga-text-secondary" />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-anga-border">
-                <p className="text-sm text-anga-text-secondary">
-                  Showing {(page - 1) * limit + 1}-{Math.min(page * limit, total)} of {total}
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page <= 1}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-anga-border text-sm text-anga-text-secondary hover:bg-anga-bg disabled:opacity-40 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" /> Prev
-                  </button>
-                  <span className="text-sm font-medium text-anga-text">
-                    {page} / {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page >= totalPages}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-anga-border text-sm text-anga-text-secondary hover:bg-anga-bg disabled:opacity-40 transition-colors"
-                  >
-                    Next <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </main>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+              <span className="text-[13px] font-medium text-gray-500">
+                Showing <span className="font-bold text-gray-900">{(page - 1) * limit + 1}</span>-
+                <span className="font-bold text-gray-900">{Math.min(page * limit, total)}</span> of <span className="font-bold text-gray-900">{total}</span>
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
+                >
+                  <ChevronLeft className="w-4 h-4" /> Prev
+                </button>
+                <div className="w-10 text-center text-[13px] font-black text-gray-900">{page}</div>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
+                >
+                  Next <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

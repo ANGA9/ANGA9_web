@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
   Legend
 } from "recharts";
-import { Loader2 } from "lucide-react";
+import { Loader2, TrendingUp } from "lucide-react";
 import { api } from "@/lib/api";
 
 interface RevenueDay {
@@ -55,16 +55,16 @@ function CustomTooltip({
 }) {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border border-anga-border bg-white px-4 py-3 shadow-lg">
-        <p className="text-xs font-medium text-anga-text-secondary mb-3">
+      <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
+        <p className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">
           {payload[0].payload.month}
         </p>
         <div className="flex flex-col gap-2">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-              <span className="text-sm font-medium text-anga-text-secondary min-w-[70px]">{entry.name}:</span>
-              <span className="text-sm font-bold text-anga-text">
+              <span className="text-[13px] font-bold text-gray-500 min-w-[70px]">{entry.name}:</span>
+              <span className="text-[14px] font-black text-gray-900">
                 {entry.name === 'Revenue' ? formatINRFull(entry.value) : entry.value.toLocaleString('en-IN')}
               </span>
             </div>
@@ -110,73 +110,84 @@ export default function RevenueChart() {
   }, []);
 
   return (
-    <div className="rounded-xl border border-anga-border bg-white p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm flex flex-col h-full">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-base font-semibold text-anga-text">Sales & Revenue Overview</h3>
-          <p className="text-sm text-anga-text-secondary">Monthly trends for revenue and number of orders</p>
+          <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-[#8B5CF6]" /> Platform Revenue Trend
+          </h2>
+          <p className="text-[13px] text-gray-500 font-medium mt-1">Monthly gross merchandise value and orders</p>
         </div>
       </div>
-      {loading ? (
-        <div className="flex items-center justify-center h-[300px]">
-          <Loader2 className="h-6 w-6 animate-spin text-[#1A6FD4]" />
-        </div>
-      ) : data.length === 0 ? (
-        <div className="flex items-center justify-center h-[300px] text-sm text-anga-text-secondary">
-          No revenue or sales data available
-        </div>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-            <defs>
-              <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1A6FD4" stopOpacity={0.1} />
-                <stop offset="100%" stopColor="#1A6FD4" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: '12px' }}
-            />
-            <YAxis
-              yAxisId="left"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: '12px' }}
-              tickFormatter={formatINR}
-            />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#6B7280", fontSize: '12px' }}
-            />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f3f4f6", opacity: 0.4 }} />
-            <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-            <Bar
-              yAxisId="right"
-              dataKey="sales"
-              name="Sales (Count)"
-              fill="#22C55E"
-              barSize={20}
-              radius={[4, 4, 0, 0]}
-            />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="revenue"
-              name="Revenue"
-              stroke="#1A6FD4"
-              strokeWidth={2.5}
-              fill="url(#revenueGradient)"
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      )}
+      
+      <div className="flex-1 min-h-[300px]">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-8 h-8 animate-spin text-[#8B5CF6]" />
+          </div>
+        ) : data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center py-10">
+            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+              <TrendingUp className="w-6 h-6 text-gray-300" />
+            </div>
+            <p className="text-[15px] font-bold text-gray-900">No data available</p>
+            <p className="text-[13px] font-medium text-gray-500">Charts will populate once sales occur.</p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="adminRevGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 600 }}
+                dy={10}
+              />
+              <YAxis
+                yAxisId="left"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 600 }}
+                tickFormatter={formatINR}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#9CA3AF", fontSize: 12, fontWeight: 600 }}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#E8EEF4', strokeWidth: 2, strokeDasharray: '4 4' }} />
+              <Legend wrapperStyle={{ fontSize: '13px', fontWeight: 700, paddingTop: '10px' }} iconType="circle" />
+              <Bar
+                yAxisId="right"
+                dataKey="sales"
+                name="Sales"
+                fill="#F59E0B"
+                barSize={12}
+                radius={[4, 4, 0, 0]}
+              />
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="revenue"
+                name="Revenue"
+                stroke="#8B5CF6"
+                strokeWidth={3}
+                fill="url(#adminRevGrad)"
+                activeDot={{ r: 6, fill: '#8B5CF6', stroke: '#fff', strokeWidth: 3 }}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Loader2 } from "lucide-react";
+import { Loader2, Crown } from "lucide-react";
 import { api } from "@/lib/api";
 
 interface TopSeller {
@@ -13,7 +12,7 @@ interface TopSeller {
   orderCount: number;
 }
 
-const COLORS = ["#1A6FD4", "#374151", "#6B7280", "#4B5563", "#9CA3AF"];
+const COLORS = ["#8B5CF6", "#A78BFA", "#C4B5FD", "#DDD6FE", "#EDE9FE"];
 
 function formatINR(value: number) {
   if (value >= 100000) return `\u20B9${(value / 100000).toFixed(1)}L`;
@@ -46,54 +45,66 @@ export default function TopSellersList() {
   }, []);
 
   return (
-    <div className="rounded-xl border border-anga-border bg-white p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-base font-semibold text-anga-text">Top Sellers</h3>
-        <Link href="/admin/sellers" className="text-sm font-medium text-[#1A6FD4] hover:underline">
+    <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm flex flex-col h-full">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
+            <Crown className="w-5 h-5 text-[#8B5CF6]" /> Top Sellers
+          </h2>
+          <p className="text-[13px] text-gray-500 font-medium mt-1">Highest grossing stores</p>
+        </div>
+        <Link href="/admin/sellers" className="text-[14px] font-bold text-[#8B5CF6] hover:underline">
           View All
         </Link>
       </div>
-      {loading ? (
-        <div className="flex items-center justify-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-[#1A6FD4]" />
-        </div>
-      ) : sellers.length === 0 ? (
-        <div className="flex items-center justify-center h-40 text-sm text-anga-text-secondary">
-          No seller data available
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {sellers.map((seller, index) => (
-            <div
-              key={seller.id}
-              className="flex items-center gap-3 rounded-lg p-2 hover:bg-anga-bg/50 transition-colors"
-            >
-              <span className="text-xs font-semibold text-anga-text-secondary w-4">
-                {index + 1}
-              </span>
-              <Avatar className="h-9 w-9 shrink-0">
-                <AvatarFallback
-                  className="text-xs font-semibold text-white"
-                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
+
+      <div className="flex-1 flex flex-col">
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center min-h-[200px]">
+            <Loader2 className="w-8 h-8 animate-spin text-[#8B5CF6]" />
+          </div>
+        ) : sellers.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[200px] text-center">
+            <Crown className="w-10 h-10 text-gray-300 mb-3" />
+            <p className="text-[14px] font-bold text-gray-900">No seller data</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {sellers.map((seller, index) => (
+              <div
+                key={seller.id}
+                className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 group"
+              >
+                <div className={`w-6 text-center font-black ${index < 3 ? 'text-[#8B5CF6]' : 'text-gray-400'}`}>
+                  #{index + 1}
+                </div>
+                
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-[13px] font-bold text-white shadow-sm shrink-0"
+                  style={{ backgroundColor: index < COLORS.length ? COLORS[index] : COLORS[COLORS.length - 1] }}
                 >
                   {getInitials(seller.name || "?")}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-anga-text truncate">
-                  {seller.name || "Unknown Store"}
-                </p>
-                <span className="text-xs text-anga-text-secondary">
-                  {seller.orderCount} orders
-                </span>
+                </div>
+                
+                <div className="min-w-0 flex-1">
+                  <p className="text-[14px] font-bold text-gray-900 truncate group-hover:text-[#8B5CF6] transition-colors">
+                    {seller.name || "Unknown Store"}
+                  </p>
+                  <span className="text-[12px] font-medium text-gray-500">
+                    {seller.orderCount} total orders
+                  </span>
+                </div>
+                
+                <div className="shrink-0 text-right">
+                  <p className="text-[15px] font-black text-gray-900">
+                    {formatINR(seller.revenue)}
+                  </p>
+                </div>
               </div>
-              <p className="text-sm font-semibold text-anga-text shrink-0">
-                {formatINR(seller.revenue)}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

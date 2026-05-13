@@ -1,21 +1,27 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Loader2, Store, CheckCircle2, XCircle } from "lucide-react";
-import Header from "@/components/Header";
 import toast from "react-hot-toast";
 
 interface Seller {
-  id: string; user_id: string; business_name?: string; business_type?: string;
-  verification_status: string; onboarding_complete: boolean; city?: string;
-  state?: string; created_at: string;
+  id: string; 
+  user_id: string; 
+  business_name?: string; 
+  business_type?: string;
+  verification_status: string; 
+  onboarding_complete: boolean; 
+  city?: string;
+  state?: string; 
+  created_at: string;
 }
 
 const STATUS_BADGE: Record<string, { cls: string; label: string }> = {
-  verified: { cls: "bg-[#F0FDF4] text-[#22C55E] border-[#BBF7D0]", label: "Verified" },
-  pending: { cls: "bg-[#FFFBEB] text-[#F59E0B] border-[#FDE68A]", label: "Pending Review" },
-  unverified: { cls: "bg-[#F3F4F6] text-[#9CA3AF] border-[#E8EEF4]", label: "Unverified" },
-  rejected: { cls: "bg-[#FEF2F2] text-[#EF4444] border-[#FECACA]", label: "Rejected" },
+  verified: { cls: "bg-green-50 text-green-700 border-green-200", label: "Verified" },
+  pending: { cls: "bg-yellow-50 text-yellow-700 border-yellow-200", label: "Pending Review" },
+  unverified: { cls: "bg-gray-100 text-gray-600 border-gray-200", label: "Unverified" },
+  rejected: { cls: "bg-red-50 text-red-700 border-red-200", label: "Rejected" },
 };
 
 export default function SellersPage() {
@@ -65,81 +71,111 @@ export default function SellersPage() {
     }
   };
 
-  if (loading) return <div className="min-h-screen"><Header /><div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" /></div></div>;
-
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="p-6 xl:p-8">
-        <div className="mb-6">
-          <h1 className="text-xl md:text-2xl font-bold text-anga-text">Registered Sellers</h1>
-          <p className="text-sm md:text-base text-anga-text-secondary">{sellers.length} seller{sellers.length !== 1 ? "s" : ""} registered</p>
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Seller Directory</h1>
+          <p className="text-[15px] text-gray-500 font-medium">{sellers.length} store{sellers.length !== 1 ? "s" : ""} on the platform</p>
         </div>
+      </div>
 
-        {sellers.length === 0 ? (
-          <div className="bg-white rounded-xl border border-anga-border p-12 text-center">
-            <Store className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-            <h2 className="text-base md:text-lg font-bold text-anga-text mb-2">No Sellers Yet</h2>
-            <p className="text-sm md:text-base text-anga-text-secondary">Sellers will appear here after they complete onboarding</p>
+      {/* ── Content ── */}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-10 h-10 animate-spin text-[#8B5CF6]" />
+        </div>
+      ) : sellers.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <Store className="w-10 h-10 text-gray-300" />
           </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-anga-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm md:text-base">
-                <thead>
-                  <tr className="border-b border-anga-border bg-[#F8FBFF]">
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Business Name</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Type</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Location</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Status</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Joined</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sellers.map((s) => {
-                    const badge = STATUS_BADGE[s.verification_status] || STATUS_BADGE.unverified;
-                    return (
-                      <tr key={s.id} className="border-b border-anga-border last:border-0 hover:bg-[#F8FBFF] transition-colors">
-                        <td className="px-4 py-3 font-medium text-anga-text">{s.business_name || "—"}</td>
-                        <td className="px-4 py-3 text-[#4B5563] capitalize">{s.business_type?.replace("_", " ") || "—"}</td>
-                        <td className="px-4 py-3 text-[#4B5563]">{[s.city, s.state].filter(Boolean).join(", ") || "—"}</td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs md:text-sm font-semibold border ${badge.cls}`}>{badge.label}</span>
-                        </td>
-                        <td className="px-4 py-3 text-[#9CA3AF]">{new Date(s.created_at).toLocaleDateString()}</td>
-                        <td className="px-4 py-3">
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Sellers Yet</h2>
+          <p className="text-[15px] text-gray-500 font-medium">Sellers will appear here after they begin onboarding.</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Business Name</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Joined</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {sellers.map((s) => {
+                  const badge = STATUS_BADGE[s.verification_status] || STATUS_BADGE.unverified;
+                  return (
+                    <tr key={s.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center border border-purple-100 shadow-sm shrink-0">
+                            <Store className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <span className="font-bold text-[14px] text-gray-900">
+                            {s.business_name || "—"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-[14px] font-medium text-gray-600 capitalize">
+                          {s.business_type?.replace("_", " ") || "—"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-[14px] font-medium text-gray-600">
+                          {[s.city, s.state].filter(Boolean).join(", ") || "—"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wide ${badge.cls}`}>
+                          {badge.label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-[13px] font-medium text-gray-500">
+                        {new Date(s.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
                           {s.verification_status === "pending" && (
-                            <div className="flex gap-2">
+                            <>
                               <button
                                 onClick={() => handleApprove(s.id)}
                                 disabled={actionLoading === s.id}
-                                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500 text-white text-[13px] font-bold hover:bg-green-600 transition-all shadow-sm disabled:opacity-50"
                               >
-                                {actionLoading === s.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Approve
+                                {actionLoading === s.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve
                               </button>
                               <button
                                 onClick={() => handleReject(s.id)}
                                 disabled={actionLoading === s.id}
-                                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-red-200 text-red-600 text-[13px] font-bold hover:bg-red-50 transition-all shadow-sm disabled:opacity-50"
                               >
-                                <XCircle className="w-3 h-3" /> Reject
+                                <XCircle className="w-4 h-4" /> Reject
                               </button>
-                            </div>
+                            </>
                           )}
                           {s.verification_status === "verified" && (
-                            <span className="text-xs md:text-sm text-[#22C55E] font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Approved</span>
+                            <span className="text-[13px] font-bold text-green-600 flex items-center gap-1">
+                              <CheckCircle2 className="w-4 h-4" /> Approved
+                            </span>
                           )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   );
 }

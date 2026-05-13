@@ -1,6 +1,11 @@
 import { api, getAuthHeaders } from "./api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+let API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+// Proxy localhost requests through Next.js on the client to avoid CORS issues
+if (typeof window !== "undefined" && API_URL.includes("localhost")) {
+  API_URL = "";
+}
 
 export interface ChatSession {
   id: string;

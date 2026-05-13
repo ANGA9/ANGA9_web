@@ -197,7 +197,7 @@ export default function HowItWorksPage() {
           <div className="space-y-4 sm:space-y-6">
             {[
               { q: "How long does registration take?", a: "The registration process takes about 10 minutes. Your account is verified within 24 hours, and you can start listing products immediately after verification." },
-              { q: "Is there a fee to become a seller?", a: "Registration is completely free. ANGA9 charges 0% commission on your sales, making it the most cost-effective marketplace for suppliers in India." },
+              { q: "Is there a fee to become a seller?", a: "Registration is completely free. ANGA9 charges 10% commission on your sales, making it the most cost-effective marketplace for suppliers in India." },
               { q: "How soon can I start receiving orders?", a: "Once your product catalog is uploaded and approved (typically within 72 hours), your products go live and are visible to buyers across India." },
               { q: "What kind of products can I sell?", a: "ANGA9 supports a wide range of product categories including fashion, electronics, home goods, beauty, grocery, and more. All products must meet our quality guidelines." },
               { q: "How does payment work?", a: "Payments are processed on a 7-day cycle from delivery confirmation. Both prepaid and Cash on Delivery order amounts are deposited directly to your registered bank account." },
@@ -220,7 +220,7 @@ export default function HowItWorksPage() {
                 <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
               <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
-                India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.
+                India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 10% commission.
               </p>
             </div>
 

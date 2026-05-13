@@ -281,7 +281,7 @@ export default function GrowBusinessPage() {
                 <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9 Logo" width={130} height={42} unoptimized style={{ objectFit: "contain" }} />
               </Link>
               <p className="mb-8 max-w-sm text-base sm:text-base md:text-lg leading-relaxed text-[#4B5563]">
-                India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 0% commission.
+                India&apos;s leading B2B marketplace connecting suppliers with buyers across the country at 10% commission.
               </p>
             </div>
 

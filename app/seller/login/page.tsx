@@ -485,7 +485,7 @@ export default function SellerLoginPage() {
                 </div>
                 <div className="space-y-4">
                   {[
-                    { label: "0% Commission", desc: "Keep all your profits" },
+                    { label: "10% Commission", desc: "Keep all your profits" },
                     { label: "7-Day Payments", desc: "Fast & reliable payouts" },
                     { label: "Pan-India Reach", desc: "19,000+ serviceable pincodes" },
                   ].map((item) => (

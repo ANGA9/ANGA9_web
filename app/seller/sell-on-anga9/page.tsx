@@ -57,7 +57,7 @@ export default function SellerLandingPage() {
               </span>
               <h1 className="mb-4 sm:mb-6 text-3xl md:text-4xl sm:text-[36px] md:text-5xl lg:text-6xl font-bold leading-[1.15] text-[#1A1A2E]">
                 Sell online to Crores of Customers at{" "}
-                <span className="text-[#1A6FD4]">0% Commission</span>
+                <span className="text-[#1A6FD4]">10% Commission</span>
               </h1>
 
               <p className="mb-5 sm:mb-6 text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed max-w-lg">
@@ -158,7 +158,7 @@ export default function SellerLandingPage() {
                 {
                   icon: IndianRupee,
                   color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
-                  title: "0% Commission Fee",
+                  title: "10% Commission Fee",
                   desc: "Suppliers selling on ANGA9 keep 100% of their profit by not paying any commission at all.",
                 },
                 {
@@ -319,7 +319,7 @@ export default function SellerLandingPage() {
                 name: "Rajesh Kumar",
                 business: "Kumar Electronics, Delhi",
                 quote:
-                  "Within 3 months of joining ANGA9, my wholesale orders tripled. The 0% commission is a game-changer for my margins.",
+                  "Within 3 months of joining ANGA9, my wholesale orders tripled. The 10% commission is a game-changer for my margins.",
                 growth: "3x orders",
                 avatar: cdnUrl("/seller-avatar-1.png"),
                 initials: "RK",
@@ -422,8 +422,7 @@ export default function SellerLandingPage() {
                 />
               </Link>
               <p className="mb-8 max-w-sm text-base md:text-lg leading-relaxed text-[#4B5563]">
-                Sell your products to crores of customers on ANGA9 at 0%
-                commission
+                Sell your products to crores of customers on ANGA9 at 10% commission
               </p>
               <Link
                 href="/seller/login"

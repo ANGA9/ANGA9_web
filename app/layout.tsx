@@ -55,7 +55,7 @@ const rootOrganizationLd = {
   url: "https://anga9.com",
   logo: "https://anga9.com/favicon.ico",
   description:
-    "ANGA9 is India's leading B2B wholesale marketplace connecting verified sellers with retailers across 19,000+ pin codes at 0% commission.",
+    "ANGA9 is India's leading B2B wholesale marketplace connecting verified sellers with retailers across 19,000+ pin codes at 10% commission.",
   sameAs: ["https://seller.anga9.com"],
   contactPoint: {
     "@type": "ContactPoint",

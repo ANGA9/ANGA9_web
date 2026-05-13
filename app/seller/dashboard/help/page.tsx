@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Search,
-  LifeBuoy,
-  Wallet,
-  Box,
-  ShieldCheck,
-  Tag,
-  MessageSquare,
-  FileText,
-  Plus,
-} from "lucide-react";
+import { Search, LifeBuoy, Wallet, Box, ShieldCheck, Tag, MessageSquare, FileText, Plus, ChevronRight } from "lucide-react";
 import { supportApi, type Article } from "@/lib/supportApi";
 
 const TOP_CATEGORIES = [
@@ -39,97 +29,140 @@ export default function SellerHelpPage() {
   }, [q]);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6 md:py-10 text-[#1A1A2E]">
-      <div className="flex items-center gap-2 text-2xl md:text-3xl font-bold">
-        <LifeBuoy className="h-7 w-7 text-[#1A6FD4]" />
-        Seller support
+    <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white md:bg-transparent min-h-[calc(100vh-64px)]">
+      {/* ── Desktop Header ── */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex items-baseline gap-3">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+            Seller Support
+          </h1>
+          <span className="text-[18px] font-bold text-gray-400">
+            Find answers & raise tickets
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-sm font-bold text-gray-500 bg-white border border-gray-200 px-4 py-2 rounded-full shadow-sm">
+          <LifeBuoy className="w-4 h-4 text-[#1A6FD4]" />
+          Seller Portal
+        </div>
       </div>
-      <p className="mt-1 text-sm md:text-base text-[#4B5563]">
-        Find answers, raise tickets, and view admin messages — usually answered within hours.
-      </p>
 
-      <div className="mt-5 relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#9CA3AF]" />
+      {/* ── Search Bar ── */}
+      <div className="relative mb-8 md:mb-10 group">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#1A6FD4] transition-colors" />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search seller help articles…"
-          className="w-full rounded-xl border border-[#D0E3F7] bg-white pl-10 pr-4 py-3 text-sm md:text-base outline-none focus:border-[#1A6FD4]"
+          placeholder="Search seller help articles..."
+          className="w-full rounded-2xl border border-gray-200 bg-white pl-12 pr-4 py-4 text-[15px] font-medium outline-none focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm"
         />
       </div>
 
-      <section className="mt-6">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#9CA3AF] mb-2">Browse by topic</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* ── Categories ── */}
+      <section className="mb-8 md:mb-10">
+        <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">Browse by topic</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {TOP_CATEGORIES.map((c) => (
             <Link
               key={c.label}
               href={`/seller/dashboard/help/tickets/new?category=${encodeURIComponent(c.category)}`}
-              className="flex items-center gap-3 rounded-xl border border-[#E8EEF4] bg-white p-4 hover:bg-[#F8FBFF] transition-colors"
+              className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 hover:shadow-md hover:border-[#1A6FD4]/30 transition-all group cursor-pointer"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: c.bg }}>
-                <c.icon className="h-5 w-5" style={{ color: c.fg }} />
+              <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl group-hover:scale-110 group-active:scale-95 transition-transform shrink-0" style={{ backgroundColor: c.bg }}>
+                <c.icon className="h-5 w-5 md:h-6 md:w-6" style={{ color: c.fg }} />
               </span>
-              <span className="font-semibold text-sm md:text-base">{c.label}</span>
+              <span className="font-bold text-[15px] md:text-[16px] text-gray-900 group-hover:text-[#1A6FD4] transition-colors">{c.label}</span>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mt-6 grid md:grid-cols-2 gap-3">
-        <Link
-          href="/seller/dashboard/help/tickets/new"
-          className="flex items-center justify-between rounded-xl bg-[#1A6FD4] px-5 py-4 text-white hover:opacity-95"
-        >
-          <div>
-            <div className="text-base md:text-lg font-bold">Raise a new ticket</div>
-            <div className="text-xs md:text-sm opacity-90">Reach the seller-support team.</div>
-          </div>
-          <Plus className="h-6 w-6" />
-        </Link>
-        <Link
-          href="/seller/dashboard/help/tickets"
-          className="flex items-center justify-between rounded-xl border border-[#E8EEF4] bg-white px-5 py-4 hover:bg-[#F8FBFF]"
-        >
-          <div>
-            <div className="text-base md:text-lg font-bold">My tickets</div>
-            <div className="text-xs md:text-sm text-[#4B5563]">View ongoing conversations & admin messages.</div>
-          </div>
-          <MessageSquare className="h-6 w-6 text-[#1A6FD4]" />
-        </Link>
-      </section>
+      <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-10 mb-10 md:mb-12">
+        {/* ── Articles (Left Column on Desktop, Bottom on Mobile) ── */}
+        <section className="flex-1 min-w-0">
+          <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">
+            {q ? "Search results" : "Popular articles"}
+          </h2>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="text-[15px] font-bold text-gray-400 animate-pulse flex items-center gap-2">
+                <LifeBuoy className="w-5 h-5 animate-spin" />
+                Loading articles...
+              </div>
+            </div>
+          ) : articles.length === 0 ? (
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-10 md:p-12 text-center flex flex-col items-center justify-center">
+              <Search className="w-10 h-10 text-gray-300 mb-4" />
+              <div className="text-[16px] font-bold text-gray-900 mb-1">
+                {q ? "No articles match your search." : "No articles yet."}
+              </div>
+              <div className="text-[14px] text-gray-500 font-medium">
+                You can still raise a ticket to get help.
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+              <ul className="divide-y divide-gray-100">
+                {articles.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      href={`/seller/dashboard/help/articles/${a.slug}`}
+                      className="flex items-center gap-4 px-5 py-4 md:px-6 md:py-5 hover:bg-gray-50 active:bg-gray-100 transition-colors group cursor-pointer"
+                    >
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:text-[#1A6FD4] transition-colors text-gray-400">
+                        <FileText className="h-5 w-5 md:h-6 md:w-6" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[15px] md:text-[16px] font-bold text-gray-900 truncate group-hover:text-[#1A6FD4] transition-colors leading-tight">
+                          {a.title}
+                        </div>
+                        {a.category && (
+                          <div className="text-[13px] font-medium text-gray-500 mt-1">
+                            {a.category}
+                          </div>
+                        )}
+                      </div>
+                      <div className="shrink-0 text-gray-300 group-hover:text-[#1A6FD4] group-hover:translate-x-1 transition-all">
+                        <ChevronRight className="w-5 h-5" />
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#9CA3AF] mb-2">
-          {q ? "Search results" : "Popular articles"}
-        </h2>
-        {loading ? (
-          <div className="text-sm text-[#9CA3AF]">Loading…</div>
-        ) : articles.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[#E8EEF4] bg-white p-6 text-center text-sm text-[#4B5563]">
-            {q ? "No articles match your search." : "No articles yet — but you can still raise a ticket above."}
-          </div>
-        ) : (
-          <ul className="divide-y divide-[#E8EEF4] rounded-xl border border-[#E8EEF4] bg-white">
-            {articles.map((a) => (
-              <li key={a.id}>
-                <Link
-                  href={`/seller/dashboard/help/articles/${a.slug}`}
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-[#F8FBFF]"
-                >
-                  <FileText className="h-5 w-5 text-[#9CA3AF]" />
-                  <div className="flex-1">
-                    <div className="text-sm md:text-base font-semibold">{a.title}</div>
-                    {a.category && (
-                      <div className="text-xs text-[#9CA3AF]">{a.category}</div>
-                    )}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        {/* ── CTAs (Right Sidebar on Desktop, Top on Mobile) ── */}
+        <section className="md:w-[340px] shrink-0 flex flex-col gap-3 md:gap-4">
+          <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
+            Need more help?
+          </h2>
+          <Link
+            href="/seller/dashboard/help/tickets/new"
+            className="flex items-center gap-4 rounded-2xl bg-[#1A6FD4] p-5 md:p-6 text-white hover:bg-[#155bb5] transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
+              <Plus className="h-6 w-6" />
+            </div>
+            <div>
+              <div className="text-[16px] md:text-[17px] font-bold tracking-tight mb-0.5">Raise a new ticket</div>
+              <div className="text-[13px] text-blue-100 font-medium leading-tight">Reach the seller-support team.</div>
+            </div>
+          </Link>
+          <Link
+            href="/seller/dashboard/help/tickets"
+            className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 md:p-6 hover:shadow-md hover:border-[#1A6FD4]/30 transition-all active:scale-[0.98] group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
+              <MessageSquare className="h-6 w-6 text-[#1A6FD4]" />
+            </div>
+            <div>
+              <div className="text-[16px] md:text-[17px] font-bold text-gray-900 tracking-tight mb-0.5 group-hover:text-[#1A6FD4] transition-colors">My tickets</div>
+              <div className="text-[13px] text-gray-500 font-medium leading-tight">View ongoing conversations & messages.</div>
+            </div>
+          </Link>
+        </section>
+      </div>
     </main>
   );
 }

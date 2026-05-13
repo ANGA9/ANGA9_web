@@ -9,7 +9,7 @@ export default function SellerDashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-[#F8FBFF]" style={{ fontFamily: "var(--font-gilroy)" }}>
       <SellerHeader onMenuToggle={() => setSidebarOpen((v) => !v)} />
       <SellerSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="lg:ml-[220px] min-h-[calc(100vh-56px)] p-4 sm:p-6 lg:p-8">
+      <main className="lg:ml-[260px] min-h-[calc(100vh-72px)] p-4 sm:p-6 lg:p-8">
         {children}
       </main>
     </div>

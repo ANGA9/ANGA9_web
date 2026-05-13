@@ -1,4 +1,4 @@
-import { request } from "./api";
+import { api } from "./api";
 
 export type DisputeType = 'return' | 'refund' | 'wrong_item' | 'damaged' | 'not_received' | 'other';
 export type DisputeStatus = 'open' | 'seller_responded' | 'admin_review' | 'resolved_refund' | 'resolved_replace' | 'resolved_rejected' | 'closed';
@@ -49,12 +49,9 @@ export interface AdminResolveBody {
 export const disputesApi = {
   // Customer
   raiseDispute: (orderId: string, payload: RaiseDisputeBody) =>
-    request<{ dispute: Dispute }>(`/api/orders/${orderId}/dispute`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+    api.post<{ dispute: Dispute }>(`/api/orders/${orderId}/dispute`, payload),
   getDisputesForOrder: (orderId: string) =>
-    request<{ items: Dispute[] }>(`/api/orders/${orderId}/dispute`),
+    api.get<{ items: Dispute[] }>(`/api/orders/${orderId}/dispute`),
 
   // Seller
   sellerList: (params?: { page?: number; limit?: number; status?: DisputeStatus }) => {
@@ -62,13 +59,10 @@ export const disputesApi = {
     if (params?.page) q.set("page", String(params.page));
     if (params?.limit) q.set("limit", String(params.limit));
     if (params?.status) q.set("status", params.status);
-    return request<DisputeListResponse>(`/api/seller/orders/disputes?${q.toString()}`);
+    return api.get<DisputeListResponse>(`/api/seller/orders/disputes?${q.toString()}`);
   },
   sellerRespond: (orderId: string, disputeId: string, payload: SellerRespondBody) =>
-    request<{ dispute: Dispute }>(`/api/orders/${orderId}/dispute/${disputeId}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    }),
+    api.patch<{ dispute: Dispute }>(`/api/orders/${orderId}/dispute/${disputeId}`, payload),
 
   // Admin
   adminList: (params?: { page?: number; limit?: number; status?: DisputeStatus }) => {
@@ -76,11 +70,8 @@ export const disputesApi = {
     if (params?.page) q.set("page", String(params.page));
     if (params?.limit) q.set("limit", String(params.limit));
     if (params?.status) q.set("status", params.status);
-    return request<DisputeListResponse>(`/api/admin/orders/disputes?${q.toString()}`);
+    return api.get<DisputeListResponse>(`/api/admin/orders/disputes?${q.toString()}`);
   },
   adminResolve: (disputeId: string, payload: AdminResolveBody) =>
-    request<{ dispute: Dispute }>(`/api/admin/orders/disputes/${disputeId}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    }),
+    api.patch<{ dispute: Dispute }>(`/api/admin/orders/disputes/${disputeId}`, payload),
 };

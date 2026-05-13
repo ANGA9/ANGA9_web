@@ -2,14 +2,11 @@
 import { useState, useEffect, use } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, CheckCircle2, ChevronDown } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, LayoutList, IndianRupee, FileText } from "lucide-react";
 import Link from "next/link";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
-const labelCls = "block text-sm md:text-base font-medium text-[#4B5563] mb-1.5";
-const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors";
-const UNIT_OPTIONS = ["pc", "kg", "g", "L", "mL", "box", "set", "pair", "dozen", "pack", "roll", "meter"];
+const UNIT_OPTIONS = ["piece", "set", "box", "pack", "roll", "kg", "g", "L", "mL", "pair", "dozen", "meter"];
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -17,7 +14,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const [form, setForm] = useState({
     name: "", description: "", base_price: "", sale_price: "",
-    min_order_qty: "1", category_id: "", unit: "pc",
+    min_order_qty: "1", category_id: "", unit: "piece",
     tags: "", hsn_code: "",
   });
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
@@ -47,7 +44,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             sale_price: product.sale_price ? String(product.sale_price) : "",
             min_order_qty: String(product.min_order_qty || 1),
             category_id: product.category_id || "",
-            unit: product.unit || "pc",
+            unit: product.unit || "piece",
             tags: Array.isArray(product.tags) ? product.tags.join(", ") : (product.tags || ""),
             hsn_code: product.hsn_code || "",
           });
@@ -64,8 +61,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     setErrors([]);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(e?: React.FormEvent) {
+    if (e) e.preventDefault();
     const errs: string[] = [];
     if (!form.name.trim() || form.name.length < 3) errs.push("Product name must be at least 3 characters");
     if (!form.description.trim() || form.description.length < 10) errs.push("Description must be at least 10 characters");
@@ -79,6 +76,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     if (form.hsn_code && !/^\d{4,8}$/.test(form.hsn_code)) errs.push("HSN code must be 4-8 digits");
     if (errs.length) {
       setErrors(errs);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -114,107 +112,189 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       } else {
         const d = await res.json().catch(() => ({}));
         setErrors([d.error || "Failed to update product"]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch {
       setErrors(["Network error"]);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
     setSubmitting(false);
   }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" />
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-400">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1A6FD4] mb-4" />
+        <span className="text-[15px] font-medium">Loading product...</span>
       </div>
     );
   }
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto mt-16 text-center">
-        <CheckCircle2 className="w-14 h-14 text-[#22C55E] mx-auto mb-4" />
-        <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2">Product Updated!</h1>
-        <p className="text-sm md:text-base text-[#4B5563]">Your changes have been saved. Redirecting...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center max-w-md mx-auto">
+        <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-10 h-10 text-green-600" />
+        </div>
+        <h1 className="text-[24px] font-bold text-gray-900 mb-3">Product Updated!</h1>
+        <p className="text-[15px] text-gray-500 font-medium leading-relaxed">
+          Your changes have been saved successfully. Redirecting back to products...
+        </p>
       </div>
     );
   }
 
+  const labelCls = "block text-[14px] font-bold text-gray-700 mb-1.5";
+  const inputCls = "w-full rounded-2xl border border-gray-200 bg-gray-50/50 px-4 py-3.5 text-[15px] font-medium text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm placeholder:text-gray-400";
+
   return (
-    <div className="max-w-[580px]">
-      <Link href="/seller/dashboard/products" className="inline-flex items-center gap-1 text-sm md:text-base text-[#1A6FD4] font-medium hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Back to Products
+    <main className="w-full mx-auto max-w-6xl px-3 sm:px-4 py-6 md:px-8 md:py-10 text-[#1A1A2E]">
+      
+      <Link href="/seller/dashboard/products" className="inline-flex items-center gap-1.5 text-[14px] font-bold text-gray-500 hover:text-[#1A6FD4] transition-colors mb-6 group">
+        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Products
       </Link>
-      <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">Edit Product</h1>
-      <p className="text-sm md:text-base text-[#9CA3AF] mb-6">Update your product details below</p>
+
+      {/* ── Desktop Header ── */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Edit Product</h1>
+          <p className="text-[15px] text-gray-500 font-medium">Update your product details below.</p>
+        </div>
+      </div>
+
+      {/* ── Mobile Header ── */}
+      <div className="md:hidden flex flex-col gap-1 mb-6">
+        <h1 className="text-[24px] font-bold tracking-tight text-gray-900">Edit Product</h1>
+        <p className="text-[14px] text-gray-500 font-medium">Update your product details.</p>
+      </div>
 
       {errors.length > 0 && (
-        <div className="mb-5 rounded-lg bg-red-50 border border-red-100 px-4 py-3">
-          {errors.map((e, i) => (
-            <p key={i} className="text-sm md:text-base text-red-600">{e}</p>
-          ))}
+        <div className="mb-8 rounded-2xl bg-red-50 border border-red-200 p-5 shadow-sm">
+          <h3 className="text-[15px] font-bold text-red-800 mb-2">Please fix the following errors:</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            {errors.map((e, i) => <li key={i} className="text-[14px] font-medium text-red-600">{e}</li>)}
+          </ul>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-[#E8EEF4] p-6 space-y-5">
-        <div>
-          <label className={labelCls}>Product Name *</label>
-          <input className={inputCls} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Organic Basmati Rice" maxLength={200} />
-        </div>
-        <div>
-          <label className={labelCls}>Description *</label>
-          <textarea className={inputCls + " h-28 py-3 resize-none"} value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Describe your product in detail (min 10 chars)" maxLength={2000} />
-        </div>
-        <div>
-          <label className={labelCls}>Category *</label>
-          <div className="relative">
-            <select className={inputCls + " appearance-none cursor-pointer"} value={form.category_id} onChange={(e) => set("category_id", e.target.value)} required>
-              <option value="">Select a category</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+        <div className="flex-1 max-w-4xl space-y-6 md:space-y-8">
+          
+          {/* ── Basic Info ── */}
+          <section className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm space-y-5">
+            <h2 className="text-[18px] font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <LayoutList className="w-5 h-5 text-[#1A6FD4]" /> Basic Details
+            </h2>
+            <div>
+              <label className={labelCls}>Product Name <span className="text-red-500">*</span></label>
+              <input className={inputCls} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Organic Basmati Rice" maxLength={200} />
+            </div>
+            <div>
+              <label className={labelCls}>Description <span className="text-red-500">*</span></label>
+              <textarea className={inputCls + " h-32 py-4 resize-y"} value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Describe your product in detail..." maxLength={2000} />
+            </div>
+            <div>
+              <label className={labelCls}>Category <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <select className={inputCls + " appearance-none cursor-pointer pr-10"} value={form.category_id} onChange={(e) => set("category_id", e.target.value)} required>
+                  <option value="">Select a category</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+          </section>
+
+          {/* ── Pricing & Inventory ── */}
+          <section className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm space-y-5">
+            <h2 className="text-[18px] font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <IndianRupee className="w-5 h-5 text-[#1A6FD4]" /> Pricing & Inventory
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className={labelCls}>Base Price (₹) <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
+                  <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.base_price} onChange={(e) => set("base_price", e.target.value)} placeholder="0.00" />
+                </div>
+              </div>
+              <div>
+                <label className={labelCls}>Sale Price (₹) <span className="text-gray-400 font-medium ml-1">(Optional)</span></label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
+                  <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder="0.00" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+              <div>
+                <label className={labelCls}>Min Order Qty <span className="text-red-500">*</span></label>
+                <input className={inputCls} type="number" min="1" value={form.min_order_qty} onChange={(e) => set("min_order_qty", e.target.value)} placeholder="1" />
+              </div>
+              <div>
+                <label className={labelCls}>Unit</label>
+                <div className="relative">
+                  <select className={inputCls + " appearance-none cursor-pointer pr-10"} value={form.unit} onChange={(e) => set("unit", e.target.value)}>
+                    {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Tags & HSN ── */}
+          <section className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm space-y-5">
+            <h2 className="text-[18px] font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[#1A6FD4]" /> Tags & HSN
+            </h2>
+            <div>
+              <label className={labelCls}>Search Tags</label>
+              <input className={inputCls} value={form.tags} onChange={(e) => set("tags", e.target.value)} placeholder="organic, premium, bulk (comma separated)" />
+              <p className="text-[13px] text-gray-400 font-medium mt-1.5">Up to 20 tags to help buyers find your product.</p>
+            </div>
+            <div className="pt-2">
+              <label className={labelCls}>HSN Code</label>
+              <input className={inputCls} value={form.hsn_code} onChange={(e) => set("hsn_code", e.target.value.replace(/\D/g, "").slice(0, 8))} placeholder="e.g. 1006" maxLength={8} />
+            </div>
+          </section>
+
+          {/* ── Mobile Save Button ── */}
+          <div className="lg:hidden pb-10 pt-4">
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-8 py-4 text-[16px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+            >
+              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
+              {submitting ? "Saving..." : "Save Changes"}
+            </button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>Base Price (₹) *</label>
-            <input className={inputCls} type="number" step="0.01" min="0" value={form.base_price} onChange={(e) => set("base_price", e.target.value)} placeholder="0.00" />
-          </div>
-          <div>
-            <label className={labelCls}>Sale Price (₹)</label>
-            <input className={inputCls} type="number" step="0.01" min="0" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder="Optional" />
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className={labelCls}>Min Order Qty *</label>
-            <input className={inputCls} type="number" min="1" value={form.min_order_qty} onChange={(e) => set("min_order_qty", e.target.value)} placeholder="1" />
-          </div>
-          <div>
-            <label className={labelCls}>Unit</label>
-            <div className="relative">
-              <select className={inputCls + " appearance-none cursor-pointer"} value={form.unit} onChange={(e) => set("unit", e.target.value)}>
-                {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+
+        {/* ── Desktop Sidebar (Sticky) ── */}
+        <div className="hidden lg:block w-[320px] shrink-0">
+          <div className="sticky top-[104px] flex flex-col gap-5">
+            <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-[16px] font-bold text-gray-900 mb-2">Save Updates</h3>
+              <p className="text-[13px] text-gray-500 font-medium mb-6 leading-relaxed">
+                Changes made to the product details will be reflected immediately across the marketplace if the product is active.
+              </p>
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+              >
+                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
+                {submitting ? "Saving..." : "Save Changes"}
+              </button>
             </div>
           </div>
-          <div>
-            <label className={labelCls}>HSN Code</label>
-            <input className={inputCls} value={form.hsn_code} onChange={(e) => set("hsn_code", e.target.value.replace(/\D/g, "").slice(0, 8))} placeholder="e.g. 1006" maxLength={8} />
-          </div>
         </div>
-        <div>
-          <label className={labelCls}>Tags</label>
-          <input className={inputCls} value={form.tags} onChange={(e) => set("tags", e.target.value)} placeholder="Comma-separated, e.g. organic, premium, bulk" />
-          <p className="text-xs text-[#9CA3AF] mt-1">Up to 20 tags, separated by commas</p>
-        </div>
-        <button type="submit" disabled={submitting} className="w-full h-11 bg-[#4338CA] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-[#3730A3] transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-          {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-          Save Changes
-        </button>
-      </form>
-    </div>
+      </div>
+    </main>
   );
 }

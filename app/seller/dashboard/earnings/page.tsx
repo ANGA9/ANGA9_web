@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, IndianRupee, Clock, CheckCircle2, Wallet, ArrowRight, FileText } from "lucide-react";
+import { Loader2, IndianRupee, Clock, CheckCircle2, Wallet, ArrowRight, FileText, TrendingUp, ChevronLeft, ChevronRight, PackageOpen } from "lucide-react";
 import Link from "next/link";
 
 interface EarningSummary {
@@ -18,18 +18,18 @@ interface EarningRecord {
   amount: number;
   status: string;
   created_at: string;
-  order_items?: { product_name: string; quantity: number; order_id?: string };
+  order_items?: { product_name: string; quantity: number; order_id?: string; product_image?: string };
 }
 
 function formatINR(v: number) {
   return "\u20B9" + v.toLocaleString("en-IN");
 }
 
-const statusCfg: Record<string, { bg: string; text: string; label: string }> = {
-  pending: { bg: "#FFFBEB", text: "#F59E0B", label: "Pending" },
-  available: { bg: "#F0FDF4", text: "#22C55E", label: "Available" },
-  requested: { bg: "#EDE9FE", text: "#6C47FF", label: "Payout Requested" },
-  paid: { bg: "#EAF2FF", text: "#1A6FD4", label: "Paid" },
+const statusCfg: Record<string, { bg: string; text: string; label: string; border: string }> = {
+  pending: { bg: "bg-yellow-50", text: "text-yellow-700", border: "border-yellow-200", label: "Pending" },
+  available: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200", label: "Available" },
+  requested: { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200", label: "Payout Requested" },
+  paid: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", label: "Paid" },
 };
 
 export default function EarningsPage() {
@@ -54,103 +54,187 @@ export default function EarningsPage() {
     })();
   }, [page]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1A6FD4]" />
-      </div>
-    );
-  }
-
   const cards = [
-    { label: "Total Earnings", value: summary?.total || 0, icon: <IndianRupee className="w-5 h-5 text-[#22C55E]" />, bg: "bg-[#F0FDF4]" },
-    { label: "Pending", value: summary?.pending || 0, icon: <Clock className="w-5 h-5 text-[#F59E0B]" />, bg: "bg-[#FFFBEB]" },
-    { label: "Available", value: summary?.available || 0, icon: <Wallet className="w-5 h-5 text-[#1A6FD4]" />, bg: "bg-[#EAF2FF]" },
-    { label: "Payout Requested", value: summary?.requested || 0, icon: <FileText className="w-5 h-5 text-[#6C47FF]" />, bg: "bg-[#EDE9FE]" },
-    { label: "Paid Out", value: summary?.paid || 0, icon: <CheckCircle2 className="w-5 h-5 text-[#22C55E]" />, bg: "bg-[#F0FDF4]" },
+    { label: "Total Earnings", value: summary?.total || 0, icon: <TrendingUp className="w-6 h-6" />, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
+    { label: "Pending Clearance", value: summary?.pending || 0, icon: <Clock className="w-6 h-6" />, color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-100" },
+    { label: "Available to Withdraw", value: summary?.available || 0, icon: <Wallet className="w-6 h-6" />, color: "text-green-600", bg: "bg-green-50", border: "border-green-100" },
+    { label: "Payout Requested", value: summary?.requested || 0, icon: <FileText className="w-6 h-6" />, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100" },
+    { label: "Successfully Paid", value: summary?.paid || 0, icon: <CheckCircle2 className="w-6 h-6" />, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-100" },
   ];
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Earnings</h1>
-          <p className="text-sm text-[#9CA3AF]">Track your revenue and earnings</p>
+    <main className="w-full mx-auto max-w-7xl px-3 sm:px-4 py-6 md:px-8 md:py-10 text-[#1A1A2E]">
+      
+      {/* ── Desktop Header ── */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Earnings</h1>
+          <p className="text-[15px] text-gray-500 font-medium">Track your revenue, pending balances, and total earnings.</p>
         </div>
         <Link
           href="/seller/dashboard/payouts"
-          className="flex items-center gap-2 h-10 px-5 bg-[#1A6FD4] text-white text-sm font-semibold rounded-lg hover:bg-[#155bb5] transition-colors"
+          className="flex items-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-[0.98]"
         >
-          View Payouts <ArrowRight className="w-4 h-4" />
+          Manage Payouts <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        {cards.map((c) => (
-          <div key={c.label} className="bg-white rounded-xl border border-[#E8EEF4] p-5 flex items-center gap-4">
-            <div className={`w-11 h-11 rounded-lg flex items-center justify-center ${c.bg}`}>{c.icon}</div>
-            <div>
-              <p className="text-xl font-bold text-[#1A1A2E]">{formatINR(c.value)}</p>
-              <p className="text-xs text-[#9CA3AF] font-medium">{c.label}</p>
-            </div>
-          </div>
-        ))}
+      {/* ── Mobile Header ── */}
+      <div className="md:hidden flex flex-col gap-4 mb-8">
+        <div>
+          <h1 className="text-[24px] font-bold tracking-tight text-gray-900">Earnings</h1>
+          <p className="text-[14px] text-gray-500 font-medium mt-1">Track your revenue and balances.</p>
+        </div>
+        <Link
+          href="/seller/dashboard/payouts"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl shadow-md"
+        >
+          Manage Payouts <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#E8EEF4] overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E8EEF4]">
-          <h2 className="text-base font-bold text-[#1A1A2E]">Earnings History</h2>
+      {/* ── Metric Cards ── */}
+      {loading && !summary ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="bg-white rounded-3xl border border-gray-100 p-6 h-36 animate-pulse" />
+          ))}
         </div>
-        {history.length === 0 ? (
-          <div className="p-8 text-center">
-            <IndianRupee className="w-10 h-10 mx-auto mb-2 text-[#E8EEF4]" />
-            <p className="text-sm text-[#9CA3AF]">No earnings yet</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+          {cards.map((c) => (
+            <div key={c.label} className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className={`absolute top-0 right-0 w-24 h-24 ${c.bg} rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110`} />
+              
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 relative z-10 ${c.bg} ${c.color} border ${c.border}`}>
+                {c.icon}
+              </div>
+              <div className="relative z-10">
+                <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(c.value)}</p>
+                <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">{c.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Earnings History Table ── */}
+      <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <h2 className="text-[18px] font-bold text-gray-900">Recent Earnings History</h2>
+        </div>
+        
+        {loading && history.length === 0 ? (
+          <div className="py-20 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-[#1A6FD4]" />
+          </div>
+        ) : history.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
+              <IndianRupee className="w-8 h-8 text-gray-300" />
+            </div>
+            <h3 className="text-[18px] font-bold text-gray-900 mb-2">No earnings yet</h3>
+            <p className="text-[14px] font-medium text-gray-500 max-w-sm">
+              Your earnings will appear here once you start processing and delivering orders.
+            </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#F8FBFF] border-b border-[#E8EEF4]">
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Product</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Qty</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Amount</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Status</th>
-                  <th className="text-left px-5 py-3 font-semibold text-[#4B5563]">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((e) => {
-                  const sc = statusCfg[e.status] || statusCfg.pending;
-                  return (
-                    <tr key={e.id} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FBFF]">
-                      <td className="px-5 py-3 text-[#1A1A2E] font-medium">{e.order_items?.product_name || "Order earning"}</td>
-                      <td className="px-5 py-3 text-[#4B5563]">{e.order_items?.quantity ?? "—"}</td>
-                      <td className="px-5 py-3 font-bold text-[#1A1A2E]">{formatINR(Number(e.amount))}</td>
-                      <td className="px-5 py-3">
-                        <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: sc.bg, color: sc.text }}>
-                          {sc.label}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3 text-[#9CA3AF]">{new Date(e.created_at).toLocaleDateString()}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 p-4 border-t border-[#E8EEF4]">
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 rounded-lg border text-sm font-medium disabled:opacity-40" style={{ borderColor: "#E8EEF4" }}>
-              Prev
-            </button>
-            <span className="text-sm text-[#4B5563]">Page {page} of {totalPages}</span>
-            <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-3 py-1.5 rounded-lg border text-sm font-medium disabled:opacity-40" style={{ borderColor: "#E8EEF4" }}>
-              Next
-            </button>
-          </div>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="bg-gray-50/80 border-b border-gray-200">
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[40%]">Product / Source</th>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Qty</th>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {history.map((e) => {
+                    const sc = statusCfg[e.status] || statusCfg.pending;
+                    return (
+                      <tr key={e.id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                              {e.order_items?.product_image ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={e.order_items.product_image} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <PackageOpen className="w-4 h-4 text-gray-400" />
+                              )}
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="font-bold text-[14px] text-gray-900 truncate">
+                                {e.order_items?.product_name || "Order earning"}
+                              </span>
+                              {e.order_items?.order_id && (
+                                <span className="text-[12px] font-medium text-gray-400 mt-0.5 font-mono">
+                                  Ord: {e.order_items.order_id.split('-')[0]}...
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className="text-[14px] font-bold text-gray-600">
+                            {e.order_items?.quantity ? `×${e.order_items.quantity}` : "—"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className="font-bold text-[15px] text-gray-900">
+                            {formatINR(Number(e.amount))}
+                          </span>
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide ${sc.bg} ${sc.text} ${sc.border}`}>
+                            {sc.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-5 text-right">
+                          <span className="text-[13px] font-medium text-gray-500">
+                            {new Date(e.created_at).toLocaleDateString("en-IN", {
+                              day: "numeric", month: "short", year: "numeric",
+                            })}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* ── Pagination ── */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50/50">
+                <p className="text-[14px] font-medium text-gray-500 hidden sm:block">
+                  Page <span className="font-bold text-gray-900">{page}</span> of <span className="font-bold text-gray-900">{totalPages}</span>
+                </p>
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 transition-all active:scale-[0.98] shadow-sm"
+                  >
+                    <ChevronLeft className="w-4 h-4" /> Prev
+                  </button>
+                  <span className="text-[14px] font-bold text-gray-900 sm:hidden">{page} / {totalPages}</span>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 transition-all active:scale-[0.98] shadow-sm"
+                  >
+                    Next <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
-    </div>
+    </main>
   );
 }

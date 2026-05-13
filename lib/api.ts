@@ -14,7 +14,7 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
   silent?: boolean;
 }
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
+export async function getAuthHeaders(): Promise<Record<string, string>> {
   // If in admin portal AND actually on an admin page, send bypass token
   if (
     typeof window !== 'undefined' &&

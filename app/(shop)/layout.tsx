@@ -12,6 +12,7 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import ChatWidget from "@/components/chatbot/ChatWidget";
 
 export default function CustomerShopLayout({
   children,
@@ -83,6 +84,11 @@ export default function CustomerShopLayout({
 
             {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
             {!isCheckout && <MobileBottomNav />}
+
+            {/* ══════════ CHAT WIDGET ══════════ */}
+            <div className="hidden md:block">
+              <ChatWidget surface="customer" />
+            </div>
 
             {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
             <LoginSheet />

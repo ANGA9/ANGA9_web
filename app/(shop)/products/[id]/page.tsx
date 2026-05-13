@@ -16,6 +16,7 @@ import { useLoginSheet } from "@/lib/LoginSheetContext";
 import toast from "react-hot-toast";
 import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
+import ProductReviews from "@/components/customer/ProductReviews";
 
 interface ProductVariant {
   id: string;
@@ -632,6 +633,11 @@ export default function ProductDetailPage() {
             Buy Now
           </button>
         </div>
+      </div>
+
+      {/* ══════════ REVIEWS ══════════ */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6">
+        <ProductReviews productId={product.id} />
       </div>
 
       {/* ══════════ RECENTLY VIEWED ══════════ */}

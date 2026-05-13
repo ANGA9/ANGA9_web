@@ -94,118 +94,133 @@ export default function AdminReportsPage() {
     setExporting(false);
   };
 
-  const inputClass =
-    "h-10 rounded-lg border border-[#E8EEF4] bg-white px-3 text-sm focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10";
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <BarChart3 className="w-6 h-6 text-[#1A6FD4]" />
-          <h1 className="text-xl font-bold text-[#1A1A2E]">Reports</h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Business Reports</h1>
+          <p className="text-[15px] text-gray-500 font-medium">Export and analyze platform performance</p>
         </div>
-        <button
-          onClick={handleExport}
-          disabled={exporting || loading}
-          className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-          style={{ background: "#1A6FD4" }}
-        >
-          {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-          Export CSV
-        </button>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+          {tab !== "inventory" && (
+            <div className="flex items-center gap-2 p-1 bg-white border border-gray-200 rounded-2xl shadow-sm w-full sm:w-auto">
+              <input
+                type="date"
+                value={dateRange.from}
+                onChange={(e) => setDateRange((d) => ({ ...d, from: e.target.value }))}
+                className="h-9 w-full sm:w-auto px-3 bg-transparent text-[13px] font-bold text-gray-700 outline-none"
+              />
+              <span className="text-gray-300">-</span>
+              <input
+                type="date"
+                value={dateRange.to}
+                onChange={(e) => setDateRange((d) => ({ ...d, to: e.target.value }))}
+                className="h-9 w-full sm:w-auto px-3 bg-transparent text-[13px] font-bold text-gray-700 outline-none"
+              />
+            </div>
+          )}
+
+          <button
+            onClick={handleExport}
+            disabled={exporting || loading || !report || report.data.length === 0}
+            className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] transition-colors shadow-sm disabled:opacity-50"
+          >
+            {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            Export CSV
+          </button>
+        </div>
       </div>
 
-      {/* Date range + tabs */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex gap-2">
-          {TABS.map((t) => (
+      {/* Tabs */}
+      <div className="flex items-center gap-1 p-1 bg-white border border-gray-200 rounded-2xl shadow-sm mb-6 w-full sm:w-max overflow-x-auto no-scrollbar">
+        {TABS.map((t) => {
+          const active = tab === t.key;
+          return (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-              style={{
-                background: tab === t.key ? "#1A6FD4" : "#F3F4F6",
-                color: tab === t.key ? "#FFFFFF" : "#4B5563",
-              }}
+              className={`whitespace-nowrap flex items-center gap-1.5 px-4 py-2 rounded-xl text-[14px] font-bold transition-all ${
+                active
+                  ? "bg-[#8B5CF6] text-white shadow-md shadow-purple-500/20"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`}
             >
               <t.icon className="w-4 h-4" />
               {t.label}
             </button>
-          ))}
-        </div>
-        {tab !== "inventory" && (
-          <div className="flex items-center gap-2 ml-auto">
-            <input
-              type="date"
-              className={inputClass}
-              value={dateRange.from}
-              onChange={(e) => setDateRange((d) => ({ ...d, from: e.target.value }))}
-            />
-            <span className="text-sm text-[#9CA3AF]">to</span>
-            <input
-              type="date"
-              className={inputClass}
-              value={dateRange.to}
-              onChange={(e) => setDateRange((d) => ({ ...d, to: e.target.value }))}
-            />
-          </div>
-        )}
+          );
+        })}
       </div>
 
+      {/* ── Content ── */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-10 h-10 animate-spin text-[#8B5CF6]" />
         </div>
       ) : !report ? (
-        <div className="text-center py-16">
-          <BarChart3 className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-          <p className="text-sm text-[#9CA3AF]">No report data available</p>
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center justify-center min-h-[400px]">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <BarChart3 className="w-10 h-10 text-gray-300" />
+          </div>
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Data Available</h2>
+          <p className="text-[15px] text-gray-500 font-medium">There is no report data for the selected criteria.</p>
         </div>
       ) : (
-        <>
+        <div className="space-y-6">
           {/* Summary Cards */}
           {tab === "sales" && <SalesSummaryCards summary={report.summary as SalesSummary} />}
           {tab === "inventory" && <InventorySummaryCards summary={report.summary as InventorySummary} />}
           {tab === "payouts" && <PayoutsSummaryCards summary={report.summary as PayoutsSummary} />}
 
           {/* Data Table */}
-          {report.data.length > 0 && (
-            <div className="rounded-xl border border-[#E8EEF4] bg-white overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[#E8EEF4] bg-[#F8FAFC]">
-                    {Object.keys(report.data[0]).map((key) => (
-                      <th key={key} className="text-left px-5 py-3 font-semibold text-[#4B5563] capitalize">
-                        {key.replace(/_/g, " ")}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.data.slice(0, 50).map((row, i) => (
-                    <tr key={i} className="border-b border-[#E8EEF4] last:border-0 hover:bg-[#F8FAFC]">
-                      {Object.entries(row).map(([key, val], j) => (
-                        <td key={j} className="px-5 py-3 text-[#1A1A2E]">
-                          {key.includes("amount") || key === "total_amount"
-                            ? formatINR(Number(val || 0))
-                            : key.includes("_at") || key === "created_at"
-                            ? new Date(String(val)).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
-                            : String(val ?? "—")}
-                        </td>
+          {report.data.length > 0 ? (
+            <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-gray-50/50 border-b border-gray-100">
+                      {Object.keys(report.data[0]).map((key) => (
+                        <th key={key} className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">
+                          {key.replace(/_/g, " ")}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {report.data.slice(0, 50).map((row, i) => (
+                      <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                        {Object.entries(row).map(([key, val], j) => (
+                          <td key={j} className={`px-6 py-4 ${key.includes("amount") || key === "total_amount" ? 'font-black text-gray-900 text-[15px]' : 'text-[14px] font-medium text-gray-600'}`}>
+                            {key.includes("amount") || key === "total_amount"
+                              ? formatINR(Number(val || 0))
+                              : key.includes("_at") || key === "created_at"
+                              ? new Date(String(val)).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+                              : String(val ?? "—")}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               {report.data.length > 50 && (
-                <div className="px-5 py-3 text-center text-xs text-[#9CA3AF] border-t border-[#E8EEF4]">
-                  Showing 50 of {report.data.length} rows. Export CSV for full data.
+                <div className="px-6 py-4 text-center text-[13px] font-medium text-gray-500 bg-gray-50/50 border-t border-gray-100">
+                  Showing 50 of {report.data.length} rows. Export CSV for the complete dataset.
                 </div>
               )}
             </div>
+          ) : (
+             <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+               <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                 <BarChart3 className="w-10 h-10 text-gray-300" />
+               </div>
+               <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Records Found</h2>
+               <p className="text-[15px] text-gray-500 font-medium">The exported report is empty.</p>
+             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );
@@ -213,17 +228,18 @@ export default function AdminReportsPage() {
 
 function SummaryCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-[#E8EEF4] bg-white p-5">
-      <p className="text-xs font-medium text-[#9CA3AF] mb-1">{label}</p>
-      <p className="text-2xl font-bold text-[#1A1A2E]">{value}</p>
-      {sub && <p className="text-xs text-[#4B5563] mt-1">{sub}</p>}
+    <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+      <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-[#8B5CF6]/5 group-hover:scale-150 transition-transform duration-500 ease-out" />
+      <p className="text-[13px] font-bold text-gray-400 uppercase tracking-wider mb-2 relative z-10">{label}</p>
+      <p className="text-[32px] font-medium text-gray-900 tracking-tight relative z-10">{value}</p>
+      {sub && <p className="text-[13px] font-medium text-gray-500 mt-1 relative z-10">{sub}</p>}
     </div>
   );
 }
 
 function SalesSummaryCards({ summary }: { summary: SalesSummary }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       <SummaryCard label="Total Revenue" value={formatINR(summary.totalRevenue)} />
       <SummaryCard label="Total Orders" value={String(summary.totalOrders)} />
       <SummaryCard label="Completed" value={String(summary.completedOrders)} />
@@ -234,7 +250,7 @@ function SalesSummaryCards({ summary }: { summary: SalesSummary }) {
 
 function InventorySummaryCards({ summary }: { summary: InventorySummary }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <SummaryCard label="Total Products" value={String(summary.totalProducts)} />
       <SummaryCard label="Out of Stock" value={String(summary.outOfStock)} />
       <SummaryCard label="Low Stock (≤10)" value={String(summary.lowStock)} />
@@ -244,7 +260,7 @@ function InventorySummaryCards({ summary }: { summary: InventorySummary }) {
 
 function PayoutsSummaryCards({ summary }: { summary: PayoutsSummary }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       <SummaryCard label="Total Payouts" value={String(summary.totalPayouts)} />
       <SummaryCard label="Total Amount" value={formatINR(summary.totalAmount)} />
       <SummaryCard label="Pending" value={formatINR(summary.pendingAmount)} />

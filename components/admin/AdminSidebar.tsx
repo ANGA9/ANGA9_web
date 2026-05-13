@@ -15,7 +15,8 @@ import {
   X,
   AlertTriangle,
   Megaphone,
-  ShieldCheck
+  ShieldCheck,
+  Bot
 } from "lucide-react";
 
 const NAV = [
@@ -30,6 +31,7 @@ const NAV = [
   { label: "Payouts", href: "/admin/payouts", icon: Wallet },
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
+  { label: "Chatbot", href: "/admin/chatbot", icon: Bot },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

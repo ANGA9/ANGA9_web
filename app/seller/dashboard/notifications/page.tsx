@@ -102,7 +102,7 @@ function getNotificationStyle(type: string): IconStyle {
     case "support.ticket.sla_breached":
       return { Icon: AlertCircle, bg: "#FEE2E2", fg: "#DC2626" };
     default:
-      return { Icon: AlertCircle, bg: "#F1F5F9", fg: "#475569" };
+      return { Icon: AlertCircle, bg: "#F3F4F6", fg: "#6B7280" };
   }
 }
 
@@ -220,50 +220,50 @@ export default function SellerNotificationsPage() {
       <div
         key={n.id}
         onClick={() => { if (!n.read) markAsRead(n.id); }}
-        className="relative flex gap-3 px-4 py-4 border-b border-[#E8EEF4] last:border-b-0 hover:bg-[#F8FBFF] group transition-colors cursor-pointer"
+        className="relative flex gap-4 px-5 py-5 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 group transition-colors cursor-pointer"
         style={{
-          background: n.read ? "transparent" : "rgba(26,111,212,0.06)",
+          background: n.read ? "transparent" : "#F8FBFF",
           borderLeft: n.read ? "4px solid transparent" : "4px solid #1A6FD4",
-          paddingLeft: opts.isGrouped ? 24 : undefined,
+          paddingLeft: opts.isGrouped ? 28 : undefined,
         }}
       >
         <div
-          className="flex items-center justify-center w-10 h-10 rounded-full shrink-0"
+          className="flex items-center justify-center w-12 h-12 rounded-2xl shrink-0"
           style={{ background: bg }}
         >
           <Icon className="w-5 h-5" style={{ color: fg }} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <p className={`text-sm md:text-base leading-tight text-[#1A1A2E] ${n.read ? "" : "font-semibold"}`}>
+          <div className="flex items-start justify-between gap-3">
+            <h3 className={`text-[15px] md:text-[16px] leading-tight text-gray-900 ${n.read ? "font-medium" : "font-bold"}`}>
               {n.title}
-            </p>
-            {!n.read && <span className="w-2 h-2 rounded-full shrink-0 mt-1.5 bg-[#1A6FD4]" />}
+            </h3>
+            {!n.read && <span className="w-2.5 h-2.5 rounded-full shrink-0 mt-1 bg-[#1A6FD4]" />}
           </div>
-          <p className="text-sm md:text-base mt-1 text-[#4B5563]">{n.body}</p>
-          <div className="flex items-center flex-wrap gap-x-3 gap-y-2 mt-2">
-            <span className="text-xs md:text-sm text-[#9CA3AF]">{timeAgo(n.sent_at)}</span>
+          <p className="text-[14px] mt-1 text-gray-500 leading-relaxed">{n.body}</p>
+          <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-3">
+            <span className="text-[13px] font-medium text-gray-400">{timeAgo(n.sent_at)}</span>
             {opts.showLink && orderHref && (
               <Link
                 href={orderHref}
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1 text-xs md:text-sm font-semibold text-[#1A6FD4] hover:underline"
+                className="flex items-center gap-1 text-[13px] font-bold text-[#1A6FD4] hover:text-[#155bb5] transition-colors"
               >
-                View Order
+                View Details
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
             {!n.read && (
               <button
                 onClick={(e) => { e.stopPropagation(); markAsRead(n.id); }}
-                className="flex items-center gap-1 text-xs md:text-sm font-medium text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity"
+                className="flex items-center gap-1 text-[13px] font-bold text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#155bb5]"
               >
-                <Check className="w-3.5 h-3.5" /> Mark read
+                <Check className="w-4 h-4" /> Mark read
               </button>
             )}
             <button
               onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
-              className="flex items-center gap-1 text-xs md:text-sm text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500"
+              className="flex items-center gap-1 text-[13px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
             >
               <Trash2 className="w-3.5 h-3.5" /> Delete
             </button>
@@ -274,17 +274,22 @@ export default function SellerNotificationsPage() {
   };
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div>
-          <h1 className="text-lg font-bold text-[#1A1A2E]">Notifications</h1>
-          <p className="text-sm md:text-base text-[#9CA3AF] mt-0.5">{total} notification{total !== 1 ? "s" : ""}</p>
+    <main className="w-full mx-auto max-w-4xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white md:bg-transparent min-h-[calc(100vh-64px)] text-[#1A1A2E]">
+      
+      {/* ── Desktop Header ── */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex items-baseline gap-3">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+            Notifications
+          </h1>
+          <span className="text-[18px] font-bold text-gray-400">
+            {total} alert{total !== 1 ? "s" : ""}
+          </span>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="flex items-center gap-1.5 rounded-lg border border-[#E8EEF4] px-3 py-2 text-sm md:text-base font-medium text-[#1A6FD4] hover:bg-[#F8FBFF] transition-colors"
+            className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-2.5 text-[14px] font-bold text-[#1A6FD4] hover:bg-gray-50 transition-all shadow-sm active:scale-[0.98]"
           >
             <CheckCheck className="w-4 h-4" />
             Mark all as read
@@ -292,16 +297,32 @@ export default function SellerNotificationsPage() {
         )}
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-[#E8EEF4]">
+      {/* ── Mobile Header ── */}
+      <div className="md:hidden flex flex-col gap-3 mb-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Notifications</h1>
+          <span className="text-[14px] text-gray-500 font-medium px-3 py-1 bg-gray-100 rounded-full">{total}</span>
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={markAllRead}
+            className="inline-flex self-start items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-[13px] font-bold text-[#1A6FD4] shadow-sm"
+          >
+            <CheckCheck className="w-4 h-4" /> Mark all read
+          </button>
+        )}
+      </div>
+
+      {/* ── Filter Tabs ── */}
+      <div className="flex gap-2 mb-6 border-b border-gray-100 pb-3 overflow-x-auto no-scrollbar">
         {(["all", "unread"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => { setFilter(tab); setPage(1); }}
-            className={`px-4 py-2.5 text-sm md:text-base font-medium border-b-2 transition-colors ${
+            className={`rounded-full px-6 py-2 text-[14px] font-bold transition-all active:scale-[0.98] ${
               filter === tab
-                ? "border-[#1A6FD4] text-[#1A6FD4]"
-                : "border-transparent text-[#4B5563]"
+                ? "bg-gray-900 text-white shadow-md"
+                : "bg-white text-gray-500 border border-gray-200 hover:border-gray-300 hover:bg-gray-50"
             }`}
           >
             {tab === "all" ? "All" : "Unread"}
@@ -309,13 +330,13 @@ export default function SellerNotificationsPage() {
         ))}
       </div>
 
-      {/* List */}
+      {/* ── List ── */}
       {loading ? (
-        <div className="rounded-xl border border-[#E8EEF4] overflow-hidden">
+        <div className="rounded-3xl border border-gray-200 bg-white overflow-hidden shadow-sm">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex gap-3 px-4 py-4 border-b border-[#E8EEF4] last:border-b-0">
-              <div className="w-10 h-10 rounded-full bg-gray-100 animate-pulse shrink-0" />
-              <div className="flex-1 space-y-2">
+            <div key={i} className="flex gap-4 px-5 py-5 border-b border-gray-100 last:border-b-0">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 animate-pulse shrink-0" />
+              <div className="flex-1 space-y-3 py-1">
                 <div className="h-4 w-1/2 rounded bg-gray-100 animate-pulse" />
                 <div className="h-3 w-3/4 rounded bg-gray-100 animate-pulse" />
               </div>
@@ -323,22 +344,22 @@ export default function SellerNotificationsPage() {
           ))}
         </div>
       ) : notifications.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#EAF2FF]">
-            <Bell className="h-8 w-8 text-[#1A6FD4]" />
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50/50">
+          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm border border-gray-100">
+            <Bell className="h-10 w-10 text-gray-300" />
           </div>
-          <h3 className="text-base font-semibold text-[#1A1A2E]">
+          <h3 className="text-[18px] font-bold text-gray-900 mb-2">
             {filter === "unread" ? "All caught up!" : "No notifications yet"}
           </h3>
-          <p className="mt-1 max-w-sm text-sm text-[#4B5563]">
+          <p className="max-w-md text-[14px] font-medium text-gray-500 leading-relaxed">
             {filter === "unread"
-              ? "You have no unread notifications."
-              : "Notifications about orders, payouts, and updates will appear here."}
+              ? "You have no unread notifications. Great job staying on top of things."
+              : "Notifications about your orders, payouts, and account updates will appear here."}
           </p>
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#E8EEF4] overflow-hidden">
+          <div className="rounded-3xl border border-gray-200 bg-white overflow-hidden shadow-sm">
             {groups.map((g) => {
               if (g.items.length === 1 && !g.orderId) return renderItem(g.items[0], { showLink: false });
               if (g.items.length === 1 && g.orderId) return renderItem(g.items[0], { showLink: true });
@@ -349,19 +370,19 @@ export default function SellerNotificationsPage() {
                 <div key={g.key}>
                   <button
                     onClick={() => toggleGroup(g.key)}
-                    className="w-full flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 transition-colors text-left border-b border-[#E8EEF4]"
+                    className="w-full flex items-center justify-between gap-3 px-5 py-3.5 bg-gray-50/80 hover:bg-gray-100 transition-colors text-left border-b border-gray-200"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <ChevronDown
-                        className="w-4 h-4 shrink-0 text-[#4B5563] transition-transform"
+                        className="w-4 h-4 shrink-0 text-gray-400 transition-transform duration-200"
                         style={{ transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)" }}
                       />
-                      <span className="text-sm font-bold text-[#1A1A2E] truncate">Order {label}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 shrink-0">
-                        {g.items.length}
+                      <span className="text-[14px] font-bold text-gray-900 truncate uppercase tracking-wider">Group: Order {label}</span>
+                      <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-600 shrink-0">
+                        {g.items.length} updates
                       </span>
                       {groupUnread > 0 && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-[#1A6FD41A] text-[#1A6FD4] shrink-0">
+                        <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[#1A6FD4] shrink-0">
                           {groupUnread} new
                         </span>
                       )}
@@ -370,7 +391,7 @@ export default function SellerNotificationsPage() {
                       <Link
                         href={`/seller/dashboard/orders/${g.orderId}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="hidden sm:flex items-center gap-1 text-xs md:text-sm font-semibold text-[#1A6FD4] hover:underline shrink-0"
+                        className="hidden sm:flex items-center gap-1 text-[13px] font-bold text-gray-500 hover:text-[#1A6FD4] transition-colors shrink-0"
                       >
                         View Order
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -378,7 +399,7 @@ export default function SellerNotificationsPage() {
                     )}
                   </button>
                   {!isCollapsed && (
-                    <div>
+                    <div className="border-b border-gray-200 last:border-b-0 bg-white">
                       {g.items.map((n) => renderItem(n, { showLink: false, isGrouped: true }))}
                     </div>
                   )}
@@ -388,26 +409,26 @@ export default function SellerNotificationsPage() {
           </div>
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-6">
+            <div className="flex items-center justify-center gap-3 mt-8">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="w-9 h-9 rounded-lg border border-[#E8EEF4] flex items-center justify-center disabled:opacity-40"
+                className="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center disabled:opacity-40 hover:bg-gray-50 transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-[#4B5563]" />
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
               </button>
-              <span className="text-sm md:text-base px-2 text-[#4B5563]">Page {page} of {totalPages}</span>
+              <span className="text-[14px] font-bold px-3 text-gray-600">Page {page} of {totalPages}</span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="w-9 h-9 rounded-lg border border-[#E8EEF4] flex items-center justify-center disabled:opacity-40"
+                className="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center disabled:opacity-40 hover:bg-gray-50 transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-[#4B5563]" />
+                <ChevronRight className="w-5 h-5 text-gray-600" />
               </button>
             </div>
           )}
         </>
       )}
-    </div>
+    </main>
   );
 }

@@ -36,8 +36,19 @@ const NAV = [
 export default function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   
-  const isActive = (href: string) =>
-    href === "/admin" ? pathname === href : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === "/admin") return pathname === "/admin";
+    
+    // Check if current pathname starts with this href
+    if (!pathname.startsWith(href)) return false;
+
+    // Check if there's a more specific (longer) match in the NAV list
+    const hasMoreSpecificMatch = NAV.some(
+      (item) => item.href !== href && item.href.length > href.length && pathname.startsWith(item.href)
+    );
+
+    return !hasMoreSpecificMatch;
+  };
 
   return (
     <>

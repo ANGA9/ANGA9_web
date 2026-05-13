@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Package, CheckCircle2, XCircle, X, Eye, Play, Store, PackageOpen, Truck } from "lucide-react";
-import Header from "@/components/Header";
+import { Loader2, Package, CheckCircle2, XCircle, X, Eye, Play, Store, PackageOpen, Truck, ChevronRight, AlertCircle } from "lucide-react";
 
 interface Product {
   id: string;
@@ -81,77 +80,108 @@ export default function ReviewsPage() {
     setActionLoading(null);
   }
 
-  if (loading) return <div className="min-h-screen"><Header /><div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" /></div></div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Loader2 className="w-10 h-10 animate-spin text-[#8B5CF6]" />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="p-6 xl:p-8">
-        <div className="mb-6">
-          <h1 className="text-xl md:text-2xl font-bold text-anga-text">Product Reviews</h1>
-          <p className="text-sm md:text-base text-anga-text-secondary">{products.length} product{products.length !== 1 ? "s" : ""} awaiting review</p>
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Product Submissions</h1>
+          <p className="text-[15px] text-gray-500 font-medium">
+            {products.length} product{products.length !== 1 ? "s" : ""} awaiting review
+          </p>
         </div>
+      </div>
 
-        {products.length === 0 ? (
-          <div className="bg-white rounded-xl border border-anga-border p-12 text-center">
-            <Package className="w-12 h-12 text-[#E8EEF4] mx-auto mb-4" />
-            <h2 className="text-base md:text-lg font-bold text-anga-text mb-2">No Pending Reviews</h2>
-            <p className="text-sm md:text-base text-anga-text-secondary">All product submissions have been reviewed</p>
+      {products.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center justify-center min-h-[400px]">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <Package className="w-10 h-10 text-gray-300" />
           </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-anga-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm md:text-base">
-                <thead>
-                  <tr className="border-b border-anga-border bg-[#F8FBFF]">
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Product Name</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Description</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Price</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Min Qty</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Submitted</th>
-                    <th className="text-left px-4 py-3 font-semibold text-[#4B5563]">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((p) => (
-                    <tr key={p.id} className="border-b border-anga-border last:border-0 hover:bg-[#F8FBFF] transition-colors">
-                      <td className="px-4 py-3 font-medium text-anga-text max-w-[200px]">{p.name}</td>
-                      <td className="px-4 py-3 text-[#4B5563] max-w-[250px] truncate">{p.description || "\u2014"}</td>
-                      <td className="px-4 py-3 text-anga-text font-medium">{formatINR(p.base_price)}</td>
-                      <td className="px-4 py-3 text-[#4B5563]">{p.min_order_qty || 1} {p.unit || "pc"}</td>
-                      <td className="px-4 py-3 text-[#9CA3AF]">{new Date(p.created_at).toLocaleDateString()}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setPreviewTarget(p)}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#1A6FD4] text-white text-xs md:text-sm font-semibold hover:bg-[#155CB0] transition-colors"
-                          >
-                            <Eye className="w-3 h-3" /> Preview
-                          </button>
-                          <button
-                            onClick={() => handleApprove(p.id)}
-                            disabled={actionLoading === p.id}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#22C55E] text-white text-xs md:text-sm font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50"
-                          >
-                            {actionLoading === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />} Approve
-                          </button>
-                          <button
-                            onClick={() => { setRejectTarget(p); setRejectNotes(""); }}
-                            disabled={actionLoading === p.id}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#EF4444] text-white text-xs md:text-sm font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50"
-                          >
-                            <XCircle className="w-3 h-3" /> Reject
-                          </button>
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">Queue is Clear</h2>
+          <p className="text-[15px] text-gray-500 font-medium">All product submissions have been reviewed.</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[1000px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product Info</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Description</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Pricing</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Submitted</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {products.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                          {p.images && p.images[0] ? (
+                             <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                             <Package className="w-5 h-5 text-gray-400 m-auto mt-3.5" />
+                          )}
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-[14px] text-gray-900 line-clamp-1">{p.name}</p>
+                          <p className="text-[12px] font-medium text-gray-400 truncate uppercase tracking-tight">ID: {p.id.slice(0, 8)}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-[13px] font-medium text-gray-600 line-clamp-2 max-w-[250px] leading-relaxed">
+                        {p.description || "No description provided."}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-black text-[15px] text-gray-900">{formatINR(p.base_price)}</p>
+                      <p className="text-[12px] font-bold text-gray-500">Min: {p.min_order_qty || 1} {p.unit || "pc"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-[13px] font-bold text-gray-400 uppercase tracking-wider">
+                        {new Date(p.created_at).toLocaleDateString("en-IN", { day: '2-digit', month: 'short' })}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => setPreviewTarget(p)}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-[12px] font-bold hover:bg-gray-50 transition-colors shadow-sm"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Preview
+                        </button>
+                        <button
+                          onClick={() => handleApprove(p.id)}
+                          disabled={actionLoading === p.id}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-200 text-[12px] font-bold hover:bg-green-100 transition-colors disabled:opacity-50 shadow-sm"
+                        >
+                          {actionLoading === p.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />} Approve
+                        </button>
+                        <button
+                          onClick={() => { setRejectTarget(p); setRejectNotes(""); }}
+                          disabled={actionLoading === p.id}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 border border-red-200 text-[12px] font-bold hover:bg-red-100 transition-colors disabled:opacity-50 shadow-sm"
+                        >
+                          <XCircle className="w-3.5 h-3.5" /> Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </main>
+        </div>
+      )}
 
       {/* Preview Modal */}
       {previewTarget && (
@@ -166,37 +196,47 @@ export default function ReviewsPage() {
 
       {/* Reject Modal */}
       {rejectTarget && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base md:text-lg font-bold text-anga-text">Reject Product</h3>
-              <button onClick={() => setRejectTarget(null)} className="text-[#9CA3AF] hover:text-anga-text">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[20px] font-bold text-gray-900">Reject Submission</h3>
+              <button 
+                onClick={() => setRejectTarget(null)} 
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-sm md:text-base text-[#4B5563] mb-1">
-              Rejecting: <span className="font-semibold">{rejectTarget.name}</span>
+            <p className="text-[14px] font-medium text-gray-500 mb-4">
+              Rejecting: <span className="text-gray-900 font-bold">{rejectTarget.name}</span>
             </p>
-            <p className="text-xs md:text-sm text-[#9CA3AF] mb-4">The seller will see your rejection reason and can re-submit after making changes.</p>
-            <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-1.5">Rejection Reason *</label>
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-5 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-[13px] font-medium text-amber-800">
+                The seller will see your rejection reason and can re-submit after making changes.
+              </p>
+            </div>
+            
+            <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">Rejection Reason *</label>
             <textarea
               value={rejectNotes}
               onChange={e => setRejectNotes(e.target.value)}
               placeholder="e.g. Product description is insufficient, missing proper images..."
-              className="h-28 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 py-3 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#EF4444] focus:outline-none focus:ring-2 focus:ring-[#EF4444]/10 transition-colors resize-none"
+              className="h-32 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-[14px] font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6] transition-all resize-none shadow-inner"
               maxLength={500}
             />
-            <div className="flex gap-3 mt-4">
-              <button onClick={() => setRejectTarget(null)} className="flex-1 h-10 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-medium text-[#4B5563] hover:bg-[#F8FBFF] transition-colors">
+            
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setRejectTarget(null)} className="flex-1 h-12 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
                 Cancel
               </button>
               <button
                 onClick={handleReject}
                 disabled={!rejectNotes.trim() || actionLoading === rejectTarget.id}
-                className="flex-1 h-10 rounded-lg bg-[#EF4444] text-white text-sm md:text-base font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 h-12 rounded-xl bg-red-500 text-white text-[14px] font-bold hover:bg-red-600 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {actionLoading === rejectTarget.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                Reject Product
+                Confirm Reject
               </button>
             </div>
           </div>
@@ -230,42 +270,46 @@ function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: 
     : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/60 overflow-y-auto">
-      <div className="bg-white rounded-none md:rounded-xl shadow-2xl w-full max-w-5xl my-0 md:my-8 mx-0 md:mx-4 relative">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/80 backdrop-blur-md p-0 sm:p-4 lg:p-8">
+      <div className="bg-white rounded-none sm:rounded-[32px] shadow-2xl w-full max-w-6xl h-full sm:h-auto sm:max-h-[90vh] flex flex-col overflow-hidden border border-white/20">
         {/* Sticky header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 md:px-6 py-3 bg-white border-b border-[#E8EEF4] rounded-t-xl">
-          <div className="flex items-center gap-2 min-w-0">
-            <Eye className="w-4 h-4 text-[#1A6FD4] shrink-0" />
-            <span className="text-xs md:text-sm font-semibold text-[#1A6FD4] uppercase tracking-wider shrink-0">Customer Preview</span>
-            <span className="text-[#9CA3AF] hidden md:inline">\u2014</span>
-            <span className="text-sm text-[#4B5563] truncate hidden md:inline">how this listing will appear on anga9.com</span>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+               <Eye className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-[18px] font-bold text-gray-900 leading-tight">Customer Preview</h2>
+              <p className="text-[13px] font-medium text-gray-500">How this listing will appear to buyers</p>
+            </div>
           </div>
-          <button onClick={onClose} className="text-[#9CA3AF] hover:text-anga-text shrink-0">
+          <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-5 md:p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
             {/* Media gallery */}
-            <div>
-              <div className="relative rounded-xl overflow-hidden flex items-center justify-center aspect-square md:h-[480px] md:aspect-auto" style={{ background: "#F1F7FF" }}>
+            <div className="space-y-4">
+              <div className="relative rounded-[32px] overflow-hidden bg-gray-50 border border-gray-100 aspect-square lg:h-[500px] flex items-center justify-center shadow-inner group">
                 {allMedia.length > 0 ? (
                   currentIsVideo ? (
                     <video key={currentUrl} src={currentUrl} controls className="w-full h-full object-contain bg-black" />
                   ) : (
-                    <img src={currentUrl} alt={product.name} className="w-full h-full object-contain" />
+                    <img src={currentUrl} alt={product.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" />
                   )
                 ) : (
-                  <div className="flex flex-col items-center gap-2 text-[#9CA3AF]">
-                    <PackageOpen className="w-16 h-16 opacity-40" />
-                    <span className="text-sm">No media uploaded</span>
+                  <div className="flex flex-col items-center gap-3 text-gray-300">
+                    <PackageOpen className="w-20 h-20" />
+                    <span className="text-[15px] font-bold">No Media Content</span>
                   </div>
                 )}
               </div>
+              
               {allMedia.length > 1 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto" style={{ scrollbarWidth: "thin" }}>
+                <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
                   {allMedia.map((url, idx) => {
                     const isVid = isVideoUrl(url);
                     const active = idx === selectedMedia;
@@ -273,117 +317,104 @@ function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: 
                       <button
                         key={idx}
                         onClick={() => setSelectedMedia(idx)}
-                        className="relative shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors"
-                        style={{
-                          borderColor: active ? "#1A6FD4" : "#E8EEF4",
-                          background: isVid ? "#111" : "#F1F7FF",
-                        }}
+                        className={`relative shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shadow-sm ${
+                          active ? "border-[#8B5CF6] scale-105 shadow-purple-500/10" : "border-transparent hover:border-gray-200"
+                        }`}
                       >
                         {isVid ? (
                           <>
-                            <video src={url} muted preload="metadata" className="w-full h-full object-cover opacity-70" />
+                            <video src={url} muted preload="metadata" className="w-full h-full object-cover opacity-60" />
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <Play className="w-5 h-5 text-white drop-shadow-md" fill="white" />
+                              <Play className="w-6 h-6 text-white drop-shadow-md" fill="white" />
                             </div>
                           </>
                         ) : (
-                          <img src={url} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-contain" />
+                          <img src={url} alt="" className="w-full h-full object-cover" />
                         )}
                       </button>
                     );
                   })}
                 </div>
               )}
-              <div className="mt-3 flex flex-wrap gap-3 text-xs text-[#4B5563]">
-                <span className="px-2 py-1 rounded-md bg-[#F8FBFF] border border-[#E8EEF4]">
-                  {product.images?.length || 0} image{(product.images?.length || 0) !== 1 ? "s" : ""}
-                </span>
-                <span className="px-2 py-1 rounded-md bg-[#F8FBFF] border border-[#E8EEF4]">
-                  {product.videos?.length || 0} video{(product.videos?.length || 0) !== 1 ? "s" : ""}
-                </span>
-              </div>
             </div>
 
             {/* Info column */}
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-anga-text leading-tight mb-2">{product.name}</h2>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-3">
+                 <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-wider">Product Listing</span>
+                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                 <span className="text-[13px] font-medium text-gray-500 font-mono">ID: {product.id}</span>
+              </div>
+              
+              <h2 className="text-[32px] lg:text-[40px] font-medium text-gray-900 leading-[1.1] mb-4 tracking-tight">{product.name}</h2>
 
-              <div className="flex items-center gap-1.5 mb-4 text-sm text-[#4B5563]">
-                <Store className="w-3.5 h-3.5 text-[#9CA3AF]" />
-                <span>ANGA9 Seller</span>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                   <Store className="w-3.5 h-3.5 text-gray-400" />
+                </div>
+                <span className="text-[14px] font-bold text-gray-500">Official ANGA9 Verified Seller</span>
               </div>
 
-              <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-3xl md:text-4xl font-bold text-anga-text">{formatINR(price)}</span>
+              <div className="flex items-center gap-4 mb-8">
+                <span className="text-[40px] lg:text-[48px] font-medium text-gray-900 leading-none tracking-tight">{formatINR(price)}</span>
                 {discount > 0 && (
-                  <>
-                    <span className="line-through text-sm text-[#9CA3AF]">{formatINR(product.base_price)}</span>
-                    <span className="text-sm font-semibold text-[#22C55E]">{discount}% off</span>
-                  </>
+                  <div className="flex flex-col">
+                    <span className="line-through text-[16px] font-bold text-gray-300">{formatINR(product.base_price)}</span>
+                    <span className="text-[14px] font-black text-green-500 uppercase tracking-wide">{discount}% OFF SAVINGS</span>
+                  </div>
                 )}
               </div>
 
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                <span className="text-sm font-medium text-[#22C55E]">In Stock (preview)</span>
-              </div>
-
-              <p className="text-sm text-[#4B5563] mb-5">
-                Min order: {product.min_order_qty || 1} {product.unit || "pc"}{(product.min_order_qty || 1) > 1 ? "s" : ""}
-              </p>
-
-              <div className="mb-5 p-4 rounded-xl border flex flex-wrap items-center justify-between gap-3" style={{ backgroundColor: "#F8FBFF", borderColor: "#EAF2FF" }}>
-                <div>
-                  <p className="text-[12px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1">Total Amount</p>
-                  <span className="text-[22px] font-black text-anga-text leading-none">{formatINR(price * (product.min_order_qty || 1))}</span>
+              <div className="bg-gray-50 rounded-[28px] p-6 border border-gray-100 mb-8 space-y-4">
+                <div className="flex items-center justify-between">
+                   <span className="text-[13px] font-bold text-gray-400 uppercase tracking-wider">Minimum Order</span>
+                   <span className="text-[15px] font-black text-gray-900">{product.min_order_qty || 1} {product.unit || "pc"}{(product.min_order_qty || 1) > 1 ? "s" : ""}</span>
                 </div>
-                <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#9CA3AF]">
-                  <Truck className="w-4 h-4" /> Delivery applied at checkout
-                </span>
+                <div className="h-px bg-gray-200/60" />
+                <div className="flex items-center justify-between">
+                   <span className="text-[13px] font-bold text-gray-400 uppercase tracking-wider">Estimated Total</span>
+                   <span className="text-[24px] font-black text-[#8B5CF6] tracking-tight">{formatINR(price * (product.min_order_qty || 1))}</span>
+                </div>
+                <p className="text-[12px] font-medium text-gray-400 text-center flex items-center justify-center gap-1.5">
+                   <Truck className="w-3.5 h-3.5" /> Shipping costs will be calculated at checkout
+                </p>
               </div>
 
               {/* Description */}
-              {product.description ? (
-                <div className="border-t border-[#E8EEF4] pt-5 mb-5">
-                  <h3 className="font-semibold text-base mb-2 text-anga-text">Description</h3>
-                  <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap text-[#4B5563]">
-                    {product.description}
-                  </p>
-                </div>
-              ) : (
-                <div className="border-t border-[#E8EEF4] pt-5 mb-5">
-                  <p className="text-sm italic text-[#EF4444]">No description provided.</p>
-                </div>
-              )}
+              <div className="mb-8">
+                <h3 className="text-[14px] font-bold text-gray-900 uppercase tracking-wider mb-3">Product Overview</h3>
+                {product.description ? (
+                   <p className="text-[16px] text-gray-600 leading-relaxed font-medium">
+                     {product.description}
+                   </p>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-[14px] font-bold flex items-center gap-2">
+                     <AlertCircle className="w-4 h-4" /> Description Missing
+                  </div>
+                )}
+              </div>
 
-              {/* Specs */}
-              {(product.brand || product.country_of_origin || product.weight_kg || product.sku || product.hsn_code || product.gst_rate || product.warranty || product.return_policy) && (
-                <div className="border-t border-[#E8EEF4] pt-5 mb-5">
-                  <h3 className="font-semibold text-base mb-3 text-anga-text">Specifications</h3>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              {/* Specs Grid */}
+              <div className="border-t border-gray-100 pt-8 mb-8">
+                  <h3 className="text-[14px] font-bold text-gray-900 uppercase tracking-wider mb-4">Specifications</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-[14px] font-medium">
                     {product.brand && <SpecRow label="Brand" value={product.brand} />}
-                    {product.country_of_origin && <SpecRow label="Country of Origin" value={product.country_of_origin} />}
+                    {product.country_of_origin && <SpecRow label="Origin" value={product.country_of_origin} />}
                     {typeof product.weight_kg === "number" && <SpecRow label="Weight" value={`${product.weight_kg} kg`} />}
                     {product.sku && <SpecRow label="SKU" value={product.sku} />}
-                    {product.hsn_code && <SpecRow label="HSN Code" value={product.hsn_code} />}
+                    {product.hsn_code && <SpecRow label="HSN" value={product.hsn_code} />}
                     {typeof product.gst_rate === "number" && <SpecRow label="GST" value={`${product.gst_rate}%`} />}
-                    {product.warranty && <SpecRow label="Warranty" value={product.warranty} />}
-                    {product.return_policy && <SpecRow label="Return Policy" value={product.return_policy} />}
-                  </dl>
-                </div>
-              )}
+                  </div>
+              </div>
 
               {/* Tags */}
               {product.tags && product.tags.length > 0 && (
-                <div className="border-t border-[#E8EEF4] pt-5">
-                  <h3 className="font-semibold text-sm mb-2 text-anga-text">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.tags.map((tag) => (
-                      <span key={tag} className="rounded-full px-3 py-1 text-xs font-medium" style={{ background: "#F1F7FF", color: "#1A6FD4" }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-2">
+                  {product.tags.map((tag) => (
+                    <span key={tag} className="px-3 py-1 rounded-full bg-[#8B5CF6]/5 text-[#8B5CF6] text-[12px] font-bold border border-[#8B5CF6]/10">
+                      #{tag}
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
@@ -391,26 +422,20 @@ function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: 
         </div>
 
         {/* Sticky footer with decision buttons */}
-        <div className="sticky bottom-0 z-10 flex flex-col sm:flex-row gap-3 px-5 md:px-6 py-4 bg-white border-t border-[#E8EEF4] rounded-b-xl">
-          <button
-            onClick={onClose}
-            className="flex-1 h-11 rounded-lg border border-[#E8EEF4] text-sm font-medium text-[#4B5563] hover:bg-[#F8FBFF] transition-colors"
-          >
-            Close
-          </button>
+        <div className="px-8 py-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
           <button
             onClick={onReject}
             disabled={actionLoading}
-            className="flex-1 h-11 rounded-lg bg-[#EF4444] text-white text-sm font-semibold hover:bg-[#DC2626] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 h-14 rounded-2xl bg-white border border-red-200 text-red-600 text-[15px] font-black hover:bg-red-50 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            <XCircle className="w-4 h-4" /> Reject
+            <XCircle className="w-5 h-5" /> REJECT SUBMISSION
           </button>
           <button
             onClick={onApprove}
             disabled={actionLoading}
-            className="flex-1 h-11 rounded-lg bg-[#22C55E] text-white text-sm font-semibold hover:bg-[#16A34A] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 h-14 rounded-2xl bg-[#22C55E] text-white text-[15px] font-black hover:bg-green-600 transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve
+            {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />} APPROVE LISTING
           </button>
         </div>
       </div>
@@ -420,9 +445,9 @@ function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: 
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-[#F1F7FF] py-1.5">
-      <dt className="text-[#9CA3AF]">{label}</dt>
-      <dd className="text-anga-text font-medium text-right">{value}</dd>
+    <div className="flex justify-between items-center py-2 border-b border-gray-50">
+      <span className="text-gray-400 font-bold text-[12px] uppercase tracking-wider">{label}</span>
+      <span className="text-gray-900 font-black">{value}</span>
     </div>
   );
 }

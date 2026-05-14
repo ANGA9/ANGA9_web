@@ -9,9 +9,11 @@ import {
   supportApi,
   timeAgo,
   type TicketDetail,
+  type TicketMessage,
   type TicketStatus,
 } from "@/lib/supportApi";
 import { useAuth } from "@/lib/AuthContext";
+import { useTicketSocket } from "@/lib/useTicketSocket";
 import TicketStatusBadge from "@/components/support/TicketStatusBadge";
 import TicketPriorityBadge from "@/components/support/TicketPriorityBadge";
 import SlaCountdown from "@/components/support/SlaCountdown";
@@ -46,9 +48,20 @@ export default function TicketDetailPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useTicketSocket({
+    ticketId: id,
+    onMessage: (incoming: TicketMessage) => {
+      setDetail((prev) => {
+        if (!prev) return prev;
+        if (prev.messages.some((m) => m.id === incoming.id)) return prev;
+        return { ...prev, messages: [...prev.messages, incoming] };
+      });
+    },
+  });
+
   async function handleSend(body: string, _opts?: { isInternal: boolean }) {
     await supportApi.postMessage(id, { body });
-    await load();
+    // WS will push the persisted message; no full reload needed.
   }
 
   async function handleStatusChange(status: TicketStatus) {

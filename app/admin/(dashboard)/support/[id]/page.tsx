@@ -11,11 +11,13 @@ import {
   CUSTOMER_CATEGORIES,
   SELLER_CATEGORIES,
   type TicketDetail,
+  type TicketMessage,
   type TicketStatus,
   type TicketPriority,
   type Macro,
 } from "@/lib/supportApi";
 import { useAuth } from "@/lib/AuthContext";
+import { useTicketSocket } from "@/lib/useTicketSocket";
 import TicketStatusBadge from "@/components/support/TicketStatusBadge";
 import TicketPriorityBadge from "@/components/support/TicketPriorityBadge";
 import SlaCountdown from "@/components/support/SlaCountdown";
@@ -55,13 +57,24 @@ export default function AdminTicketDetailPage() {
     supportAdminApi.listMacros().then((r) => setMacros(r.data)).catch(() => setMacros([]));
   }, []);
 
+  useTicketSocket({
+    ticketId: id,
+    onMessage: (incoming: TicketMessage) => {
+      setDetail((prev) => {
+        if (!prev) return prev;
+        if (prev.messages.some((m) => m.id === incoming.id)) return prev;
+        return { ...prev, messages: [...prev.messages, incoming] };
+      });
+    },
+  });
+
   async function handleSend(body: string, opts: { isInternal: boolean }) {
     if (opts.isInternal) {
       await supportAdminApi.internalNote(id, body);
     } else {
       await supportApi.postMessage(id, { body });
     }
-    await load();
+    // WS will push the persisted message; no full reload needed.
   }
 
   async function handlePatch(patch: Parameters<typeof supportAdminApi.patchTicket>[1]) {

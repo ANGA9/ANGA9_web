@@ -12,42 +12,42 @@ import { useRouter } from "next/navigation";
 const DEFAULT_SLIDES = [
   {
     id: "1",
-    image: cdnUrl("/banners/banner1.png"),
-    title: "Elevate Your Style - Menswear from ₹799",
+    image: cdnUrl("/banners/ban1.png"),
+    title: "Festive Ethnic Edit - Sarees & Kurtas from ₹999",
   },
   {
     id: "2",
-    image: cdnUrl("/banners/banner2.png"),
-    title: "Sarees & Kurtas - Ethnic Festive Edit from ₹999",
+    image: cdnUrl("/banners/ban2.png"),
+    title: "Elevate Your Style - Menswear from ₹799",
   },
   {
     id: "3",
-    image: cdnUrl("/banners/banner3.png"),
+    image: cdnUrl("/banners/ban3.png"),
     title: "Fun Fits for Little Ones - Kids Fashion from ₹299",
   },
   {
     id: "4",
-    image: cdnUrl("/banners/banner4.png"),
+    image: cdnUrl("/banners/ban4.png"),
     title: "Train Harder Look Better - Activewear from ₹599",
   },
   {
     id: "5",
-    image: cdnUrl("/banners/banner5.png"),
+    image: cdnUrl("/banners/ban5.png"),
     title: "Sleep in Pure Luxury - Bed Linen from ₹899",
   },
   {
     id: "6",
-    image: cdnUrl("/banners/banner6.png"),
+    image: cdnUrl("/banners/ban6.png"),
     title: "Spa Comfort at Home - Bath Linen from ₹449",
   },
   {
     id: "7",
-    image: cdnUrl("/banners/banner7.png"),
+    image: cdnUrl("/banners/ban7.png"),
     title: "Transform Your Living Space - Rugs & Curtains from ₹1299",
   },
   {
     id: "8",
-    image: cdnUrl("/banners/banner8.png"),
+    image: cdnUrl("/banners/ban8.png"),
     title: "Style Every Corner - Living Decor from ₹349",
   },
 ];

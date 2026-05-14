@@ -26,14 +26,7 @@ function formatINR(value: number) {
   return "₹" + value.toLocaleString("en-IN");
 }
 
-const statusConfig: Record<Order["status"], { bg: string; text: string; dot: string }> = {
-  Delivered:  { bg: t.bgDelivered,  text: t.inStock,    dot: "#16A34A" },
-  Processing: { bg: t.bgProcessing, text: t.lowStock,   dot: "#D97706" },
-  Cancelled:  { bg: t.bgCancelled,  text: t.outOfStock, dot: "#DC2626" },
-};
-
 export default function OrderCard({ order, onCancelled }: { order: Order; onCancelled?: (id: string) => void }) {
-  const s = statusConfig[order.status];
   const [imgError, setImgError] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -137,8 +130,8 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             )}
             {order.status === "Delivered" && (
               <div className="flex items-center gap-1 mt-1.5">
-                <CheckCircle2 className="w-3 h-3 text-green-600" />
-                <p className="text-[11.5px] font-semibold text-green-700">Delivered on {order.date}</p>
+                <CheckCircle2 className="w-3 h-3" style={{ color: t.bluePrimary }} />
+                <p className="text-[11.5px] font-semibold" style={{ color: t.bluePrimary }}>Delivered on {order.date}</p>
               </div>
             )}
           </div>
@@ -146,10 +139,13 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
           {/* Status badge */}
           <div className="shrink-0 self-start mt-0.5">
             <span
-              className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider"
-              style={{ background: s.bg, color: s.text }}
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+              style={{
+                background: order.status === "Cancelled" ? "#F3F4F6" : t.bgBlueTint,
+                color: order.status === "Cancelled" ? t.textMuted : t.bluePrimary,
+              }}
             >
-              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: s.dot }} />
+              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: order.status === "Cancelled" ? t.textMuted : t.bluePrimary }} />
               {order.status}
             </span>
           </div>
@@ -158,14 +154,14 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {/* ── Action bar ── */}
         <div
           className="flex items-center gap-2 px-4 sm:px-5 py-3 border-t"
-          style={{ borderColor: t.border, background: "#FAFBFF" }}
+          style={{ borderColor: t.border, background: t.bgCard }}
         >
           {/* PRIMARY: Reorder (Delivered) or Track (Processing) */}
           {order.status === "Delivered" && (
             <>
               <button
-                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold transition-all active:scale-95 shadow-sm text-white"
-                style={{ background: t.primaryCta }}
+                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-all active:scale-95 text-white"
+                style={{ background: t.bluePrimary }}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Reorder
@@ -184,8 +180,8 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
           {order.status === "Processing" && (
             <button
               onClick={() => window.location.href = `/orders/${order.id}/track`}
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold border transition-all active:scale-95"
-              style={{ borderColor: t.bluePrimary, color: t.bluePrimary, background: "#EAF2FF" }}
+              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-all active:scale-95"
+              style={{ background: t.bgBlueTint, color: t.bluePrimary }}
             >
               <MapPin className="w-3.5 h-3.5" />
               Track
@@ -210,8 +206,8 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
           {canCancel && (
             <button
               onClick={() => setShowCancelConfirm(true)}
-              className="ml-auto flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold rounded-lg transition-colors hover:bg-red-50"
-              style={{ color: t.outOfStock }}
+              className="ml-auto flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold rounded-lg transition-colors hover:bg-gray-100"
+              style={{ color: t.textSecondary }}
             >
               <XCircle className="w-3.5 h-3.5" />
               Cancel

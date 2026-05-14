@@ -86,7 +86,7 @@ export default function CustomerShopLayout({
             {!isCheckout && <MobileBottomNav />}
 
             {/* ══════════ CHAT WIDGET ══════════ */}
-            <div className="hidden md:block">
+            <div className="block">
               <ChatWidget surface="customer" />
             </div>
 

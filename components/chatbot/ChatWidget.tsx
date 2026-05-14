@@ -192,7 +192,7 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 p-4 rounded-full shadow-2xl text-white hover:scale-105 transition-transform z-50 ${bgColor}`}
+        className={`fixed bottom-24 md:bottom-6 right-4 md:right-6 p-4 rounded-full shadow-2xl text-white hover:scale-105 transition-transform z-50 ${bgColor}`}
       >
         <MessageSquare size={28} />
       </button>
@@ -200,7 +200,7 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[600px] max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-100 z-50 animate-in slide-in-from-bottom-5">
+    <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 w-[calc(100vw-2rem)] md:w-96 h-[600px] max-h-[75vh] md:max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-100 z-50 animate-in slide-in-from-bottom-5">
       {/* Header */}
       <div className={`p-4 text-white flex items-center justify-between shadow-sm ${bgColor}`}>
         <div className="flex items-center gap-2">

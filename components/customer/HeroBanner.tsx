@@ -119,7 +119,7 @@ export default function HeroBanner() {
               onClick={() => handleSlideClick(slide)}
               className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
             >
-                <div className="relative w-full h-[180px] md:h-[400px] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
+                <div className="relative w-full aspect-[11/5] md:aspect-[5/2] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
                   <img
                     src={(slide as AdCampaign).banner_url || (slide as typeof DEFAULT_SLIDES[0]).image}
                     alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}

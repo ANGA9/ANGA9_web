@@ -15,13 +15,16 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
 }
 
 export async function getAuthHeaders(): Promise<Record<string, string>> {
-  // If in admin portal AND actually on an admin page, send bypass token
+  // Dev-only admin bypass — only when NEXT_PUBLIC_ADMIN_BYPASS_TOKEN is set
+  // (which it should NEVER be in production Vercel env vars).
+  const devBypass = process.env.NEXT_PUBLIC_ADMIN_BYPASS_TOKEN;
   if (
+    devBypass &&
     typeof window !== 'undefined' &&
     window.location.pathname.startsWith('/admin') &&
     document.cookie.includes('portal=admin')
   ) {
-    return { Authorization: 'Bearer ADMIN_BYPASS_TOKEN' };
+    return { Authorization: `Bearer ${devBypass}` };
   }
 
   try {

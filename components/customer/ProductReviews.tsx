@@ -61,6 +61,7 @@ export default function ProductReviews({ productId }: Props) {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const [eligible, setEligible] = useState<EligibleOrderItem[]>([]);
+  const [eligibilityChecked, setEligibilityChecked] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [helpfulIds, setHelpfulIds] = useState<Set<string>>(new Set());
 
@@ -92,11 +93,14 @@ export default function ProductReviews({ productId }: Props) {
   useEffect(() => {
     if (!user) {
       setEligible([]);
+      setEligibilityChecked(false);
       return;
     }
+    setEligibilityChecked(false);
     getReviewEligibility(productId)
       .then((r) => setEligible(r.items))
-      .catch(() => setEligible([]));
+      .catch(() => setEligible([]))
+      .finally(() => setEligibilityChecked(true));
   }, [productId, user]);
 
   const avgRating = useMemo(() => {
@@ -187,10 +191,31 @@ export default function ProductReviews({ productId }: Props) {
         </div>
       ) : reviews.length === 0 ? (
         <div
-          className="rounded-xl border p-6 text-center text-sm"
-          style={{ borderColor: t.border, color: t.textSecondary }}
+          className="rounded-xl border p-6 text-center"
+          style={{ borderColor: t.border }}
         >
-          No reviews yet. Be the first to share your experience.
+          {user && eligible.length > 0 ? (
+            <>
+              <p className="text-sm font-medium mb-3" style={{ color: t.textPrimary }}>
+                You purchased this product! Share your experience.
+              </p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-white active:scale-[0.98] transition-all"
+                style={{ background: t.bluePrimary }}
+              >
+                Write a review
+              </button>
+            </>
+          ) : user && eligibilityChecked && eligible.length === 0 ? (
+            <p className="text-sm" style={{ color: t.textSecondary }}>
+              No reviews yet. Purchase this product to be the first to share your experience!
+            </p>
+          ) : (
+            <p className="text-sm" style={{ color: t.textSecondary }}>
+              No reviews yet. Order this product and share your experience!
+            </p>
+          )}
         </div>
       ) : (
         <div className="space-y-4">

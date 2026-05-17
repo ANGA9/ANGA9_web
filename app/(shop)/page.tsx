@@ -12,6 +12,7 @@ import {
   ArrowUp,
   ShieldCheck,
   Truck,
+  TrendingUp,
 } from "lucide-react";
 import HeroBanner from "@/components/customer/HeroBanner";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
@@ -231,12 +232,15 @@ export default function CustomerHomePage() {
       {/* Discover Products */}
       <section className="px-3 sm:px-8" style={{ marginTop: 24 }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
-          <h2
-            className="font-bold"
-            style={{ color: "#1A1A2E", fontSize: '20px' }}
-          >
-            Trending Now
-          </h2>
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-[18px] h-[18px] sm:w-[22px] sm:h-[22px]" style={{ color: '#1A6FD4' }} strokeWidth={2} />
+            <h2
+              className="font-bold"
+              style={{ color: "#1A1A2E", fontSize: '20px' }}
+            >
+              Trending Now
+            </h2>
+          </div>
           <button
             className="font-medium transition-opacity hover:opacity-80"
             style={{ color: "#1A6FD4", fontSize: '14px' }}

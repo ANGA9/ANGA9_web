@@ -127,13 +127,12 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
 
         .rv-title {
-          font-size: 17px;
-          font-weight: 800;
-          color: ${t.textPrimary};
-          letter-spacing: -0.01em;
+          font-size: 20px;
+          font-weight: 700;
+          color: #1A1A2E;
         }
         @media (min-width: 640px) {
-          .rv-title { font-size: 24px; }
+          .rv-title { font-size: 20px; }
         }
 
         /* Desktop nav arrows */

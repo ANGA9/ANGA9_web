@@ -139,110 +139,135 @@ export default function ProductReviews({ productId }: Props) {
   const hasMore = reviews.length < total;
 
   return (
-    <section className="mt-10 border-t pt-8" style={{ borderColor: t.border }}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg md:text-xl font-bold" style={{ color: t.textPrimary }}>
-          Customer Reviews
-          {total > 0 && (
-            <span className="ml-2 text-sm font-medium" style={{ color: t.textSecondary }}>
-              ({total})
-            </span>
+    <section className="mt-12 md:mt-16 border-t pt-8 md:pt-10" style={{ borderColor: t.border }}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold mb-3" style={{ color: t.textPrimary }}>
+            Customer Reviews
+          </h2>
+          {reviews.length > 0 ? (
+            <div className="flex items-center gap-4">
+              <span className="text-4xl font-extrabold tracking-tight" style={{ color: t.textPrimary }}>
+                {avgRating.toFixed(1)}
+              </span>
+              <div className="flex flex-col gap-1">
+                <StarRow rating={Math.round(avgRating)} size={18} />
+                <span className="text-xs md:text-sm font-medium" style={{ color: t.textSecondary }}>
+                  Based on {total} review{total !== 1 ? "s" : ""}
+                </span>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          {reviews.length > 0 && (
+            <div className="flex-1 md:flex-none">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as ReviewSort)}
+                className="w-full md:w-auto text-sm font-medium rounded-xl border px-4 py-2.5 bg-gray-50/50 hover:bg-gray-50 transition-colors outline-none cursor-pointer appearance-none"
+                style={{ borderColor: t.border, color: t.textPrimary }}
+              >
+                <option value="newest">Newest first</option>
+                <option value="helpful">Most helpful</option>
+                <option value="rating_desc">Highest rated</option>
+                <option value="rating_asc">Lowest rated</option>
+              </select>
+            </div>
           )}
-        </h2>
-        {user && eligible.length > 0 && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="rounded-xl px-4 py-2 text-sm font-semibold text-white active:scale-[0.98] transition-all"
-            style={{ background: t.bluePrimary }}
-          >
-            Write a review
-          </button>
-        )}
+          {user && eligible.length > 0 && reviews.length > 0 && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex-1 md:flex-none rounded-xl px-6 py-2.5 text-sm font-semibold text-white active:scale-[0.98] transition-all hover:opacity-90 shadow-sm whitespace-nowrap"
+              style={{ background: t.bluePrimary }}
+            >
+              Write a review
+            </button>
+          )}
+        </div>
       </div>
 
-      {reviews.length > 0 && (
-        <div className="flex items-center gap-3 mb-6">
-          <StarRow rating={Math.round(avgRating)} size={20} />
-          <span className="text-sm font-semibold" style={{ color: t.textPrimary }}>
-            {avgRating.toFixed(1)} / 5
-          </span>
-          <div className="ml-auto">
-            <label className="text-xs mr-2" style={{ color: t.textSecondary }}>
-              Sort:
-            </label>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as ReviewSort)}
-              className="text-sm rounded-md border px-2 py-1 bg-white"
-              style={{ borderColor: t.border, color: t.textPrimary }}
-            >
-              <option value="newest">Newest</option>
-              <option value="helpful">Most helpful</option>
-              <option value="rating_desc">Highest rated</option>
-              <option value="rating_asc">Lowest rated</option>
-            </select>
-          </div>
-        </div>
-      )}
-
       {loading ? (
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: t.bluePrimary }} />
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 animate-spin" style={{ color: t.bluePrimary }} />
         </div>
       ) : reviews.length === 0 ? (
         <div
-          className="rounded-xl border p-6 text-center"
+          className="rounded-2xl border p-10 md:p-16 text-center bg-gray-50/30 flex flex-col items-center"
           style={{ borderColor: t.border }}
         >
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border mb-5" style={{ borderColor: t.border }}>
+            <Star className="w-8 h-8 text-gray-300" />
+          </div>
           {user && eligible.length > 0 ? (
             <>
-              <p className="text-sm font-medium mb-3" style={{ color: t.textPrimary }}>
-                You purchased this product! Share your experience.
+              <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: t.textPrimary }}>
+                You purchased this product!
+              </h3>
+              <p className="text-sm md:text-base mb-6 max-w-md" style={{ color: t.textSecondary }}>
+                Share your experience with other customers by writing a review. Your feedback helps others make better choices.
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-white active:scale-[0.98] transition-all"
+                className="rounded-xl px-8 py-3 text-sm font-semibold text-white active:scale-[0.98] transition-all hover:opacity-90 shadow-md"
                 style={{ background: t.bluePrimary }}
               >
                 Write a review
               </button>
             </>
           ) : user && eligibilityChecked && eligible.length === 0 ? (
-            <p className="text-sm" style={{ color: t.textSecondary }}>
-              No reviews yet. Purchase this product to be the first to share your experience!
-            </p>
+            <>
+               <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: t.textPrimary }}>
+                No reviews yet
+              </h3>
+              <p className="text-sm md:text-base max-w-sm" style={{ color: t.textSecondary }}>
+                Purchase this product to be the first to share your experience!
+              </p>
+            </>
           ) : (
-            <p className="text-sm" style={{ color: t.textSecondary }}>
-              No reviews yet. Order this product and share your experience!
-            </p>
+            <>
+               <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: t.textPrimary }}>
+                No reviews yet
+              </h3>
+              <p className="text-sm md:text-base max-w-sm" style={{ color: t.textSecondary }}>
+                Order this product and share your experience!
+              </p>
+            </>
           )}
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {reviews.map((r) => (
             <article
               key={r.id}
-              className="rounded-xl border p-4 md:p-5"
-              style={{ borderColor: t.border, background: "#FFFFFF" }}
+              className="group rounded-2xl border p-5 md:p-7 transition-all hover:shadow-sm bg-white"
+              style={{ borderColor: t.border }}
             >
-              <header className="flex items-center justify-between mb-2">
-                <StarRow rating={r.rating} />
-                <time className="text-xs" style={{ color: t.textSecondary }}>
-                  {formatDate(r.created_at)}
-                </time>
-              </header>
-              {r.title && (
-                <h3 className="font-semibold mb-1 text-sm md:text-base" style={{ color: t.textPrimary }}>
-                  {r.title}
-                </h3>
-              )}
-              {r.body && (
-                <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: t.textSecondary }}>
-                  {r.body}
-                </p>
-              )}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex flex-col gap-1.5">
+                  <StarRow rating={r.rating} size={15} />
+                  <time className="text-[11px] md:text-xs font-semibold uppercase tracking-wider" style={{ color: t.textSecondary }}>
+                    {formatDate(r.created_at)}
+                  </time>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                {r.title && (
+                  <h3 className="font-bold text-base md:text-lg mb-2" style={{ color: t.textPrimary }}>
+                    {r.title}
+                  </h3>
+                )}
+                {r.body && (
+                  <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed" style={{ color: t.textSecondary }}>
+                    {r.body}
+                  </p>
+                )}
+              </div>
+
               {r.images && r.images.length > 0 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
+                <div className="flex gap-3 mt-5 overflow-x-auto pb-3 scrollbar-hide">
                   {r.images.map((src, i) => {
                     const isVideo = src.match(/\.(mp4|webm|ogg|mov)$/i);
                     return isVideo ? (
@@ -250,7 +275,7 @@ export default function ProductReviews({ productId }: Props) {
                         key={i}
                         src={cdnUrl(src)}
                         controls
-                        className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0 border bg-black"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-xl object-cover flex-shrink-0 border bg-black shadow-sm"
                         style={{ borderColor: t.border }}
                       />
                     ) : (
@@ -259,37 +284,46 @@ export default function ProductReviews({ productId }: Props) {
                         key={i}
                         src={cdnUrl(src)}
                         alt={`Review media ${i + 1}`}
-                        className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0 border"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-xl object-cover flex-shrink-0 border shadow-sm"
                         style={{ borderColor: t.border }}
                       />
                     );
                   })}
                 </div>
               )}
-              <button
-                onClick={() => handleHelpful(r.id)}
-                disabled={helpfulIds.has(r.id)}
-                className="mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium border min-h-[40px] disabled:opacity-60"
-                style={{ borderColor: t.border, color: t.textSecondary }}
-              >
-                <ThumbsUp size={14} />
-                Helpful ({r.helpful_count})
-              </button>
+
+              <div className="mt-6 pt-5 border-t flex items-center justify-between" style={{ borderColor: t.border }}>
+                <span className="text-xs md:text-sm font-medium" style={{ color: t.textSecondary }}>
+                  Was this helpful?
+                </span>
+                <button
+                  onClick={() => handleHelpful(r.id)}
+                  disabled={helpfulIds.has(r.id)}
+                  className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all ${
+                    helpfulIds.has(r.id) 
+                      ? "bg-gray-100 text-gray-500" 
+                      : "bg-gray-50 hover:bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  <ThumbsUp size={16} className={helpfulIds.has(r.id) ? "fill-current" : ""} />
+                  {r.helpful_count > 0 ? r.helpful_count : "Helpful"}
+                </button>
+              </div>
             </article>
           ))}
 
           {hasMore && (
-            <div className="flex justify-center pt-2">
+            <div className="flex justify-center pt-4">
               <button
                 onClick={() => fetchPage(page + 1, false)}
                 disabled={loadingMore}
-                className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold disabled:opacity-60 hover:bg-gray-50 transition-colors"
                 style={{ borderColor: t.border, color: t.textPrimary }}
               >
                 {loadingMore ? (
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader2 size={16} className="animate-spin" />
                 ) : (
-                  <ChevronDown size={14} />
+                  <ChevronDown size={16} />
                 )}
                 Show more reviews
               </button>

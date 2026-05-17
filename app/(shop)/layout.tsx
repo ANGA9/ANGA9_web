@@ -86,9 +86,11 @@ export default function CustomerShopLayout({
             {!isCheckout && <MobileBottomNav />}
 
             {/* ══════════ CHAT WIDGET ══════════ */}
-            <div className="block">
-              <ChatWidget surface="customer" />
-            </div>
+            {isHomepage && (
+              <div className="block">
+                <ChatWidget surface="customer" />
+              </div>
+            )}
 
             {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
             <LoginSheet />

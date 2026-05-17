@@ -60,7 +60,7 @@ function MobileTopHeaderContent() {
   useEffect(() => {
     const id = setInterval(() => {
       setPlaceholderIdx((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
-    }, 3500);
+    }, 2200);
     return () => clearInterval(id);
   }, [SEARCH_PLACEHOLDERS.length]);
 

@@ -311,7 +311,7 @@ export default function ProductDetailPage() {
             <div>
               {/* MOBILE SWIPE GALLERY (<md) */}
               <div 
-                className="md:hidden flex overflow-x-auto snap-x snap-mandatory" 
+                className="md:hidden flex overflow-x-auto snap-x snap-mandatory touch-pan-y" 
                 style={{ background: t.bgBlueTint, scrollbarWidth: "none", msOverflowStyle: "none" }}
                 onScroll={(e) => {
                   const scrollLeft = e.currentTarget.scrollLeft;
@@ -326,7 +326,7 @@ export default function ProductDetailPage() {
                   allMedia.map((url, idx) => {
                     const isVid = isVideoUrl(url);
                     return (
-                      <div key={idx} className="w-full shrink-0 snap-center flex items-center justify-center aspect-[4/5] relative">
+                      <div key={idx} className="w-full shrink-0 snap-center snap-always flex items-center justify-center aspect-[4/5] relative">
                         {isVid ? (
                           <video src={url} controls className="w-full h-full object-contain bg-black" />
                         ) : (

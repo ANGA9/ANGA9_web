@@ -62,5 +62,18 @@ export function useRecentlyViewed() {
     []
   );
 
-  return { items, addItem };
+  const removeItem = useCallback((id: string) => {
+    setItems((prev) => {
+      const updated = prev.filter((i) => i.id !== id);
+      save(updated);
+      return updated;
+    });
+  }, []);
+
+  const clearItems = useCallback(() => {
+    setItems([]);
+    save([]);
+  }, []);
+
+  return { items, addItem, removeItem, clearItems };
 }

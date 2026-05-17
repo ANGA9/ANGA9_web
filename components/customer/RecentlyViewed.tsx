@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { Clock, ChevronLeft, ChevronRight, PackageOpen } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, PackageOpen, X } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import {
   useRecentlyViewed,
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function RecentlyViewed({ excludeId }: Props) {
-  const { items } = useRecentlyViewed();
+  const { items, removeItem } = useRecentlyViewed();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -88,7 +88,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
       {/* Scrollable strip */}
       <div className="rv-scroll-wrap" ref={scrollRef}>
         {visible.map((item) => (
-          <RecentCard key={item.id} item={item} />
+          <RecentCard key={item.id} item={item} onRemove={removeItem} />
         ))}
       </div>
 
@@ -99,7 +99,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           padding: 0 12px;
         }
         @media (min-width: 640px) {
-          .rv-section { padding: 0 32px; margin: 36px 0 16px; }
+          .rv-section { padding: 0 40px; margin: 48px 0 32px; }
         }
 
         .rv-header {
@@ -108,6 +108,10 @@ export default function RecentlyViewed({ excludeId }: Props) {
           justify-content: space-between;
           margin-bottom: 14px;
         }
+        @media (min-width: 640px) {
+          .rv-header { margin-bottom: 24px; }
+        }
+
         .rv-header-left {
           display: flex;
           align-items: center;
@@ -118,6 +122,10 @@ export default function RecentlyViewed({ excludeId }: Props) {
           height: 18px;
           color: ${t.bluePrimary};
         }
+        @media (min-width: 640px) {
+          .rv-header-icon { width: 22px; height: 22px; }
+        }
+
         .rv-title {
           font-size: 17px;
           font-weight: 800;
@@ -125,7 +133,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           letter-spacing: -0.01em;
         }
         @media (min-width: 640px) {
-          .rv-title { font-size: 20px; }
+          .rv-title { font-size: 24px; }
         }
 
         /* Desktop nav arrows */
@@ -134,7 +142,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           gap: 6px;
         }
         @media (min-width: 640px) {
-          .rv-nav-arrows { display: flex; }
+          .rv-nav-arrows { display: flex; gap: 8px; }
         }
         .rv-nav-btn {
           display: flex;
@@ -148,6 +156,9 @@ export default function RecentlyViewed({ excludeId }: Props) {
           color: ${t.textPrimary};
           cursor: pointer;
           transition: all 0.15s ease;
+        }
+        @media (min-width: 640px) {
+          .rv-nav-btn { width: 40px; height: 40px; border-radius: 12px; }
         }
         .rv-nav-btn:hover:not(:disabled) {
           background: ${t.bgBlueTint};
@@ -167,11 +178,11 @@ export default function RecentlyViewed({ excludeId }: Props) {
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
-          padding-bottom: 4px;
+          padding-bottom: 8px;
         }
         .rv-scroll-wrap::-webkit-scrollbar { display: none; }
         @media (min-width: 640px) {
-          .rv-scroll-wrap { gap: 14px; }
+          .rv-scroll-wrap { gap: 16px; padding-bottom: 12px; padding-top: 4px; }
         }
 
         /* Card */
@@ -182,19 +193,74 @@ export default function RecentlyViewed({ excludeId }: Props) {
           border-radius: 12px;
           border: 1px solid ${t.border};
           background: #FFF;
-          overflow: hidden;
           transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+        }
+        .rv-card-link {
           text-decoration: none;
           display: flex;
           flex-direction: column;
+          height: 100%;
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        @media (min-width: 640px) {
+          .rv-card { 
+            width: 180px; 
+            border-radius: 16px; 
+            border: 1px solid #E5E7EB; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
+          }
+          .rv-card-link { border-radius: 16px; }
         }
         .rv-card:hover {
           border-color: rgba(26,111,212,0.2);
           box-shadow: 0 4px 14px rgba(0,0,0,0.07);
-          transform: translateY(-2px);
         }
         @media (min-width: 640px) {
-          .rv-card { width: 165px; }
+          .rv-card:hover {
+            border-color: ${t.bluePrimary};
+            box-shadow: 0 8px 24px rgba(26,111,212,0.12);
+            transform: translateY(-4px);
+          }
+        }
+
+        /* Remove Button */
+        .rv-remove-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.95);
+          border: 1px solid #E5E7EB;
+          color: #6B7280;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          opacity: 0;
+          transform: scale(0.9);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 10;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+          backdrop-filter: blur(4px);
+        }
+        @media (min-width: 640px) {
+          .rv-remove-btn { display: flex; }
+        }
+        .rv-card:hover .rv-remove-btn {
+          opacity: 1;
+          transform: scale(1);
+        }
+        .rv-remove-btn:hover {
+          background: #FFF;
+          color: #EF4444;
+          border-color: #EF4444;
+          transform: scale(1.1) !important;
         }
 
         .rv-card-img {
@@ -210,10 +276,10 @@ export default function RecentlyViewed({ excludeId }: Props) {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.4s ease;
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .rv-card:hover .rv-card-img img {
-          transform: scale(1.06);
+          transform: scale(1.08);
         }
         .rv-card-img-placeholder {
           color: ${t.bluePrimary};
@@ -221,13 +287,21 @@ export default function RecentlyViewed({ excludeId }: Props) {
           width: 28px;
           height: 28px;
         }
+        @media (min-width: 640px) {
+          .rv-card-img-placeholder { width: 36px; height: 36px; }
+        }
 
         .rv-card-body {
           padding: 10px;
           flex: 1;
           display: flex;
           flex-direction: column;
+          background: #FFF;
         }
+        @media (min-width: 640px) {
+          .rv-card-body { padding: 14px; }
+        }
+
         .rv-card-name {
           font-size: 12.5px;
           font-weight: 600;
@@ -240,7 +314,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           margin-bottom: 6px;
         }
         @media (min-width: 640px) {
-          .rv-card-name { font-size: 13px; }
+          .rv-card-name { font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
         }
 
         .rv-card-price-row {
@@ -250,16 +324,28 @@ export default function RecentlyViewed({ excludeId }: Props) {
           gap: 4px;
           flex-wrap: wrap;
         }
+        @media (min-width: 640px) {
+          .rv-card-price-row { gap: 6px; }
+        }
+
         .rv-card-price {
           font-size: 14px;
           font-weight: 800;
           color: ${t.textPrimary};
         }
+        @media (min-width: 640px) {
+          .rv-card-price { font-size: 16px; }
+        }
+
         .rv-card-orig-price {
           font-size: 11px;
           color: ${t.textMuted || "#9CA3AF"};
           text-decoration: line-through;
         }
+        @media (min-width: 640px) {
+          .rv-card-orig-price { font-size: 12px; }
+        }
+
         .rv-card-discount {
           font-size: 10.5px;
           font-weight: 700;
@@ -268,12 +354,15 @@ export default function RecentlyViewed({ excludeId }: Props) {
           padding: 1px 5px;
           border-radius: 4px;
         }
+        @media (min-width: 640px) {
+          .rv-card-discount { font-size: 11px; padding: 2px 6px; }
+        }
       `}</style>
     </section>
   );
 }
 
-function RecentCard({ item }: { item: RecentlyViewedItem }) {
+function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (id: string) => void }) {
   const discount =
     item.originalPrice > item.price
       ? Math.round(
@@ -282,28 +371,41 @@ function RecentCard({ item }: { item: RecentlyViewedItem }) {
       : 0;
 
   return (
-    <Link href={`/products/${item.id}`} className="rv-card">
-      <div className="rv-card-img">
-        {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.name} loading="lazy" />
-        ) : (
-          <PackageOpen className="rv-card-img-placeholder" />
-        )}
-      </div>
-      <div className="rv-card-body">
-        <p className="rv-card-name">{item.name}</p>
-        <div className="rv-card-price-row">
-          <span className="rv-card-price">{formatINR(item.price)}</span>
-          {discount > 0 && (
-            <>
-              <span className="rv-card-orig-price">
-                {formatINR(item.originalPrice)}
-              </span>
-              <span className="rv-card-discount">-{discount}%</span>
-            </>
+    <div className="rv-card group">
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onRemove(item.id);
+        }}
+        className="rv-remove-btn hidden md:flex"
+        aria-label="Remove from recently viewed"
+      >
+        <X size={14} />
+      </button>
+      <Link href={`/products/${item.id}`} className="rv-card-link">
+        <div className="rv-card-img">
+          {item.imageUrl ? (
+            <img src={item.imageUrl} alt={item.name} loading="lazy" />
+          ) : (
+            <PackageOpen className="rv-card-img-placeholder" />
           )}
         </div>
-      </div>
-    </Link>
+        <div className="rv-card-body">
+          <p className="rv-card-name">{item.name}</p>
+          <div className="rv-card-price-row">
+            <span className="rv-card-price">{formatINR(item.price)}</span>
+            {discount > 0 && (
+              <>
+                <span className="rv-card-orig-price">
+                  {formatINR(item.originalPrice)}
+                </span>
+                <span className="rv-card-discount">-{discount}%</span>
+              </>
+            )}
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }

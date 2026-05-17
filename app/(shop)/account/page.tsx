@@ -72,6 +72,7 @@ function MenuItem({
   badge?: string | number;
   onClick?: () => void;
   href?: string;
+  external?: boolean;
 }) {
   const content = (
     <>
@@ -93,6 +94,13 @@ function MenuItem({
   const className = "flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100 group border-b border-gray-50 last:border-b-0";
 
   if (href) {
+    if (external) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+          {content}
+        </a>
+      );
+    }
     return (
       <Link href={href} className={className}>
         {content}
@@ -553,7 +561,7 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">More from ANGA9</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={Store} label="Sell on ANGA9" href="/seller/sell-on-anga9" />
+                <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
                 <MenuItem icon={Smartphone} label="Download App" />
               </div>
             </div>

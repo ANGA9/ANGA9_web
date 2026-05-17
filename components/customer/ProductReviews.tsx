@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Star, ThumbsUp, X, Loader2, ChevronDown } from "lucide-react";
+import { Star, ThumbsUp, X, Loader2, ChevronDown, Image as ImageIcon, Video as VideoIcon, Trash2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import toast from "react-hot-toast";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 import {
   listProductReviews,
   getReviewEligibility,
@@ -125,7 +127,7 @@ export default function ProductReviews({ productId }: Props) {
 
   const handleSubmitted = async () => {
     setShowForm(false);
-    toast.success("Review submitted! It will appear once approved.");
+    toast.success("Review submitted! It is now visible.");
     setEligible([]);
     fetchPage(1, true);
   };
@@ -215,17 +217,28 @@ export default function ProductReviews({ productId }: Props) {
                 </p>
               )}
               {r.images && r.images.length > 0 && (
-                <div className="flex gap-2 mt-3 overflow-x-auto">
-                  {r.images.map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={src}
-                      alt={`Review image ${i + 1}`}
-                      className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0 border"
-                      style={{ borderColor: t.border }}
-                    />
-                  ))}
+                <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
+                  {r.images.map((src, i) => {
+                    const isVideo = src.match(/\.(mp4|webm|ogg|mov)$/i);
+                    return isVideo ? (
+                      <video
+                        key={i}
+                        src={cdnUrl(src)}
+                        controls
+                        className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0 border bg-black"
+                        style={{ borderColor: t.border }}
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={i}
+                        src={cdnUrl(src)}
+                        alt={`Review media ${i + 1}`}
+                        className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0 border"
+                        style={{ borderColor: t.border }}
+                      />
+                    );
+                  })}
                 </div>
               )}
               <button
@@ -287,6 +300,8 @@ function ReviewForm({
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
@@ -300,11 +315,24 @@ function ReviewForm({
     }
     setSubmitting(true);
     try {
+      const supabase = getSupabaseBrowserClient();
+      const uploadedUrls: string[] = [];
+      const uploadFile = async (f: File) => {
+        const ext = f.name.split('.').pop();
+        const path = `reviews/${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
+        const { data, error } = await supabase.storage.from("public-assets").upload(path, f);
+        if (data) uploadedUrls.push(`/${path}`);
+      };
+
+      for (const p of photos) await uploadFile(p);
+      if (video) await uploadFile(video);
+
       await submitReview(productId, {
         order_item_id: orderItemId,
         rating,
         title: title.trim() || undefined,
         body: body.trim() || undefined,
+        images: uploadedUrls,
       });
       onSubmitted();
     } catch (err) {
@@ -407,6 +435,71 @@ function ReviewForm({
             <p className="text-xs mt-1" style={{ color: t.textSecondary }}>
               {body.length} / 4000
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2" style={{ color: t.textPrimary }}>
+              Add Media (optional)
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {photos.map((p, i) => (
+                <div key={i} className="relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={URL.createObjectURL(p)} className="w-full h-full object-cover" alt="" />
+                  <button
+                    onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
+                    className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+              {video && (
+                <div className="relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden group bg-black">
+                  <video src={URL.createObjectURL(video)} className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => setVideo(null)}
+                    className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <VideoIcon className="absolute bottom-1 left-1 text-white drop-shadow" size={14} />
+                </div>
+              )}
+              {photos.length < 5 && (
+                <label className="w-16 h-16 md:w-20 md:h-20 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors" style={{ borderColor: t.border }}>
+                  <ImageIcon size={20} style={{ color: t.textSecondary }} />
+                  <span className="text-[10px] mt-1 font-medium" style={{ color: t.textSecondary }}>Photo</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        setPhotos(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 5));
+                      }
+                    }}
+                  />
+                </label>
+              )}
+              {!video && (
+                <label className="w-16 h-16 md:w-20 md:h-20 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors" style={{ borderColor: t.border }}>
+                  <VideoIcon size={20} style={{ color: t.textSecondary }} />
+                  <span className="text-[10px] mt-1 font-medium" style={{ color: t.textSecondary }}>1 Video</span>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setVideo(e.target.files[0]);
+                      }
+                    }}
+                  />
+                </label>
+              )}
+            </div>
           </div>
         </div>
 

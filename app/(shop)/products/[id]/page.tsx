@@ -310,9 +310,9 @@ export default function ProductDetailPage() {
           return (
             <div>
               {/* MOBILE SWIPE GALLERY (<md) */}
-              <div 
-                className="md:hidden flex overflow-x-auto snap-x snap-mandatory touch-pan-y" 
-                style={{ background: t.bgBlueTint, scrollbarWidth: "none", msOverflowStyle: "none" }}
+              <div
+                className="md:hidden flex overflow-x-auto snap-x snap-mandatory touch-pan-x"
+                style={{ background: t.bgBlueTint, scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain" }}
                 onScroll={(e) => {
                   const scrollLeft = e.currentTarget.scrollLeft;
                   const clientWidth = e.currentTarget.clientWidth;

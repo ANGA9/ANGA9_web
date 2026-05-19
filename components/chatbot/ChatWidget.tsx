@@ -35,17 +35,25 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
 
   const initSession = async () => {
     setIsTyping(true);
+    // Show the greeting immediately so the panel is never blank,
+    // even if createSession is slow or fails.
+    setMessages([{
+      id: 'welcome',
+      role: 'assistant',
+      content: `Hi! I'm the ANGA Assistant. How can I help you today?`,
+      created_at: new Date().toISOString()
+    }]);
     try {
       const sess = await chatbotApi.createSession(surface);
       setSession(sess);
-      setMessages([{
-        id: 'welcome',
-        role: 'assistant',
-        content: `Hi! I'm the ANGA Assistant. How can I help you today?`,
-        created_at: new Date().toISOString()
-      }]);
     } catch (err) {
       console.error('Failed to init session', err);
+      setMessages(prev => [...prev, {
+        id: 'init_error',
+        role: 'error',
+        content: "Couldn't connect to the assistant. Please try again in a moment.",
+        created_at: new Date().toISOString(),
+      } as any]);
     } finally {
       setIsTyping(false);
     }

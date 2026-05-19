@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ChatWidget from "@/components/chatbot/ChatWidget";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function CustomerShopLayout({
   children,
@@ -20,6 +21,7 @@ export default function CustomerShopLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { user, loading: authLoading } = useAuth();
   const isCheckout = pathname === "/checkout";
   const isWishlist = pathname === "/wishlist";
   const isCart = pathname === "/cart";
@@ -85,8 +87,8 @@ export default function CustomerShopLayout({
             {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
             {!isCheckout && <MobileBottomNav />}
 
-            {/* ══════════ CHAT WIDGET ══════════ */}
-            {isHomepage && (
+            {/* ══════════ CHAT WIDGET — logged-in users only ══════════ */}
+            {isHomepage && !authLoading && user && (
               <div className="block">
                 <ChatWidget surface="customer" />
               </div>

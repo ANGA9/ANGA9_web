@@ -23,12 +23,19 @@ const nextConfig: NextConfig = {
       : [],
   },
   async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "http://localhost:4000/api/:path*",
-      },
-    ];
+    // Dev only: proxy /api/* to the local backend so the browser can hit it
+    // through Next.js (avoids PNA popups, no CORS setup needed).
+    // In production, NEXT_PUBLIC_API_URL is set in Vercel and api.ts hits the
+    // VPS directly — this rewrite would otherwise blackhole every API call.
+    if (process.env.NODE_ENV !== "production") {
+      return [
+        {
+          source: "/api/:path*",
+          destination: "http://localhost:4000/api/:path*",
+        },
+      ];
+    }
+    return [];
   },
 };
 

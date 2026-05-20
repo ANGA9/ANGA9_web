@@ -81,6 +81,11 @@ export default function CustomerHomePage() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const hasActiveFilters = !!categoryParam;
 
+  // Categories don't change between paginated requests — cache the map from
+  // the initial fetch and reuse it in loadMore instead of refetching every
+  // infinite-scroll page.
+  const catMapRef = useRef<Map<string, string>>(new Map());
+
   const updateFilters = (updates: Record<string, string>) => {
     if (updates.sort !== undefined) setSortParam(updates.sort);
     if (updates.category !== undefined) setCategoryParam(updates.category);
@@ -111,13 +116,14 @@ export default function CustomerHomePage() {
 
         if (cancelled) return;
 
-        // Build category lookup
+        // Build category lookup and cache it for loadMore.
         const catMap = new Map<string, string>();
         const rawCats = categoriesRes;
         const cats = Array.isArray(rawCats) ? rawCats : (rawCats as { categories: ApiCategory[] })?.categories ?? [];
         for (const c of cats) {
           catMap.set(c.id, c.name);
         }
+        catMapRef.current = catMap;
 
         const items = productsRes?.data ?? [];
         const mapped = items.map((p) =>
@@ -160,19 +166,13 @@ export default function CustomerHomePage() {
       queryParams.set("sort_by", sortParam);
       if (categoryParam) queryParams.set("category", categoryParam);
 
-      const [productsRes, categoriesRes] = await Promise.all([
-        api.get<{ data: ApiProduct[]; total: number }>(
-          `/api/products?${queryParams.toString()}`
-        ),
-        api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
-      ]);
+      // Reuse the categories map from the initial fetch — it won't change
+      // mid-scroll. Falls back to an empty map if the initial load failed.
+      const productsRes = await api.get<{ data: ApiProduct[]; total: number }>(
+        `/api/products?${queryParams.toString()}`
+      );
 
-      const catMap = new Map<string, string>();
-      const rawCats = categoriesRes;
-      const cats = Array.isArray(rawCats) ? rawCats : (rawCats as { categories: ApiCategory[] })?.categories ?? [];
-      for (const c of cats) {
-        catMap.set(c.id, c.name);
-      }
+      const catMap = catMapRef.current;
 
       const items = productsRes?.data ?? [];
       const mapped = items.map((p) =>

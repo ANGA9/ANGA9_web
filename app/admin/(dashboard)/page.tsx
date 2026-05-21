@@ -29,8 +29,7 @@ function formatCurrency(n: number): string {
 interface StatsData {
   title: string;
   value: string;
-  delta: string;
-  deltaType: "positive" | "negative";
+  badges: Array<{ text: string; label: string; type: "positive" | "negative" }>;
   icon: typeof Package;
   iconColor: string;
   iconBg: string;
@@ -38,11 +37,11 @@ interface StatsData {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatsData[]>([
-    { title: "Total Revenue", value: "₹0", delta: "loading", deltaType: "positive", icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
-    { title: "Total Sales", value: "...", delta: "loading", deltaType: "positive", icon: ShoppingCart, iconColor: "#8B5CF6", iconBg: "#F5F3FF" },
-    { title: "Registered Sellers", value: "...", delta: "loading", deltaType: "positive", icon: Store, iconColor: "#4338CA", iconBg: "#F3EEFF" },
-    { title: "Products Live", value: "...", delta: "loading", deltaType: "positive", icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
-    { title: "Pending Reviews", value: "...", delta: "loading", deltaType: "positive", icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
+    { title: "Total Revenue", value: "₹0", badges: [{ text: "", label: "loading", type: "positive" }], icon: IndianRupee, iconColor: "#1A6FD4", iconBg: "#EAF2FF" },
+    { title: "Total Sales", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: ShoppingCart, iconColor: "#8B5CF6", iconBg: "#F5F3FF" },
+    { title: "Registered Sellers", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: Store, iconColor: "#4338CA", iconBg: "#F3EEFF" },
+    { title: "Products Live", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
+    { title: "Pending Product Reviews", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" },
   ]);
 
   useEffect(() => {
@@ -59,8 +58,9 @@ export default function DashboardPage() {
             {
               title: "Total Revenue",
               value: formatCurrency(res.totalRevenue ?? 0),
-              delta: "across confirmed orders",
-              deltaType: "positive",
+              badges: [
+                { text: formatCount(res.totalOrders ?? 0), label: "confirmed orders", type: "positive" },
+              ],
               icon: IndianRupee,
               iconColor: "#1A6FD4",
               iconBg: "#EAF2FF",
@@ -68,21 +68,22 @@ export default function DashboardPage() {
             {
               title: "Total Sales",
               value: formatCount(res.totalOrders ?? 0),
-              delta: "completed orders",
-              deltaType: "positive",
+              badges: [
+                { text: "✓", label: "completed", type: "positive" },
+              ],
               icon: ShoppingCart,
               iconColor: "#8B5CF6",
               iconBg: "#F5F3FF",
             },
             {
-              // Show pending-review count inline with the seller total so
-              // admins immediately see "X awaiting review" from the dashboard.
               title: "Registered Sellers",
-              value: `${formatCount(res.totalSellers ?? 0)}${
-                res.pendingSellers ? ` · ${formatCount(res.pendingSellers)} awaiting review` : ""
-              }`,
-              delta: `${formatCount(res.verifiedSellers ?? 0)} verified`,
-              deltaType: (res.pendingSellers ?? 0) > 0 ? "negative" : "positive",
+              value: formatCount(res.totalSellers ?? 0),
+              badges: [
+                { text: formatCount(res.verifiedSellers ?? 0), label: "verified", type: "positive" },
+                ...((res.pendingSellers ?? 0) > 0
+                  ? [{ text: formatCount(res.pendingSellers!), label: "pending", type: "negative" as const }]
+                  : []),
+              ],
               icon: Store,
               iconColor: "#4338CA",
               iconBg: "#F3EEFF",
@@ -90,17 +91,21 @@ export default function DashboardPage() {
             {
               title: "Products Live",
               value: formatCount(res.activeProducts ?? 0),
-              delta: `${formatCount(res.totalProducts ?? 0)} total`,
-              deltaType: "positive",
+              badges: [
+                { text: `+${formatCount(res.totalProducts ?? 0)}`, label: "total", type: "positive" },
+              ],
               icon: Package,
               iconColor: "#22C55E",
               iconBg: "#F0FDF4",
             },
             {
-              title: "Pending Reviews",
+              title: "Pending Product Reviews",
               value: formatCount(res.pendingProducts ?? 0),
-              delta: res.pendingProducts ? "needs attention" : "all clear",
-              deltaType: res.pendingProducts ? "negative" : "positive",
+              badges: [
+                res.pendingProducts
+                  ? { text: "!", label: "needs attention", type: "negative" as const }
+                  : { text: "✓", label: "all clear", type: "positive" as const },
+              ],
               icon: ClipboardCheck,
               iconColor: "#F59E0B",
               iconBg: "#FFFBEB",

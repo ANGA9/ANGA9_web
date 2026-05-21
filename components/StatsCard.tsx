@@ -1,10 +1,15 @@
 import { type LucideIcon } from "lucide-react";
 
+interface Badge {
+  text: string;
+  label: string;
+  type: "positive" | "negative";
+}
+
 interface StatsCardProps {
   title: string;
   value: string;
-  delta: string;
-  deltaType: "positive" | "negative";
+  badges: Badge[];
   icon: LucideIcon;
   iconColor: string;
   iconBg: string;
@@ -13,15 +18,11 @@ interface StatsCardProps {
 export default function StatsCard({
   title,
   value,
-  delta,
-  deltaType,
+  badges,
   icon: Icon,
   iconColor,
   iconBg,
 }: StatsCardProps) {
-  // Use admin purple for positive deltas to match premium brand, or stick to green if strictly positive/negative
-  const isPositive = deltaType === "positive";
-  
   return (
     <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
       {/* Decorative background blob */}
@@ -43,17 +44,26 @@ export default function StatsCard({
         <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{value}</p>
         <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">{title}</p>
         
-        <div className="flex items-center gap-2 mt-auto">
-          <span 
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase ${
-              isPositive ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-            }`}
-          >
-            {isPositive ? "+" : ""}{delta.split(' ')[0]}
-          </span>
-          <span className="text-[12px] font-medium text-gray-500 truncate">
-            {delta.split(' ').slice(1).join(' ')}
-          </span>
+        <div className="flex items-center gap-2 mt-auto flex-wrap">
+          {badges.map((badge, i) => {
+            const isPositive = badge.type === "positive";
+            return (
+              <div key={i} className="flex items-center gap-1">
+                {badge.text && (
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase ${
+                      isPositive ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+                    }`}
+                  >
+                    {badge.text}
+                  </span>
+                )}
+                <span className="text-[12px] font-medium text-gray-500 truncate">
+                  {badge.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

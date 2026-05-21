@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
 
       const { data: dbUser, error: dbErr } = await supabase
         .from("users")
-        .select("role")
+        .select("role, admin_level")
         .eq("auth_uid", authUid)
         .single();
 
@@ -111,7 +111,9 @@ export default function AdminLoginPage() {
         return;
       }
 
+      const level = dbUser.admin_level || "super_admin";
       document.cookie = "portal=admin; path=/; max-age=86400";
+      document.cookie = `admin_level=${level}; path=/; max-age=86400`;
       window.location.href = "/admin";
     } catch (err: any) {
       if (err.message?.includes("expired")) {

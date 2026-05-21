@@ -6,6 +6,18 @@ import { api } from "@/lib/api";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
+type AdminLevel = "super_admin" | "admin";
+
+/** Routes that only super_admin can access */
+const SUPER_ADMIN_ROUTES = [
+  "/admin/settings",
+  "/admin/payouts",
+  "/admin/users",
+  "/admin/reports",
+  "/admin/chatbot",
+  "/admin/ads",
+];
+
 function getCookie(name: string): string | null {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? match[2] : null;
@@ -22,6 +34,7 @@ export default function AdminDashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
   const [pendingSellersCount, setPendingSellersCount] = useState(0);
+  const [adminLevel, setAdminLevel] = useState<AdminLevel>("super_admin");
 
   useEffect(() => {
     // Skip auth check on login page
@@ -33,9 +46,22 @@ export default function AdminDashboardLayout({
     if (portal !== "admin") {
       router.replace("/admin/login");
     } else {
+      const level = (getCookie("admin_level") as AdminLevel) || "super_admin";
+      setAdminLevel(level);
       setAuthed(true);
     }
   }, [pathname, router]);
+
+  // Route-guard: redirect normal admins away from super-admin-only pages
+  useEffect(() => {
+    if (!authed || adminLevel === "super_admin") return;
+    const isRestricted = SUPER_ADMIN_ROUTES.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    );
+    if (isRestricted) {
+      router.replace("/admin");
+    }
+  }, [authed, adminLevel, pathname, router]);
 
   useEffect(() => {
     if (!authed) return;
@@ -66,6 +92,7 @@ export default function AdminDashboardLayout({
 
   function handleLogout() {
     document.cookie = "portal=; path=/; max-age=0";
+    document.cookie = "admin_level=; path=/; max-age=0";
     router.push("/admin/login");
   }
 
@@ -76,12 +103,14 @@ export default function AdminDashboardLayout({
         pendingReviewsCount={pendingReviewsCount}
         pendingSellersCount={pendingSellersCount}
         onLogout={handleLogout}
+        adminLevel={adminLevel}
       />
       <AdminSidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         pendingSellersCount={pendingSellersCount}
         pendingReviewsCount={pendingReviewsCount}
+        adminLevel={adminLevel}
       />
       <main className="lg:ml-[260px] min-h-[calc(100vh-72px)] bg-[#F8FBFF]">
         {children}

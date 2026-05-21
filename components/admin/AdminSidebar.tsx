@@ -20,36 +20,47 @@ import {
   UserCheck,
 } from "lucide-react";
 
+type AdminLevel = "super_admin" | "admin";
+
 type NavItem = {
   label: string;
   href: string;
   icon: typeof LayoutDashboard;
   /** Key the sidebar uses to attach a numeric badge to this row. */
   badgeKey?: "pendingSellers" | "pendingReviews";
+  /** If true, only visible to super_admin */
+  superOnly?: boolean;
 };
 
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
-  { label: "Ad Campaigns", href: "/admin/ads", icon: Megaphone },
+  { label: "Ad Campaigns", href: "/admin/ads", icon: Megaphone, superOnly: true },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Disputes", href: "/admin/orders/disputes", icon: AlertTriangle },
   { label: "Sellers", href: "/admin/sellers", icon: Store },
   { label: "Pending Sellers", href: "/admin/pending-sellers", icon: UserCheck, badgeKey: "pendingSellers" },
   { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck, badgeKey: "pendingReviews" },
-  { label: "Users", href: "/admin/users", icon: Users },
-  { label: "Payouts", href: "/admin/payouts", icon: Wallet },
+  { label: "Users", href: "/admin/users", icon: Users, superOnly: true },
+  { label: "Payouts", href: "/admin/payouts", icon: Wallet, superOnly: true },
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
-  { label: "Reports", href: "/admin/reports", icon: BarChart3 },
-  { label: "Chatbot", href: "/admin/chatbot", icon: Bot },
-  { label: "Settings", href: "/admin/settings", icon: Settings },
+  { label: "Reports", href: "/admin/reports", icon: BarChart3, superOnly: true },
+  { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
+  { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },
 ];
+
+/** Accent colors per admin level */
+const ACCENT = {
+  super_admin: { bg: "bg-[#8B5CF6]", shadow: "shadow-[#8B5CF6]/20", text: "text-[#8B5CF6]", hoverText: "group-hover:text-[#8B5CF6]" },
+  admin:       { bg: "bg-[#16A34A]", shadow: "shadow-[#16A34A]/20", text: "text-[#16A34A]", hoverText: "group-hover:text-[#16A34A]" },
+};
 
 interface AdminSidebarProps {
   open: boolean;
   onClose: () => void;
   pendingSellersCount?: number;
   pendingReviewsCount?: number;
+  adminLevel?: AdminLevel;
 }
 
 export default function AdminSidebar({
@@ -57,8 +68,15 @@ export default function AdminSidebar({
   onClose,
   pendingSellersCount = 0,
   pendingReviewsCount = 0,
+  adminLevel = "super_admin",
 }: AdminSidebarProps) {
   const pathname = usePathname();
+  const accent = ACCENT[adminLevel];
+
+  // Filter out super-only items for normal admins
+  const visibleNav = adminLevel === "super_admin"
+    ? NAV
+    : NAV.filter((item) => !item.superOnly);
   
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
@@ -93,7 +111,7 @@ export default function AdminSidebar({
 
         <nav className="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1.5">
           <div className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 px-3">System Control</div>
-          {NAV.map((item) => {
+          {visibleNav.map((item) => {
             const active = isActive(item.href);
             const badgeCount =
               item.badgeKey === "pendingSellers"
@@ -108,11 +126,11 @@ export default function AdminSidebar({
                 onClick={onClose}
                 className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-[14px] font-bold transition-all ${
                   active
-                    ? "bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/20"
+                    ? `${accent.bg} text-white shadow-md ${accent.shadow}`
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] transition-transform group-hover:scale-110 ${active ? "text-white" : "text-gray-400 group-hover:text-[#8B5CF6]"}`} />
+                <item.icon className={`w-[18px] h-[18px] transition-transform group-hover:scale-110 ${active ? "text-white" : `text-gray-400 ${accent.hoverText}`}`} />
                 <span className="flex-1">{item.label}</span>
                 {badgeCount > 0 && (
                   <span
@@ -132,12 +150,14 @@ export default function AdminSidebar({
 
         <div className="p-5 border-t border-gray-100 bg-gray-50/50 mt-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 text-white flex items-center justify-center shadow-sm">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${adminLevel === "super_admin" ? "from-gray-900 to-gray-700" : "from-green-800 to-green-600"} text-white flex items-center justify-center shadow-sm`}>
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-[13px] font-bold text-gray-900">ANGA9 Core</span>
-              <span className="text-[11px] font-medium text-gray-500">v2.1.0 Admin</span>
+              <span className="text-[11px] font-medium text-gray-500">
+                {adminLevel === "super_admin" ? "v2.1.0 Super Admin" : "v2.1.0 Admin"}
+              </span>
             </div>
           </div>
         </div>

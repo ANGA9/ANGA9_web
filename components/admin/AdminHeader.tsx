@@ -4,11 +4,14 @@ import Link from "next/link";
 import { Menu, LogOut, Bell, User } from "lucide-react";
 import { cdnUrl } from "@/lib/utils";
 
+type AdminLevel = "super_admin" | "admin";
+
 interface AdminHeaderProps {
   onMenuToggle: () => void;
   pendingReviewsCount?: number;
   pendingSellersCount?: number;
   onLogout: () => void;
+  adminLevel?: AdminLevel;
 }
 
 export default function AdminHeader({
@@ -16,7 +19,10 @@ export default function AdminHeader({
   pendingReviewsCount = 0,
   pendingSellersCount = 0,
   onLogout,
+  adminLevel = "super_admin",
 }: AdminHeaderProps) {
+  const isSuperAdmin = adminLevel === "super_admin";
+  const accentColor = isSuperAdmin ? "#8B5CF6" : "#16A34A";
   // Total badge across pending sellers + pending product reviews.
   // Sellers take routing priority — onboarding approvals are higher-stakes
   // than product moderation, and the count tooltip clarifies the breakdown.
@@ -42,14 +48,17 @@ export default function AdminHeader({
         </div>
       </Link>
 
-      <span className="ml-4 text-[11px] font-black text-[#8B5CF6] bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
-        Admin Portal
+      <span
+        className="ml-4 text-[11px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm"
+        style={{ color: accentColor, backgroundColor: `${accentColor}1A`, borderWidth: 1, borderColor: `${accentColor}33` }}
+      >
+        {isSuperAdmin ? "Super Admin Portal" : "Admin Portal"}
       </span>
 
       <div className="flex-1" />
 
       <div className="flex items-center gap-3 sm:gap-5">
-        <div className="relative text-gray-500 hover:text-[#8B5CF6] transition-colors">
+        <div className={`relative text-gray-500 transition-colors`} style={{ ['--hover-accent' as string]: accentColor }}>
           <Link
             href={bellHref}
             className="flex items-center justify-center relative w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"

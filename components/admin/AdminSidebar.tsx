@@ -16,17 +16,27 @@ import {
   AlertTriangle,
   Megaphone,
   ShieldCheck,
-  Bot
+  Bot,
+  UserCheck,
 } from "lucide-react";
 
-const NAV = [
+type NavItem = {
+  label: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  /** Key the sidebar uses to attach a numeric badge to this row. */
+  badgeKey?: "pendingSellers" | "pendingReviews";
+};
+
+const NAV: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Ad Campaigns", href: "/admin/ads", icon: Megaphone },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Disputes", href: "/admin/orders/disputes", icon: AlertTriangle },
   { label: "Sellers", href: "/admin/sellers", icon: Store },
-  { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck },
+  { label: "Pending Sellers", href: "/admin/pending-sellers", icon: UserCheck, badgeKey: "pendingSellers" },
+  { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck, badgeKey: "pendingReviews" },
   { label: "Users", href: "/admin/users", icon: Users },
   { label: "Payouts", href: "/admin/payouts", icon: Wallet },
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
@@ -35,7 +45,19 @@ const NAV = [
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+interface AdminSidebarProps {
+  open: boolean;
+  onClose: () => void;
+  pendingSellersCount?: number;
+  pendingReviewsCount?: number;
+}
+
+export default function AdminSidebar({
+  open,
+  onClose,
+  pendingSellersCount = 0,
+  pendingReviewsCount = 0,
+}: AdminSidebarProps) {
   const pathname = usePathname();
   
   const isActive = (href: string) => {
@@ -73,6 +95,12 @@ export default function AdminSidebar({ open, onClose }: { open: boolean; onClose
           <div className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 px-3">System Control</div>
           {NAV.map((item) => {
             const active = isActive(item.href);
+            const badgeCount =
+              item.badgeKey === "pendingSellers"
+                ? pendingSellersCount
+                : item.badgeKey === "pendingReviews"
+                  ? pendingReviewsCount
+                  : 0;
             return (
               <Link
                 key={item.href}
@@ -85,7 +113,18 @@ export default function AdminSidebar({ open, onClose }: { open: boolean; onClose
                 }`}
               >
                 <item.icon className={`w-[18px] h-[18px] transition-transform group-hover:scale-110 ${active ? "text-white" : "text-gray-400 group-hover:text-[#8B5CF6]"}`} />
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {badgeCount > 0 && (
+                  <span
+                    className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[11px] font-bold ${
+                      active
+                        ? "bg-white/25 text-white"
+                        : "bg-[#EF4444] text-white"
+                    }`}
+                  >
+                    {badgeCount > 99 ? "99+" : badgeCount}
+                  </span>
+                )}
               </Link>
             );
           })}

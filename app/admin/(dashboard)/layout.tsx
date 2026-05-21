@@ -21,6 +21,7 @@ export default function AdminDashboardLayout({
   const [authed, setAuthed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+  const [pendingSellersCount, setPendingSellersCount] = useState(0);
 
   useEffect(() => {
     // Skip auth check on login page
@@ -38,13 +39,27 @@ export default function AdminDashboardLayout({
 
   useEffect(() => {
     if (!authed) return;
+
+    // Poll once on mount and then every 60s so a newly submitted seller
+    // shows up in the bell within a minute without a hard refresh.
+    let cancelled = false;
     async function fetchStats() {
       try {
-        const res = await api.get<{ pendingProducts?: number }>("/api/users/admin-stats", { silent: true });
-        setPendingReviewsCount(res?.pendingProducts ?? 0);
+        const res = await api.get<{ pendingProducts?: number; pendingSellers?: number }>(
+          "/api/users/admin-stats",
+          { silent: true },
+        );
+        if (cancelled || !res) return;
+        setPendingReviewsCount(res.pendingProducts ?? 0);
+        setPendingSellersCount(res.pendingSellers ?? 0);
       } catch { /* ignore */ }
     }
     fetchStats();
+    const timer = setInterval(fetchStats, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
   }, [authed]);
 
   if (!authed) return null;
@@ -56,12 +71,18 @@ export default function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#F8FBFF]" style={{ fontFamily: "var(--font-gilroy)" }}>
-      <AdminHeader 
-        onMenuToggle={() => setSidebarOpen((v) => !v)} 
+      <AdminHeader
+        onMenuToggle={() => setSidebarOpen((v) => !v)}
         pendingReviewsCount={pendingReviewsCount}
+        pendingSellersCount={pendingSellersCount}
         onLogout={handleLogout}
       />
-      <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AdminSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        pendingSellersCount={pendingSellersCount}
+        pendingReviewsCount={pendingReviewsCount}
+      />
       <main className="lg:ml-[260px] min-h-[calc(100vh-72px)] bg-[#F8FBFF]">
         {children}
       </main>

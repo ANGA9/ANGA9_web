@@ -7,10 +7,29 @@ import { cdnUrl } from "@/lib/utils";
 interface AdminHeaderProps {
   onMenuToggle: () => void;
   pendingReviewsCount?: number;
+  pendingSellersCount?: number;
   onLogout: () => void;
 }
 
-export default function AdminHeader({ onMenuToggle, pendingReviewsCount = 0, onLogout }: AdminHeaderProps) {
+export default function AdminHeader({
+  onMenuToggle,
+  pendingReviewsCount = 0,
+  pendingSellersCount = 0,
+  onLogout,
+}: AdminHeaderProps) {
+  // Total badge across pending sellers + pending product reviews.
+  // Sellers take routing priority — onboarding approvals are higher-stakes
+  // than product moderation, and the count tooltip clarifies the breakdown.
+  const totalPending = pendingSellersCount + pendingReviewsCount;
+  const bellHref = pendingSellersCount > 0 ? "/admin/pending-sellers" : "/admin/reviews";
+  const bellTitle =
+    pendingSellersCount > 0 && pendingReviewsCount > 0
+      ? `${pendingSellersCount} sellers · ${pendingReviewsCount} products awaiting review`
+      : pendingSellersCount > 0
+        ? `${pendingSellersCount} seller${pendingSellersCount === 1 ? "" : "s"} awaiting review`
+        : pendingReviewsCount > 0
+          ? `${pendingReviewsCount} product${pendingReviewsCount === 1 ? "" : "s"} awaiting review`
+          : "No pending items";
   return (
     <header className="sticky top-0 z-50 h-[72px] bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center px-4 sm:px-6 transition-all">
       <button className="lg:hidden mr-4 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-700 transition-colors" onClick={onMenuToggle}>
@@ -32,14 +51,14 @@ export default function AdminHeader({ onMenuToggle, pendingReviewsCount = 0, onL
       <div className="flex items-center gap-3 sm:gap-5">
         <div className="relative text-gray-500 hover:text-[#8B5CF6] transition-colors">
           <Link
-            href="/admin/reviews"
+            href={bellHref}
             className="flex items-center justify-center relative w-9 h-9 rounded-full hover:bg-gray-100 transition-colors"
-            title="Notifications"
+            title={bellTitle}
           >
             <Bell className="h-5 w-5" />
-            {pendingReviewsCount > 0 && (
+            {totalPending > 0 && (
               <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#EF4444] text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
-                {pendingReviewsCount > 9 ? "9+" : pendingReviewsCount}
+                {totalPending > 9 ? "9+" : totalPending}
               </span>
             )}
           </Link>

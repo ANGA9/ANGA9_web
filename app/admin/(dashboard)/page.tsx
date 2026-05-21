@@ -75,10 +75,14 @@ export default function DashboardPage() {
               iconBg: "#F5F3FF",
             },
             {
+              // Show pending-review count inline with the seller total so
+              // admins immediately see "X awaiting review" from the dashboard.
               title: "Registered Sellers",
-              value: formatCount(res.totalSellers ?? 0),
+              value: `${formatCount(res.totalSellers ?? 0)}${
+                res.pendingSellers ? ` · ${formatCount(res.pendingSellers)} awaiting review` : ""
+              }`,
               delta: `${formatCount(res.verifiedSellers ?? 0)} verified`,
-              deltaType: "positive",
+              deltaType: (res.pendingSellers ?? 0) > 0 ? "negative" : "positive",
               icon: Store,
               iconColor: "#4338CA",
               iconBg: "#F3EEFF",

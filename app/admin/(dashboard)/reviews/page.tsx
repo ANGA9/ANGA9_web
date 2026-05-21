@@ -7,6 +7,7 @@ interface Product {
   id: string;
   name: string;
   slug: string;
+  seller_id?: string;
   base_price: number;
   sale_price?: number | null;
   min_order_qty?: number;
@@ -27,6 +28,12 @@ interface Product {
   warranty?: string;
 }
 
+interface SellerLite {
+  user_id: string;
+  business_name?: string;
+  store_name?: string;
+}
+
 function formatINR(value: number) {
   return "\u20B9" + Number(value || 0).toLocaleString("en-IN");
 }
@@ -42,16 +49,34 @@ export default function ReviewsPage() {
   const [rejectNotes, setRejectNotes] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [previewTarget, setPreviewTarget] = useState<Product | null>(null);
+  // seller_id (== user_id) -> display name. The product API only returns
+  // seller_id, so we resolve names in one extra request against the existing
+  // admin sellers endpoint instead of changing the backend join shape.
+  const [sellerNames, setSellerNames] = useState<Map<string, string>>(new Map());
 
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await api.get<{ data: Product[] }>("/api/products?status=pending_review&limit=50");
-      setProducts(res?.data || []);
+      const [productsRes, sellersRes] = await Promise.all([
+        api.get<{ data: Product[] }>("/api/products?status=pending_review&limit=50"),
+        api.get<{ sellers: SellerLite[] }>("/api/users/sellers", { silent: true }),
+      ]);
+      setProducts(productsRes?.data || []);
+      const map = new Map<string, string>();
+      for (const s of sellersRes?.sellers || []) {
+        const name = s.business_name || s.store_name;
+        if (s.user_id && name) map.set(s.user_id, name);
+      }
+      setSellerNames(map);
     } catch { /* ignore */ }
     setLoading(false);
   }, []);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  const sellerNameFor = (p: Product): string => {
+    if (!p.seller_id) return "—";
+    return sellerNames.get(p.seller_id) || `Seller ${p.seller_id.slice(0, 8)}`;
+  };
 
   async function handleApprove(productId: string) {
     setActionLoading(productId);
@@ -113,6 +138,7 @@ export default function ReviewsPage() {
               <thead>
                 <tr className="bg-gray-50/50 border-b border-gray-100">
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product Info</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Seller</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Description</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Pricing</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Submitted</th>
@@ -135,6 +161,16 @@ export default function ReviewsPage() {
                           <p className="font-bold text-[14px] text-gray-900 line-clamp-1">{p.name}</p>
                           <p className="text-[12px] font-medium text-gray-400 truncate uppercase tracking-tight">ID: {p.id.slice(0, 8)}</p>
                         </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                          <Store className="w-3.5 h-3.5 text-gray-500" />
+                        </div>
+                        <span className="text-[13px] font-bold text-gray-700 truncate max-w-[180px]" title={sellerNameFor(p)}>
+                          {sellerNameFor(p)}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -187,6 +223,7 @@ export default function ReviewsPage() {
       {previewTarget && (
         <PreviewModal
           product={previewTarget}
+          sellerName={sellerNameFor(previewTarget)}
           onClose={() => setPreviewTarget(null)}
           onApprove={() => handleApprove(previewTarget.id)}
           onReject={() => { setRejectTarget(previewTarget); setRejectNotes(""); setPreviewTarget(null); }}
@@ -248,13 +285,14 @@ export default function ReviewsPage() {
 
 interface PreviewModalProps {
   product: Product;
+  sellerName: string;
   onClose: () => void;
   onApprove: () => void;
   onReject: () => void;
   actionLoading: boolean;
 }
 
-function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: PreviewModalProps) {
+function PreviewModal({ product, sellerName, onClose, onApprove, onReject, actionLoading }: PreviewModalProps) {
   const [selectedMedia, setSelectedMedia] = useState(0);
 
   const allMedia = [
@@ -352,7 +390,7 @@ function PreviewModal({ product, onClose, onApprove, onReject, actionLoading }: 
                 <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
                    <Store className="w-3.5 h-3.5 text-gray-400" />
                 </div>
-                <span className="text-[14px] font-bold text-gray-500">Official ANGA9 Verified Seller</span>
+                <span className="text-[14px] font-bold text-gray-700">{sellerName}</span>
               </div>
 
               <div className="flex items-center gap-4 mb-8">

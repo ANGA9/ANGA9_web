@@ -41,14 +41,15 @@ interface StatsData {
 }
 
 export default function DashboardPage() {
-  const [adminLevel, setAdminLevel] = useState<string>("super_admin");
-  const [stats, setStats] = useState<StatsData[]>([]);
-
-  useEffect(() => {
-    const level = getCookie("admin_level") || "super_admin";
-    setAdminLevel(level);
-    
-    // Initial loading state
+  const [adminLevel, setAdminLevel] = useState<string>(() => {
+    if (typeof document !== "undefined") {
+      return getCookie("admin_level") || "super_admin";
+    }
+    return "super_admin";
+  });
+  
+  const [stats, setStats] = useState<StatsData[]>(() => {
+    const level = typeof document !== "undefined" ? (getCookie("admin_level") || "super_admin") : "super_admin";
     const initialStats: StatsData[] = [];
     if (level === "super_admin") {
       initialStats.push(
@@ -61,7 +62,12 @@ export default function DashboardPage() {
       { title: "Products Live", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: Package, iconColor: "#22C55E", iconBg: "#F0FDF4" },
       { title: "Pending Product Reviews", value: "...", badges: [{ text: "", label: "loading", type: "positive" }], icon: ClipboardCheck, iconColor: "#F59E0B", iconBg: "#FFFBEB" }
     );
-    setStats(initialStats);
+    return initialStats;
+  });
+
+  useEffect(() => {
+    const level = getCookie("admin_level") || "super_admin";
+    setAdminLevel(level);
   }, []);
 
   useEffect(() => {

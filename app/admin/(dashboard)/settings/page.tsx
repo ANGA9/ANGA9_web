@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
         const [configRes, adminsRes, meRes] = await Promise.all([
           api.get<Record<string, unknown>>("/api/admin/config", { silent: true }),
           api.get<{ data: AdminUser[] }>("/api/admin/users?role=admin", { silent: true }).catch(() => ({ data: [] })),
-          api.get<{ id: string }>("/api/users/me", { silent: true }).catch(() => null)
+          api.get<{ user: { id: string } }>("/api/auth/me", { silent: true }).catch(() => null)
         ]);
         
         if (configRes) {
@@ -56,7 +56,7 @@ export default function AdminSettingsPage() {
         }
         
         if (adminsRes?.data) {
-          const filteredAdmins = meRes ? adminsRes.data.filter((a) => a.id !== meRes.id) : adminsRes.data;
+          const filteredAdmins = (meRes && meRes.user) ? adminsRes.data.filter((a) => a.id !== meRes.user.id) : adminsRes.data;
           setAdmins(filteredAdmins);
         }
       } catch { /* use defaults */ }

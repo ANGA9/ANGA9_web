@@ -38,9 +38,10 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const [configRes, adminsRes] = await Promise.all([
+        const [configRes, adminsRes, meRes] = await Promise.all([
           api.get<Record<string, unknown>>("/api/admin/config", { silent: true }),
-          api.get<{ data: AdminUser[] }>("/api/admin/users?role=admin", { silent: true }).catch(() => ({ data: [] }))
+          api.get<{ data: AdminUser[] }>("/api/admin/users?role=admin", { silent: true }).catch(() => ({ data: [] })),
+          api.get<{ id: string }>("/api/users/me", { silent: true }).catch(() => null)
         ]);
         
         if (configRes) {
@@ -55,7 +56,8 @@ export default function AdminSettingsPage() {
         }
         
         if (adminsRes?.data) {
-          setAdmins(adminsRes.data);
+          const filteredAdmins = meRes ? adminsRes.data.filter((a) => a.id !== meRes.id) : adminsRes.data;
+          setAdmins(filteredAdmins);
         }
       } catch { /* use defaults */ }
       setLoading(false);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
@@ -51,6 +51,17 @@ interface RazorpayResponse {
   razorpay_signature: string;
 }
 
+const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
+  label: "",
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  pincode: "",
+};
+
+const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-all";
+
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
 }
@@ -68,6 +79,12 @@ export default function CheckoutPage() {
   const [cartWarnings, setCartWarnings] = useState<string[]>([]);
   const [cartBlocked, setCartBlocked] = useState(false);
   const [validating, setValidating] = useState(true);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+
+  // Inline address form state
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [savingAddress, setSavingAddress] = useState(false);
 
   // Validate cart against actual product status in Supabase
   useEffect(() => {
@@ -103,19 +120,28 @@ export default function CheckoutPage() {
     })();
   }, []);
 
+  const fetchAddresses = async () => {
+    setLoadingAddresses(true);
+    try {
+      const res = await api.get<{ addresses?: Address[]; data?: Address[] }>("/api/users/addresses", { silent: true });
+      const list = res?.addresses || res?.data || [];
+      setAddresses(list);
+      // Auto-select: prefer default address, then first one
+      const def = list.find((a) => a.is_default) || list[0];
+      if (def) setSelectedAddressId(def.id);
+    } catch { /* ignore */ }
+    setLoadingAddresses(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get<{ addresses?: Address[]; data?: Address[] }>("/api/users/addresses", { silent: true });
-        const list = res?.addresses || res?.data || [];
-        setAddresses(list);
-        const def = list.find((a) => a.is_default) || list[0];
-        if (def) setSelectedAddressId(def.id);
-      } catch { /* ignore */ }
-    })();
+    fetchAddresses();
   }, []);
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
+  const hasAddress = !!selectedAddress;
+
+  // Determine if pay button should be disabled
+  const payDisabled = placing || !razorpayLoaded || cartBlocked || validating || !hasAddress;
 
   const subtotal = items.reduce(
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
@@ -146,9 +172,49 @@ export default function CheckoutPage() {
     };
   }, []);
 
+  // ── Inline address form handlers ──
+  const openAddForm = () => {
+    setForm(EMPTY_FORM);
+    setShowAddressForm(true);
+    setShowAddressPicker(false);
+  };
+
+  const handleSaveAddress = async () => {
+    if (!form.line1 || !form.city || !form.state || !form.pincode) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    setSavingAddress(true);
+    try {
+      await api.post("/api/users/addresses", form);
+      toast.success("Address added successfully!");
+      setShowAddressForm(false);
+      setForm(EMPTY_FORM);
+      // Refresh addresses and auto-select the newest one
+      const res = await api.get<{ addresses?: Address[]; data?: Address[] }>("/api/users/addresses", { silent: true });
+      const list = res?.addresses || res?.data || [];
+      setAddresses(list);
+      // Select the newly added address (last in list, or the one with highest id)
+      if (list.length > 0) {
+        // Try to find the new one (it won't be in old addresses)
+        const oldIds = new Set(addresses.map(a => a.id));
+        const newAddr = list.find(a => !oldIds.has(a.id));
+        setSelectedAddressId(newAddr?.id || list[list.length - 1].id);
+      }
+    } catch {
+      toast.error("Failed to save address");
+    }
+    setSavingAddress(false);
+  };
+
   const handlePayWithRazorpay = async () => {
     if (!razorpayLoaded) {
       toast.error("Payment gateway is loading. Please wait...");
+      return;
+    }
+
+    if (!hasAddress) {
+      toast.error("Please add or select a delivery address first");
       return;
     }
 
@@ -263,6 +329,213 @@ export default function CheckoutPage() {
     );
   }
 
+  // ── Inline Address Form Component ──
+  const addressFormUI = (
+    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+      <div className="rounded-xl border-2 border-[#1A6FD4]/20 bg-blue-50/30 p-5 mt-3">
+        <div className="flex items-center justify-between mb-5">
+          <h4 className="text-[16px] font-bold flex items-center gap-2" style={{ color: t.textPrimary }}>
+            <Plus className="w-4 h-4" style={{ color: t.bluePrimary }} />
+            Add New Address
+          </h4>
+          <button
+            onClick={() => setShowAddressForm(false)}
+            className="p-1.5 hover:bg-white rounded-full transition-colors"
+          >
+            <X className="w-4 h-4" style={{ color: t.textMuted }} />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Label</label>
+            <input className={inputCls} placeholder="Home, Office..." value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Pincode *</label>
+            <input className={inputCls} placeholder="110001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Address Line 1 *</label>
+            <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Address Line 2</label>
+            <input className={inputCls} placeholder="Landmark, Area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">City *</label>
+            <input className={inputCls} placeholder="New Delhi" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">State *</label>
+            <input className={inputCls} placeholder="Delhi" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+          </div>
+        </div>
+        <div className="flex gap-3 mt-5">
+          <button
+            onClick={() => setShowAddressForm(false)}
+            className="px-5 py-2.5 rounded-xl border text-[13px] font-bold hover:bg-white transition-all active:scale-95"
+            style={{ borderColor: t.border, color: t.textSecondary }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSaveAddress}
+            disabled={savingAddress}
+            className="px-6 py-2.5 rounded-xl text-[13px] font-bold text-white disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 shadow-sm"
+            style={{ background: t.bluePrimary }}
+          >
+            {savingAddress && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            <Save className="w-3.5 h-3.5" />
+            Save Address
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Delivery Address Section ──
+  const deliveryAddressUI = (
+    <div className="rounded-xl border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-[17px] font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
+          <MapPin className="w-5 h-5" style={{ color: t.bluePrimary }} /> Delivery Address
+        </h3>
+        {addresses.length > 0 && !showAddressForm && (
+          <button
+            onClick={() => setShowAddressPicker(!showAddressPicker)}
+            className="text-sm font-semibold flex items-center gap-1 hover:opacity-80 transition-opacity"
+            style={{ color: t.bluePrimary }}
+          >
+            {showAddressPicker ? "Hide" : "Change"} <ChevronDown className={`w-3 h-3 transition-transform ${showAddressPicker ? "rotate-180" : ""}`} />
+          </button>
+        )}
+      </div>
+
+      {loadingAddresses ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-6 h-6 animate-spin text-[#1A6FD4]" />
+        </div>
+      ) : addresses.length === 0 && !showAddressForm ? (
+        /* ── No saved addresses ── */
+        <div className="text-center py-6 border-2 border-dashed rounded-xl border-gray-200 bg-gray-50/50">
+          <MapPin className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+          <p className="text-[15px] font-bold text-gray-700 mb-1">No saved addresses</p>
+          <p className="text-[13px] text-gray-500 mb-4">Add a delivery address to proceed with payment</p>
+          <button
+            onClick={openAddForm}
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95 shadow-sm"
+            style={{ background: t.bluePrimary }}
+          >
+            <Plus className="w-4 h-4" />
+            Add an Address
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* ── Show selected address with card style ── */}
+          {selectedAddress && !showAddressPicker && !showAddressForm && (
+            <div
+              className="rounded-xl border-2 p-4 relative transition-all"
+              style={{ borderColor: t.bluePrimary, background: "#F8FBFF" }}
+            >
+              <div className="flex items-start gap-3">
+                {/* Radio-style selected indicator */}
+                <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: t.bluePrimary }}>
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: t.bluePrimary }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[15px] font-bold" style={{ color: t.textPrimary }}>
+                      {selectedAddress.label || "Address"}
+                    </span>
+                    {selectedAddress.is_default && (
+                      <span className="rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#1A6FD4] border border-blue-100">
+                        Default
+                      </span>
+                    )}
+                    <CheckCircle2 className="w-4 h-4 ml-auto shrink-0" style={{ color: t.bluePrimary }} />
+                  </div>
+                  <p className="text-[14px] leading-relaxed" style={{ color: t.textSecondary }}>
+                    {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}
+                  </p>
+                  <p className="text-[14px] font-medium" style={{ color: t.textPrimary }}>
+                    {selectedAddress.city}, {selectedAddress.state} {selectedAddress.pincode}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Address picker (expanded list of all addresses) ── */}
+          {showAddressPicker && !showAddressForm && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              {addresses.map((addr) => {
+                const isSelected = addr.id === selectedAddressId;
+                return (
+                  <button
+                    key={addr.id}
+                    onClick={() => { setSelectedAddressId(addr.id); setShowAddressPicker(false); }}
+                    className="w-full text-left rounded-xl border-2 p-4 transition-all hover:shadow-sm group"
+                    style={{
+                      borderColor: isSelected ? t.bluePrimary : t.border,
+                      background: isSelected ? "#F8FBFF" : t.bgCard,
+                    }}
+                  >
+                    <div className="flex items-start gap-3">
+                      {/* Radio indicator */}
+                      <div
+                        className="mt-0.5 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
+                        style={{ borderColor: isSelected ? t.bluePrimary : "#D1D5DB" }}
+                      >
+                        {isSelected && (
+                          <div className="w-2.5 h-2.5 rounded-full" style={{ background: t.bluePrimary }} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-[15px] font-bold" style={{ color: t.textPrimary }}>
+                            {addr.label || "Address"}
+                          </span>
+                          {addr.is_default && (
+                            <span className="rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#1A6FD4] border border-blue-100">
+                              Default
+                            </span>
+                          )}
+                          {isSelected && (
+                            <CheckCircle2 className="w-4 h-4 ml-auto shrink-0" style={{ color: t.bluePrimary }} />
+                          )}
+                        </div>
+                        <p className="text-[13px]" style={{ color: t.textSecondary }}>
+                          {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}, {addr.city}, {addr.state} {addr.pincode}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── Inline address form ── */}
+          {showAddressForm && addressFormUI}
+
+          {/* ── Add another address button ── */}
+          {!showAddressForm && (
+            <button
+              onClick={openAddForm}
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-bold hover:opacity-80 transition-opacity"
+              style={{ color: t.bluePrimary }}
+            >
+              <Plus className="w-4 h-4" />
+              {addresses.length > 0 ? "Add another address" : "Add an address"}
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="bg-[#F7F7F8] min-h-screen pb-32 lg:pb-0 lg:bg-white">
       {/* ══════════ MOBILE HEADER (<lg) ══════════ */}
@@ -301,60 +574,7 @@ export default function CheckoutPage() {
         {/* Order items — left column */}
         <div className="lg:col-span-8 space-y-4">
           {/* Delivery Address */}
-          <div className="rounded-xl border p-5" style={{ background: t.bgCard, borderColor: t.border }}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[17px] font-semibold flex items-center gap-2" style={{ color: t.textPrimary }}>
-                <MapPin className="w-5 h-5" style={{ color: t.bluePrimary }} /> Delivery Address
-              </h3>
-              {addresses.length > 1 && (
-                <button
-                  onClick={() => setShowAddressPicker(!showAddressPicker)}
-                  className="text-sm font-semibold flex items-center gap-1"
-                  style={{ color: t.bluePrimary }}
-                >
-                  Change <ChevronDown className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-            {selectedAddress ? (
-              <div>
-                <p className="text-[15px] font-medium" style={{ color: t.textPrimary }}>
-                  {selectedAddress.label || "Address"}{selectedAddress.is_default ? " (Default)" : ""}
-                </p>
-                <p className="text-[15px] mt-0.5" style={{ color: t.textSecondary }}>
-                  {selectedAddress.line1}{selectedAddress.line2 ? `, ${selectedAddress.line2}` : ""}
-                </p>
-                <p className="text-[15px]" style={{ color: t.textSecondary }}>
-                  {selectedAddress.city}, {selectedAddress.state} {selectedAddress.pincode}
-                </p>
-              </div>
-            ) : (
-              <div className="text-center py-3">
-                <p className="text-[15px]" style={{ color: t.textMuted }}>No saved addresses</p>
-                <Link href="/account" className="text-sm font-semibold mt-1 inline-block" style={{ color: t.bluePrimary }}>
-                  + Add an address
-                </Link>
-              </div>
-            )}
-            {showAddressPicker && (
-              <div className="mt-3 pt-3 border-t space-y-2" style={{ borderColor: t.border }}>
-                {addresses.map((addr) => (
-                  <button
-                    key={addr.id}
-                    onClick={() => { setSelectedAddressId(addr.id); setShowAddressPicker(false); }}
-                    className="w-full text-left rounded-lg border p-3 text-[15px] transition-colors hover:bg-gray-50"
-                    style={{ borderColor: addr.id === selectedAddressId ? t.bluePrimary : t.border }}
-                  >
-                    <span className="font-medium" style={{ color: t.textPrimary }}>{addr.label || "Address"}</span>
-                    {addr.is_default && <span className="ml-2 text-xs font-semibold" style={{ color: t.bluePrimary }}>(Default)</span>}
-                    <p className="text-sm mt-0.5" style={{ color: t.textSecondary }}>
-                      {addr.line1}, {addr.city}, {addr.state} {addr.pincode}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {deliveryAddressUI}
 
           {/* Order Items */}
           <div
@@ -490,6 +710,18 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            {/* No-address warning */}
+            {!hasAddress && !loadingAddresses && (
+              <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-amber-600" />
+                  <span className="text-xs font-semibold text-amber-700">
+                    Add a delivery address to proceed with payment
+                  </span>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div className="mt-3 p-2 rounded-lg text-xs font-medium bg-red-50 text-red-600">
                 {error}
@@ -500,9 +732,10 @@ export default function CheckoutPage() {
             <div className="hidden lg:block">
               <button
                 onClick={handlePayWithRazorpay}
-                disabled={placing || !razorpayLoaded || cartBlocked || validating}
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-indigo-100"
-                style={{ background: t.primaryCta, color: t.ctaText }}
+                disabled={payDisabled}
+                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-indigo-100 relative overflow-hidden group"
+                style={{ background: payDisabled ? "#9CA3AF" : t.primaryCta, color: t.ctaText }}
+                title={!hasAddress ? "Please add a delivery address first" : undefined}
               >
                 {placing ? (
                   <>
@@ -516,6 +749,7 @@ export default function CheckoutPage() {
                   </>
                 )}
               </button>
+
             </div>
 
             {!razorpayLoaded && (
@@ -562,16 +796,17 @@ export default function CheckoutPage() {
         
         <button
           onClick={handlePayWithRazorpay}
-          disabled={placing || !razorpayLoaded || cartBlocked || validating}
+          disabled={payDisabled}
           className="flex-1 h-[52px] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-indigo-200"
-          style={{ background: t.primaryCta }}
+          style={{ background: payDisabled ? "#9CA3AF" : t.primaryCta }}
+          title={!hasAddress ? "Please add a delivery address first" : undefined}
         >
           {placing ? (
             <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              Pay {formatINR(total)}
+              {hasAddress ? `Pay ${formatINR(total)}` : "Add Address to Pay"}
             </>
           )}
         </button>

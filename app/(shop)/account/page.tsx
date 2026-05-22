@@ -393,13 +393,14 @@ export default function CustomerAccountPage() {
 
           {dbUser?.role && (
             <span
-              className="inline-flex items-center gap-1.5 mt-3 rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm border border-gray-100"
+              className="inline-flex items-center gap-1.5 mt-3 rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm border"
               style={{ 
-                background: dbUser.role === "customer" ? "#F3F4F6" : t.bgDelivered, 
-                color: dbUser.role === "customer" ? "#6B7280" : t.inStock 
+                background: dbUser.role === "customer" ? "#DCFCE7" : dbUser.role === "seller" ? "#EEF2FF" : "#EFF6FF", 
+                color: dbUser.role === "customer" ? "#16A34A" : dbUser.role === "seller" ? "#4F46E5" : "#2563EB",
+                borderColor: dbUser.role === "customer" ? "#BBF7D0" : dbUser.role === "seller" ? "#C7D2FE" : "#BFDBFE"
               }}
             >
-              {dbUser.role !== "customer" && <CheckCircle2 className="h-3 w-3" />}
+              <CheckCircle2 className="h-3 w-3" />
               {dbUser.role === "seller" ? "Verified Seller" : dbUser.role === "admin" ? "Admin" : "Verified Customer"}
             </span>
           )}

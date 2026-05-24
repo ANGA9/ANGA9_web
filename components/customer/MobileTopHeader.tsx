@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import logoo from "@/assets/logoo.png";
@@ -40,6 +40,20 @@ function MobileTopHeaderContent() {
   const { open: openLoginSheet } = useLoginSheet();
   const { count: cartCount } = useCart();
   const { count: wishlistCount } = useWishlist();
+
+  const [isPending, startTransition] = useTransition();
+  const [loadingDots, setLoadingDots] = useState("");
+
+  useEffect(() => {
+    if (isPending) {
+      const id = setInterval(() => {
+        setLoadingDots((d) => d.length >= 3 ? "" : d + ".");
+      }, 400);
+      return () => clearInterval(id);
+    } else {
+      setLoadingDots("");
+    }
+  }, [isPending]);
 
   const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
   const [pincodeOpen, setPincodeOpen] = useState(false);
@@ -373,7 +387,11 @@ function MobileTopHeaderContent() {
         <div className="relative flex items-center bg-white rounded-full shadow-sm border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all">
           <button
             type="button"
-            onClick={() => router.push("/search/explore")}
+            onClick={() => {
+              startTransition(() => {
+                router.push("/search/explore");
+              });
+            }}
             aria-label="Open search"
             className="flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-l-full text-left bg-transparent"
           >
@@ -382,13 +400,19 @@ function MobileTopHeaderContent() {
             </div>
             <div className="relative flex-1 min-w-0 h-[22px]">
               <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#6B7280]">
-                <span
-                  key={placeholderIdx}
-                  className="absolute inset-0 flex items-center truncate"
-                  style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
-                >
-                  {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
-                </span>
+                {isPending ? (
+                  <span className="absolute inset-0 flex items-center font-medium" style={{ color: "#6B7280" }}>
+                    Loading{loadingDots}
+                  </span>
+                ) : (
+                  <span
+                    key={placeholderIdx}
+                    className="absolute inset-0 flex items-center truncate"
+                    style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                  >
+                    {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
+                  </span>
+                )}
               </div>
             </div>
             <Search className="w-[18px] h-[18px] text-[#4B5563] shrink-0 ml-1" />

@@ -97,7 +97,7 @@ export default function AdminCouponsPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* ── Header ── */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
         <div>

@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Bot,
   UserCheck,
+  Ticket,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -46,6 +47,7 @@ const NAV: NavItem[] = [
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
   { label: "Reports", href: "/admin/reports", icon: BarChart3, superOnly: true },
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
+  { label: "Coupons", href: "/admin/coupons", icon: Ticket, superOnly: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },
 ];
 

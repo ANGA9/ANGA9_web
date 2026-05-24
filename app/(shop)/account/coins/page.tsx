@@ -151,7 +151,7 @@ export default function CustomerCoinsPage() {
   }
 
   return (
-    <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white md:bg-transparent min-h-screen">
+    <main className="w-full mx-auto max-w-5xl px-0 md:px-8 pt-0 md:py-10 bg-white md:bg-transparent min-h-screen">
       {/* Mobile header */}
       <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40 md:hidden">
         <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
@@ -160,59 +160,77 @@ export default function CustomerCoinsPage() {
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight">My Coins</h1>
       </header>
 
-      {/* Desktop Header */}
-      <div className="hidden md:flex items-center justify-between mb-8">
-        <div className="flex items-baseline gap-3">
-          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
-            My Coins
-          </h1>
-          <span className="text-[18px] font-bold text-gray-400">
-            Balance and history
-          </span>
+      <div className="px-3 sm:px-4 md:px-0 pt-4 md:pt-0">
+        {/* Desktop Header */}
+        <div className="hidden md:flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+              My Coins
+            </h1>
+            <span className="text-[18px] font-bold text-gray-400">
+              Balance and history
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-[15px] font-bold text-gray-400">1 Coin = ₹1</span>
+            <span className="inline-flex items-center gap-2 bg-[#FFF7ED] border border-[#FDBA74] text-[#9A3412] text-[16px] font-black px-5 py-2.5 rounded-full shadow-sm">
+              <CoinsIcon className="w-5 h-5" />
+              {balance ?? 0} coins
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2.5 text-[15px] font-black text-[#1A6FD4] bg-[#F0F5FA] border border-[#1A6FD4]/20 px-5 py-2.5 rounded-full shadow-sm">
-          <CoinsIcon className="w-5 h-5" />
-          1 Coin = ₹1
-        </div>
-      </div>
 
-      {/* ── Categories (How to earn & spend) ── */}
-      <section className="mb-8 md:mb-10 mt-2 md:mt-0">
-        <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">How to earn & spend</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
-            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#FEF3C7" }}>
-              <Gift className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#B45309" }} />
-            </span>
-            <div>
-              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Bonus on first order</span>
-              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get coins as a welcome credit.</span>
-            </div>
+        {/* ── Coin Balance Strip (mobile only) ── */}
+        <div className="flex items-center justify-between py-3 mb-4 border-b border-gray-100 md:hidden">
+          <div className="flex items-center gap-2 text-[14px] font-bold text-gray-500">
+            <CoinsIcon className="w-4 h-4 text-[#F59E0B]" />
+            <span>1 Coin = ₹1</span>
           </div>
-          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
-            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#ECFDF5" }}>
-              <RotateCcw className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#059669" }} />
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] font-bold text-gray-500">Total:</span>
+            <span className="inline-flex items-center gap-1.5 bg-[#FFF7ED] border border-[#FDBA74] text-[#9A3412] text-[14px] font-black px-3 py-1 rounded-full">
+              <CoinsIcon className="w-3.5 h-3.5" />
+              {balance ?? 0}
             </span>
-            <div>
-              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Instant refunds</span>
-              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get refunds as coins immediately.</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
-            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#EFF6FF" }}>
-              <PackageOpen className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#2563EB" }} />
-            </span>
-            <div>
-              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Spend at checkout</span>
-              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Apply coins to reduce your total.</span>
-            </div>
           </div>
         </div>
-      </section>
 
-      <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-10 mb-10 md:mb-12">
-        {/* ── History (Left Column) ── */}
-        <section className="flex-1 min-w-0">
+        {/* ── Categories (How to earn & spend) ── */}
+        <section className="mb-6 md:mb-10">
+          <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">How to earn & spend</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+              <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#FEF3C7" }}>
+                <Gift className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#B45309" }} />
+              </span>
+              <div>
+                <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Bonus on first order</span>
+                <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get coins as a welcome credit.</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+              <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#ECFDF5" }}>
+                <RotateCcw className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#059669" }} />
+              </span>
+              <div>
+                <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Instant refunds</span>
+                <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get refunds as coins immediately.</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+              <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#EFF6FF" }}>
+                <PackageOpen className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#2563EB" }} />
+              </span>
+              <div>
+                <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Spend at checkout</span>
+                <span className="block font-medium text-[13px] text-gray-500 leading-tight">Apply coins to reduce your total.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Transaction History ── */}
+        <section className="mb-10 md:mb-12">
           <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400">
               Transaction history
@@ -277,44 +295,7 @@ export default function CustomerCoinsPage() {
             </div>
           )}
         </section>
-
-        {/* ── Balance Card (Right Sidebar) ── */}
-        <section className="md:w-[340px] shrink-0 flex flex-col gap-3 md:gap-4">
-          <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
-            Current Balance
-          </h2>
-          <div className="flex items-center gap-5 rounded-[24px] p-6 md:p-8 text-white shadow-2xl relative overflow-hidden" style={{ background: "linear-gradient(to right bottom, #0f172a, #020617)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            {/* Background glowing orbs */}
-            <div className="absolute -right-12 -top-12 w-48 h-48 bg-blue-500/20 blur-[50px] rounded-full pointer-events-none"></div>
-            <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-purple-500/20 blur-[50px] rounded-full pointer-events-none"></div>
-            
-            {/* Decorative watermark coin */}
-            <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full border border-white/5 flex items-center justify-center pointer-events-none shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-sm">
-              <CoinsIcon className="w-16 h-16 text-white/5" />
-            </div>
-
-            {/* Icon Container */}
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shrink-0 relative z-10 backdrop-blur-md shadow-xl">
-              <CoinsIcon className="h-7 w-7 md:h-8 md:w-8 text-[#F59E0B]" />
-            </div>
-
-            {/* Balance Info */}
-            <div className="relative z-10 flex-1">
-              <div className="flex items-baseline gap-2 mb-1.5">
-                <span className="text-[28px] md:text-[32px] font-black tracking-tight drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 leading-none">
-                  {balance ?? 0}
-                </span>
-                <span className="text-[15px] font-bold text-gray-400">coins</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[13px] font-bold leading-tight backdrop-blur-sm shadow-inner" style={{ color: "#FCD34D" }}>
-                Value: {formatINR(balance ?? 0)}
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </main>
   );
 }
-
-

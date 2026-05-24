@@ -133,8 +133,8 @@ export default function CustomerCoinsPage() {
           <CoinsIcon className="w-10 h-10 text-amber-500" />
         </div>
         <h1 className="text-[22px] font-black text-gray-900">Sign in to see your coins</h1>
-        <p className="text-[14px] text-gray-500 mt-2">Earn coins on orders and refunds — 1 coin = ₹1, spend at checkout.</p>
-        <Link href="/login" className="inline-flex items-center mt-6 px-8 py-3 rounded-xl font-bold text-white text-[15px] shadow-md hover:shadow-lg active:scale-95 transition-all" style={{ background: t.bluePrimary }}>
+        <p className="text-[14px] text-gray-500 mt-2 font-medium">Earn coins on orders and refunds — 1 coin = ₹1, spend at checkout.</p>
+        <Link href="/login" className="inline-flex items-center mt-6 px-8 py-3 rounded-xl font-bold text-white text-[15px] shadow-md hover:shadow-lg active:scale-95 transition-all bg-[#1A6FD4]">
           Log In
         </Link>
       </div>
@@ -151,141 +151,154 @@ export default function CustomerCoinsPage() {
   }
 
   return (
-    <div className="w-full pb-24 md:pb-12">
+    <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white md:bg-transparent min-h-screen">
       {/* Mobile header */}
-      <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40 md:hidden">
+      <header className="flex items-center h-14 bg-white sticky top-0 z-40 md:hidden mb-4">
         <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </Link>
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight">My Coins</h1>
       </header>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-4 md:pt-10">
-        {/* Desktop back-link */}
-        <Link href="/account" className="hidden md:inline-flex items-center gap-2 text-[13px] font-bold text-gray-500 hover:text-gray-900 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Account
-        </Link>
+      {/* Desktop Header */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        <div className="flex items-baseline gap-3">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+            My Coins
+          </h1>
+          <span className="text-[18px] font-bold text-gray-400">
+            Balance and history
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5 text-[15px] font-black text-[#1A6FD4] bg-[#F0F5FA] border border-[#1A6FD4]/20 px-5 py-2.5 rounded-full shadow-sm">
+          <CoinsIcon className="w-5 h-5" />
+          1 Coin = ₹1
+        </div>
+      </div>
 
-        {/* Balance card */}
-        <div
-          className="rounded-3xl p-6 sm:p-8 shadow-lg overflow-hidden relative"
-          style={{ background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)" }}
-        >
-          {/* Decorative coin */}
-          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10 flex items-center justify-center">
-            <CoinsIcon className="w-16 h-16 text-white/30" />
-          </div>
-
-          <div className="relative">
-            <p className="text-[12px] sm:text-[13px] font-bold uppercase tracking-widest text-white/80">Your Coins</p>
-            <div className="flex items-baseline gap-3 mt-2">
-              <span className="text-[44px] sm:text-[52px] font-black text-white leading-none">{balance ?? 0}</span>
-              <span className="text-[16px] sm:text-[18px] font-bold text-white/90">coins</span>
+      {/* ── Categories (How to earn & spend) ── */}
+      <section className="mb-8 md:mb-10 mt-2 md:mt-0">
+        <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">How to earn & spend</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#FEF3C7" }}>
+              <Gift className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#B45309" }} />
+            </span>
+            <div>
+              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Bonus on first order</span>
+              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get coins as a welcome credit.</span>
             </div>
-            <p className="text-[16px] sm:text-[18px] font-bold text-white mt-1">= {formatINR(balance ?? 0)}</p>
-
-            <div className="inline-flex items-center gap-1.5 mt-5 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm">
-              <Info className="w-3.5 h-3.5 text-white" />
-              <span className="text-[12px] sm:text-[13px] font-bold text-white">1 Coin = ₹1</span>
+          </div>
+          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#ECFDF5" }}>
+              <RotateCcw className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#059669" }} />
+            </span>
+            <div>
+              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Instant refunds</span>
+              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Get refunds as coins immediately.</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm">
+            <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#EFF6FF" }}>
+              <PackageOpen className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#2563EB" }} />
+            </span>
+            <div>
+              <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Spend at checkout</span>
+              <span className="block font-medium text-[13px] text-gray-500 leading-tight">Apply coins to reduce your total.</span>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* How you earn / use them — short blurb */}
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <InfoTile icon={Gift} title="Bonus on first order" body="Get coins as a welcome credit." color="amber" />
-          <InfoTile icon={RotateCcw} title="Instant refunds" body="Get refunds as coins, ready immediately." color="emerald" />
-          <InfoTile icon={PackageOpen} title="Spend at checkout" body="Apply coins to reduce your total." color="blue" />
-        </div>
-
-        {/* History */}
-        <div className="mt-8 mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <History className="w-5 h-5 text-gray-500" />
-            <h2 className="text-[16px] sm:text-[17px] font-black text-gray-900">History</h2>
+      <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-10 mb-10 md:mb-12">
+        {/* ── History (Left Column) ── */}
+        <section className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
+            <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400">
+              Transaction history
+            </h2>
+            <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{entries.length} {entries.length === 1 ? "entry" : "entries"}</span>
           </div>
-          <span className="text-[12px] font-medium text-gray-500">{entries.length} {entries.length === 1 ? "entry" : "entries"}</span>
-        </div>
 
-        <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: t.border }}>
           {entries.length === 0 ? (
-            <div className="text-center py-14 px-6">
-              <CoinsIcon className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-[14px] font-bold text-gray-900">No coin activity yet</p>
-              <p className="text-[12px] font-medium text-gray-500 mt-1">Your earnings and spends will show up here.</p>
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-10 md:p-12 text-center flex flex-col items-center justify-center">
+              <History className="w-10 h-10 text-gray-300 mb-4" />
+              <div className="text-[16px] font-bold text-gray-900 mb-1">
+                No coin activity yet
+              </div>
+              <div className="text-[14px] text-gray-500 font-medium">
+                Your earnings and spends will show up here.
+              </div>
             </div>
           ) : (
-            <ul className="divide-y divide-gray-100">
-              {entries.map((entry) => {
-                const meta = reasonMeta(entry);
-                const Icon = meta.icon;
-                const isCredit = entry.delta > 0;
-                return (
-                  <li key={entry.id} className="flex items-center gap-4 px-4 sm:px-5 py-3.5">
-                    <div className={`w-10 h-10 rounded-full ${meta.bg} flex items-center justify-center shrink-0`}>
-                      <Icon className={`w-5 h-5 ${meta.color}`} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[14px] font-bold text-gray-900 truncate">{meta.label}</p>
-                      <p className="text-[12px] font-medium text-gray-500">{formatDate(entry.created_at)}{entry.note ? ` · ${entry.note}` : ""}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className={`text-[14px] font-black ${isCredit ? "text-emerald-600" : "text-gray-900"}`}>
-                        {isCredit ? "+" : "−"}{Math.abs(entry.delta)} coins
-                      </p>
-                      <p className="text-[11px] font-bold text-gray-400">
-                        {isCredit ? "+" : "−"}{formatINR(Math.abs(entry.delta))}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-
-          {cursor && (
-            <div className="px-4 sm:px-5 py-4 border-t border-gray-100">
-              <button
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-[13px] font-bold text-gray-700 transition-colors disabled:cursor-not-allowed"
-              >
-                {loadingMore ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                Load more
-              </button>
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+              <ul className="divide-y divide-gray-100">
+                {entries.map((entry) => {
+                  const meta = reasonMeta(entry);
+                  const Icon = meta.icon;
+                  const isCredit = entry.delta > 0;
+                  return (
+                    <li key={entry.id} className="flex items-center gap-4 px-5 py-4 md:px-6 md:py-5 hover:bg-gray-50 transition-colors">
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full ${meta.bg} flex items-center justify-center shrink-0`}>
+                        <Icon className={`w-5 h-5 md:w-6 md:h-6 ${meta.color}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[15px] md:text-[16px] font-bold text-gray-900 truncate leading-tight">
+                          {meta.label}
+                        </div>
+                        <div className="text-[13px] font-medium text-gray-500 mt-1 truncate">
+                          {formatDate(entry.created_at)}{entry.note ? ` · ${entry.note}` : ""}
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <div className={`text-[15px] md:text-[16px] font-black ${isCredit ? "text-emerald-600" : "text-gray-900"}`}>
+                          {isCredit ? "+" : "−"}{Math.abs(entry.delta)} coins
+                        </div>
+                        <div className="text-[12px] font-bold text-gray-400 mt-0.5">
+                          {isCredit ? "+" : "−"}{formatINR(Math.abs(entry.delta))}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {cursor && (
+                <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-[14px] font-bold text-gray-700 transition-colors shadow-sm disabled:opacity-50"
+                  >
+                    {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Load older entries
+                  </button>
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </section>
+
+        {/* ── Balance Card (Right Sidebar) ── */}
+        <section className="md:w-[340px] shrink-0 flex flex-col gap-3 md:gap-4">
+          <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
+            Current Balance
+          </h2>
+          <div className="flex items-center gap-4 rounded-2xl p-5 md:p-6 text-white shadow-lg relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1A6FD4 0%, #114e96 100%)" }}>
+            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-white/10 flex items-center justify-center pointer-events-none">
+              <CoinsIcon className="w-12 h-12 text-white/20" />
+            </div>
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0 relative z-10 shadow-inner">
+              <CoinsIcon className="h-6 w-6 text-white" />
+            </div>
+            <div className="relative z-10">
+              <div className="text-[24px] font-black tracking-tight mb-0.5 drop-shadow-sm">{balance ?? 0} coins</div>
+              <div className="text-[14px] text-blue-100 font-bold leading-tight">= {formatINR(balance ?? 0)}</div>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
-function InfoTile({
-  icon: Icon,
-  title,
-  body,
-  color,
-}: {
-  icon: typeof CoinsIcon;
-  title: string;
-  body: string;
-  color: "amber" | "emerald" | "blue";
-}) {
-  const palette = {
-    amber: { bg: "bg-amber-50", text: "text-amber-600" },
-    emerald: { bg: "bg-emerald-50", text: "text-emerald-600" },
-    blue: { bg: "bg-blue-50", text: "text-blue-600" },
-  }[color];
 
-  return (
-    <div className="rounded-2xl border bg-white p-4" style={{ borderColor: t.border }}>
-      <div className={`w-9 h-9 rounded-full ${palette.bg} flex items-center justify-center mb-2`}>
-        <Icon className={`w-4 h-4 ${palette.text}`} />
-      </div>
-      <p className="text-[13px] font-black text-gray-900 leading-tight">{title}</p>
-      <p className="text-[12px] font-medium text-gray-500 mt-1 leading-snug">{body}</p>
-    </div>
-  );
-}

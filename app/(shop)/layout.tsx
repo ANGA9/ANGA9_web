@@ -28,7 +28,7 @@ export default function CustomerShopLayout({
   const isNotifications = pathname === "/notifications";
   const isProductDetail = pathname?.startsWith("/products/");
   const isOrders = pathname === "/orders";
-  const isAccount = pathname === "/account";
+  const isAccount = pathname === "/account" || pathname?.startsWith("/account/");
   const isMenu = pathname === "/menu";
   const isSearchExplore = pathname === "/search/explore";
   const isSearch = pathname === "/search";

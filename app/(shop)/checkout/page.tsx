@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
 import Link from "next/link";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
@@ -86,6 +88,8 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; discount_type: string; discount_value: number; max_discount: number | null } | null>(null);
   const [couponError, setCouponError] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
   const [coinBalance, setCoinBalance] = useState(0);
   const [coinsToUse, setCoinsToUse] = useState(0);
 
@@ -218,6 +222,8 @@ export default function CheckoutPage() {
           discount_value: res.discount_value || 0,
           max_discount: res.max_discount ?? null,
         });
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 3000);
         toast.success("Coupon applied!");
       } else {
         setCouponError(res.message || "Invalid coupon");
@@ -596,7 +602,12 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="bg-[#F7F7F8] min-h-screen pb-32 lg:pb-0 lg:bg-white">
+    <div className="bg-[#F7F7F8] min-h-screen pb-32 lg:pb-0 lg:bg-white relative">
+      {showConfetti && (
+        <div className="fixed inset-0 z-[100] pointer-events-none">
+          <Confetti width={windowWidth} height={windowHeight} recycle={false} numberOfPieces={300} gravity={0.2} />
+        </div>
+      )}
       {/* ══════════ MOBILE HEADER (<lg) ══════════ */}
       <header className="flex lg:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
         <Link href="/cart" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
@@ -709,36 +720,45 @@ export default function CheckoutPage() {
           {/* Promos Section */}
           <div className="mb-4 space-y-4">
             {/* Coupon Card */}
-            <div className="rounded-xl border p-5 bg-white shadow-sm" style={{ borderColor: t.border }}>
-              <h4 className="text-[14px] font-bold mb-3" style={{ color: t.textPrimary }}>Have a coupon?</h4>
+            <div className="rounded-xl border p-5 bg-white shadow-sm transition-all" style={{ borderColor: t.border }}>
+              <div className="flex items-center gap-2 mb-4">
+                <Ticket className="w-5 h-5 text-emerald-500" />
+                <h4 className="text-[16px] font-bold" style={{ color: t.textPrimary }}>Offers & Coupons</h4>
+              </div>
+              
               {appliedCoupon ? (
-                <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-100">
+                <div className="flex items-center justify-between p-3.5 rounded-xl border bg-emerald-50/50 border-emerald-100">
                   <div>
-                    <span className="font-bold text-green-700">{appliedCoupon.code} applied</span>
-                    <p className="text-[12px] text-green-600 font-medium">— {formatINR(couponDiscount)} off</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-wider">{appliedCoupon.code}</span>
+                      <span className="text-[13px] font-bold text-emerald-700">Applied</span>
+                    </div>
+                    <p className="text-[14px] text-emerald-600 font-medium">You saved {formatINR(couponDiscount)} on this order!</p>
                   </div>
-                  <button onClick={() => { setAppliedCoupon(null); setCouponCode(""); }} className="text-[12px] font-bold text-red-500 hover:text-red-700 uppercase">Remove</button>
+                  <button onClick={() => { setAppliedCoupon(null); setCouponCode(""); }} className="p-2 text-red-400 hover:text-red-600 transition-colors bg-red-50 hover:bg-red-100 rounded-lg" title="Remove coupon">
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               ) : (
                 <>
                   <div className="flex gap-2">
-                    <input 
-                      value={couponCode} 
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      placeholder="Enter code" 
-                      className="h-10 flex-1 rounded-lg border px-3 text-[14px] uppercase placeholder:normal-case focus:border-[#1A6FD4] focus:outline-none focus:ring-1 focus:ring-[#1A6FD4]"
-                      style={{ borderColor: t.border }}
-                    />
+                    <div className="relative flex-1">
+                      <input 
+                        value={couponCode} 
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        placeholder="Enter coupon code" 
+                        className="h-11 w-full rounded-xl border border-gray-200 px-4 text-[14px] font-bold uppercase tracking-wide placeholder:normal-case placeholder:font-normal placeholder:tracking-normal focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all bg-gray-50/50"
+                      />
+                    </div>
                     <button 
                       onClick={handleApplyCoupon}
                       disabled={validatingCoupon || !couponCode}
-                      className="h-10 px-4 rounded-lg font-bold text-white text-[13px] transition-opacity disabled:opacity-50"
-                      style={{ background: t.bluePrimary }}
+                      className="h-11 px-5 rounded-xl font-bold text-white text-[14px] transition-all disabled:opacity-50 active:scale-95 bg-emerald-500 hover:bg-emerald-600"
                     >
-                      {validatingCoupon ? "..." : "Apply"}
+                      {validatingCoupon ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Apply"}
                     </button>
                   </div>
-                  {couponError && <p className="text-red-500 text-[12px] mt-2 font-medium">{couponError}</p>}
+                  {couponError && <p className="text-red-500 text-[13px] mt-2 font-medium flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5" />{couponError}</p>}
                 </>
               )}
             </div>
@@ -746,37 +766,42 @@ export default function CheckoutPage() {
             {/* Coins Card */}
             {coinBalance > 0 && (
               <div className="rounded-xl border p-5 bg-white shadow-sm" style={{ borderColor: t.border }}>
-                <h4 className="text-[14px] font-bold mb-1" style={{ color: t.textPrimary }}>Use Coins</h4>
-                <p className="text-[12px] mb-3 text-gray-500">Balance: {coinBalance} coins ({formatINR(coinBalance)})</p>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-[16px] font-bold" style={{ color: t.textPrimary }}>Use Coins</h4>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-50 text-orange-600 text-[12px] font-bold border border-orange-100">
+                    Balance: {coinBalance}
+                  </span>
+                </div>
+                <p className="text-[13px] mb-4 text-gray-500">You can redeem up to {maxCoinsAllowed} coins ({formatINR(maxCoinsAllowed)}) on this order.</p>
                 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center border rounded-lg overflow-hidden h-9" style={{ borderColor: t.border }}>
+                  <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden h-11 bg-gray-50 flex-1">
                     <button 
                       onClick={() => setCoinsToUse(Math.max(0, coinsToUse - 10))}
-                      className="w-9 h-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 font-bold"
+                      className="w-11 h-full flex items-center justify-center hover:bg-gray-100 font-bold text-gray-600 border-r border-gray-200 transition-colors"
                     >-</button>
                     <input 
                       type="number"
                       value={coinsToUse === 0 ? "" : coinsToUse}
                       placeholder="0"
                       onChange={(e) => setCoinsToUse(Math.min(maxCoinsAllowed, Math.max(0, parseInt(e.target.value) || 0)))}
-                      className="w-16 h-full text-center text-[14px] font-bold focus:outline-none"
+                      className="flex-1 h-full text-center text-[15px] font-black focus:outline-none bg-transparent"
                     />
                     <button 
                       onClick={() => setCoinsToUse(Math.min(maxCoinsAllowed, coinsToUse + 10))}
-                      className="w-9 h-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 font-bold"
+                      className="w-11 h-full flex items-center justify-center hover:bg-gray-100 font-bold text-gray-600 border-l border-gray-200 transition-colors"
                     >+</button>
                   </div>
                   <button 
                     onClick={() => setCoinsToUse(maxCoinsAllowed)}
-                    className="text-[12px] font-bold text-[#1A6FD4] hover:underline"
+                    className="h-11 px-4 rounded-xl text-[13px] font-bold text-orange-600 bg-orange-50 border border-orange-100 hover:bg-orange-100 transition-colors"
                   >
-                    Max: {maxCoinsAllowed}
+                    Use Max
                   </button>
                 </div>
                 {actualCoinsUsed > 0 && (
-                  <p className="text-[12px] mt-2 font-semibold text-green-600">
-                    Saves you {formatINR(actualCoinsUsed)}
+                  <p className="text-[13px] mt-3 font-bold text-green-600 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> Saves you {formatINR(actualCoinsUsed)}
                   </p>
                 )}
               </div>

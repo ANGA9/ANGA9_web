@@ -86,7 +86,7 @@ function OrdersContent() {
     <div className="mx-auto max-w-4xl py-0 md:py-6 px-0 md:px-0">
       {/* ── Mobile Header ── */}
       <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
-        <Link href="/" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+        <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </Link>
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">

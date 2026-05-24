@@ -555,8 +555,8 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Settings & Help</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} href="/notifications" />
-                <MenuItem icon={Headset} label="Help Center" href="/help" />
+                <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} onClick={() => router.push('/notifications')} />
+                <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
               </div>
             </div>
 

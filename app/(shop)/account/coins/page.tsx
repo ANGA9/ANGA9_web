@@ -153,7 +153,7 @@ export default function CustomerCoinsPage() {
   return (
     <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white md:bg-transparent min-h-screen">
       {/* Mobile header */}
-      <header className="flex items-center h-14 bg-white sticky top-0 z-40 md:hidden mb-4">
+      <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40 md:hidden">
         <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </Link>
@@ -283,16 +283,32 @@ export default function CustomerCoinsPage() {
           <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
             Current Balance
           </h2>
-          <div className="flex items-center gap-4 rounded-2xl p-5 md:p-6 text-white shadow-lg relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1A6FD4 0%, #114e96 100%)" }}>
-            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-white/10 flex items-center justify-center pointer-events-none">
-              <CoinsIcon className="w-12 h-12 text-white/20" />
+          <div className="flex items-center gap-5 rounded-[24px] p-6 md:p-8 text-white shadow-2xl relative overflow-hidden" style={{ background: "linear-gradient(to right bottom, #0f172a, #020617)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            {/* Background glowing orbs */}
+            <div className="absolute -right-12 -top-12 w-48 h-48 bg-blue-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-purple-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+            
+            {/* Decorative watermark coin */}
+            <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full border border-white/5 flex items-center justify-center pointer-events-none shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-sm">
+              <CoinsIcon className="w-16 h-16 text-white/5" />
             </div>
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0 relative z-10 shadow-inner">
-              <CoinsIcon className="h-6 w-6 text-white" />
+
+            {/* Icon Container */}
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shrink-0 relative z-10 backdrop-blur-md shadow-xl">
+              <CoinsIcon className="h-7 w-7 md:h-8 md:w-8 text-[#F59E0B]" />
             </div>
-            <div className="relative z-10">
-              <div className="text-[24px] font-black tracking-tight mb-0.5 drop-shadow-sm">{balance ?? 0} coins</div>
-              <div className="text-[14px] text-blue-100 font-bold leading-tight">= {formatINR(balance ?? 0)}</div>
+
+            {/* Balance Info */}
+            <div className="relative z-10 flex-1">
+              <div className="flex items-baseline gap-2 mb-1.5">
+                <span className="text-[28px] md:text-[32px] font-black tracking-tight drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 leading-none">
+                  {balance ?? 0}
+                </span>
+                <span className="text-[15px] font-bold text-gray-400">coins</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[13px] font-bold leading-tight backdrop-blur-sm shadow-inner" style={{ color: "#FCD34D" }}>
+                Value: {formatINR(balance ?? 0)}
+              </div>
             </div>
           </div>
         </section>

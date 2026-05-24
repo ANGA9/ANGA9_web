@@ -23,7 +23,8 @@ import {
   X,
   Save,
   Smartphone,
-  Store
+  Store,
+  Coins
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -140,7 +141,8 @@ export default function CustomerAccountPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
-  
+  const [coinBalance, setCoinBalance] = useState<number | null>(null);
+
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const accentBlue = "#2874f0";
@@ -158,8 +160,18 @@ export default function CustomerAccountPage() {
     if (dbUser) {
       fetchAddresses();
       fetchUnreadNotifications();
+      fetchCoinBalance();
     }
   }, [dbUser]);
+
+  const fetchCoinBalance = async () => {
+    try {
+      const res = await api.get<{ balance: number }>("/api/users/me/coins", { silent: true });
+      if (res && typeof res.balance === 'number') {
+        setCoinBalance(res.balance);
+      }
+    } catch { /* ignore */ }
+  };
 
   const fetchUnreadNotifications = async () => {
     try {
@@ -531,6 +543,7 @@ export default function CustomerAccountPage() {
                 </div>
                 <div className="flex flex-col">
                   <MenuItem icon={Package} label="My Orders" onClick={() => router.push('/orders')} />
+                  <MenuItem icon={Coins} label="My Coins" badge={coinBalance != null && coinBalance > 0 ? coinBalance : undefined} onClick={() => router.push('/account/coins')} />
                   <MenuItem icon={MapPin} label="Addresses" onClick={() => { setActiveNav("Addresses"); setMobileMenuOpen(false); }} />
                   <MenuItem icon={Building2} label="Business Info" onClick={() => { setActiveNav("Business Info"); setMobileMenuOpen(false); }} />
                 </div>
@@ -648,7 +661,22 @@ export default function CustomerAccountPage() {
               })}
 
               <div className="h-px bg-gray-200 my-4 mx-4" />
-              
+
+              <Link
+                href="/account/coins"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
+                <div className="flex items-center gap-3">
+                  <Coins className="h-5 w-5 text-amber-500" />
+                  My Coins
+                </div>
+                {coinBalance != null && coinBalance > 0 && (
+                  <span className="bg-amber-100 text-amber-700 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                    {coinBalance}
+                  </span>
+                )}
+              </Link>
+
               <Link
                 href="/notifications"
                 className="flex w-full items-center justify-between px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"

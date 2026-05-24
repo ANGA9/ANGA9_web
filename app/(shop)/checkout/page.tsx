@@ -286,10 +286,10 @@ export default function CheckoutPage() {
 
     try {
       // Step 1: Create order in our backend
-      const orderResponse = await api.post<{ id: string; order_number: string; total: number }>(
+      const orderResponse = await api.post<{ id: string; order_number: string; total: number; status: string }>(
         "/api/orders",
         {
-          items: items.map(item => ({
+          items: items.map((item) => ({
             productId: item.productId,
             qty: item.qty,
           })),
@@ -299,7 +299,15 @@ export default function CheckoutPage() {
         }
       );
 
-      // Step 2: Create Razorpay order via payment-service
+      // If the order is fully covered by promos (total is 0), skip Razorpay
+      if (Number(orderResponse.total) <= 0) {
+        toast.success("Order confirmed successfully! 🎉");
+        await clearCart();
+        router.push(`/orders?placed=1`);
+        return;
+      }
+
+      // Step 2: Create Razorpay order via payment-service via payment-service
       const paymentResponse = await api.post<{
         razorpay_order_id: string;
         amount: number;

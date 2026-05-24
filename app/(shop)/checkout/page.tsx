@@ -81,6 +81,14 @@ export default function CheckoutPage() {
   const [validating, setValidating] = useState(true);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
 
+  // Promos
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; discount_type: string; discount_value: number; max_discount: number | null } | null>(null);
+  const [couponError, setCouponError] = useState("");
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0);
+  const [coinsToUse, setCoinsToUse] = useState(0);
+
   // Inline address form state
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -135,6 +143,9 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchAddresses();
+    api.get<{ balance: number }>("/api/users/me/coins", { silent: true })
+      .then(res => { if (res?.balance) setCoinBalance(res.balance); })
+      .catch(() => {});
   }, []);
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
@@ -147,9 +158,26 @@ export default function CheckoutPage() {
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
     0
   );
-  const gst = Math.round(subtotal * 0.18);
-  const delivery = subtotal > 10000 ? 0 : 500;
-  const total = subtotal + gst + delivery;
+  
+  let couponDiscount = appliedCoupon?.discount || 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === 'percent') {
+      couponDiscount = Math.round((subtotal * appliedCoupon.discount_value) / 100);
+      if (appliedCoupon.max_discount !== null) couponDiscount = Math.min(couponDiscount, appliedCoupon.max_discount);
+    } else {
+      couponDiscount = Math.min(appliedCoupon.discount_value, subtotal);
+    }
+  }
+
+  const afterCoupon = subtotal - couponDiscount;
+  const gst = Math.round(afterCoupon * 0.18);
+  const delivery = afterCoupon > 10000 ? 0 : 500;
+  const totalBeforeCoins = afterCoupon + gst + delivery;
+
+  const maxCoinsAllowed = Math.min(coinBalance, Math.floor(totalBeforeCoins));
+  const actualCoinsUsed = Math.min(coinsToUse, maxCoinsAllowed);
+
+  const total = totalBeforeCoins - actualCoinsUsed;
 
   // Load Razorpay script
   useEffect(() => {
@@ -171,6 +199,35 @@ export default function CheckoutPage() {
       // Don't remove script — it should persist
     };
   }, []);
+
+  // ── Promo handlers ──
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return;
+    setValidatingCoupon(true);
+    setCouponError("");
+    try {
+      const res = await api.post<{ valid: boolean; message?: string; discount?: number; discount_type?: string; discount_value?: number; max_discount?: number | null }>(
+        "/api/orders/coupon/validate",
+        { code: couponCode, subtotal }
+      );
+      if (res.valid) {
+        setAppliedCoupon({
+          code: couponCode.toUpperCase(),
+          discount: res.discount || 0,
+          discount_type: res.discount_type || '',
+          discount_value: res.discount_value || 0,
+          max_discount: res.max_discount ?? null,
+        });
+        toast.success("Coupon applied!");
+      } else {
+        setCouponError(res.message || "Invalid coupon");
+      }
+    } catch (err: any) {
+      setCouponError(err.message || "Failed to validate coupon");
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
 
   // ── Inline address form handlers ──
   const openAddForm = () => {
@@ -230,7 +287,9 @@ export default function CheckoutPage() {
             productId: item.productId,
             qty: item.qty,
           })),
-          ...(selectedAddressId ? { address_id: selectedAddressId } : {}),
+          ...(selectedAddressId ? { shippingAddressId: selectedAddressId } : {}),
+          ...(appliedCoupon ? { couponCode: appliedCoupon.code } : {}),
+          ...(actualCoinsUsed > 0 ? { coinsToRedeem: actualCoinsUsed } : {}),
         }
       );
 
@@ -647,8 +706,85 @@ export default function CheckoutPage() {
 
         {/* Order summary — right column (matches CartSummary style) */}
         <div className="lg:col-span-4 mt-4 lg:mt-0">
+          {/* Promos Section */}
+          <div className="mb-4 space-y-4">
+            {/* Coupon Card */}
+            <div className="rounded-xl border p-5 bg-white shadow-sm" style={{ borderColor: t.border }}>
+              <h4 className="text-[14px] font-bold mb-3" style={{ color: t.textPrimary }}>Have a coupon?</h4>
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-100">
+                  <div>
+                    <span className="font-bold text-green-700">{appliedCoupon.code} applied</span>
+                    <p className="text-[12px] text-green-600 font-medium">— {formatINR(couponDiscount)} off</p>
+                  </div>
+                  <button onClick={() => { setAppliedCoupon(null); setCouponCode(""); }} className="text-[12px] font-bold text-red-500 hover:text-red-700 uppercase">Remove</button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <input 
+                      value={couponCode} 
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="Enter code" 
+                      className="h-10 flex-1 rounded-lg border px-3 text-[14px] uppercase placeholder:normal-case focus:border-[#1A6FD4] focus:outline-none focus:ring-1 focus:ring-[#1A6FD4]"
+                      style={{ borderColor: t.border }}
+                    />
+                    <button 
+                      onClick={handleApplyCoupon}
+                      disabled={validatingCoupon || !couponCode}
+                      className="h-10 px-4 rounded-lg font-bold text-white text-[13px] transition-opacity disabled:opacity-50"
+                      style={{ background: t.bluePrimary }}
+                    >
+                      {validatingCoupon ? "..." : "Apply"}
+                    </button>
+                  </div>
+                  {couponError && <p className="text-red-500 text-[12px] mt-2 font-medium">{couponError}</p>}
+                </>
+              )}
+            </div>
+
+            {/* Coins Card */}
+            {coinBalance > 0 && (
+              <div className="rounded-xl border p-5 bg-white shadow-sm" style={{ borderColor: t.border }}>
+                <h4 className="text-[14px] font-bold mb-1" style={{ color: t.textPrimary }}>Use Coins</h4>
+                <p className="text-[12px] mb-3 text-gray-500">Balance: {coinBalance} coins ({formatINR(coinBalance)})</p>
+                
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center border rounded-lg overflow-hidden h-9" style={{ borderColor: t.border }}>
+                    <button 
+                      onClick={() => setCoinsToUse(Math.max(0, coinsToUse - 10))}
+                      className="w-9 h-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 font-bold"
+                    >-</button>
+                    <input 
+                      type="number"
+                      value={coinsToUse === 0 ? "" : coinsToUse}
+                      placeholder="0"
+                      onChange={(e) => setCoinsToUse(Math.min(maxCoinsAllowed, Math.max(0, parseInt(e.target.value) || 0)))}
+                      className="w-16 h-full text-center text-[14px] font-bold focus:outline-none"
+                    />
+                    <button 
+                      onClick={() => setCoinsToUse(Math.min(maxCoinsAllowed, coinsToUse + 10))}
+                      className="w-9 h-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 font-bold"
+                    >+</button>
+                  </div>
+                  <button 
+                    onClick={() => setCoinsToUse(maxCoinsAllowed)}
+                    className="text-[12px] font-bold text-[#1A6FD4] hover:underline"
+                  >
+                    Max: {maxCoinsAllowed}
+                  </button>
+                </div>
+                {actualCoinsUsed > 0 && (
+                  <p className="text-[12px] mt-2 font-semibold text-green-600">
+                    Saves you {formatINR(actualCoinsUsed)}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
           <div
-            className="rounded-xl border p-6 lg:sticky lg:top-28 bg-white"
+            className="rounded-xl border p-6 lg:sticky lg:top-28 bg-white shadow-sm"
             style={{ borderColor: t.border }}
           >
             <h3
@@ -665,6 +801,14 @@ export default function CheckoutPage() {
                   {formatINR(subtotal)}
                 </span>
               </div>
+              {appliedCoupon && couponDiscount > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-green-600">Coupon Discount</span>
+                  <span className="font-bold text-green-600">
+                    -{formatINR(couponDiscount)}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span style={{ color: t.textSecondary }}>GST (18%)</span>
                 <span className="font-bold" style={{ color: t.textPrimary }}>
@@ -677,6 +821,14 @@ export default function CheckoutPage() {
                   {delivery === 0 ? "FREE" : formatINR(delivery)}
                 </span>
               </div>
+              {actualCoinsUsed > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-green-600">Coins Discount</span>
+                  <span className="font-bold text-green-600">
+                    -{formatINR(actualCoinsUsed)}
+                  </span>
+                </div>
+              )}
 
               <div className="border-t border-gray-300 pt-5 mt-2" style={{ borderColor: t.border }}>
                 <div className="flex justify-between items-end">

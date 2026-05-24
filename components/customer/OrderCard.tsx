@@ -31,6 +31,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
   const [downloading, setDownloading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [refundMode, setRefundMode] = useState<"bank" | "coins">("bank");
 
   const canCancel = order.status === "Processing" &&
     ["placed", "confirmed", "processing"].includes(order.rawStatus || "");
@@ -47,7 +48,10 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     if (!order.internalId || cancelling) return;
     setCancelling(true);
     try {
-      await api.post(`/api/orders/${order.internalId}/cancel`, { reason: "Cancelled by customer" });
+      await api.post(`/api/orders/${order.internalId}/cancel`, { 
+        reason: "Cancelled by customer",
+        refundMode 
+      });
       toast.success("Order cancelled successfully");
       setShowCancelConfirm(false);
       onCancelled?.(order.internalId);
@@ -228,6 +232,28 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
               <p className="text-[14px] text-gray-500 mb-6 leading-relaxed">
                 Are you sure you want to cancel order <span className="font-bold text-gray-700">{order.id}</span>? This action cannot be undone.
               </p>
+
+              {/* Refund Mode Selection */}
+              <div className="w-full text-left mb-6">
+                <label className="block text-[13px] font-bold text-gray-700 mb-2">How would you like your refund?</label>
+                <div className="space-y-2">
+                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'bank' ? 'border-[#8B5CF6] bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input type="radio" name="refundMode" value="bank" checked={refundMode === 'bank'} onChange={() => setRefundMode('bank')} className="w-4 h-4 text-[#8B5CF6] focus:ring-[#8B5CF6]" />
+                    <div className="flex flex-col">
+                      <span className="text-[14px] font-bold text-gray-900">Original Payment Method</span>
+                      <span className="text-[12px] text-gray-500">Refund to your bank account (3-5 days)</span>
+                    </div>
+                  </label>
+                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'coins' ? 'border-[#8B5CF6] bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input type="radio" name="refundMode" value="coins" checked={refundMode === 'coins'} onChange={() => setRefundMode('coins')} className="w-4 h-4 text-[#8B5CF6] focus:ring-[#8B5CF6]" />
+                    <div className="flex flex-col">
+                      <span className="text-[14px] font-bold text-gray-900">ANGA Coins (Instant)</span>
+                      <span className="text-[12px] text-gray-500">Get 100% value as coins instantly</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <div className="flex w-full gap-3">
                 <button
                   onClick={() => setShowCancelConfirm(false)}

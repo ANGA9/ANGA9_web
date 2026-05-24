@@ -268,46 +268,77 @@ export default function CustomerAccountPage() {
 
   // Common UI components used in both Mobile and Desktop views
   const addressFormUI = (
-    <div className="rounded-xl border p-6 bg-white" style={{ borderColor: t.border }}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold" style={{ color: t.textPrimary }}>
-          {editingId ? "Edit Address" : "Add New Address"}
-        </h2>
-        <button onClick={() => setShowForm(false)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
-          <X className="w-5 h-5" style={{ color: t.textMuted }} />
+    <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+      {/* Form Header */}
+      <div className="flex items-center justify-between px-5 sm:px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50/50 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-white border border-blue-100 flex items-center justify-center shadow-sm">
+            <MapPin className="w-5 h-5 text-[#1A6FD4]" />
+          </div>
+          <div>
+            <h2 className="text-[17px] font-bold text-gray-900">
+              {editingId ? "Edit Address" : "Add New Address"}
+            </h2>
+            <p className="text-[12px] font-medium text-gray-500 mt-0.5">Fill in the details below</p>
+          </div>
+        </div>
+        <button onClick={() => setShowForm(false)} className="p-2 hover:bg-white/80 rounded-full transition-colors border border-transparent hover:border-gray-200">
+          <X className="w-5 h-5 text-gray-400" />
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Label</label>
-          <input className={inputCls} placeholder="Home, Office..." value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+
+      <div className="px-5 sm:px-6 py-5 sm:py-6 space-y-5">
+        {/* Label & Pincode row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Label</label>
+            <input className={inputCls} placeholder="Home, Office..." value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
+              Pincode <span className="text-red-400">*</span>
+            </label>
+            <input className={inputCls} placeholder="560001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
+          </div>
         </div>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Pincode *</label>
-          <input className={inputCls} placeholder="560001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
+
+        {/* Address Lines — grouped in a tinted section */}
+        <div className="bg-gray-50/80 rounded-xl p-4 space-y-4 border border-gray-100">
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
+              Address Line 1 <span className="text-red-400">*</span>
+            </label>
+            <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Address Line 2</label>
+            <input className={inputCls} placeholder="Landmark, Area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
+          </div>
         </div>
-        <div className="sm:col-span-2">
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Address Line 1 *</label>
-          <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
-        </div>
-        <div className="sm:col-span-2">
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Address Line 2</label>
-          <input className={inputCls} placeholder="Landmark, Area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">City *</label>
-          <input className={inputCls} placeholder="Bangalore" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-        </div>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">State *</label>
-          <input className={inputCls} placeholder="Karnataka" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+
+        {/* City & State row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
+              City <span className="text-red-400">*</span>
+            </label>
+            <input className={inputCls} placeholder="Bangalore" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
+              State <span className="text-red-400">*</span>
+            </label>
+            <input className={inputCls} placeholder="Karnataka" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+          </div>
         </div>
       </div>
-      <div className="flex gap-3 mt-6">
-        <button onClick={() => setShowForm(false)} className="px-6 py-3 rounded-xl border text-[14px] font-bold active:scale-95 transition-all flex-1 sm:flex-none" style={{ borderColor: t.border, color: t.textSecondary }}>
+
+      {/* Action Buttons */}
+      <div className="flex gap-3 px-5 sm:px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+        <button onClick={() => setShowForm(false)} className="px-6 py-3 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-600 active:scale-95 transition-all flex-1 sm:flex-none hover:bg-gray-50 shadow-sm">
           Cancel
         </button>
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none" style={{ background: t.bluePrimary }}>
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none shadow-md hover:shadow-lg" style={{ background: "linear-gradient(135deg, #1A6FD4, #1557AB)" }}>
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {editingId ? "Update Address" : "Save Address"}
         </button>
@@ -593,24 +624,98 @@ export default function CustomerAccountPage() {
           </div>
         ) : (
           // --- Mobile Drill-down View ---
-          <div className="w-full flex flex-col min-h-screen bg-gray-50">
-            <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
-              <button 
-                onClick={() => setMobileMenuOpen(true)} 
-                className="mr-3 p-1.5 -ml-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors shrink-0"
-              >
-                <ArrowLeft className="w-6 h-6 text-gray-800" />
-              </button>
-              <h1 className="text-[17px] font-medium text-gray-900 leading-tight truncate">
-                {activeNav}
-              </h1>
+          <div className="w-full flex flex-col min-h-screen bg-white">
+            <header className="flex items-center justify-between px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+              <div className="flex items-center">
+                <button 
+                  onClick={() => setMobileMenuOpen(true)} 
+                  className="mr-3 p-1.5 -ml-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors shrink-0"
+                >
+                  <ArrowLeft className="w-6 h-6 text-gray-800" />
+                </button>
+                <h1 className="text-[17px] font-medium text-gray-900 leading-tight truncate">
+                  {activeNav}
+                </h1>
+              </div>
+              {activeNav === "Addresses" && !showForm && (
+                <button onClick={openAddForm} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-bold text-[#1A6FD4] bg-blue-50 active:scale-95 transition-all">
+                  <Plus className="w-3.5 h-3.5" /> Add New
+                </button>
+              )}
             </header>
-            <div className="p-4">
-              {activeNav === "Profile" && profileUI}
-              {activeNav === "Business Info" && profileUI}
-              {activeNav === "Addresses" && (showForm ? addressFormUI : addressBookUI)}
-              {/* Other tabs can be added here if needed */}
-            </div>
+            {activeNav === "Addresses" ? (
+              showForm ? (
+                <div className="p-4">
+                  {addressFormUI}
+                </div>
+              ) : (
+                <div className="flex-1">
+                  {loadingAddresses ? (
+                    <div className="flex items-center justify-center py-16">
+                      <Loader2 className="w-8 h-8 animate-spin text-[#1A6FD4]" />
+                    </div>
+                  ) : addresses.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                      <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+                        <MapPin className="w-8 h-8 text-gray-300" />
+                      </div>
+                      <p className="text-[16px] font-bold text-gray-900 mb-1">No addresses saved</p>
+                      <p className="text-[14px] text-gray-500 mb-6">Add an address for quick checkout</p>
+                      <button onClick={openAddForm} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95" style={{ background: t.bluePrimary }}>
+                        Add your first address
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="px-3 pt-3 pb-6 flex flex-col gap-3">
+                      {addresses.map((addr) => (
+                        <div key={addr.id} className="rounded-2xl bg-gray-50 border border-gray-100 p-4 transition-all active:scale-[0.99]">
+                          <div className="flex items-start gap-3">
+                            <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${addr.is_default ? 'bg-blue-100' : 'bg-gray-200/70'}`}>
+                              <MapPin className={`w-4 h-4 ${addr.is_default ? 'text-[#1A6FD4]' : 'text-gray-500'}`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <span className="text-[15px] font-bold text-gray-900">{addr.label || "Address"}</span>
+                                {addr.is_default && (
+                                  <span className="rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#1A6FD4] border border-blue-100">
+                                    Default
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[13px] text-gray-500 leading-relaxed">{addr.line1}</p>
+                              {addr.line2 && <p className="text-[13px] text-gray-500 leading-relaxed">{addr.line2}</p>}
+                              <p className="text-[13px] font-semibold text-gray-700 mt-1">
+                                {addr.city}, {addr.state} {addr.pincode}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-5 mt-3 pt-3 ml-12 border-t border-gray-200/60">
+                            <button onClick={() => openEditForm(addr)} className="text-[13px] font-bold text-[#1A6FD4]">
+                              Edit
+                            </button>
+                            {!addr.is_default && (
+                              <button onClick={() => handleSetDefault(addr.id)} className="text-[13px] font-bold text-gray-500">
+                                Make Default
+                              </button>
+                            )}
+                            {!addr.is_default && (
+                              <button onClick={() => handleDelete(addr.id)} className="text-[13px] font-bold text-red-500 ml-auto">
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            ) : (
+              <div className="p-4">
+                {activeNav === "Profile" && profileUI}
+                {activeNav === "Business Info" && profileUI}
+              </div>
+            )}
           </div>
         )}
       </div>

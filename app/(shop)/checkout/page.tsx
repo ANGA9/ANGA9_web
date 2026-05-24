@@ -348,8 +348,13 @@ export default function CheckoutPage() {
           color: "#1A6FD4",
         },
         modal: {
-          ondismiss: () => {
+          ondismiss: async () => {
             setPlacing(false);
+            try {
+              await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment cancelled by user" });
+            } catch (e) {
+              // ignore
+            }
             toast("Payment cancelled", {
               icon: "ℹ️",
             });
@@ -358,8 +363,13 @@ export default function CheckoutPage() {
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", (response: unknown) => {
+      rzp.on("payment.failed", async (response: unknown) => {
         setPlacing(false);
+        try {
+          await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment failed" });
+        } catch (e) {
+          // ignore
+        }
         const failedResponse = response as { error?: { description?: string } };
         toast.error(failedResponse?.error?.description || "Payment failed. Please try again.");
         setError(failedResponse?.error?.description || "Payment failed");
@@ -691,26 +701,6 @@ export default function CheckoutPage() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Payment method info */}
-          <div
-            className="rounded-xl border p-5"
-            style={{ background: "#F0F7FF", borderColor: "#B8D4F0" }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#1A6FD4" }}>
-                <Lock className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-[15px] font-semibold" style={{ color: "#1A6FD4" }}>
-                  Secure Payment via Razorpay
-                </p>
-                <p className="text-sm mt-0.5" style={{ color: "#5B8FC9" }}>
-                  UPI, Credit/Debit Cards, Net Banking, Wallets — all accepted. 100% safe & secure.
-                </p>
-              </div>
             </div>
           </div>
         </div>

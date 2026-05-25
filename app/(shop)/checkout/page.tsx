@@ -358,12 +358,13 @@ export default function CheckoutPage() {
         modal: {
           ondismiss: async () => {
             setPlacing(false);
+            // Silently delete the pending order — cart is still intact
             try {
-              await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment cancelled by user" });
+              await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment not completed" });
             } catch (e) {
               // ignore
             }
-            toast("Payment cancelled", {
+            toast("Payment not completed. Your cart is still intact.", {
               icon: "ℹ️",
             });
           },

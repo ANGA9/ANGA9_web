@@ -166,7 +166,9 @@ export default function CheckoutPage() {
   let couponDiscount = appliedCoupon?.discount || 0;
   if (appliedCoupon) {
     if (appliedCoupon.discount_type === 'percent') {
-      couponDiscount = Math.round((subtotal * appliedCoupon.discount_value) / 100);
+      // Match the server's 2-decimal (paise) rounding so the UI total agrees
+      // with what apply_promos_to_order computes server-side.
+      couponDiscount = Math.round((subtotal * appliedCoupon.discount_value)) / 100;
       if (appliedCoupon.max_discount !== null) couponDiscount = Math.min(couponDiscount, appliedCoupon.max_discount);
     } else {
       couponDiscount = Math.min(appliedCoupon.discount_value, subtotal);

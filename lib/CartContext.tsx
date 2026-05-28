@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const mergedRef = useRef(false);
 
   const isGuest = !user;
@@ -79,6 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!user) {
       setItems([]);
       setCount(0);
+      setLoading(false);
       return;
     }
     try {

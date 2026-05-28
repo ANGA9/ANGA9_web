@@ -12,12 +12,7 @@ import {
   Truck,
   ShieldCheck,
   ChevronRight,
-  Ticket,
   Loader2,
-  Smartphone,
-  CreditCard,
-  Banknote,
-  Check,
   Lock,
 } from "lucide-react";
 import Link from "next/link";
@@ -39,8 +34,6 @@ export default function CustomerCartPage() {
   const { user } = useAuth();
   const { open: openLoginSheet } = useLoginSheet();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [couponCode, setCouponCode] = useState("");
-  const [couponState, setCouponState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const [updatingQty, setUpdatingQty] = useState<Set<string>>(new Set());
   const router = useRouter();
@@ -53,18 +46,6 @@ export default function CustomerCartPage() {
     }
     setIsPlacingOrder(true);
     setTimeout(() => router.push("/checkout"), 800);
-  };
-
-  const handleApplyCoupon = () => {
-    if (!couponCode.trim()) return;
-    setCouponState("loading");
-    setTimeout(() => {
-      if (couponCode.toUpperCase() === "ANGA9") {
-        setCouponState("success");
-      } else {
-        setCouponState("error");
-      }
-    }, 800);
   };
 
   useEffect(() => {
@@ -260,35 +241,8 @@ export default function CustomerCartPage() {
               })}
             </div>
 
-            <div className="mt-4 px-4 md:px-0">
-              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-                <div className="flex items-center gap-3 mb-3">
-                  <Ticket className="w-5 h-5 text-[#1A6FD4]" />
-                  <span className="text-[14px] font-bold text-gray-900 uppercase tracking-wide">Apply Coupon</span>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2 h-10">
-                    <input
-                      type="text"
-                      value={couponCode}
-                      onChange={(e) => { setCouponCode(e.target.value); setCouponState("idle"); }}
-                      placeholder="Enter Coupon Code"
-                      className={`flex-1 bg-white border rounded-lg px-4 text-sm focus:outline-none transition-colors ${couponState === 'error' ? 'border-red-500' : couponState === 'success' ? 'border-green-500' : 'border-gray-200 focus:border-[#1A6FD4]'}`}
-                      disabled={couponState === "loading" || couponState === "success"}
-                    />
-                    <button 
-                      onClick={handleApplyCoupon}
-                      disabled={couponState === "loading" || couponState === "success" || !couponCode.trim()}
-                      className="px-6 bg-white border border-[#1A6FD4] text-[#1A6FD4] text-sm font-bold rounded-lg active:scale-95 transition-all hover:bg-blue-50 disabled:opacity-50"
-                    >
-                      {couponState === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : couponState === "success" ? <Check className="w-4 h-4" /> : "Apply"}
-                    </button>
-                  </div>
-                  {couponState === "error" && <p className="text-[12px] text-red-500 font-medium ml-1">Invalid coupon code</p>}
-                  {couponState === "success" && <p className="text-[12px] text-green-600 font-medium ml-1">Coupon applied successfully!</p>}
-                </div>
-              </div>
-            </div>
+
+
 
             <div className="mt-4 mb-4 px-4 md:px-0">
               <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">

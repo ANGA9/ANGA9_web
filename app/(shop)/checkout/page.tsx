@@ -70,7 +70,7 @@ function formatINR(value: number) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { items, clearCart, loading } = useCart();
   const { user, dbUser } = useAuth();
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
@@ -393,6 +393,87 @@ export default function CheckoutPage() {
       toast.error(message);
     }
   };
+
+  // Show skeleton while cart is loading on page refresh
+  if (loading && items.length === 0) {
+    return (
+      <div className="bg-[#F7F7F8] min-h-screen lg:bg-white">
+        {/* Mobile header skeleton */}
+        <header className="flex lg:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+          <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse mr-3" />
+          <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
+        </header>
+
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6 lg:py-10">
+          {/* Desktop heading skeleton */}
+          <div className="hidden lg:flex items-baseline gap-3 mb-8">
+            <div className="h-8 w-40 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-5 w-20 bg-gray-100 rounded animate-pulse" />
+          </div>
+
+          {/* Mobile subheading skeleton */}
+          <div className="lg:hidden mb-4 mt-2">
+            <div className="h-4 w-52 bg-gray-200 rounded animate-pulse" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+            {/* Left column */}
+            <div className="lg:col-span-8 space-y-4">
+              {/* Address skeleton */}
+              <div className="rounded-xl border border-gray-200 p-5 bg-white">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-5 h-5 rounded bg-gray-200 animate-pulse" />
+                  <div className="h-5 w-36 bg-gray-200 rounded animate-pulse" />
+                </div>
+                <div className="rounded-xl border-2 border-gray-100 p-4 space-y-2">
+                  <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-full bg-gray-100 rounded animate-pulse" />
+                  <div className="h-3 w-3/4 bg-gray-100 rounded animate-pulse" />
+                </div>
+              </div>
+
+              {/* Order items skeleton */}
+              <div className="rounded-xl border border-gray-200 p-5 bg-white">
+                <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4" />
+                {[1, 2].map((i) => (
+                  <div key={i} className="flex items-center gap-6 py-4 border-b border-gray-100 last:border-0">
+                    <div className="w-20 h-20 rounded-xl bg-gray-200 animate-pulse shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-3 w-1/3 bg-gray-100 rounded animate-pulse" />
+                    </div>
+                    <div className="h-5 w-16 bg-gray-200 rounded animate-pulse shrink-0" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right column — price summary skeleton */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="rounded-xl border border-gray-200 p-5 bg-white">
+                <div className="h-5 w-28 bg-gray-200 rounded animate-pulse mb-4" />
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex justify-between">
+                      <div className="h-3 w-24 bg-gray-100 rounded animate-pulse" />
+                      <div className="h-3 w-16 bg-gray-100 rounded animate-pulse" />
+                    </div>
+                  ))}
+                  <div className="border-t border-gray-200 pt-3 mt-2">
+                    <div className="flex justify-between">
+                      <div className="h-5 w-20 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-5 w-24 bg-gray-200 rounded animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="h-12 w-full bg-gray-200 rounded-xl animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0 && !placing) {
     return (

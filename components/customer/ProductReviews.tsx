@@ -402,11 +402,12 @@ function ReviewForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 p-0 md:p-4">
+    <div className="fixed inset-0 z-[10000] flex items-end md:items-center justify-center bg-black/50 p-0 md:p-4">
       <div
-        className="bg-white w-full md:max-w-lg md:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-white w-full md:max-w-lg md:rounded-2xl md:max-h-[90vh] rounded-t-2xl overflow-hidden flex flex-col"
+        style={{ height: "55dvh" }}
       >
-        <header className="sticky top-0 bg-white flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: t.border }}>
+        <header className="bg-white flex items-center justify-between px-4 py-3 border-b shrink-0" style={{ borderColor: t.border }}>
           <h3 className="font-bold text-base" style={{ color: t.textPrimary }}>
             Write a review
           </h3>
@@ -419,7 +420,7 @@ function ReviewForm({
           </button>
         </header>
 
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 overflow-y-auto flex-1">
           {eligible.length > 1 && (
             <div>
               <label className="block text-sm font-semibold mb-1" style={{ color: t.textPrimary }}>
@@ -562,7 +563,13 @@ function ReviewForm({
           </div>
         </div>
 
-        <footer className="sticky bottom-0 bg-white px-4 py-3 border-t flex gap-3" style={{ borderColor: t.border }}>
+        <footer
+          className="sticky bottom-0 bg-white px-4 py-3 border-t flex gap-3 shrink-0"
+          style={{
+            borderColor: t.border,
+            paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
+          }}
+        >
           <button
             onClick={onClose}
             disabled={submitting}

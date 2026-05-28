@@ -41,13 +41,20 @@ export default function LoginSheet() {
     if (user && isOpen && step === "otp") {
       setStep("success");
       toast.success("Login successful! Welcome to ANGA9", { icon: <CheckCircle2 size={18} color="#059669" /> });
-      const timer = setTimeout(() => {
-        handleClose();
-      }, 1500);
-      return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isOpen, step]);
+
+  // Auto-close the success screen after 1.2s (+ 300ms animation = ~1.5s total)
+  useEffect(() => {
+    if (step === "success" && isOpen) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, isOpen]);
 
   function handleClose() {
     setVisible(false);

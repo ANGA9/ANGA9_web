@@ -31,8 +31,38 @@ export default function CustomerWishlistPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#4338CA]" />
+      <div className="w-full min-h-screen bg-white animate-pulse">
+        {/* ══════════ MOBILE HEADER SKELETON ══════════ */}
+        <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+          <div className="w-6 h-6 rounded-full bg-gray-200 mr-3" />
+          <div className="h-4 w-24 bg-gray-200 rounded" />
+        </header>
+
+        <div className="mx-auto max-w-[1400px] px-2 sm:px-4 py-4 md:py-10 pb-24 md:pb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 md:mb-8 mt-1 md:mt-2">
+            <div>
+              <div className="flex items-baseline gap-3">
+                <div className="hidden md:block h-8 w-40 bg-gray-200 rounded mb-1" />
+                <div className="hidden md:block h-6 w-20 bg-gray-200 rounded" />
+              </div>
+              <div className="h-4 w-32 bg-gray-200 rounded mt-2 md:mt-0" />
+            </div>
+            <div className="mt-3 md:mt-0 h-10 w-36 bg-gray-200 rounded-full md:rounded-xl" />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-5 mt-2 md:mt-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-xl md:rounded-2xl border border-gray-100 overflow-hidden shadow-sm h-[280px] md:h-[340px] flex flex-col">
+                <div className="h-[60%] bg-gray-200 w-full" />
+                <div className="p-3 md:p-4 space-y-2 md:space-y-3 flex-1 flex flex-col justify-end pb-4">
+                  <div className="h-4 w-3/4 bg-gray-200 rounded" />
+                  <div className="h-3 w-1/2 bg-gray-100 rounded" />
+                  <div className="h-5 w-1/3 bg-gray-200 rounded mt-2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

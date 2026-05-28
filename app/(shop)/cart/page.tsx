@@ -90,8 +90,78 @@ export default function CustomerCartPage() {
 
   if (loading && items.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: t.bluePrimary }} />
+      <div className="w-full relative bg-white min-h-screen">
+        {/* ══════════ MOBILE SKELETON ══════════ */}
+        <div className="block md:hidden pb-32">
+          <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+            <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse mr-3" />
+            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+          </header>
+          <div className="flex flex-col gap-2 mt-2 px-4">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 relative pt-10">
+                <div className="flex gap-4">
+                  <div className="w-[90px] h-[90px] rounded-xl bg-gray-200 animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-3 w-1/3 bg-gray-100 rounded animate-pulse" />
+                    <div className="h-3 w-1/2 bg-gray-100 rounded animate-pulse mt-3" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+                  <div className="h-5 w-16 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-10 w-24 bg-gray-200 rounded-xl animate-pulse" />
+                  <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 px-4">
+            <div className="bg-gray-50 rounded-xl p-5 border border-gray-200 space-y-3">
+              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4" />
+              <div className="flex justify-between"><div className="h-3 w-24 bg-gray-100 rounded animate-pulse"/><div className="h-3 w-16 bg-gray-100 rounded animate-pulse"/></div>
+              <div className="flex justify-between"><div className="h-3 w-20 bg-gray-100 rounded animate-pulse"/><div className="h-3 w-12 bg-gray-100 rounded animate-pulse"/></div>
+              <div className="border-t border-gray-200 pt-3 mt-2 flex justify-between items-center">
+                <div className="h-5 w-24 bg-gray-200 rounded animate-pulse"/><div className="h-6 w-24 bg-gray-200 rounded animate-pulse"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════ DESKTOP SKELETON ══════════ */}
+        <div className="hidden md:block mx-auto max-w-[1280px] px-8 py-10">
+          <div className="flex items-center justify-between mb-8">
+            <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+          </div>
+          <div className="grid grid-cols-12 gap-10">
+            <div className="col-span-12 xl:col-span-8 space-y-4">
+              {[1, 2].map(i => (
+                <div key={i} className="flex items-center gap-6 rounded-xl border border-gray-200 p-5 bg-white shadow-sm">
+                  <div className="h-24 w-24 rounded-xl bg-gray-200 animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-5 w-3/4 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 w-1/4 bg-gray-100 rounded animate-pulse" />
+                  </div>
+                  <div className="w-24 shrink-0"><div className="h-6 w-16 bg-gray-200 rounded animate-pulse" /></div>
+                  <div className="w-32 h-11 bg-gray-200 rounded-xl animate-pulse shrink-0" />
+                  <div className="w-28 shrink-0 flex justify-end"><div className="h-6 w-20 bg-gray-200 rounded animate-pulse" /></div>
+                </div>
+              ))}
+            </div>
+            <div className="col-span-12 xl:col-span-4">
+              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200 space-y-4">
+                <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4" />
+                <div className="flex justify-between"><div className="h-4 w-24 bg-gray-100 rounded animate-pulse"/><div className="h-4 w-16 bg-gray-100 rounded animate-pulse"/></div>
+                <div className="flex justify-between"><div className="h-4 w-20 bg-gray-100 rounded animate-pulse"/><div className="h-4 w-12 bg-gray-100 rounded animate-pulse"/></div>
+                <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between items-center">
+                  <div className="h-6 w-24 bg-gray-200 rounded animate-pulse"/><div className="h-7 w-28 bg-gray-200 rounded animate-pulse"/>
+                </div>
+                <div className="h-12 w-full bg-gray-200 rounded-xl animate-pulse mt-4" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

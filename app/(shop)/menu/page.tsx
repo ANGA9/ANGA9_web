@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search } from "lucide-react";
 import {
+  ArrowLeft,
+  Search,
   Shirt,
   UserRound,
   Baby,
@@ -18,106 +19,80 @@ import {
   Crown,
   Gift,
   ChevronRight,
+  // Icons for popular categories
+  Ribbon,
+  BookOpen,
+  CircleDot,
+  Gem,
+  Footprints,
+  RectangleHorizontal,
+  Sofa,
+  PanelTop,
+  Flower2,
 } from "lucide-react";
 import { CATEGORY_TREE, type CategoryColumn } from "@/lib/categories";
 
-/* ─── Category meta with icons & colors ─── */
+/* ─── Brand palette ─── */
+const BRAND = {
+  primary: "#146EB4",
+  primaryLight: "#E8F1FA",
+  primaryMid: "#C4DCF0",
+  text: "#1F2937",
+  textSecondary: "#6B7280",
+  textMuted: "#9CA3AF",
+  bg: "#F7F8FA",
+  bgCard: "#FFFFFF",
+  border: "#E5E7EB",
+  borderLight: "#F3F4F6",
+  iconDefault: "#6B7280",
+  iconActive: "#146EB4",
+};
+
+/* ─── Category meta with icons — monochrome brand palette ─── */
 interface CategoryMeta {
   key: string;
   label: string;
   icon: React.ElementType;
-  color: string;
-  bgColor: string;
 }
 
 const CATEGORIES: CategoryMeta[] = [
-  {
-    key: "POPULAR",
-    label: "Popular",
-    icon: Star,
-    color: "#F59E0B",
-    bgColor: "#FEF3C7",
-  },
-  {
-    key: "WOMENSWEAR",
-    label: "Women",
-    icon: Shirt,
-    color: "#E0598B",
-    bgColor: "#FDE8EF",
-  },
-  {
-    key: "MENSWEAR",
-    label: "Men",
-    icon: UserRound,
-    color: "#2563EB",
-    bgColor: "#DBEAFE",
-  },
-  {
-    key: "KIDS & INFANTS",
-    label: "Kids & Baby",
-    icon: Baby,
-    color: "#16A34A",
-    bgColor: "#DCFCE7",
-  },
-  {
-    key: "ACTIVEWEAR",
-    label: "Activewear",
-    icon: Dumbbell,
-    color: "#DC2626",
-    bgColor: "#FEE2E2",
-  },
-  {
-    key: "ACCESSORIES",
-    label: "Accessories",
-    icon: Watch,
-    color: "#7C3AED",
-    bgColor: "#EDE9FE",
-  },
-  {
-    key: "BED, BATH & KITCHEN",
-    label: "Bed & Bath",
-    icon: BedDouble,
-    color: "#0891B2",
-    bgColor: "#CFFAFE",
-  },
-  {
-    key: "HOME DECOR & FLOORING",
-    label: "Home Decor",
-    icon: Lamp,
-    color: "#CA8A04",
-    bgColor: "#FEF9C3",
-  },
+  { key: "POPULAR",                label: "Popular",     icon: Star },
+  { key: "WOMENSWEAR",             label: "Women",       icon: Shirt },
+  { key: "MENSWEAR",               label: "Men",         icon: UserRound },
+  { key: "KIDS & INFANTS",         label: "Kids & Baby", icon: Baby },
+  { key: "ACTIVEWEAR",             label: "Activewear",  icon: Dumbbell },
+  { key: "ACCESSORIES",            label: "Accessories",  icon: Watch },
+  { key: "BED, BATH & KITCHEN",    label: "Bed & Bath",  icon: BedDouble },
+  { key: "HOME DECOR & FLOORING",  label: "Home Decor",  icon: Lamp },
 ];
 
-/* ─── Popular section data ─── */
+/* ─── Popular section data — icons instead of emojis ─── */
 interface PopularItem {
   label: string;
   icon: React.ElementType;
-  color: string;
-  bgColor: string;
   href: string;
 }
 
 const FEATURED_ITEMS: PopularItem[] = [
-  { label: "New Arrivals", icon: Sparkles, color: "#7C3AED", bgColor: "#EDE9FE", href: "/search?q=new+arrivals" },
-  { label: "Trending Now", icon: TrendingUp, color: "#E0598B", bgColor: "#FDE8EF", href: "/search?q=trending" },
-  { label: "Top Brands", icon: Crown, color: "#F59E0B", bgColor: "#FEF3C7", href: "/search?q=top+brands" },
-  { label: "Gift Ideas", icon: Gift, color: "#DC2626", bgColor: "#FEE2E2", href: "/search?q=gifts" },
+  { label: "New Arrivals", icon: Sparkles,   href: "/search?q=new+arrivals" },
+  { label: "Trending Now", icon: TrendingUp, href: "/search?q=trending" },
+  { label: "Top Brands",   icon: Crown,      href: "/search?q=top+brands" },
+  { label: "Gift Ideas",   icon: Gift,       href: "/search?q=gifts" },
 ];
 
-const POPULAR_CATEGORIES: { label: string; emoji: string; href: string }[] = [
-  { label: "Sarees",       emoji: "🥻", href: "/search?q=sarees" },
-  { label: "Kurtas",       emoji: "👘", href: "/search?q=kurtas" },
-  { label: "T-Shirts",     emoji: "👕", href: "/search?q=t-shirts" },
-  { label: "Jeans",        emoji: "👖", href: "/search?q=jeans" },
-  { label: "Dresses",      emoji: "👗", href: "/search?q=dresses" },
-  { label: "Jewellery",    emoji: "💍", href: "/search?q=jewellery" },
-  { label: "Footwear",     emoji: "👟", href: "/search?q=footwear" },
-  { label: "Bed Sheets",   emoji: "🛏️", href: "/search?q=bed+sheets" },
-  { label: "Cushions",     emoji: "🛋️", href: "/search?q=cushions" },
-  { label: "Curtains",     emoji: "🪟", href: "/search?q=curtains" },
-  { label: "Towels",       emoji: "🧺", href: "/search?q=towels" },
-  { label: "Home Decor",   emoji: "🪴", href: "/search?q=home+decor" },
+const POPULAR_CATEGORIES: { label: string; icon: React.ElementType; href: string }[] = [
+  { label: "Sarees",       icon: Ribbon,                 href: "/search?q=sarees" },
+  { label: "Kurtas",       icon: BookOpen,                href: "/search?q=kurtas" },
+  { label: "T-Shirts",     icon: Shirt,                   href: "/search?q=t-shirts" },
+  { label: "Jeans",        icon: CircleDot,               href: "/search?q=jeans" },
+  { label: "Dresses",      icon: Shirt,                   href: "/search?q=dresses" },
+  { label: "Jewellery",    icon: Gem,                     href: "/search?q=jewellery" },
+  { label: "Footwear",     icon: Footprints,              href: "/search?q=footwear" },
+  { label: "Bed Sheets",   icon: RectangleHorizontal,     href: "/search?q=bed+sheets" },
+  { label: "Cushions",     icon: Sofa,                    href: "/search?q=cushions" },
+  { label: "Curtains",     icon: PanelTop,                href: "/search?q=curtains" },
+  { label: "Towels",       icon: RectangleHorizontal,     href: "/search?q=towels" },
+  { label: "Home Decor",   icon: Flower2,                 href: "/search?q=home+decor" },
 ];
 
 export default function MobileMenuPage() {
@@ -149,21 +124,30 @@ export default function MobileMenuPage() {
       }}
     >
       {/* ── Sticky Header ── */}
-      <header className="flex items-center gap-3 px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-50 shrink-0">
+      <header
+        className="flex items-center gap-3 px-4 h-14 sticky top-0 z-50 shrink-0"
+        style={{
+          background: BRAND.bgCard,
+          borderBottom: `1px solid ${BRAND.borderLight}`,
+        }}
+      >
         <button
           onClick={() => router.back()}
           className="p-1.5 -ml-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
+          <ArrowLeft className="w-5 h-5" style={{ color: BRAND.text }} />
         </button>
-        <h1 className="text-[17px] font-medium text-gray-900 tracking-tight flex-1">
+        <h1
+          className="text-[17px] font-medium tracking-tight flex-1"
+          style={{ color: BRAND.text }}
+        >
           Categories
         </h1>
         <Link
           href="/search"
           className="p-2 rounded-full hover:bg-gray-100 transition-colors"
         >
-          <Search className="w-5 h-5 text-gray-600" />
+          <Search className="w-5 h-5" style={{ color: BRAND.textSecondary }} />
         </Link>
       </header>
 
@@ -171,9 +155,10 @@ export default function MobileMenuPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* ── LEFT: Category List ── */}
         <aside
-          className="w-[88px] shrink-0 overflow-y-auto border-r border-gray-100"
+          className="w-[88px] shrink-0 overflow-y-auto"
           style={{
-            background: "#F8F9FB",
+            background: BRAND.bg,
+            borderRight: `1px solid ${BRAND.borderLight}`,
             scrollbarWidth: "none",
             msOverflowStyle: "none",
             overscrollBehavior: "contain",
@@ -182,10 +167,6 @@ export default function MobileMenuPage() {
         >
           <style>{`
             .menu-aside::-webkit-scrollbar { display: none; }
-            @keyframes catIconBounce {
-              0%, 100% { transform: scale(1); }
-              50% { transform: scale(1.08); }
-            }
           `}</style>
           <div className="flex flex-col menu-aside">
             {CATEGORIES.map((cat) => {
@@ -197,14 +178,17 @@ export default function MobileMenuPage() {
                   onClick={() => setActiveCategory(cat.key)}
                   className="relative flex flex-col items-center gap-1.5 py-3.5 px-2 transition-all"
                   style={{
-                    background: isActive ? "#FFFFFF" : "transparent",
+                    background: isActive ? BRAND.bgCard : "transparent",
                   }}
                 >
-                  {/* Active indicator — filled colored chip behind icon */}
+                  {/* Active indicator bar — left edge */}
                   {isActive && (
                     <div
-                      className="absolute inset-x-2 top-2 bottom-2 rounded-xl"
-                      style={{ background: cat.bgColor }}
+                      className="absolute left-0 top-2 bottom-2 rounded-r-full"
+                      style={{
+                        width: 3,
+                        background: BRAND.primary,
+                      }}
                     />
                   )}
 
@@ -214,9 +198,7 @@ export default function MobileMenuPage() {
                     style={{
                       width: 42,
                       height: 42,
-                      background: isActive ? cat.bgColor : `${cat.color}18`,
-                      boxShadow: isActive ? `0 2px 8px ${cat.color}30` : "none",
-                      animation: isActive ? "catIconBounce 0.3s ease" : "none",
+                      background: isActive ? BRAND.primaryLight : "transparent",
                     }}
                   >
                     <Icon
@@ -224,7 +206,7 @@ export default function MobileMenuPage() {
                       style={{
                         width: 19,
                         height: 19,
-                        color: isActive ? cat.color : `${cat.color}AA`,
+                        color: isActive ? BRAND.primary : BRAND.iconDefault,
                         strokeWidth: isActive ? 2.2 : 1.8,
                       }}
                     />
@@ -236,7 +218,7 @@ export default function MobileMenuPage() {
                     style={{
                       fontSize: "10px",
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? cat.color : "#6B7280",
+                      color: isActive ? BRAND.primary : BRAND.textSecondary,
                       letterSpacing: "0.01em",
                       maxWidth: 76,
                     }}
@@ -279,7 +261,10 @@ export default function MobileMenuPage() {
               <>
                 {/* Featured Section */}
                 <div className="mb-5">
-                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 px-0.5">
+                  <h3
+                    className="text-[10px] font-black uppercase tracking-widest mb-3 px-0.5"
+                    style={{ color: BRAND.textMuted }}
+                  >
                     Featured
                   </h3>
                   <div className="grid grid-cols-2 gap-2.5">
@@ -292,28 +277,31 @@ export default function MobileMenuPage() {
                           className="relative flex flex-col justify-end overflow-hidden rounded-2xl active:scale-[0.97] transition-all"
                           style={{
                             height: 110,
-                            background: `linear-gradient(145deg, ${item.bgColor}, ${item.bgColor}88)`,
-                            border: `1px solid ${item.color}20`,
-                            boxShadow: `0 2px 12px ${item.color}15`,
+                            background: BRAND.primaryLight,
+                            border: `1px solid ${BRAND.border}`,
                           }}
                         >
                           {/* Large decorative icon — top-right */}
                           <Icon
-                            className="absolute top-3 right-3 opacity-20"
-                            style={{ width: 52, height: 52, color: item.color }}
+                            className="absolute top-3 right-3 opacity-[0.08]"
+                            style={{ width: 52, height: 52, color: BRAND.primary }}
                           />
                           {/* Foreground icon — top-left */}
                           <div
                             className="absolute top-3 left-3 flex items-center justify-center rounded-xl"
-                            style={{ width: 36, height: 36, background: `${item.color}25` }}
+                            style={{
+                              width: 36,
+                              height: 36,
+                              background: BRAND.primaryMid,
+                            }}
                           >
-                            <Icon style={{ width: 18, height: 18, color: item.color }} />
+                            <Icon style={{ width: 18, height: 18, color: BRAND.primary }} />
                           </div>
                           {/* Label at bottom */}
                           <div className="px-3 pb-3 pt-2">
                             <span
-                              className="text-[12px] font-black leading-tight block"
-                              style={{ color: item.color }}
+                              className="text-[12px] font-bold leading-tight block"
+                              style={{ color: BRAND.text }}
                             >
                               {item.label}
                             </span>
@@ -324,22 +312,53 @@ export default function MobileMenuPage() {
                   </div>
                 </div>
 
-                {/* Popular Categories */}
+                {/* Popular Categories — icons instead of emojis */}
                 <div>
-                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 px-0.5">
+                  <h3
+                    className="text-[10px] font-black uppercase tracking-widest mb-3 px-0.5"
+                    style={{ color: BRAND.textMuted }}
+                  >
                     Popular Categories
                   </h3>
                   <div className="grid grid-cols-3 gap-2">
-                    {POPULAR_CATEGORIES.map((item) => (
-                      <Link
-                        key={item.label}
-                        href={item.href}
-                        className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm active:scale-[0.97] transition-all text-center"
-                      >
-                        <span className="text-[18px] leading-none">{item.emoji}</span>
-                        <span className="text-[10.5px] font-semibold text-gray-700 leading-tight">{item.label}</span>
-                      </Link>
-                    ))}
+                    {POPULAR_CATEGORIES.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border hover:shadow-sm active:scale-[0.97] transition-all text-center"
+                          style={{
+                            borderColor: BRAND.borderLight,
+                            background: BRAND.bgCard,
+                          }}
+                        >
+                          <div
+                            className="flex items-center justify-center rounded-lg"
+                            style={{
+                              width: 32,
+                              height: 32,
+                              background: BRAND.bg,
+                            }}
+                          >
+                            <Icon
+                              style={{
+                                width: 16,
+                                height: 16,
+                                color: BRAND.textSecondary,
+                                strokeWidth: 1.8,
+                              }}
+                            />
+                          </div>
+                          <span
+                            className="text-[10.5px] font-semibold leading-tight"
+                            style={{ color: BRAND.text }}
+                          >
+                            {item.label}
+                          </span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               </>
@@ -350,10 +369,8 @@ export default function MobileMenuPage() {
                 <div
                   className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4"
                   style={{
-                    background: activeMeta
-                      ? `linear-gradient(135deg, ${activeMeta.bgColor}, #FFFFFF)`
-                      : "#F8F9FB",
-                    border: `1px solid ${activeMeta?.color}15`,
+                    background: BRAND.primaryLight,
+                    border: `1px solid ${BRAND.border}`,
                   }}
                 >
                   {activeMeta && (
@@ -362,26 +379,29 @@ export default function MobileMenuPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        background: activeMeta.bgColor,
+                        background: BRAND.primaryMid,
                       }}
                     >
                       <activeMeta.icon
                         style={{
                           width: 20,
                           height: 20,
-                          color: activeMeta.color,
+                          color: BRAND.primary,
                         }}
                       />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <h2
-                      className="text-[15px] font-black tracking-tight"
-                      style={{ color: activeMeta?.color || "#1A1A2E" }}
+                      className="text-[15px] font-bold tracking-tight"
+                      style={{ color: BRAND.text }}
                     >
                       {activeMeta?.label || activeCategory}
                     </h2>
-                    <p className="text-[11px] text-gray-400 font-medium">
+                    <p
+                      className="text-[11px] font-medium"
+                      style={{ color: BRAND.textMuted }}
+                    >
                       {columns.reduce((sum, col) => sum + col.items.length, 0)}{" "}
                       items
                     </p>
@@ -392,8 +412,8 @@ export default function MobileMenuPage() {
                     )}`}
                     className="text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors"
                     style={{
-                      color: activeMeta?.color || "#1A6FD4",
-                      background: activeMeta?.bgColor || "#EAF2FF",
+                      color: BRAND.primary,
+                      background: BRAND.primaryMid,
                     }}
                   >
                     View All
@@ -408,21 +428,17 @@ export default function MobileMenuPage() {
                       <div className="flex items-center gap-2 mb-2 px-0.5">
                         <h3
                           className="text-[11px] font-black uppercase tracking-widest"
-                          style={{
-                            color: activeMeta?.color || "#6B7280",
-                          }}
+                          style={{ color: BRAND.textMuted }}
                         >
                           {col.heading}
                         </h3>
                         <div
                           className="flex-1 h-px"
-                          style={{
-                            background: `${activeMeta?.color || "#E5E7EB"}20`,
-                          }}
+                          style={{ background: BRAND.borderLight }}
                         />
                       </div>
 
-                      {/* Items grid */}
+                      {/* Items list */}
                       <div className="flex flex-col">
                         {col.items.map((item, idx) => (
                           <Link
@@ -432,36 +448,41 @@ export default function MobileMenuPage() {
                             style={{
                               borderBottom:
                                 idx < col.items.length - 1
-                                  ? "1px solid #F3F4F6"
+                                  ? `1px solid ${BRAND.borderLight}`
                                   : "none",
                             }}
                           >
-                            {/* Item icon placeholder */}
+                            {/* Item initial */}
                             <div
                               className="flex items-center justify-center rounded-lg shrink-0"
                               style={{
                                 width: 36,
                                 height: 36,
-                                background: "#F8F9FB",
-                                border: "1px solid #F0F1F3",
+                                background: BRAND.bg,
+                                border: `1px solid ${BRAND.borderLight}`,
                               }}
                             >
                               <span
-                                className="text-[14px] font-bold"
+                                className="text-[14px] font-semibold"
                                 style={{
-                                  color: activeMeta?.color || "#9CA3AF",
-                                  opacity: 0.7,
+                                  color: BRAND.textSecondary,
                                 }}
                               >
                                 {item.charAt(0)}
                               </span>
                             </div>
 
-                            <span className="flex-1 text-[13.5px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                            <span
+                              className="flex-1 text-[13.5px] font-semibold group-hover:text-gray-900 transition-colors"
+                              style={{ color: BRAND.text }}
+                            >
                               {item}
                             </span>
 
-                            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-400 transition-colors" />
+                            <ChevronRight
+                              className="w-4 h-4 group-hover:text-gray-400 transition-colors"
+                              style={{ color: BRAND.textMuted }}
+                            />
                           </Link>
                         ))}
                       </div>

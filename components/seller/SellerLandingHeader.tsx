@@ -101,6 +101,13 @@ export default function SellerLandingHeader() {
             </SellerLink>
 
 
+            {/* Mobile: Login */}
+            <SellerLink
+              href="/seller/login"
+              className="lg:hidden flex items-center justify-center rounded-md border border-[#1A1A2E] px-3 py-1 text-[13px] font-bold text-[#1A1A2E] hover:bg-gray-50"
+            >
+              Login
+            </SellerLink>
             
             {/* Mobile Menu Toggle */}
             <button 

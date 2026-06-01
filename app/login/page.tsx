@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { normalizeIndianPhone } from "@/lib/phone";
 import toast from "react-hot-toast";
 import { cdnUrl } from "@/lib/utils";
 
@@ -52,8 +53,36 @@ export default function CustomerLoginPage() {
     }
   }
 
-  function startResendTimer() {
-    setResendTimer(60);
+  /* ─── Phone submit ─── */
+  async function handlePhoneSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    const normalized = normalizeIndianPhone(phone);
+    if (!normalized) {
+      setError("Please enter a valid 10-digit Indian mobile number");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
+      if (otpErr) throw otpErr;
+      setStep("otp");
+      startResendTimer(30);
+    } catch (err: any) {
+      console.error("Phone OTP error:", err);
+      if (err.message?.includes("rate limit")) {
+        setError("Too many attempts. Please try again later.");
+      } else {
+        setError(err.message || "Failed to send OTP. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function startResendTimer(seconds = 60) {
+    setResendTimer(seconds);
     setCanResend(false);
     const interval = setInterval(() => {
       setResendTimer((prev) => {
@@ -72,9 +101,11 @@ export default function CustomerLoginPage() {
     setError("");
     setLoading(true);
     try {
-      const { error: otpErr } = await supabase.auth.signInWithOtp({ email: email.trim() });
+      const { error: otpErr } = tab === "email"
+        ? await supabase.auth.signInWithOtp({ email: email.trim() })
+        : await supabase.auth.signInWithOtp({ phone: normalizeIndianPhone(phone)! });
       if (otpErr) throw otpErr;
-      startResendTimer();
+      startResendTimer(tab === "phone" ? 30 : 60);
       toast.success("OTP resent successfully!");
     } catch (err: any) {
       setError(err.message || "Failed to resend OTP");
@@ -103,8 +134,13 @@ export default function CustomerLoginPage() {
         });
         if (verifyErr) throw verifyErr;
       } else {
+        const normalized = normalizeIndianPhone(phone);
+        if (!normalized) {
+          setError("Invalid phone number. Please go back and re-enter.");
+          return;
+        }
         const { error: verifyErr } = await supabase.auth.verifyOtp({
-          phone: `+91${phone.replace(/\s/g, "")}`,
+          phone: normalized,
           token: code,
           type: "sms",
         });
@@ -217,15 +253,14 @@ export default function CustomerLoginPage() {
       <button
         type="button"
         onClick={() => switchTab("phone")}
-        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 relative ${
+        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
           tab === "phone"
             ? "border-[#1A6FD4] text-[#1A6FD4]"
-            : "border-transparent text-[#9CA3AF] opacity-60"
+            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
         }`}
       >
         <Phone className="w-4 h-4" />
         Phone
-        <span className="absolute -top-1 -right-1 bg-gray-100 text-[9px] font-black uppercase px-1 rounded border border-gray-200 text-gray-500">Soon</span>
       </button>
     </div>
   );
@@ -281,47 +316,57 @@ export default function CustomerLoginPage() {
     </form>
   );
 
-  /* ─── Phone input form (disabled — coming soon) ─── */
+  /* ─── Phone input form ─── */
   const phoneForm = (
-    <div className="space-y-5">
+    <form onSubmit={handlePhoneSubmit} className="space-y-5">
       <div>
         <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
           Mobile Number
         </label>
-        <div className="flex items-center rounded-xl border border-[#E8EEF4] bg-[#F3F4F6] opacity-60 overflow-hidden">
-          <span className="flex items-center text-sm font-semibold text-[#9CA3AF] pl-4 pr-2 select-none">
+        <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] overflow-hidden">
+          <span className="flex items-center text-sm font-semibold text-[#4B5563] pl-4 pr-2 select-none">
             +91
           </span>
-          <div className="w-px h-6 bg-[#E8EEF4]" />
+          <div className="w-px h-6 bg-[#D0E3F7]" />
           <input
             type="tel"
             inputMode="numeric"
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
             maxLength={14}
-            disabled
+            autoFocus
             autoComplete="off"
             placeholder="Enter your phone number"
-            className="flex-1 text-sm bg-transparent py-3.5 px-3 text-[#9CA3AF] placeholder:text-[#9CA3AF] cursor-not-allowed border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent"
+            className="flex-1 text-sm bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF] border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent"
             style={{ boxShadow: "none", border: "none", outline: "none" }}
           />
         </div>
       </div>
 
-      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3">
-        <p className="text-sm md:text-base text-[#4B5563] text-center">
-          <Phone className="w-4 h-4 inline-block mr-1.5 text-[#1A6FD4] -mt-0.5" />
-          Phone login will be available soon. Please use email for now.
-        </p>
-      </div>
+      {error && (
+        <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
+          <p className="text-sm md:text-base text-red-600">{error}</p>
+        </div>
+      )}
 
       <button
-        disabled
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm bg-[#9CA3AF] cursor-not-allowed"
+        type="submit"
+        disabled={loading}
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
       >
-        Coming Soon
+        {loading ? (
+          <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
+        ) : (
+          "Request OTP"
+        )}
       </button>
-    </div>
+
+      <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
+        By continuing, you agree to ANGA9&apos;s{" "}
+        <Link href="#" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+        <Link href="#" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
+      </p>
+    </form>
   );
 
   /* ─── OTP Form ─── */

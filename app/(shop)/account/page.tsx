@@ -6,7 +6,6 @@ import {
   User,
   Package,
   MapPin,
-  Building2,
   Settings,
   CheckCircle2,
   Pencil,
@@ -57,9 +56,22 @@ const navItems = [
   { label: "Profile", icon: User },
   { label: "My Orders", icon: Package },
   { label: "Addresses", icon: MapPin },
-  { label: "Business Info", icon: Building2 },
   { label: "Settings", icon: Settings },
 ];
+
+/** Format phone for display: "918010939887" → "+91 80109 39887" */
+function formatPhoneDisplay(phone?: string | null): string | null {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    const local = digits.slice(2);
+    return `+91 ${local.slice(0, 5)} ${local.slice(5)}`;
+  }
+  if (digits.length === 10) {
+    return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+  }
+  return phone; // fallback: show as-is
+}
 
 function MenuItem({
   icon: Icon,
@@ -243,17 +255,17 @@ export default function CustomerAccountPage() {
     }
   };
 
-  const displayName = dbUser?.full_name || user?.email?.split("@")[0] || "User";
-  const displayEmail = user?.email || dbUser?.email || "—";
-  const displayPhone = user?.phone || dbUser?.phone || "—";
-  const initials = getInitials(dbUser?.full_name, user?.email);
+  const rawPhone = user?.phone || dbUser?.phone;
+  const formattedPhone = formatPhoneDisplay(rawPhone);
+  const displayName = dbUser?.full_name || user?.email?.split("@")[0] || (formattedPhone ? "Welcome!" : "User");
+  const displayEmail = user?.email || dbUser?.email || null;
+  const displayPhone = formattedPhone || null;
+  const initials = getInitials(dbUser?.full_name, user?.email || rawPhone);
 
   const profileFields = [
-    { label: "Full Name", value: dbUser?.full_name || "—" },
-    { label: "Phone", value: displayPhone },
-    { label: "Email", value: displayEmail },
-    { label: "GSTIN", value: dbUser?.gstin || "—" },
-    { label: "Company Name", value: dbUser?.company_name || "—" },
+    { label: "Full Name", value: dbUser?.full_name, placeholder: "Tap Edit to add your name", icon: User },
+    { label: "Phone", value: displayPhone, placeholder: "No phone number added", icon: Smartphone },
+    { label: "Email", value: displayEmail, placeholder: "Add email for order updates", icon: null },
   ];
 
   const isLoggedIn = !!user;
@@ -431,7 +443,7 @@ export default function CustomerAccountPage() {
             {displayName}
           </h2>
           <p className="text-[14px] sm:text-[15px] font-medium mt-0.5 truncate" style={{ color: t.textSecondary }}>
-            {displayEmail}
+            {displayEmail || displayPhone || ""}
           </p>
 
           {dbUser?.role && (
@@ -475,15 +487,16 @@ export default function CustomerAccountPage() {
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
              <div>
                <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Full Name</label>
-               <input className={inputCls} defaultValue={dbUser?.full_name || ""} />
+               <input className={inputCls} placeholder="Enter your full name" defaultValue={dbUser?.full_name || ""} />
              </div>
              <div>
                <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Phone</label>
-               <input className={inputCls} defaultValue={displayPhone} />
+               <input className={inputCls} placeholder="+91 XXXXX XXXXX" defaultValue={rawPhone || ""} readOnly={!!rawPhone} style={rawPhone ? { backgroundColor: '#f9fafb', cursor: 'not-allowed' } : {}} />
+               {rawPhone && <p className="text-[11px] text-gray-400 mt-1 ml-1">Phone number cannot be changed</p>}
              </div>
              <div className="sm:col-span-2">
-               <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Company Name</label>
-               <input className={inputCls} defaultValue={dbUser?.company_name || ""} />
+               <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Email</label>
+               <input className={inputCls} placeholder="your@email.com — for order updates" defaultValue={displayEmail || ""} />
              </div>
            </div>
            <div className="flex gap-3 mt-6">
@@ -500,9 +513,15 @@ export default function CustomerAccountPage() {
               <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: t.textMuted }}>
                 {field.label}
               </p>
-              <p className="text-[14px] sm:text-[15px] font-semibold" style={{ color: t.textPrimary }}>
-                {field.value}
-              </p>
+              {field.value ? (
+                <p className="text-[14px] sm:text-[15px] font-semibold" style={{ color: t.textPrimary }}>
+                  {field.value}
+                </p>
+              ) : (
+                <p className="text-[13px] sm:text-[14px] font-medium italic text-gray-400">
+                  {field.placeholder}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -560,8 +579,8 @@ export default function CustomerAccountPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
-                  <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail}</p>
-                  <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>Edit profile →</p>
+                  <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail || displayPhone || ""}</p>
+                  <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>{dbUser?.full_name ? "Edit profile →" : "Complete your profile →"}</p>
                 </div>
                 <ChevronRight className="w-6 h-6 text-gray-300" />
               </button>
@@ -576,7 +595,7 @@ export default function CustomerAccountPage() {
                   <MenuItem icon={Package} label="My Orders" onClick={() => router.push('/orders')} />
                   <MenuItem icon={Coins} label="My Coins" badge={coinBalance != null && coinBalance > 0 ? coinBalance : undefined} onClick={() => router.push('/account/coins')} />
                   <MenuItem icon={MapPin} label="Addresses" onClick={() => { setActiveNav("Addresses"); setMobileMenuOpen(false); }} />
-                  <MenuItem icon={Building2} label="Business Info" onClick={() => { setActiveNav("Business Info"); setMobileMenuOpen(false); }} />
+
                 </div>
               </div>
             )}
@@ -713,7 +732,7 @@ export default function CustomerAccountPage() {
             ) : (
               <div className="p-4">
                 {activeNav === "Profile" && profileUI}
-                {activeNav === "Business Info" && profileUI}
+
               </div>
             )}
           </div>
@@ -817,7 +836,7 @@ export default function CustomerAccountPage() {
             {/* Main Content Area */}
             <div className="flex-1 min-w-0">
               {activeNav === "Profile" && profileUI}
-              {activeNav === "Business Info" && profileUI}
+
               {activeNav === "Addresses" && (showForm ? addressFormUI : addressBookUI)}
               
               {activeNav === "My Orders" && (

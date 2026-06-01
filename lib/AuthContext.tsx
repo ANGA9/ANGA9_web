@@ -29,6 +29,8 @@ interface AuthContextType {
   /** Get Supabase access token for API calls */
   getToken: () => Promise<string | null>;
   logout: () => Promise<void>;
+  /** Refetch dbUser + reload the Supabase user (after profile updates) */
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -38,6 +40,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   getToken: async () => null,
   logout: async () => {},
+  refreshUser: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -150,8 +153,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/";
   }, [supabase, setCookies]);
 
+  /**
+   * Refresh both the Supabase auth user (picks up email/phone/new_email after
+   * verification) and the dbUser row. Call after a profile save, OTP verify,
+   * or any flow that mutates auth.users.
+   */
+  const refreshUser = useCallback(async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) return;
+    setUser(data.user);
+    setCookies(data.user);
+    await fetchDbUser(data.user.id);
+  }, [supabase, fetchDbUser, setCookies]);
+
   return (
-    <AuthContext.Provider value={{ user, session, dbUser, loading, getToken, logout }}>
+    <AuthContext.Provider value={{ user, session, dbUser, loading, getToken, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

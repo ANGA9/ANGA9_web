@@ -13,7 +13,7 @@ type Step = "input" | "otp";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export default function SellerLoginPage() {
-  const [tab, setTab] = useState<Tab>("email");
+  const [tab, setTab] = useState<Tab>("phone");
   const [step, setStep] = useState<Step>("input");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -290,18 +290,6 @@ export default function SellerLoginPage() {
     <div className="flex border-b border-[#E8EEF4] mb-6">
       <button
         type="button"
-        onClick={() => switchTab("email")}
-        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
-          tab === "email"
-            ? "border-[#1A6FD4] text-[#1A6FD4]"
-            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
-        }`}
-      >
-        <Mail className="w-4 h-4" />
-        Email
-      </button>
-      <button
-        type="button"
         onClick={() => switchTab("phone")}
         className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
           tab === "phone"
@@ -311,6 +299,18 @@ export default function SellerLoginPage() {
       >
         <Phone className="w-4 h-4" />
         Phone
+      </button>
+      <button
+        type="button"
+        onClick={() => switchTab("email")}
+        className={`flex items-center gap-2 px-4 py-3 text-sm md:text-base font-semibold transition-all border-b-2 ${
+          tab === "email"
+            ? "border-[#1A6FD4] text-[#1A6FD4]"
+            : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
+        }`}
+      >
+        <Mail className="w-4 h-4" />
+        Email
       </button>
     </div>
   );

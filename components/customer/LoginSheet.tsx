@@ -16,7 +16,7 @@ export default function LoginSheet() {
   const { user } = useAuth();
 
   const [visible, setVisible] = useState(false);
-  const [tab, setTab] = useState<Tab>("email");
+  const [tab, setTab] = useState<Tab>("phone");
   const [step, setStep] = useState<Step>("input");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -315,18 +315,6 @@ export default function LoginSheet() {
               <div className="flex border-b border-[#E8EEF4] mb-4">
                 <button
                   type="button"
-                  onClick={() => switchTab("email")}
-                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
-                    tab === "email"
-                      ? "border-[#1A6FD4] text-[#1A6FD4]"
-                      : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
-                  }`}
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  Email
-                </button>
-                <button
-                  type="button"
                   onClick={() => switchTab("phone")}
                   className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
                     tab === "phone"
@@ -336,6 +324,18 @@ export default function LoginSheet() {
                 >
                   <Phone className="w-3.5 h-3.5" />
                   Phone
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchTab("email")}
+                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
+                    tab === "email"
+                      ? "border-[#1A6FD4] text-[#1A6FD4]"
+                      : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
+                  }`}
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Email
                 </button>
               </div>
 

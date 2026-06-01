@@ -23,14 +23,19 @@ import {
   Save,
   Smartphone,
   Store,
-  Coins
+  Coins,
+  Mail,
+  ShieldCheck,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import EmailOtpVerifyModal from "@/components/account/EmailOtpVerifyModal";
 
 interface Address {
   id: string;
@@ -144,8 +149,9 @@ export default function CustomerAccountPage() {
   const router = useRouter();
   const [activeNav, setActiveNav] = useState("Profile");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
-  const { user, dbUser, loading, logout } = useAuth();
-  
+  const { user, dbUser, loading, logout, refreshUser } = useAuth();
+  const supabase = getSupabaseBrowserClient();
+
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -156,6 +162,29 @@ export default function CustomerAccountPage() {
   const [coinBalance, setCoinBalance] = useState<number | null>(null);
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  // ── Controlled profile-edit form ──
+  const [profileName, setProfileName] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
+
+  // ── Email verification modal ──
+  // `pendingEmail` is the email Supabase is currently asking the user to
+  // confirm — pulled from `user.new_email` on load, or set when the user
+  // submits a change in the edit form.
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+
+  // Whenever auth state changes, reset the form to whatever's in DB / auth
+  // and capture any in-flight email change as `pendingEmail`.
+  useEffect(() => {
+    setProfileName(dbUser?.full_name || "");
+    setProfileEmail(user?.email || dbUser?.email || "");
+    // Supabase exposes the pending new email as `user.new_email` while a
+    // change is awaiting confirmation. Cast — older SDK types may not have it.
+    const newEmail = (user as any)?.new_email as string | undefined;
+    setPendingEmail(newEmail || null);
+  }, [user, dbUser]);
 
   const accentBlue = "#2874f0";
 
@@ -241,6 +270,66 @@ export default function CustomerAccountPage() {
     } catch {
       toast.error("Failed to delete address");
     }
+  };
+
+  const handleSaveProfile = async () => {
+    if (profileSaving) return;
+    setProfileSaving(true);
+
+    const trimmedName = profileName.trim();
+    const trimmedEmail = profileEmail.trim();
+    const currentEmail = user?.email || dbUser?.email || "";
+
+    const nameChanged = trimmedName !== (dbUser?.full_name || "");
+    const emailChanged =
+      trimmedEmail.length > 0 && trimmedEmail.toLowerCase() !== currentEmail.toLowerCase();
+
+    // Validate email shape early
+    if (emailChanged && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
+      setProfileSaving(false);
+      return;
+    }
+
+    try {
+      // 1. Save name (and email if there's no current email — first-time
+      //    add can go through our backend; verification happens on the
+      //    next Supabase update.)
+      if (nameChanged) {
+        await api.patch("/api/users/profile", { full_name: trimmedName });
+      }
+
+      // 2. If the email changed, kick off Supabase's email_change flow.
+      //    This sends a 6-digit OTP to the *new* email (and, if "Secure
+      //    email change" is on in the Dashboard, also to the old one).
+      //    We immediately open the verify modal.
+      if (emailChanged) {
+        const { error: uerr } = await supabase.auth.updateUser({ email: trimmedEmail });
+        if (uerr) throw uerr;
+        setPendingEmail(trimmedEmail);
+        toast.success("Verification code sent to your new email");
+        setVerifyModalOpen(true);
+        setIsEditingProfile(false);
+      } else if (nameChanged) {
+        toast.success("Profile updated");
+        setIsEditingProfile(false);
+        await refreshUser();
+      } else {
+        // Nothing changed
+        setIsEditingProfile(false);
+      }
+    } catch (err: any) {
+      console.error("Profile save failed:", err);
+      toast.error(err?.message || "Failed to update profile");
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleEmailVerified = async () => {
+    setVerifyModalOpen(false);
+    setPendingEmail(null);
+    await refreshUser();
   };
 
   const handleSetDefault = async (id: string) => {
@@ -487,45 +576,125 @@ export default function CustomerAccountPage() {
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
              <div>
                <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Full Name</label>
-               <input className={inputCls} placeholder="Enter your full name" defaultValue={dbUser?.full_name || ""} />
+               <input
+                 className={inputCls}
+                 placeholder="Enter your full name"
+                 value={profileName}
+                 onChange={(e) => setProfileName(e.target.value)}
+               />
              </div>
              <div>
                <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Phone</label>
-               <input className={inputCls} placeholder="+91 XXXXX XXXXX" defaultValue={rawPhone || ""} readOnly={!!rawPhone} style={rawPhone ? { backgroundColor: '#f9fafb', cursor: 'not-allowed' } : {}} />
+               <input
+                 className={inputCls}
+                 placeholder="+91 XXXXX XXXXX"
+                 defaultValue={rawPhone || ""}
+                 readOnly={!!rawPhone}
+                 style={rawPhone ? { backgroundColor: '#f9fafb', cursor: 'not-allowed' } : {}}
+               />
                {rawPhone && <p className="text-[11px] text-gray-400 mt-1 ml-1">Phone number cannot be changed</p>}
              </div>
              <div className="sm:col-span-2">
                <label className="text-xs font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Email</label>
-               <input className={inputCls} placeholder="your@email.com — for order updates" defaultValue={displayEmail || ""} />
+               <input
+                 className={inputCls}
+                 type="email"
+                 placeholder="your@email.com — for order updates"
+                 value={profileEmail}
+                 onChange={(e) => setProfileEmail(e.target.value)}
+               />
+               {displayEmail && profileEmail.trim().toLowerCase() !== displayEmail.toLowerCase() && profileEmail.trim() !== "" && (
+                 <p className="text-[11px] text-amber-600 mt-1 ml-1 flex items-center gap-1">
+                   <Clock className="w-3 h-3" />
+                   You&apos;ll need to verify the new email with a 6-digit code
+                 </p>
+               )}
              </div>
            </div>
            <div className="flex gap-3 mt-6">
-              <button onClick={() => setIsEditingProfile(false)} className="px-6 py-2.5 rounded-xl border text-[14px] font-bold flex-1 sm:flex-none" style={{ borderColor: t.border }}>Cancel</button>
-              <button onClick={() => { toast.success("Profile update simulated"); setIsEditingProfile(false); }} className="px-6 py-2.5 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2 flex-1 sm:flex-none" style={{ background: t.bluePrimary }}>
-                <Save className="w-4 h-4" /> Save Changes
+              <button
+                onClick={() => {
+                  // Reset form to current values
+                  setProfileName(dbUser?.full_name || "");
+                  setProfileEmail(displayEmail || "");
+                  setIsEditingProfile(false);
+                }}
+                disabled={profileSaving}
+                className="px-6 py-2.5 rounded-xl border text-[14px] font-bold flex-1 sm:flex-none disabled:opacity-50"
+                style={{ borderColor: t.border }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveProfile}
+                disabled={profileSaving}
+                className="px-6 py-2.5 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2 flex-1 sm:flex-none disabled:opacity-60"
+                style={{ background: t.bluePrimary }}
+              >
+                {profileSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save Changes
               </button>
            </div>
         </div>
       ) : (
         <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-6 pt-6 border-t border-gray-100">
-          {profileFields.map((field) => (
-            <div key={field.label} className="bg-gray-50/50 p-3 rounded-lg border border-gray-50">
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: t.textMuted }}>
-                {field.label}
-              </p>
-              {field.value ? (
-                <p className="text-[14px] sm:text-[15px] font-semibold" style={{ color: t.textPrimary }}>
-                  {field.value}
+          {profileFields.map((field) => {
+            // The Email field gets a verified/pending badge treatment.
+            // Phone is always verified (it's the login channel); Full Name is plain.
+            const isEmailField = field.label === "Email";
+            return (
+              <div key={field.label} className="bg-gray-50/50 p-3 rounded-lg border border-gray-50">
+                <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: t.textMuted }}>
+                  {field.label}
                 </p>
-              ) : (
-                <p className="text-[13px] sm:text-[14px] font-medium italic text-gray-400">
-                  {field.placeholder}
-                </p>
-              )}
-            </div>
-          ))}
+                {field.value ? (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-[14px] sm:text-[15px] font-semibold truncate" style={{ color: t.textPrimary }}>
+                      {field.value}
+                    </p>
+                    {isEmailField && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-green-700 border border-green-100 shrink-0">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Verified
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-[13px] sm:text-[14px] font-medium italic text-gray-400">
+                    {field.placeholder}
+                  </p>
+                )}
+
+                {/* Pending-verification row for the in-flight email change */}
+                {isEmailField && pendingEmail && pendingEmail.toLowerCase() !== (field.value || "").toLowerCase() && (
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-700 border border-amber-200">
+                      <Clock className="w-3 h-3" />
+                      Pending
+                    </span>
+                    <span className="text-[12px] text-gray-500 truncate">{pendingEmail}</span>
+                    <button
+                      onClick={() => setVerifyModalOpen(true)}
+                      className="text-[12px] font-bold text-[#1A6FD4] hover:underline"
+                    >
+                      Verify now
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
+
+      {/* Email verify modal — always mounted at the root of profileUI so it
+          can be opened from either the read view or after a save */}
+      <EmailOtpVerifyModal
+        open={verifyModalOpen}
+        email={pendingEmail || ""}
+        onClose={() => setVerifyModalOpen(false)}
+        onVerified={handleEmailVerified}
+      />
     </div>
   );
 

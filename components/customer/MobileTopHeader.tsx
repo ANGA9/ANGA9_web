@@ -131,7 +131,7 @@ function MobileTopHeaderContent() {
     setDetectedLocality("");
     try {
       // Proxied through our Next.js route — upstream's TLS cert is expired.
-      const res = await fetch(`/api/util/postal/pincode/${pin}`);
+      const res = await fetch(`/postal-proxy/pincode/${pin}`);
       const data = (await res.json()) as Array<{
         Status: string;
         PostOffice?: Array<{ Name: string; District: string; State: string }>;

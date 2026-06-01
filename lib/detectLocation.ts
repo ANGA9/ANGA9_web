@@ -45,9 +45,9 @@ async function pincodeForLocality(
   hintDistrict?: string
 ): Promise<string | null> {
   try {
-    const url = `https://api.postalpincode.in/postoffice/${encodeURIComponent(
-      name
-    )}`;
+    // Proxied through our Next.js route to work around the upstream's
+    // expired TLS cert (ERR_CERT_DATE_INVALID).
+    const url = `/api/util/postal/postoffice/${encodeURIComponent(name)}`;
     const res = await fetch(url);
     if (!res.ok) return null;
     const data = (await res.json()) as Array<{

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
+import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 import { cdnUrl } from "@/lib/utils";
 
@@ -37,6 +38,17 @@ export default function CustomerLoginPage() {
 
     setLoading(true);
     try {
+      // Phase 8 prevention: same guard as LoginSheet — steer phone-first
+      // users back to phone login instead of silently creating a split account.
+      const check = await authApi.checkIdentity({ email: trimmed });
+      if (check.exists && check.created_via === "phone" && check.hint) {
+        setError(
+          `This email is linked to an account registered with phone +91 ${check.hint}. Please log in with your phone number instead.`
+        );
+        setLoading(false);
+        return;
+      }
+
       const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
       if (otpErr) throw otpErr;
       setStep("otp");

@@ -33,6 +33,7 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { api } from "@/lib/api";
+import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import EmailOtpVerifyModal from "@/components/account/EmailOtpVerifyModal";
@@ -304,6 +305,18 @@ export default function CustomerAccountPage() {
       //    email change" is on in the Dashboard, also to the old one).
       //    We immediately open the verify modal.
       if (emailChanged) {
+        // Phase 8 prevention: refuse to attach an email that's already on
+        // another account. The user's own email would match `currentEmail`
+        // above and never reach this branch, so a hit here is always someone
+        // else's row. Without this check, the user could "claim" an email
+        // belonging to a phone-first account and lock its owner out.
+        const check = await authApi.checkIdentity({ email: trimmedEmail });
+        if (check.exists) {
+          toast.error("This email is already linked to another account. Use a different email or contact support.");
+          setProfileSaving(false);
+          return;
+        }
+
         const { error: uerr } = await supabase.auth.updateUser({ email: trimmedEmail });
         if (uerr) throw uerr;
         setPendingEmail(trimmedEmail);

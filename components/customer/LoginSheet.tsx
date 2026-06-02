@@ -6,6 +6,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { useAuth } from "@/lib/AuthContext";
+import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 
 type Tab = "email" | "phone";
@@ -92,6 +93,18 @@ export default function LoginSheet() {
 
     setLoading(true);
     try {
+      // Phase 8 prevention: if this email is already linked to a phone-first
+      // account, steering the user back to their phone avoids creating a
+      // duplicate auth.users row on first email login from a new device.
+      const check = await authApi.checkIdentity({ email: trimmed });
+      if (check.exists && check.created_via === "phone" && check.hint) {
+        setError(
+          `This email is linked to an account registered with phone +91 ${check.hint}. Please log in with your phone number instead.`
+        );
+        setLoading(false);
+        return;
+      }
+
       const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
       if (otpErr) throw otpErr;
       setStep("otp");

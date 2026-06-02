@@ -102,16 +102,33 @@ export default function AdminLoginPage() {
         .eq("auth_uid", authUid)
         .single();
 
-      if (dbErr || !dbUser || dbUser.role !== "admin") {
+      if (dbErr) {
+        console.error("[admin-login] users lookup failed", dbErr);
         await supabase.auth.signOut();
-        setError("Access denied. This account does not have admin privileges.");
+        setError(`Lookup failed: ${dbErr.message}. Check that your users row exists and RLS allows self-read.`);
         setStep("email");
         setOtp(["", "", "", "", "", ""]);
         setLoading(false);
         return;
       }
 
-      const level = dbUser.admin_level || "super_admin";
+      // Treat both "admin" and "super_admin" as admin-portal roles. The
+      // dashboard layout further gates super-admin-only pages by admin_level.
+      const role = dbUser?.role;
+      const isAdmin = role === "admin" || role === "super_admin";
+      if (!dbUser || !isAdmin) {
+        console.warn("[admin-login] access denied — role was", role);
+        await supabase.auth.signOut();
+        setError(`Access denied. role=${role ?? "<none>"} is not an admin role.`);
+        setStep("email");
+        setOtp(["", "", "", "", "", ""]);
+        setLoading(false);
+        return;
+      }
+
+      // If the DB role is super_admin, treat it as the level too — so the
+      // dashboard layout's SUPER_ADMIN_ROUTES guard lets you in everywhere.
+      const level = dbUser.admin_level || (role === "super_admin" ? "super_admin" : "admin");
       document.cookie = "portal=admin; path=/; max-age=86400";
       document.cookie = `admin_level=${level}; path=/; max-age=86400`;
       window.location.href = "/admin";

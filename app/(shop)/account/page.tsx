@@ -27,6 +27,9 @@ import {
   Mail,
   ShieldCheck,
   Clock,
+  Truck,
+  RotateCcw,
+  XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -797,7 +800,7 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
+                <MenuItem icon={FileText} label="Terms, Policies and Licenses" onClick={() => { setActiveNav("Legal"); setMobileMenuOpen(false); }} />
                 <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
               </div>
             </div>
@@ -1006,6 +1009,14 @@ export default function CustomerAccountPage() {
                 Help & Support
               </Link>
 
+              <Link
+                href="/terms"
+                className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
+                <ShieldCheck className="h-5 w-5 text-gray-400" />
+                Terms & Privacy Policies
+              </Link>
+
               <button
                 onClick={logout}
                 className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-red-500 hover:bg-red-50 border border-transparent"
@@ -1041,6 +1052,18 @@ export default function CustomerAccountPage() {
                   </div>
                   <h2 className="text-[22px] font-black text-gray-900 tracking-tight mb-2">Settings</h2>
                   <p className="text-[15px] text-gray-500">Security and notification settings coming soon.</p>
+                </div>
+              )}
+
+              {activeNav === "Legal" && (
+                <div className="px-3 pt-3 pb-6 flex flex-col gap-3 md:hidden">
+                  <div className="rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm">
+                    <MenuItem icon={FileText} label="Terms of Use" href="/terms" />
+                    <MenuItem icon={ShieldCheck} label="Privacy Policy" href="/privacy" />
+                    <MenuItem icon={Truck} label="Shipping Policy" href="/shipping-policy" />
+                    <MenuItem icon={RotateCcw} label="Returns & Refunds" href="/returns" />
+                    <MenuItem icon={XCircle} label="Cancellation Policy" href="/cancellation" />
+                  </div>
                 </div>
               )}
             </div>

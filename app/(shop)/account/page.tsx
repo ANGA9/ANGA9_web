@@ -88,6 +88,7 @@ function MenuItem({
   badge,
   onClick,
   href,
+  external,
 }: {
   icon: any;
   label: string;
@@ -800,7 +801,7 @@ export default function CustomerAccountPage() {
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
               </div>
               <div className="flex flex-col">
-                <MenuItem icon={FileText} label="Terms, Policies and Licenses" onClick={() => { setActiveNav("Legal"); setMobileMenuOpen(false); }} />
+                <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
                 <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
               </div>
             </div>
@@ -1052,18 +1053,6 @@ export default function CustomerAccountPage() {
                   </div>
                   <h2 className="text-[22px] font-black text-gray-900 tracking-tight mb-2">Settings</h2>
                   <p className="text-[15px] text-gray-500">Security and notification settings coming soon.</p>
-                </div>
-              )}
-
-              {activeNav === "Legal" && (
-                <div className="px-3 pt-3 pb-6 flex flex-col gap-3 md:hidden">
-                  <div className="rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm">
-                    <MenuItem icon={FileText} label="Terms of Use" href="/terms" />
-                    <MenuItem icon={ShieldCheck} label="Privacy Policy" href="/privacy" />
-                    <MenuItem icon={Truck} label="Shipping Policy" href="/shipping-policy" />
-                    <MenuItem icon={RotateCcw} label="Returns & Refunds" href="/returns" />
-                    <MenuItem icon={XCircle} label="Cancellation Policy" href="/cancellation" />
-                  </div>
                 </div>
               )}
             </div>

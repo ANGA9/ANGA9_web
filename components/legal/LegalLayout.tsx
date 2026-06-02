@@ -103,8 +103,8 @@ export default function LegalLayout({
           <div className="legal-header-inner">
             <div className="legal-header-left">
               <button
-                onClick={() => router.push("/")}
-                aria-label="Go to homepage"
+                onClick={() => router.push("/account")}
+                aria-label="Go back to account"
                 className="legal-back-btn"
               >
                 <ArrowLeft className="legal-back-icon" strokeWidth={2.5} />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, Lock, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -10,6 +10,8 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
+import { usePayment, type PaymentMethod } from "@/lib/usePayment";
+import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
 import toast from "react-hot-toast";
 
 interface Address {
@@ -21,36 +23,6 @@ interface Address {
   state: string;
   pincode: string;
   is_default: boolean;
-}
-
-declare global {
-  interface Window {
-    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
-  }
-}
-
-interface RazorpayOptions {
-  key: string;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id: string;
-  handler: (response: RazorpayResponse) => void;
-  prefill?: { name?: string; email?: string; contact?: string };
-  theme?: { color?: string };
-  modal?: { ondismiss?: () => void };
-}
-
-interface RazorpayInstance {
-  open: () => void;
-  on: (event: string, handler: (response: unknown) => void) => void;
-}
-
-interface RazorpayResponse {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
 }
 
 const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
@@ -72,8 +44,6 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, clearCart, loading } = useCart();
   const { user, dbUser } = useAuth();
-  const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState("");
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -82,6 +52,9 @@ export default function CheckoutPage() {
   const [cartBlocked, setCartBlocked] = useState(false);
   const [validating, setValidating] = useState(true);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
+
+  // Surfaced to the picker so a failed attempt's row gets dimmed with a hint.
+  const [lastFailed, setLastFailed] = useState<{ method: PaymentMethod; reason: string } | null>(null);
 
   // Promos
   const [couponCode, setCouponCode] = useState("");
@@ -154,9 +127,6 @@ export default function CheckoutPage() {
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
   const hasAddress = !!selectedAddress;
-
-  // Determine if pay button should be disabled
-  const payDisabled = placing || !razorpayLoaded || cartBlocked || validating || !hasAddress;
 
   const subtotal = items.reduce(
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
@@ -272,127 +242,59 @@ export default function CheckoutPage() {
     setSavingAddress(false);
   };
 
-  const handlePayWithRazorpay = async () => {
-    if (!razorpayLoaded) {
-      toast.error("Payment gateway is loading. Please wait...");
-      return;
-    }
+  // ── Payment hook ──
+  // All Razorpay choreography lives in usePayment now: build display.blocks
+  // for brand-specific preselection, open the modal, verify, etc. COD
+  // short-circuits before Razorpay. The hook does NOT cancel the order on
+  // dismiss — the server-side pendingOrderCleanup sweeper takes care of
+  // abandoned orders after 30 min so the user can retry with another method.
+  const { pay, placing, error, setError } = usePayment({
+    items: items.map((item) => ({ productId: item.productId, qty: item.qty })),
+    shippingAddressId: selectedAddressId,
+    couponCode: appliedCoupon?.code,
+    coinsToRedeem: actualCoinsUsed,
+    prefill: {
+      name: dbUser?.full_name || "",
+      email: dbUser?.email || user?.email || "",
+      contact: dbUser?.phone || user?.phone || "",
+    },
+    themeColor: "#1A6FD4",
+    onSuccess: async () => {
+      await clearCart();
+      router.push(`/orders?placed=1`);
+    },
+    onDismiss: (method) => {
+      // Don't cancel the order — let the user pick a different method and try
+      // again. The pendingOrderCleanup cron will sweep it after 30 min if
+      // they abandon entirely.
+      setLastFailed({ method, reason: "Modal dismissed without payment" });
+      toast("Pick another payment method to continue", { icon: "💡" });
+    },
+    onFailed: (method, message) => {
+      setLastFailed({ method, reason: message });
+      toast.error(message);
+    },
+  });
 
+  const handlePickerSelect = (method: PaymentMethod) => {
     if (!hasAddress) {
       toast.error("Please add or select a delivery address first");
       return;
     }
-
-    setPlacing(true);
-    setError("");
-
-    try {
-      // Step 1: Create order in our backend
-      const orderResponse = await api.post<{ id: string; order_number: string; total: number; status: string }>(
-        "/api/orders",
-        {
-          items: items.map((item) => ({
-            productId: item.productId,
-            qty: item.qty,
-          })),
-          ...(selectedAddressId ? { shippingAddressId: selectedAddressId } : {}),
-          ...(appliedCoupon ? { couponCode: appliedCoupon.code } : {}),
-          ...(actualCoinsUsed > 0 ? { coinsToRedeem: actualCoinsUsed } : {}),
-        }
-      );
-
-      // If the order is fully covered by promos (total is 0), skip Razorpay
-      if (Number(orderResponse.total) <= 0) {
-        toast.success("Order confirmed successfully! 🎉");
-        await clearCart();
-        router.push(`/orders?placed=1`);
-        return;
-      }
-
-      // Step 2: Create Razorpay order via payment-service via payment-service
-      const paymentResponse = await api.post<{
-        razorpay_order_id: string;
-        amount: number;
-        currency: string;
-        key_id: string;
-      }>("/api/payments/create", {
-        orderId: orderResponse.id,
-        amount: orderResponse.total,
-      });
-
-      // Step 3: Open Razorpay checkout
-      const options: RazorpayOptions = {
-        key: paymentResponse.key_id,
-        amount: paymentResponse.amount,
-        currency: paymentResponse.currency,
-        name: "ANGA9",
-        description: `Order ${orderResponse.order_number}`,
-        order_id: paymentResponse.razorpay_order_id,
-        handler: async (response: RazorpayResponse) => {
-          // Step 4: Verify payment on backend
-          try {
-            await api.post("/api/payments/verify", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-
-            toast.success("Payment successful! Order confirmed 🎉", {
-              duration: 4000,
-            });
-            await clearCart();
-            router.push(`/orders?placed=1`);
-          } catch {
-            toast.error("Payment verification failed. Please contact support.");
-            setError("Payment verification failed. Your payment may have been processed — please contact support.");
-          } finally {
-            setPlacing(false);
-          }
-        },
-        prefill: {
-          name: dbUser?.full_name || "",
-          email: dbUser?.email || user?.email || "",
-          contact: dbUser?.phone || user?.phone || "",
-        },
-        theme: {
-          color: "#1A6FD4",
-        },
-        modal: {
-          ondismiss: async () => {
-            setPlacing(false);
-            // Silently delete the pending order — cart is still intact
-            try {
-              await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment not completed" });
-            } catch (e) {
-              // ignore
-            }
-            toast("Payment not completed. Your cart is still intact.", {
-              icon: "ℹ️",
-            });
-          },
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", async (response: unknown) => {
-        setPlacing(false);
-        try {
-          await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason: "Payment failed" });
-        } catch (e) {
-          // ignore
-        }
-        const failedResponse = response as { error?: { description?: string } };
-        toast.error(failedResponse?.error?.description || "Payment failed. Please try again.");
-        setError(failedResponse?.error?.description || "Payment failed");
-      });
-      rzp.open();
-    } catch (err: unknown) {
-      setPlacing(false);
-      const message = err instanceof Error ? err.message : "Failed to initiate payment";
-      setError(message);
-      toast.error(message);
+    if (cartBlocked) {
+      toast.error("Please resolve the cart warnings above");
+      return;
     }
+    // Razorpay script needed for everything except COD.
+    if (method.kind !== "cod" && !razorpayLoaded) {
+      toast.error("Payment gateway is loading. Please wait...");
+      return;
+    }
+    setLastFailed(null);
+    pay(method);
   };
+
+  const pickerDisabled = placing || cartBlocked || validating || !hasAddress;
 
   // Show skeleton while cart is loading on page refresh
   if (loading && items.length === 0) {
@@ -795,6 +697,17 @@ export default function CheckoutPage() {
               })}
             </div>
           </div>
+
+          {/* ── Payment method picker ──
+              Replaces the old single "Pay" button. Each row opens Razorpay
+              pre-filtered to the chosen method/brand (UPI app, wallet, etc.),
+              or short-circuits to COD without Razorpay. */}
+          <PaymentMethodPicker
+            onSelect={handlePickerSelect}
+            disabled={pickerDisabled}
+            total={total}
+            lastFailed={lastFailed}
+          />
         </div>
 
         {/* Order summary — right column (matches CartSummary style) */}
@@ -987,28 +900,24 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Desktop CTA — matches cart's purple button */}
-            <div className="hidden lg:block">
-              <button
-                onClick={handlePayWithRazorpay}
-                disabled={payDisabled}
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] disabled:opacity-60 shadow-lg shadow-indigo-100 relative overflow-hidden group"
-                style={{ background: payDisabled ? "#9CA3AF" : t.primaryCta, color: t.ctaText }}
-                title={!hasAddress ? "Please add a delivery address first" : undefined}
-              >
-                {placing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <CreditCard className="w-5 h-5" />
-                    Pay {formatINR(total)}
-                  </>
-                )}
-              </button>
-
+            {/* Desktop helper — picker is the action surface (left column).
+                Show a processing pill here while a payment is in flight. */}
+            <div className="hidden lg:block mt-8">
+              {placing ? (
+                <div
+                  className="flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[16px] font-bold"
+                  style={{ background: "#F3F4F6", color: t.textSecondary }}
+                >
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing payment…
+                </div>
+              ) : (
+                <p className="text-center text-sm" style={{ color: t.textMuted }}>
+                  {hasAddress
+                    ? "Choose a payment method on the left to continue →"
+                    : "Add a delivery address to choose a payment method"}
+                </p>
+              )}
             </div>
 
             {!razorpayLoaded && (
@@ -1046,29 +955,28 @@ export default function CheckoutPage() {
     </div>
 
 
-      {/* ══════════ MOBILE STICKY PAYMENT BAR (<lg) ══════════ */}
-      <div className="lg:hidden fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500 px-4 py-3 flex gap-4 items-center">
+      {/* ══════════ MOBILE STICKY SUMMARY BAR (<lg) ══════════
+          The action surface is now the inline PaymentMethodPicker above the
+          fold of the scroll area. This bar only shows the total + a hint so
+          the user always sees what they're about to pay. */}
+      <div className="lg:hidden fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500 px-4 py-3 flex gap-4 items-center justify-between">
         <div className="flex flex-col">
           <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
           <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
         </div>
-        
-        <button
-          onClick={handlePayWithRazorpay}
-          disabled={payDisabled}
-          className="flex-1 h-[52px] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-indigo-200"
-          style={{ background: payDisabled ? "#9CA3AF" : t.primaryCta }}
-          title={!hasAddress ? "Please add a delivery address first" : undefined}
-        >
+
+        <div className="text-right">
           {placing ? (
-            <Loader2 className="w-6 h-6 animate-spin" />
+            <span className="inline-flex items-center gap-2 text-[14px] font-bold text-gray-600">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Processing…
+            </span>
           ) : (
-            <>
-              <CreditCard className="w-5 h-5" />
-              {hasAddress ? `Pay ${formatINR(total)}` : "Add Address to Pay"}
-            </>
+            <span className="text-[13px] font-semibold" style={{ color: t.textSecondary }}>
+              {hasAddress ? "Pick a method below ↑" : "Add address to pay"}
+            </span>
           )}
-        </button>
+        </div>
       </div>
 
     </div>

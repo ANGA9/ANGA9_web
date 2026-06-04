@@ -93,7 +93,11 @@ function buildDisplayConfig(method: PaymentMethod): RazorpayDisplayConfig | null
         method: "upi",
         flows: ["collect", "intent", "qr"],
       };
-      if (method.brand) instrument.apps = [method.brand];
+      
+      // Removed the strict `apps: [brand]` filter because it causes Razorpay
+      // to throw "No appropriate payment method found" on desktop environments
+      // where UPI Intent is not available.
+      
       return {
         display: {
           blocks: {

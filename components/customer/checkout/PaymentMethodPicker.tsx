@@ -1,20 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { ChevronRight, CreditCard, Landmark, Banknote, Smartphone } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import type { PaymentMethod } from "@/lib/usePayment";
 
 // ── Brand catalogue ─────────────────────────────────────────────
-// Final list confirmed against the Razorpay dashboard:
-//   - UPI: GPay, PhonePe, Paytm, BHIM, generic VPA collect
-//   - Cards: Visa, MasterCard, Rupay (Amex/Diners excluded — not activated)
-//   - Wallets: PhonePe, Mobikwik, Airtel Money, Ola Money
-//                (Jio Money discontinued, Bajaj Pay not activated)
-//   - Netbanking: all Indian banks
-//   - COD: handled in code, not Razorpay
-//
-// Pay Later is intentionally absent — both Flexipay and Simpl have paused
-// onboarding for new merchants, so there's nothing live to show.
 
 const UPI_BRANDS: { key: "google_pay" | "phonepe" | "paytm"; label: string; sub: string }[] = [
   { key: "google_pay", label: "Google Pay", sub: "Pay via UPI" },
@@ -30,31 +21,27 @@ const WALLET_BRANDS: { key: "phonepe" | "mobikwik" | "airtelmoney" | "olamoney";
 ];
 
 // ── Icon helpers ────────────────────────────────────────────────
-// Brand logos live under /public/icons/payments/<brand>.svg. Falling back to
-// a colored circle with the brand initial keeps the picker usable even if
-// the icons haven't been added to the build yet.
 
-function BrandIcon({ name, fallbackColor }: { name: string; fallbackColor: string }) {
+function BrandIcon({ name, label, fallbackColor }: { name: string; label: string; fallbackColor: string }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white border" style={{ borderColor: t.border }}>
-      <img
-        src={`/icons/payments/${name}.svg`}
-        alt=""
-        className="w-7 h-7 object-contain"
-        onError={(e) => {
-          // Fallback: colored circle with first letter
-          const target = e.currentTarget;
-          target.style.display = "none";
-          const parent = target.parentElement;
-          if (parent && !parent.querySelector(".brand-fallback")) {
-            const span = document.createElement("span");
-            span.className = "brand-fallback w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-black";
-            span.style.background = fallbackColor;
-            span.textContent = name.charAt(0).toUpperCase();
-            parent.appendChild(span);
-          }
-        }}
-      />
+    <div className="w-11 h-11 rounded-[14px] flex items-center justify-center overflow-hidden bg-white shadow-sm ring-1 ring-black/5 shrink-0">
+      {!imgError ? (
+        <img
+          src={`/icons/payments/${name}.svg`}
+          alt={label}
+          className="w-6 h-6 object-contain"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div 
+          className="w-full h-full flex items-center justify-center text-white text-[16px] font-black tracking-tight"
+          style={{ background: `linear-gradient(135deg, ${fallbackColor}99, ${fallbackColor})` }}
+        >
+          {label.charAt(0)}
+        </div>
+      )}
     </div>
   );
 }
@@ -67,10 +54,7 @@ interface RowProps {
   subtitle?: string;
   onClick: () => void;
   disabled?: boolean;
-  /** When set, this row will appear dimmed with a small note — used after a
-   * payment with this method failed so the user knows to try another. */
   failedNote?: string;
-  /** Optional trailing element (e.g. card brand badges, "ADD" pill). */
   trailing?: React.ReactNode;
 }
 
@@ -80,25 +64,31 @@ function Row({ icon, title, subtitle, onClick, disabled, failedNote, trailing }:
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="w-full flex items-center gap-3 p-3.5 rounded-xl border bg-white hover:bg-gray-50 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-left shadow-sm"
-      style={{ borderColor: failedNote ? "#FCA5A5" : t.border }}
+      className="group w-full flex items-center gap-4 p-4 rounded-2xl bg-white hover:bg-[#F8FAFC] active:scale-[0.985] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-left shadow-[0_2px_12px_rgba(0,0,0,0.02)] ring-1 hover:ring-2 hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)]"
+      style={{ 
+        boxShadow: failedNote ? "0 0 0 1px #FCA5A5, 0 2px 12px rgba(220,38,38,0.05)" : undefined,
+        borderColor: "transparent",
+        ...( !failedNote && { "--tw-ring-color": "#F1F5F9" } as any )
+      }}
     >
       {icon}
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold leading-tight" style={{ color: t.textPrimary }}>
+        <p className="text-[15px] font-bold tracking-tight text-gray-900 leading-none mb-1">
           {title}
         </p>
         {(failedNote || subtitle) && (
           <p
-            className="text-[12px] mt-0.5 leading-tight"
-            style={{ color: failedNote ? "#DC2626" : t.textMuted }}
+            className="text-[13px] font-medium leading-none"
+            style={{ color: failedNote ? "#DC2626" : "#64748B" }}
           >
             {failedNote || subtitle}
           </p>
         )}
       </div>
       {trailing}
-      <ChevronRight className="w-4 h-4 shrink-0" style={{ color: t.textMuted }} />
+      <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-50 group-hover:bg-white group-hover:shadow-sm transition-all ring-1 ring-gray-100">
+        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+      </div>
     </button>
   );
 }
@@ -162,7 +152,7 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         {UPI_BRANDS.map((brand) => (
           <Row
             key={`upi-${brand.key}`}
-            icon={<BrandIcon name={brand.key} fallbackColor="#1A6FD4" />}
+            icon={<BrandIcon name={brand.key} label={brand.label} fallbackColor="#3B82F6" />}
             title={brand.label}
             subtitle={brand.sub}
             disabled={disabled}
@@ -172,8 +162,8 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         ))}
         <Row
           icon={
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 border" style={{ borderColor: t.border }}>
-              <Smartphone className="w-5 h-5" style={{ color: t.bluePrimary }} />
+            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-blue-50 shrink-0 ring-1 ring-blue-100">
+              <Smartphone className="w-5 h-5 text-blue-600" />
             </div>
           }
           title="Other UPI Apps / Enter VPA"
@@ -188,7 +178,7 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
       <CategoryHeader>Cards</CategoryHeader>
       <Row
         icon={
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-purple-50 border" style={{ borderColor: t.border }}>
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-purple-50 shrink-0 ring-1 ring-purple-100">
             <CreditCard className="w-5 h-5 text-purple-600" />
           </div>
         }
@@ -205,7 +195,7 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         {WALLET_BRANDS.map((brand) => (
           <Row
             key={`wallet-${brand.key}`}
-            icon={<BrandIcon name={`wallet-${brand.key}`} fallbackColor="#7C3AED" />}
+            icon={<BrandIcon name={`wallet-${brand.key}`} label={brand.label} fallbackColor="#8B5CF6" />}
             title={brand.label}
             disabled={disabled}
             failedNote={failedNoteFor({ kind: "wallet", brand: brand.key })}
@@ -218,7 +208,7 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
       <CategoryHeader>Netbanking</CategoryHeader>
       <Row
         icon={
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50 border" style={{ borderColor: t.border }}>
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-emerald-50 shrink-0 ring-1 ring-emerald-100">
             <Landmark className="w-5 h-5 text-emerald-600" />
           </div>
         }
@@ -233,7 +223,7 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
       <CategoryHeader>Pay on Delivery</CategoryHeader>
       <Row
         icon={
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-50 border" style={{ borderColor: t.border }}>
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-amber-50 shrink-0 ring-1 ring-amber-100">
             <Banknote className="w-5 h-5 text-amber-600" />
           </div>
         }

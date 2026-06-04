@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -55,6 +55,7 @@ export default function CheckoutPage() {
 
   // Surfaced to the picker so a failed attempt's row gets dimmed with a hint.
   const [lastFailed, setLastFailed] = useState<{ method: PaymentMethod; reason: string } | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Promos
   const [couponCode, setCouponCode] = useState("");
@@ -698,16 +699,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* ── Payment method picker ──
-              Replaces the old single "Pay" button. Each row opens Razorpay
-              pre-filtered to the chosen method/brand (UPI app, wallet, etc.),
-              or short-circuits to COD without Razorpay. */}
-          <PaymentMethodPicker
-            onSelect={handlePickerSelect}
-            disabled={pickerDisabled}
-            total={total}
-            lastFailed={lastFailed}
-          />
+          {/* Removed inline payment method picker, now opens as a modal from the right column */}
         </div>
 
         {/* Order summary — right column (matches CartSummary style) */}
@@ -801,6 +793,29 @@ export default function CheckoutPage() {
                 )}
               </div>
             )}
+            
+            {/* Payment Method Selector Block */}
+            <div 
+              onClick={() => {
+                if (cartBlocked) return;
+                if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                setShowPaymentModal(true);
+              }}
+              className={`rounded-xl border p-4 shadow-sm transition-all flex items-center justify-between mt-4 ${cartBlocked || (!hasAddress && !loadingAddresses) ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'bg-white hover:bg-gray-50 cursor-pointer active:scale-[0.98]'}`}
+              style={{ borderColor: t.border }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-[15px] font-bold text-gray-900 leading-tight mb-0.5">Select Payment Method</h4>
+                  <p className="text-[12px] font-medium text-gray-500">UPI, Cards, Wallets, Cash</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+            
           </div>
 
           <div
@@ -900,8 +915,7 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Desktop helper — picker is the action surface (left column).
-                Show a processing pill here while a payment is in flight. */}
+            {/* Desktop helper — picker is now a modal triggered by the block above */}
             <div className="hidden lg:block mt-8">
               {placing ? (
                 <div
@@ -912,11 +926,17 @@ export default function CheckoutPage() {
                   Processing payment…
                 </div>
               ) : (
-                <p className="text-center text-sm" style={{ color: t.textMuted }}>
-                  {hasAddress
-                    ? "Choose a payment method on the left to continue →"
-                    : "Add a delivery address to choose a payment method"}
-                </p>
+                <button
+                  onClick={() => {
+                    if (cartBlocked) return;
+                    if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                    setShowPaymentModal(true);
+                  }}
+                  disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                  className="w-full h-[52px] rounded-xl bg-[#1A6FD4] text-white text-[16px] font-bold shadow-sm hover:bg-[#155ab0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  Proceed to Payment
+                </button>
               )}
             </div>
 
@@ -959,7 +979,7 @@ export default function CheckoutPage() {
           The action surface is now the inline PaymentMethodPicker above the
           fold of the scroll area. This bar only shows the total + a hint so
           the user always sees what they're about to pay. */}
-      <div className="lg:hidden fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500 px-4 py-3 flex gap-4 items-center justify-between">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-2xl border-t border-gray-200/60 shadow-[0_-16px_40px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-500 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,16px))] flex gap-4 items-center justify-between">
         <div className="flex flex-col">
           <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
           <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
@@ -972,12 +992,55 @@ export default function CheckoutPage() {
               Processing…
             </span>
           ) : (
-            <span className="text-[13px] font-semibold" style={{ color: t.textSecondary }}>
-              {hasAddress ? "Pick a method below ↑" : "Add address to pay"}
-            </span>
+            hasAddress && !cartBlocked ? (
+              <button 
+                onClick={() => setShowPaymentModal(true)}
+                className="h-10 px-5 rounded-xl bg-[#1A6FD4] text-white text-[14px] font-bold shadow-sm active:scale-95 transition-all"
+              >
+                Select Payment
+              </button>
+            ) : (
+              <span className="text-[13px] font-semibold text-gray-500">
+                {cartBlocked ? "Fix cart issues" : "Add address to pay"}
+              </span>
+            )
           )}
         </div>
       </div>
+
+      {/* ══════════ PAYMENT MODAL / SHEET ══════════ */}
+      {showPaymentModal && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowPaymentModal(false)}
+        >
+          <div 
+            className="w-full max-w-md bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] lg:max-h-[85vh] animate-in slide-in-from-bottom-8 lg:zoom-in-95 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+              <h2 className="text-[18px] font-black tracking-tight text-gray-900">Payment Options</h2>
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-4 bg-[#F8FAFC]">
+              <PaymentMethodPicker
+                onSelect={(method) => {
+                  setShowPaymentModal(false);
+                  handlePickerSelect(method);
+                }}
+                disabled={pickerDisabled}
+                total={total}
+                lastFailed={lastFailed}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

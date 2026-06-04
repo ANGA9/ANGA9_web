@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
 import Link from "next/link";
@@ -42,8 +42,14 @@ function formatINR(value: number) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart, loading } = useCart();
+  const { items, clearCart, addItem, refreshCart, loading } = useCart();
   const { user, dbUser } = useAuth();
+
+  // Snapshot of the cart taken at the moment the user taps a payment method.
+  // The order is created server-side, which clears the Redis cart — if the
+  // payment then fails/is dismissed, we re-add these so the user can retry
+  // without rebuilding their cart from scratch.
+  const cartSnapshotRef = useRef<{ productId: string; qty: number }[]>([]);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -243,12 +249,27 @@ export default function CheckoutPage() {
     setSavingAddress(false);
   };
 
+  // Re-add the snapshot items to the cart after a cancelled/failed payment.
+  // Used by onDismiss + onFailed below. Fires N addItem calls in parallel —
+  // cart is rarely large enough for this to matter; if it ever does, swap
+  // for a batch endpoint.
+  const restoreCartFromSnapshot = async () => {
+    const snap = cartSnapshotRef.current;
+    if (!snap || snap.length === 0) return;
+    try {
+      await Promise.all(snap.map((it) => addItem(it.productId, it.qty)));
+    } catch {
+      // If a few addItems fail, do a full refresh so the UI matches reality.
+      await refreshCart();
+    }
+  };
+
   // ── Payment hook ──
-  // All Razorpay choreography lives in usePayment now: build display.blocks
-  // for brand-specific preselection, open the modal, verify, etc. COD
-  // short-circuits before Razorpay. The hook does NOT cancel the order on
-  // dismiss — the server-side pendingOrderCleanup sweeper takes care of
-  // abandoned orders after 30 min so the user can retry with another method.
+  // All Razorpay choreography lives in usePayment: build display.blocks for
+  // brand-specific preselection, open the modal, verify, etc. COD
+  // short-circuits before Razorpay. On dismiss/fail, usePayment cancels the
+  // just-placed order server-side; the callbacks below refill the cart so
+  // the user can retry with a different method without losing their items.
   const { pay, placing, error, setError } = usePayment({
     items: items.map((item) => ({ productId: item.productId, qty: item.qty })),
     shippingAddressId: selectedAddressId,
@@ -264,14 +285,13 @@ export default function CheckoutPage() {
       await clearCart();
       router.push(`/orders?placed=1`);
     },
-    onDismiss: (method) => {
-      // Don't cancel the order — let the user pick a different method and try
-      // again. The pendingOrderCleanup cron will sweep it after 30 min if
-      // they abandon entirely.
+    onDismiss: async (method) => {
+      await restoreCartFromSnapshot();
       setLastFailed({ method, reason: "Modal dismissed without payment" });
       toast("Pick another payment method to continue", { icon: "💡" });
     },
-    onFailed: (method, message) => {
+    onFailed: async (method, message) => {
+      await restoreCartFromSnapshot();
       setLastFailed({ method, reason: message });
       toast.error(message);
     },
@@ -291,6 +311,9 @@ export default function CheckoutPage() {
       toast.error("Payment gateway is loading. Please wait...");
       return;
     }
+    // Snapshot the cart *now* — createOrder will clear it server-side, so
+    // onDismiss/onFailed need this to restore.
+    cartSnapshotRef.current = items.map((it) => ({ productId: it.productId, qty: it.qty }));
     setLastFailed(null);
     pay(method);
   };

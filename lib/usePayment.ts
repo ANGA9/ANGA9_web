@@ -161,11 +161,13 @@ export interface UsePaymentArgs {
   /** Called after a successful payment (or COD placement) — caller clears cart + navigates */
   onSuccess: () => Promise<void> | void;
   /** Called when the user dismisses the Razorpay modal without paying. The
-   * caller should return the UI to the picker so the user can pick another
-   * method — DO NOT cancel the order (a server-side cron does that). */
-  onDismiss: (method: PaymentMethod) => void;
-  /** Called on payment.failed — same retry contract as onDismiss. */
-  onFailed: (method: PaymentMethod, message: string) => void;
+   * hook has already cancelled the order server-side (frees inventory,
+   * returns coins). The caller should refill the cart so the user can
+   * retry with a different method and surface a "pick again" affordance. */
+  onDismiss: (method: PaymentMethod) => Promise<void> | void;
+  /** Called on payment.failed — same contract as onDismiss: order cancelled
+   * server-side, caller refills cart + dims the failed row. */
+  onFailed: (method: PaymentMethod, message: string) => Promise<void> | void;
 }
 
 export function usePayment(args: UsePaymentArgs) {
@@ -227,6 +229,25 @@ export function usePayment(args: UsePaymentArgs) {
 
         const displayConfig = buildDisplayConfig(method);
 
+        // Track whether the modal already handled a terminal event (success
+        // or fail). If the success handler fires, ondismiss should not also
+        // cancel the order — the payment went through.
+        let terminalHandled = false;
+
+        // Cancel the just-placed order on the server. Releases inventory,
+        // returns coupon + coins, removes it from /orders. The 30-min cron
+        // is still in place as a safety net for crashes; this is the fast
+        // path for normal cancel/dismiss/fail.
+        const cancelPlacedOrder = async (reason: string) => {
+          try {
+            await api.post(`/api/orders/${orderResponse.id}/cancel`, { reason });
+          } catch {
+            // Swallow — the cron will pick it up after 30 min if this fails
+            // (e.g. user offline). Don't spam them with an error toast on top
+            // of the dismiss flow.
+          }
+        };
+
         const options: RazorpayOptions = {
           key: paymentResponse.key_id,
           amount: paymentResponse.amount,
@@ -235,6 +256,7 @@ export function usePayment(args: UsePaymentArgs) {
           description: `Order ${orderResponse.order_number}`,
           order_id: paymentResponse.razorpay_order_id,
           handler: async (response: RazorpayResponse) => {
+            terminalHandled = true;
             try {
               await api.post("/api/payments/verify", {
                 razorpay_order_id: response.razorpay_order_id,
@@ -256,10 +278,16 @@ export function usePayment(args: UsePaymentArgs) {
           theme: { color: args.themeColor ?? "#1A6FD4" },
           modal: {
             ondismiss: () => {
+              // Razorpay fires ondismiss after BOTH success and fail handlers,
+              // so we guard against double-firing terminal logic.
+              if (terminalHandled) return;
+              terminalHandled = true;
               setPlacing(false);
-              // The new contract: don't cancel the order. The server-side
-              // pending-order sweeper handles abandonment after 30 min.
-              args.onDismiss(method);
+              // Fire-and-forget the cancel, then let the caller refill cart.
+              // No await: a slow network on cancel shouldn't block the picker
+              // from re-appearing.
+              void cancelPlacedOrder("Payment modal dismissed without payment");
+              void args.onDismiss(method);
             },
           },
           ...(displayConfig ? { config: displayConfig } : {}),
@@ -267,10 +295,12 @@ export function usePayment(args: UsePaymentArgs) {
 
         const rzp = new window.Razorpay(options);
         rzp.on("payment.failed", (response: unknown) => {
+          terminalHandled = true;
           setPlacing(false);
           const failedResponse = response as { error?: { description?: string } };
           const message = failedResponse?.error?.description || "Payment failed. Try another method.";
-          args.onFailed(method, message);
+          void cancelPlacedOrder(`Payment failed: ${message}`);
+          void args.onFailed(method, message);
         });
         rzp.open();
       } catch (err: unknown) {

@@ -2,7 +2,54 @@
 
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { api } from "@/lib/api";
+import { api, getAuthHeaders } from "@/lib/api";
+
+// ── In-flight order tombstone ───────────────────────────────────
+// When the modal opens we drop {orderId, ...} into sessionStorage. The
+// success/dismiss/fail handlers remove it. If the user refreshes, closes the
+// tab, or kills the browser, the tombstone survives — the next mount of the
+// checkout page reads it, cancels the orphan order, and refills the cart.
+// Belt-and-suspenders alongside the modal's own ondismiss (which doesn't
+// fire on hard navigation).
+
+export const IN_FLIGHT_PAYMENT_KEY = "anga9_inflight_payment";
+
+export interface InFlightPayment {
+  orderId: string;
+  /** Items captured at the moment pay() was called, so we can refill the cart on cleanup. */
+  cartSnapshot: { productId: string; qty: number }[];
+  /** When the payment was started — used to expire stale tombstones. */
+  startedAt: number;
+}
+
+export function readInFlightPayment(): InFlightPayment | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem(IN_FLIGHT_PAYMENT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as InFlightPayment;
+  } catch {
+    return null;
+  }
+}
+
+export function clearInFlightPayment(): void {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(IN_FLIGHT_PAYMENT_KEY);
+  } catch {
+    /* sessionStorage can throw in privacy modes — ignore */
+  }
+}
+
+function writeInFlightPayment(p: InFlightPayment): void {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(IN_FLIGHT_PAYMENT_KEY, JSON.stringify(p));
+  } catch {
+    /* ignore */
+  }
+}
 
 // ── Razorpay window typing ──────────────────────────────────────
 // Kept local to this hook so checkout/page.tsx no longer needs to redeclare
@@ -211,6 +258,22 @@ export function usePayment(args: UsePaymentArgs) {
           return;
         }
 
+        // ── Tombstone for refresh/close survival ────────────────────
+        // Write IMMEDIATELY after createOrder succeeds. Razorpay's ondismiss
+        // does NOT fire on browser refresh, tab close, or hard navigation —
+        // the iframe is just killed. Without a tombstone the placed order
+        // leaks until the 30-min cron sweeps it, and the user sees a phantom
+        // "Processing" order. The next mount of the checkout page reads this
+        // record and runs cancel + cart-restore on the user's behalf.
+        //
+        // Writing this before /api/payments/create means even a crash there
+        // (e.g. payment-service down) doesn't leak the order.
+        writeInFlightPayment({
+          orderId: orderResponse.id,
+          cartSnapshot: args.items,
+          startedAt: Date.now(),
+        });
+
         // Step 2: create the Razorpay order via payment-service.
         const paymentResponse = await api.post<{
           razorpay_order_id: string;
@@ -248,6 +311,45 @@ export function usePayment(args: UsePaymentArgs) {
           }
         };
 
+        // ── Best-effort cancel on page unload ───────────────────────
+        // Some browsers honor fetch({ keepalive: true }) inside beforeunload
+        // and let the POST complete even as the page goes away. Others kill
+        // it immediately. We treat this as a fast path: if it lands the
+        // order is already cancelled by the time the user's next page loads.
+        // If it doesn't, the tombstone path on the next mount picks up the
+        // slack. The two strategies are independent and both safe to fire
+        // (the cancel endpoint is idempotent — second call is a no-op).
+        const beforeUnloadHandler = () => {
+          if (terminalHandled) return;
+          try {
+            // Capture token synchronously — getAuthHeaders is async but
+            // beforeunload won't wait for promises. Best we can do is
+            // attempt the request; if no auth header lands, the cron is
+            // still our safety net.
+            const url = `${typeof window !== "undefined" && window.location.origin}/api/orders/${orderResponse.id}/cancel`;
+            void getAuthHeaders().then((headers) => {
+              fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", ...headers },
+                body: JSON.stringify({ reason: "Page closed during payment" }),
+                keepalive: true,
+              }).catch(() => {});
+            });
+          } catch {
+            /* never throw inside beforeunload */
+          }
+        };
+        window.addEventListener("beforeunload", beforeUnloadHandler);
+        window.addEventListener("pagehide", beforeUnloadHandler);
+
+        // Unified cleanup: clear tombstone, drop listeners. Called from
+        // success/dismiss/fail so we don't leave stale state lying around.
+        const cleanup = () => {
+          clearInFlightPayment();
+          window.removeEventListener("beforeunload", beforeUnloadHandler);
+          window.removeEventListener("pagehide", beforeUnloadHandler);
+        };
+
         const options: RazorpayOptions = {
           key: paymentResponse.key_id,
           amount: paymentResponse.amount,
@@ -257,6 +359,7 @@ export function usePayment(args: UsePaymentArgs) {
           order_id: paymentResponse.razorpay_order_id,
           handler: async (response: RazorpayResponse) => {
             terminalHandled = true;
+            cleanup();
             try {
               await api.post("/api/payments/verify", {
                 razorpay_order_id: response.razorpay_order_id,
@@ -282,6 +385,7 @@ export function usePayment(args: UsePaymentArgs) {
               // so we guard against double-firing terminal logic.
               if (terminalHandled) return;
               terminalHandled = true;
+              cleanup();
               setPlacing(false);
               // Fire-and-forget the cancel, then let the caller refill cart.
               // No await: a slow network on cancel shouldn't block the picker
@@ -296,6 +400,7 @@ export function usePayment(args: UsePaymentArgs) {
         const rzp = new window.Razorpay(options);
         rzp.on("payment.failed", (response: unknown) => {
           terminalHandled = true;
+          cleanup();
           setPlacing(false);
           const failedResponse = response as { error?: { description?: string } };
           const message = failedResponse?.error?.description || "Payment failed. Try another method.";
@@ -305,6 +410,19 @@ export function usePayment(args: UsePaymentArgs) {
         rzp.open();
       } catch (err: unknown) {
         setPlacing(false);
+        // If we already wrote a tombstone but blew up before the modal could
+        // open (e.g. /api/payments/create returned 500), cancel that order
+        // now and clear the tombstone so the next mount doesn't try to clean
+        // up something we're already handling.
+        const stranded = readInFlightPayment();
+        if (stranded) {
+          clearInFlightPayment();
+          api
+            .post(`/api/orders/${stranded.orderId}/cancel`, {
+              reason: "Payment initiation failed before modal opened",
+            })
+            .catch(() => { /* cron will pick it up */ });
+        }
         const message = err instanceof Error ? err.message : "Failed to initiate payment";
         setError(message);
         toast.error(message);

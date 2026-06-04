@@ -10,7 +10,12 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
-import { usePayment, type PaymentMethod } from "@/lib/usePayment";
+import {
+  usePayment,
+  readInFlightPayment,
+  clearInFlightPayment,
+  type PaymentMethod,
+} from "@/lib/usePayment";
 import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
 import toast from "react-hot-toast";
 
@@ -130,6 +135,53 @@ export default function CheckoutPage() {
     api.get<{ balance: number }>("/api/users/me/coins", { silent: true })
       .then(res => { if (res?.balance) setCoinBalance(res.balance); })
       .catch(() => {});
+  }, []);
+
+  // ── Recover from refresh/close mid-payment ────────────────────
+  // If the previous mount wrote an in-flight tombstone (user opened
+  // Razorpay then refreshed / closed the tab / crashed), cancel the
+  // orphan order and refill the cart so checkout looks like they never
+  // left. Tombstones older than 1 hour are ignored — at that point the
+  // server-side 30-min cron has already handled it and refilling the
+  // cart could resurrect stale items.
+  useEffect(() => {
+    const stranded = readInFlightPayment();
+    if (!stranded) return;
+
+    const STALE_MS = 60 * 60 * 1000;
+    if (Date.now() - stranded.startedAt > STALE_MS) {
+      clearInFlightPayment();
+      return;
+    }
+
+    // Clear the tombstone FIRST so a refresh during this very cleanup
+    // doesn't loop us into trying to cancel the same order forever.
+    clearInFlightPayment();
+
+    (async () => {
+      try {
+        await api.post(`/api/orders/${stranded.orderId}/cancel`, {
+          reason: "Payment abandoned (page refreshed/closed)",
+        });
+      } catch {
+        // The 30-min cron will pick it up if this fails.
+      }
+
+      // Refill the cart from the snapshot — these are the items the user
+      // had when they tapped pay, so restoring them is exactly the state
+      // they expect.
+      if (stranded.cartSnapshot.length > 0) {
+        try {
+          await Promise.all(stranded.cartSnapshot.map((it) => addItem(it.productId, it.qty)));
+        } catch {
+          await refreshCart();
+        }
+      }
+
+      toast("Your previous payment didn't complete. Cart restored.", { icon: "🔄", duration: 4000 });
+    })();
+    // Intentionally empty deps — we only want this on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);

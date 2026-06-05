@@ -140,12 +140,12 @@ export default function PublicSellerStorefront() {
       </header>
 
       {/* Profile Info - Overlapping */}
-      <div className="max-w-7xl mx-auto px-5 md:px-10 relative -mt-16 md:-mt-24 mb-12 z-10">
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+      <div className="max-w-7xl mx-auto px-5 md:px-10 relative -mt-10 md:-mt-24 mb-12 z-10">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 items-start">
           
           {/* Logo */}
-          <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2rem] bg-white p-2 shadow-2xl ring-1 ring-black/5 flex-shrink-0 relative group">
-            <div className="w-full h-full rounded-[1.5rem] overflow-hidden bg-gray-50 flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.02]">
+          <div className="w-24 h-24 md:w-44 md:h-44 rounded-[1.5rem] md:rounded-[2rem] bg-white p-1.5 md:p-2 shadow-xl md:shadow-2xl ring-1 ring-black/5 flex-shrink-0 relative group">
+            <div className="w-full h-full rounded-[1.2rem] md:rounded-[1.5rem] overflow-hidden bg-gray-50 flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.02]">
               {p.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={p.logo_url} alt={storeName} className="w-full h-full object-cover" />

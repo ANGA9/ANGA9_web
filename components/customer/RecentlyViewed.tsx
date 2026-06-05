@@ -237,19 +237,22 @@ export default function RecentlyViewed({ excludeId }: Props) {
           background: rgba(255, 255, 255, 0.95);
           border: 1px solid #E5E7EB;
           color: #6B7280;
-          display: none;
+          display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          opacity: 0;
-          transform: scale(0.9);
+          opacity: 1;
+          transform: scale(1);
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 10;
           box-shadow: 0 2px 6px rgba(0,0,0,0.08);
           backdrop-filter: blur(4px);
         }
         @media (min-width: 640px) {
-          .rv-remove-btn { display: flex; }
+          .rv-remove-btn {
+            opacity: 0;
+            transform: scale(0.9);
+          }
         }
         .rv-card:hover .rv-remove-btn {
           opacity: 1;
@@ -377,7 +380,7 @@ function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (i
           e.stopPropagation();
           onRemove(item.id);
         }}
-        className="rv-remove-btn hidden md:flex"
+        className="rv-remove-btn flex"
         aria-label="Remove from recently viewed"
       >
         <X size={14} />

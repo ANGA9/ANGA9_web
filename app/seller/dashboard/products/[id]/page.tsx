@@ -37,7 +37,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         }
         if (prodRes.ok) {
           const p = await prodRes.json();
-          const product = p.data || p;
+          const product = p.data || p.product || p;
           setForm({
             name: product.name || "",
             description: product.description || "",

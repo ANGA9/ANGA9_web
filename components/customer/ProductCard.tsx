@@ -161,7 +161,7 @@ export default function ProductCard({
         </div>
 
         {/* Body */}
-        <div className="flex flex-col p-3 md:p-4 relative bg-white min-h-[138px] md:min-h-[150px]">
+        <div className="flex flex-col p-3 md:p-4 relative bg-white min-h-[105px] md:min-h-[115px]">
           {/* Wishlist / Remove controls — top-right */}
           {isWishlistContext ? (
             /* In wishlist context: always-visible red × remove button */
@@ -220,14 +220,7 @@ export default function ProductCard({
             {product.name}
           </h3>
 
-          {/* Rating row */}
-          <div className="flex items-center gap-1.5 mb-2">
-            <div className="flex items-center gap-1 bg-[#F8FBFF] px-1.5 py-0.5 rounded text-[11px] font-bold text-[#1A6FD4]">
-              <span>★</span>
-              <span>4.8</span>
-            </div>
-            <span className="text-[11px] text-gray-500 font-medium">(120+ sold)</span>
-          </div>
+
 
           {/* Price + savings */}
           <div className="mt-auto">

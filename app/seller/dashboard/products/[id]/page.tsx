@@ -10,6 +10,7 @@ const UNIT_OPTIONS = ["piece", "set", "box", "pack", "roll", "kg", "g", "L", "mL
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+
   const { getToken } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({

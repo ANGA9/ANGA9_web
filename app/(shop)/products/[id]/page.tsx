@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check,
+  ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check, CheckCircle2,
   PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -36,6 +36,13 @@ interface ProductCategory {
 interface SellerInfo {
   id: string;
   full_name: string;
+  seller_profiles?: {
+    business_name: string;
+    storefront_published: boolean;
+  } | {
+    business_name: string;
+    storefront_published: boolean;
+  }[] | any;
 }
 
 interface ProductDetail {
@@ -253,7 +260,12 @@ export default function ProductDetailPage() {
     ? Math.round(((product.base_price - product.sale_price) / product.base_price) * 100)
     : 0;
   const variants = product.product_variants?.filter((v) => v.is_active) || [];
-  const sellerName = product.users?.full_name || "ANGA9 Seller";
+  const sellerProfiles = Array.isArray(product.users?.seller_profiles) 
+    ? product.users?.seller_profiles[0] 
+    : product.users?.seller_profiles;
+  const storePublished = sellerProfiles?.storefront_published === true;
+  const storeName = sellerProfiles?.business_name;
+  const displaySellerName = storePublished && storeName ? storeName : (product.users?.full_name || "ANGA9 Seller");
   const deliveryFree = totalPrice > 10000;
   const descriptionLong = (product.description?.length || 0) > 150;
 
@@ -433,7 +445,14 @@ export default function ProductDetailPage() {
           {/* Seller */}
           <div className="flex items-center gap-1.5 mb-4">
             <Store className="w-3.5 h-3.5" style={{ color: t.textMuted }} />
-            <span className="text-sm font-medium" style={{ color: t.textSecondary }}>{sellerName}</span>
+            {storePublished ? (
+              <Link href={`/sellers/${product.users?.id}`} className="flex items-center gap-1 hover:underline decoration-[#1A6FD4] underline-offset-2">
+                <span className="text-sm font-medium" style={{ color: t.textSecondary }}>{displaySellerName}</span>
+                <CheckCircle2 className="w-4 h-4 text-green-500 fill-green-50" />
+              </Link>
+            ) : (
+              <span className="text-sm font-medium" style={{ color: t.textSecondary }}>{displaySellerName}</span>
+            )}
           </div>
 
           {/* Price */}

@@ -66,7 +66,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Tooltip
 }
 
 export default function DashboardHome() {
-  const { loading: authLoading, getToken } = useAuth();
+  const { loading: authLoading, getToken, dbUser } = useAuth();
   const [status, setStatus] = useState<VStatus | null>(null);
   const [bizName, setBizName] = useState("");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
@@ -96,12 +96,14 @@ export default function DashboardHome() {
         }
 
         try {
-          const prodRes = await fetch(`${API}/api/products?seller_id=me&limit=1`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (prodRes.ok) {
-            const d = await prodRes.json();
-            setStats(prev => ({ ...prev, products: d.total || 0 }));
+          if (dbUser) {
+            const prodRes = await fetch(`${API}/api/products?seller_id=${dbUser.id}&status=active&limit=1`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (prodRes.ok) {
+              const d = await prodRes.json();
+              setStats(prev => ({ ...prev, products: d.total || 0 }));
+            }
           }
         } catch { /* ignore */ }
 
@@ -133,7 +135,7 @@ export default function DashboardHome() {
       } catch { /* ignore */ }
       setLoaded(true);
     })();
-  }, [authLoading, getToken, period]);
+  }, [authLoading, getToken, period, dbUser]);
 
   if (authLoading || !loaded) {
     return (

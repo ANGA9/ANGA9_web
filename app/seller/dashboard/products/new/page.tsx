@@ -11,9 +11,9 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 const UNIT_OPTIONS = ["piece", "set", "box", "pack", "roll", "kg", "g", "L", "mL", "pair", "dozen", "meter"];
 const COUNTRY_OPTIONS = ["India", "China", "USA", "Bangladesh", "Vietnam", "Other"];
 
-const MIN_IMAGES = 5;
+const MIN_IMAGES = 1;
 const MAX_IMAGES = 10;
-const MIN_VIDEOS = 1;
+const MIN_VIDEOS = 0;
 const MAX_VIDEOS = 2;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
@@ -306,7 +306,7 @@ export default function AddProductPage() {
             </div>
 
             <div>
-              <label className={labelCls}>Videos <span className="text-red-500">*</span> <span className="text-gray-400 font-medium ml-1 text-[13px]">(min {MIN_VIDEOS}, max {MAX_VIDEOS})</span></label>
+              <label className={labelCls}>Videos <span className="text-gray-400 font-medium ml-1 text-[13px]">(Optional, max {MAX_VIDEOS})</span></label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {videos.map((vid, i) => (
                   <div key={i} className="relative aspect-video rounded-2xl border border-gray-200 overflow-hidden bg-gray-50 group shadow-sm">
@@ -503,8 +503,7 @@ export default function AddProductPage() {
               </h3>
               <ul className="space-y-3">
                 {[
-                  { text: `Min ${MIN_IMAGES} photos uploaded`, done: images.filter(i => !i.uploading).length >= MIN_IMAGES },
-                  { text: `Min ${MIN_VIDEOS} video uploaded`, done: videos.filter(v => !v.uploading).length >= MIN_VIDEOS },
+                  { text: `Min ${MIN_IMAGES} photo uploaded`, done: images.filter(i => !i.uploading).length >= MIN_IMAGES },
                   { text: "Category selected", done: !!form.category_id },
                   { text: "Pricing & Stock added", done: parseFloat(form.base_price) > 0 && parseInt(form.initial_stock) >= 0 }
                 ].map((item, i) => (

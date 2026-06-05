@@ -37,10 +37,10 @@ interface SellerInfo {
   id: string;
   full_name: string;
   seller_profiles?: {
-    business_name: string;
+    store_name: string;
     storefront_published: boolean;
   } | {
-    business_name: string;
+    store_name: string;
     storefront_published: boolean;
   }[] | any;
 }
@@ -264,7 +264,7 @@ export default function ProductDetailPage() {
     ? product.users?.seller_profiles[0] 
     : product.users?.seller_profiles;
   const storePublished = sellerProfiles?.storefront_published === true;
-  const storeName = sellerProfiles?.business_name;
+  const storeName = sellerProfiles?.store_name;
   const displaySellerName = storePublished && storeName ? storeName : (product.users?.full_name || "ANGA9 Seller");
   const deliveryFree = totalPrice > 10000;
   const descriptionLong = (product.description?.length || 0) > 150;
@@ -438,20 +438,23 @@ export default function ProductDetailPage() {
           )}
 
           {/* Name */}
-          <h1 className="font-bold leading-tight mb-1" style={{ color: t.textPrimary, fontSize: 'clamp(22px, 4vw, 30px)' }}>
+          <h1 className="font-bold leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(22px, 4vw, 30px)' }}>
             {product.name}
           </h1>
 
           {/* Seller */}
-          <div className="flex items-center gap-1.5 mb-4">
-            <Store className="w-3.5 h-3.5" style={{ color: t.textMuted }} />
+          <div className="mb-8 -ml-3.5">
             {storePublished ? (
-              <Link href={`/sellers/${product.users?.id}`} className="flex items-center gap-1 hover:underline decoration-[#1A6FD4] underline-offset-2">
-                <span className="text-sm font-medium" style={{ color: t.textSecondary }}>{displaySellerName}</span>
-                <CheckCircle2 className="w-4 h-4 text-green-500 fill-green-50" />
+              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 hover:border-gray-200 transition-all group cursor-pointer">
+                <Store className="w-[18px] h-[18px] text-gray-400 group-hover:text-blue-500 transition-colors" />
+                <span className="text-[15px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{displaySellerName}</span>
+                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 bg-white rounded-full shadow-sm" />
               </Link>
             ) : (
-              <span className="text-sm font-medium" style={{ color: t.textSecondary }}>{displaySellerName}</span>
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gray-50/80 border border-gray-100">
+                <Store className="w-[18px] h-[18px] text-gray-400" />
+                <span className="text-[15px] font-semibold text-gray-700">{displaySellerName}</span>
+              </div>
             )}
           </div>
 

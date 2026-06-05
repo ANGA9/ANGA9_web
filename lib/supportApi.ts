@@ -143,6 +143,7 @@ export const supportApi = {
     related_payout_id?: string;
     source?: string;
     context?: Record<string, unknown>;
+    attachments?: string[];
   }) {
     return api.post<Ticket>("/api/support/tickets", body);
   },

@@ -66,6 +66,16 @@ export default function CheckoutPage() {
 
   // Surfaced to the picker so a failed attempt's row gets dimmed with a hint.
   const [lastFailed, setLastFailed] = useState<{ method: PaymentMethod; reason: string } | null>(null);
+
+  // True while we're refilling the cart after a dismissed/failed payment.
+  // Server-side createOrder cleared the cart, so items briefly reads as empty
+  // — without this flag the "Your cart is empty" screen flashes mid-restore.
+  // (No need to seed from the tombstone here: on a fresh mount the cart
+  // context's own `loading` is true, which already shows the skeleton, and
+  // the tombstone mount-effect below flips this on before loading clears.
+  // Reading sessionStorage in the initializer would also be a hydration
+  // mismatch under SSR.)
+  const [restoringCart, setRestoringCart] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Promos
@@ -159,6 +169,7 @@ export default function CheckoutPage() {
     clearInFlightPayment();
 
     (async () => {
+      setRestoringCart(true);
       try {
         await api.post(`/api/orders/${stranded.orderId}/cancel`, {
           reason: "Payment abandoned (page refreshed/closed)",
@@ -177,6 +188,7 @@ export default function CheckoutPage() {
           await refreshCart();
         }
       }
+      setRestoringCart(false);
 
       toast("Your previous payment didn't complete. Cart restored.", { icon: "🔄", duration: 4000 });
     })();
@@ -308,11 +320,14 @@ export default function CheckoutPage() {
   const restoreCartFromSnapshot = async () => {
     const snap = cartSnapshotRef.current;
     if (!snap || snap.length === 0) return;
+    setRestoringCart(true);
     try {
       await Promise.all(snap.map((it) => addItem(it.productId, it.qty)));
     } catch {
       // If a few addItems fail, do a full refresh so the UI matches reality.
       await refreshCart();
+    } finally {
+      setRestoringCart(false);
     }
   };
 
@@ -372,8 +387,10 @@ export default function CheckoutPage() {
 
   const pickerDisabled = placing || cartBlocked || validating || !hasAddress;
 
-  // Show skeleton while cart is loading on page refresh
-  if (loading && items.length === 0) {
+  // Show skeleton while cart is loading on page refresh, OR while we're
+  // refilling it after a dismissed/failed payment (items is briefly empty
+  // then — without this, the "empty cart" screen below flashes).
+  if ((loading || restoringCart) && items.length === 0) {
     return (
       <div className="bg-[#F7F7F8] min-h-screen lg:bg-white">
         {/* Mobile header skeleton */}
@@ -453,7 +470,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (items.length === 0 && !placing) {
+  if (items.length === 0 && !placing && !restoringCart) {
     return (
       <div className="mx-auto max-w-[700px] px-4 py-16 text-center">
         <PackageOpen className="w-16 h-16 mx-auto mb-4" style={{ color: t.textMuted }} />

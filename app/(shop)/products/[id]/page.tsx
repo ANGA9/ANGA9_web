@@ -77,7 +77,7 @@ function isVideoUrl(url: string): boolean {
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { addItem } = useCart();
+  const { addItem, count: cartCount } = useCart();
   const wishlist = useWishlist();
   const { user } = useAuth();
   const { open: openLoginSheet } = useLoginSheet();
@@ -281,6 +281,14 @@ export default function ProductDetailPage() {
               <Heart className="w-5 h-5 transition-colors" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
             )}
           </button>
+          <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Open cart">
+            <ShoppingCart className="w-5 h-5 text-gray-600" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#1A6FD4] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </Link>
         </div>
       </header>
 

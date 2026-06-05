@@ -118,17 +118,60 @@ export function CartProvider({ children }: { children: ReactNode }) {
     await refreshCart();
   }, [user, refreshCart]);
 
+  // Per-product monotonic sequence for optimistic qty updates. A burst of
+  // rapid +/- clicks fires several PATCHes; only the response matching the
+  // LATEST local intent may trigger a rollback — stale responses are ignored.
+  const qtySeqRef = useRef<Record<string, number>>({});
+
   const updateQty = useCallback(async (productId: string, qty: number) => {
-    await api.patch<{ count: number }>(`/api/cart/items/${productId}`, { qty });
-    await refreshCart();
-    toast.success("Cart updated");
-  }, [refreshCart]);
+    // Optimistic: reflect the new qty instantly (Amazon-style), then sync in
+    // the background. `count` is distinct-line-items (redis hlen) so qty
+    // changes never affect it.
+    const seq = (qtySeqRef.current[productId] ?? 0) + 1;
+    qtySeqRef.current[productId] = seq;
+
+    let prevQty: number | undefined;
+    setItems((cur) =>
+      cur.map((it) => {
+        if (it.productId !== productId) return it;
+        prevQty = it.qty;
+        return { ...it, qty };
+      }),
+    );
+
+    try {
+      await api.patch<{ count: number }>(`/api/cart/items/${productId}`, { qty });
+    } catch {
+      // Only roll back if no newer click superseded this one.
+      if (qtySeqRef.current[productId] === seq && prevQty !== undefined) {
+        const rollbackQty = prevQty;
+        setItems((cur) => cur.map((it) => (it.productId === productId ? { ...it, qty: rollbackQty } : it)));
+        toast.error("Couldn't update quantity");
+      }
+    }
+  }, []);
 
   const removeItem = useCallback(async (productId: string) => {
-    await api.delete(`/api/cart/items/${productId}`);
-    await refreshCart();
-    toast.success("Item removed from cart");
-  }, [refreshCart]);
+    // Optimistic: drop the row instantly; restore on failure. The row
+    // disappearing IS the feedback — no toast needed on success.
+    let removed: CartItem | undefined;
+    setItems((cur) => {
+      removed = cur.find((it) => it.productId === productId);
+      return cur.filter((it) => it.productId !== productId);
+    });
+    setCount((c) => Math.max(0, c - 1));
+
+    try {
+      await api.delete(`/api/cart/items/${productId}`);
+    } catch {
+      if (removed) {
+        const restore = removed;
+        setItems((cur) => [...cur, restore]);
+        setCount((c) => c + 1);
+        toast.error("Couldn't remove item");
+      }
+    }
+  }, []);
 
   const clearCart = useCallback(async () => {
     await api.delete("/api/cart");

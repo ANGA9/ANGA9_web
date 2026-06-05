@@ -1,12 +1,13 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3, LifeBuoy, AlertTriangle, Megaphone, Store } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3, LifeBuoy, AlertTriangle, Megaphone, Store, Star } from "lucide-react";
 import SellerLink from "@/components/seller/SellerLink";
 import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
 const NAV = [
   { label: "Dashboard", href: "/seller/dashboard", icon: LayoutDashboard },
   { label: "Products", href: "/seller/dashboard/products", icon: Package },
+  { label: "Reviews", href: "/seller/dashboard/reviews", icon: Star },
   { label: "Ad Campaigns", href: "/seller/dashboard/ads", icon: Megaphone },
   { label: "Orders", href: "/seller/dashboard/orders", icon: ShoppingCart },
   { label: "Disputes", href: "/seller/dashboard/disputes", icon: AlertTriangle },

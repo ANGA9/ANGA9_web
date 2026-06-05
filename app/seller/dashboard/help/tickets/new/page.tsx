@@ -3,7 +3,9 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Send, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Loader2, UploadCloud, X, ImageIcon } from "lucide-react";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import toast from "react-hot-toast";
 import {
   supportApi,
   SELLER_CATEGORIES,
@@ -21,8 +23,25 @@ function NewSellerTicketInner() {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [priority, setPriority] = useState<TicketPriority>("normal");
+  const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      if (files.length + newFiles.length > 3) {
+        toast.error("You can only upload up to 3 attachments", { style: { borderRadius: '16px' } });
+        return;
+      }
+      setFiles([...files, ...newFiles]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,6 +49,22 @@ function NewSellerTicketInner() {
     setSubmitting(true);
     setError(null);
     try {
+      let uploadedUrls: string[] = [];
+      if (files.length > 0) {
+        setUploading(true);
+        const supabase = getSupabaseBrowserClient();
+        for (const file of files) {
+          const ext = file.name.split('.').pop();
+          const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
+          const path = `tickets/${filename}`;
+          const { error: uploadError } = await supabase.storage.from("public-assets").upload(path, file);
+          if (uploadError) throw new Error("Failed to upload attachment");
+          const { data: pub } = supabase.storage.from("public-assets").getPublicUrl(path);
+          uploadedUrls.push(pub.publicUrl);
+        }
+        setUploading(false);
+      }
+
       const ticket = await supportApi.createTicket({
         subject: subject.trim(),
         initial_message: body.trim(),
@@ -38,11 +73,13 @@ function NewSellerTicketInner() {
         related_payout_id: payoutId || undefined,
         related_product_id: productId || undefined,
         source: payoutId ? "payout_page" : productId ? "product_page" : "help_center",
+        attachments: uploadedUrls.length > 0 ? uploadedUrls : undefined,
       });
       router.push(`/seller/dashboard/help/tickets/${ticket.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create ticket");
       setSubmitting(false);
+      setUploading(false);
     }
   }
 
@@ -110,13 +147,47 @@ function NewSellerTicketInner() {
             <div>
               <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Detailed Description</label>
               <textarea
-                rows={10}
+                rows={8}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Please describe your issue in detail. Include order IDs, dates, and any specific error messages you encountered..."
                 required
                 className="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50 px-5 py-5 text-[15px] font-bold text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-inner placeholder:text-gray-400 placeholder:font-medium leading-relaxed"
               />
+            </div>
+
+            <div>
+              <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Attachments (Max 3)</label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-2xl hover:border-[#1A6FD4] hover:bg-blue-50/30 transition-colors bg-gray-50">
+                <div className="space-y-1 text-center">
+                  <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
+                  <div className="flex text-sm text-gray-600 justify-center">
+                    <label className="relative cursor-pointer bg-white rounded-md font-bold text-[#1A6FD4] hover:text-[#155bb5] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#1A6FD4]">
+                      <span>Upload files</span>
+                      <input type="file" multiple accept="image/png, image/jpeg, application/pdf" className="sr-only" onChange={handleFileChange} disabled={files.length >= 3} />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-[12px] font-medium text-gray-500">PNG, JPG, PDF up to 5MB</p>
+                </div>
+              </div>
+              {files.length > 0 && (
+                <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {files.map((file, idx) => (
+                    <li key={idx} className="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-white shadow-sm">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <div className="w-8 h-8 rounded bg-blue-50 flex items-center justify-center shrink-0">
+                          <ImageIcon className="w-4 h-4 text-blue-500" />
+                        </div>
+                        <span className="text-[13px] font-medium text-gray-700 truncate">{file.name}</span>
+                      </div>
+                      <button type="button" onClick={() => removeFile(idx)} className="p-1 text-gray-400 hover:text-red-500 transition-colors">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div>
@@ -160,7 +231,7 @@ function NewSellerTicketInner() {
                 className="h-14 w-full rounded-2xl bg-[#1A6FD4] text-[15px] font-black text-white transition-all shadow-lg shadow-blue-500/20 hover:bg-[#155bb5] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-                {submitting ? "SUBMITTING..." : "SUBMIT TICKET"}
+                {submitting ? (uploading ? "UPLOADING..." : "SUBMITTING...") : "SUBMIT TICKET"}
               </button>
               <Link
                 href="/seller/dashboard/help"
@@ -186,7 +257,7 @@ function NewSellerTicketInner() {
               ) : (
                 <Send className="h-5 w-5" />
               )}
-              {submitting ? "SUBMITTING..." : "SUBMIT TICKET"}
+              {submitting ? (uploading ? "UPLOADING..." : "SUBMITTING...") : "SUBMIT TICKET"}
             </button>
             <Link
               href="/seller/dashboard/help"

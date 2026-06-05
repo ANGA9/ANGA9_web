@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Wallet, ArrowLeft, IndianRupee, Landmark, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, Wallet, ArrowLeft, IndianRupee, Landmark, CheckCircle2, AlertCircle, X } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -39,6 +39,11 @@ export default function PayoutsPage() {
   const [summary, setSummary] = useState<EarningSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [requesting, setRequesting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [customAmount, setCustomAmount] = useState("");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const available = summary?.available || 0;
 
   const fetchData = async () => {
     try {
@@ -54,14 +59,28 @@ export default function PayoutsPage() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const handleRequestPayout = async () => {
+  const handleRequestPayout = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (requesting) return;
+    
+    const amt = parseFloat(customAmount);
+    if (isNaN(amt) || amt <= 0) {
+      toast.error("Please enter a valid amount", { style: { borderRadius: '16px' } });
+      return;
+    }
+    if (amt > available) {
+      toast.error("Amount cannot exceed available balance", { style: { borderRadius: '16px' } });
+      return;
+    }
+
     setRequesting(true);
     try {
-      await api.post("/api/seller/payouts/request", {});
+      await api.post("/api/seller/payouts/request", { amount: amt });
       toast.success("Payout requested successfully", {
         style: { borderRadius: '16px', background: '#333', color: '#fff' }
       });
+      setShowModal(false);
+      setCustomAmount("");
       fetchData();
     } catch {
       toast.error("Failed to request payout", { style: { borderRadius: '16px' } });
@@ -69,7 +88,20 @@ export default function PayoutsPage() {
     setRequesting(false);
   };
 
-  const available = summary?.available || 0;
+  const handleCancelPayout = async (id: string) => {
+    if (cancellingId) return;
+    setCancellingId(id);
+    try {
+      await api.post(`/api/seller/payouts/${id}/cancel`, {});
+      toast.success("Payout cancelled successfully", {
+        style: { borderRadius: '16px', background: '#333', color: '#fff' }
+      });
+      fetchData();
+    } catch {
+      toast.error("Failed to cancel payout", { style: { borderRadius: '16px' } });
+    }
+    setCancellingId(null);
+  };
 
   return (
     <main className="w-full mx-auto max-w-7xl px-3 sm:px-4 py-6 md:px-8 md:py-10 text-[#1A1A2E]">
@@ -115,11 +147,14 @@ export default function PayoutsPage() {
                 <p className="text-[14px] font-medium text-gray-500">Ready to withdraw</p>
               </div>
               <button
-                onClick={handleRequestPayout}
-                disabled={requesting || available <= 0}
+                onClick={() => {
+                  setCustomAmount(available.toString());
+                  setShowModal(true);
+                }}
+                disabled={available <= 0}
                 className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
               >
-                {requesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Withdraw"}
+                Withdraw
               </button>
             </div>
           </div>
@@ -179,7 +214,8 @@ export default function PayoutsPage() {
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Status</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Requested</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Processed</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Bank Ref No.</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[10%]">Bank Ref No.</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[10%] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -207,8 +243,19 @@ export default function PayoutsPage() {
                       </td>
                       <td className="px-6 py-5">
                         <span className="text-[13px] font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
-                          {p.transaction_ref || "Pending"}
+                          {p.transaction_ref || "—"}
                         </span>
+                      </td>
+                      <td className="px-6 py-5 text-right">
+                        {p.status === "pending" && (
+                          <button
+                            onClick={() => handleCancelPayout(p.id)}
+                            disabled={cancellingId === p.id}
+                            className="text-[13px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-1"
+                          >
+                            {cancellingId === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Cancel
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -218,6 +265,65 @@ export default function PayoutsPage() {
           </div>
         )}
       </div>
+
+      {/* ── Custom Amount Modal ── */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <h3 className="text-[20px] font-bold text-gray-900">Request Payout</h3>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleRequestPayout} className="p-6">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-[13px] font-bold text-gray-700">Amount to Withdraw (₹)</label>
+                  <span className="text-[13px] font-medium text-gray-500">
+                    Max: <button type="button" onClick={() => setCustomAmount(available.toString())} className="font-bold text-[#1A6FD4] hover:underline">{formatINR(available)}</button>
+                  </span>
+                </div>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                  <input
+                    type="number"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="1"
+                    max={available}
+                    required
+                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 pl-8 pr-4 py-3 text-[16px] font-bold text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 h-12 rounded-xl bg-gray-50 text-[15px] font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={requesting || !customAmount || parseFloat(customAmount) <= 0 || parseFloat(customAmount) > available}
+                  className="flex-1 h-12 rounded-xl bg-[#1A6FD4] text-[15px] font-bold text-white hover:bg-[#155bb5] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {requesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Withdraw"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

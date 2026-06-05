@@ -17,6 +17,8 @@ interface SellerProfile {
   about_md?: string | null;
   storefront_published?: boolean;
   social_links?: Record<string, string> | null;
+  business_name?: string | null;
+  logo_url?: string | null;
 }
 
 const SOCIAL_KEYS = ["website", "instagram", "facebook", "twitter", "linkedin"] as const;
@@ -31,6 +33,10 @@ export default function SellerStorefrontEditor() {
   const [aboutMd, setAboutMd] = useState("");
   const [published, setPublished] = useState(false);
   const [social, setSocial] = useState<Record<string, string>>({});
+  const [businessName, setBusinessName] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+
+  const customerOrigin = typeof window !== 'undefined' ? window.location.origin.replace('seller.', '') : '';
 
   useEffect(() => {
     if (!sellerId) return;
@@ -51,6 +57,8 @@ export default function SellerStorefrontEditor() {
         setAboutMd(p?.about_md ?? "");
         setPublished(!!p?.storefront_published);
         setSocial((p?.social_links ?? {}) as Record<string, string>);
+        setBusinessName(p?.business_name ?? "");
+        setLogoUrl(p?.logo_url ?? "");
       } catch {
         // If unpublished, public endpoint 404s — try silent then fall back to defaults
         try {
@@ -60,6 +68,8 @@ export default function SellerStorefrontEditor() {
           setAboutMd(sf.profile.about_md ?? "");
           setPublished(sf.profile.storefront_published);
           setSocial(sf.profile.social_links ?? {});
+          setBusinessName(sf.profile.business_name ?? "");
+          setLogoUrl(sf.profile.logo_url ?? "");
         } catch {
           /* defaults */
         }
@@ -120,13 +130,14 @@ export default function SellerStorefrontEditor() {
         </div>
         <div className="flex items-center gap-3">
           {published && sellerId && (
-            <Link
-              href={`/sellers/${sellerId}`}
+            <a
+              href={`${customerOrigin}/sellers/${sellerId}`}
               target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl bg-white border border-gray-200 px-5 py-2.5 text-[14px] font-bold text-[#1A6FD4] hover:bg-gray-50 transition-all shadow-sm"
             >
               <Eye className="w-4 h-4" /> View live <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
+            </a>
           )}
           <div className="flex items-center gap-2 text-sm font-bold text-gray-500 bg-white border border-gray-200 px-4 py-2.5 rounded-full shadow-sm">
             <Store className="w-4 h-4 text-[#1A6FD4]" />
@@ -142,13 +153,14 @@ export default function SellerStorefrontEditor() {
         </h1>
         <p className="text-[14px] text-gray-500 font-medium">Customise your public seller page.</p>
         {published && sellerId && (
-          <Link
-            href={`/sellers/${sellerId}`}
+          <a
+            href={`${customerOrigin}/sellers/${sellerId}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2 text-[14px] font-bold text-[#1A6FD4] mt-2 shadow-sm"
           >
             <Eye className="w-4 h-4" /> View live <ExternalLink className="w-3.5 h-3.5" />
-          </Link>
+          </a>
         )}
       </div>
 
@@ -197,14 +209,34 @@ export default function SellerStorefrontEditor() {
                   className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 px-4 py-3.5 text-[15px] font-medium text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm placeholder:text-gray-400"
                 />
                 {bannerUrl ? (
-                  <div className="mt-4 h-32 md:h-48 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm relative group">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={bannerUrl} alt="Banner preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <div className="mt-4 rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group bg-white">
+                    <div className="h-32 md:h-48 w-full relative">
+                      <img src={bannerUrl} alt="Banner preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                    </div>
+                    <div className="absolute bottom-4 left-6 flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-white p-1 shadow-md shrink-0">
+                        {logoUrl ? (
+                          <img src={logoUrl} alt="Logo" className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
+                            <Store className="w-6 h-6 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                      <h3 className="text-[20px] font-bold text-white drop-shadow-md">
+                        {businessName || "Your Store Name"}
+                      </h3>
+                    </div>
                   </div>
                 ) : (
-                  <div className="mt-4 h-32 md:h-48 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center text-gray-400">
+                  <div className="mt-4 h-32 md:h-48 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center text-gray-400 relative">
                     <Store className="w-8 h-8 mb-2 opacity-50" />
                     <span className="text-[13px] font-medium">No banner image set</span>
+                    <div className="absolute bottom-4 left-6 flex items-center gap-4 opacity-50">
+                      <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-white shadow-sm" />
+                      <div className="h-6 w-32 bg-gray-200 rounded-lg" />
+                    </div>
                   </div>
                 )}
               </div>

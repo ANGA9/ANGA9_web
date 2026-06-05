@@ -70,7 +70,7 @@ export default function DashboardHome() {
   const [status, setStatus] = useState<VStatus | null>(null);
   const [bizName, setBizName] = useState("");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
-  const [stats, setStats] = useState({ products: 0 });
+  const [stats, setStats] = useState({ products: 0, pendingOrders: 0, totalOrders: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [period, setPeriod] = useState("30d");
@@ -111,7 +111,13 @@ export default function DashboardHome() {
           });
           if (orderRes.ok) {
             const d = await orderRes.json();
-            setRecentOrders((d.orders || []).slice(0, 5));
+            const orders: RecentOrder[] = d.orders || [];
+            setRecentOrders(orders.slice(0, 5));
+            const pendingCount = orders.filter((o: RecentOrder) => {
+              const s = o.items[0]?.status || o.status;
+              return s === "confirmed" || s === "processing" || s === "pending";
+            }).length;
+            setStats(prev => ({ ...prev, pendingOrders: pendingCount, totalOrders: d.total ?? orders.length }));
           }
         } catch { /* ignore */ }
 
@@ -295,34 +301,34 @@ export default function DashboardHome() {
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{analytics?.activeOrders || 0}</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Active Orders</p>
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.totalOrders || 0}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Orders</p>
           </div>
         </div>
 
         <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
           <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-50 text-green-600 border border-green-100">
-              <CheckCircle2 className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-50 text-purple-600 border border-purple-100">
+              <Package className="w-6 h-6" />
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{analytics?.fulfillmentRate || 0}%</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Fulfillment Rate</p>
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.products || 0}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Active Products</p>
           </div>
         </div>
 
         <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
+          <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
           <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-orange-50 text-orange-600 border border-orange-100">
-              <RefreshCw className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-yellow-50 text-yellow-600 border border-yellow-100">
+              <Clock className="w-6 h-6" />
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{analytics?.returnRate || 0}%</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Return Rate</p>
+            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.pendingOrders || 0}</p>
+            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Orders to Fulfill</p>
           </div>
         </div>
       </div>

@@ -272,19 +272,19 @@ export default function ProductDetailPage() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button onClick={handleShare} className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Share">
-            <Share2 className="w-5 h-5 text-gray-600" />
+            <Share2 className="w-5 h-5 text-black" />
           </button>
           <button onClick={handleWishlistToggle} disabled={togglingWishlist} className="p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-70" aria-label="Toggle wishlist">
             {togglingWishlist ? (
               <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
             ) : (
-              <Heart className="w-5 h-5 transition-colors" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+              <Heart className="w-5 h-5 transition-colors" style={{ color: isSaved ? "#DC2626" : "#000000" }} fill={isSaved ? "#DC2626" : "transparent"} />
             )}
           </button>
           <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Open cart">
-            <ShoppingCart className="w-5 h-5 text-gray-600" />
+            <ShoppingCart className="w-5 h-5 text-black" />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#1A6FD4] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#4338CA] text-white text-[10px] font-bold flex items-center justify-center leading-none">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}

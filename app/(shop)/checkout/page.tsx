@@ -1087,7 +1087,7 @@ export default function CheckoutPage() {
             hasAddress && !cartBlocked ? (
               <button 
                 onClick={() => setShowPaymentModal(true)}
-                className="h-10 px-5 rounded-xl bg-[#1A6FD4] text-white text-[14px] font-bold shadow-sm active:scale-95 transition-all"
+                className="h-12 px-6 rounded-xl bg-[#4338CA] text-white text-[16px] font-bold shadow-sm active:scale-95 transition-all"
               >
                 Select Payment
               </button>

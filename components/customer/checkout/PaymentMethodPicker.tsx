@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, CreditCard, Landmark, Banknote, Smartphone } from "lucide-react";
+import { ChevronRight, CreditCard, Landmark, Banknote, Smartphone, Wallet, Loader2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import type { PaymentMethod } from "@/lib/usePayment";
 
@@ -51,11 +51,12 @@ interface RowProps {
   subtitle?: string;
   onClick: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
   failedNote?: string;
   trailing?: React.ReactNode;
 }
 
-function Row({ icon, title, subtitle, onClick, disabled, failedNote, trailing }: RowProps) {
+function Row({ icon, title, subtitle, onClick, disabled, isLoading, failedNote, trailing }: RowProps) {
   return (
     <button
       type="button"
@@ -84,7 +85,11 @@ function Row({ icon, title, subtitle, onClick, disabled, failedNote, trailing }:
       </div>
       {trailing}
       <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-50 group-hover:bg-white group-hover:shadow-sm transition-all ring-1 ring-gray-100">
-        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+        {isLoading ? (
+          <Loader2 className="w-4 h-4 text-[#4338CA] animate-spin" />
+        ) : (
+          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+        )}
       </div>
     </button>
   );
@@ -128,11 +133,18 @@ function methodMatches(a: PaymentMethod, b: PaymentMethod): boolean {
 }
 
 export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: PaymentMethodPickerProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const failedNoteFor = (m: PaymentMethod): string | undefined => {
     if (lastFailed && methodMatches(lastFailed.method, m)) {
       return "Last attempt failed. Try another method?";
     }
     return undefined;
+  };
+
+  const handleSelect = (method: PaymentMethod, id: string) => {
+    setSelectedId(id);
+    onSelect(method);
   };
 
   return (
@@ -154,8 +166,9 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         title="Pay via UPI"
         subtitle="GPay, PhonePe, Paytm, BHIM & more"
         disabled={disabled}
+        isLoading={disabled && selectedId === "upi"}
         failedNote={failedNoteFor({ kind: "upi" })}
-        onClick={() => onSelect({ kind: "upi" })}
+        onClick={() => handleSelect({ kind: "upi" }, "upi")}
       />
 
       {/* ── Cards ─────────────────────────────────────────── */}
@@ -169,24 +182,26 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         title="Add credit or debit card"
         subtitle="Visa, MasterCard, Rupay"
         disabled={disabled}
+        isLoading={disabled && selectedId === "card"}
         failedNote={failedNoteFor({ kind: "card" })}
-        onClick={() => onSelect({ kind: "card" })}
+        onClick={() => handleSelect({ kind: "card" }, "card")}
       />
 
       {/* ── Wallets ───────────────────────────────────────── */}
       <CategoryHeader>Wallets</CategoryHeader>
-      <div className="space-y-2">
-        {WALLET_BRANDS.map((brand) => (
-          <Row
-            key={`wallet-${brand.key}`}
-            icon={<BrandIcon name={`wallet-${brand.key}`} label={brand.label} fallbackColor="#8B5CF6" />}
-            title={brand.label}
-            disabled={disabled}
-            failedNote={failedNoteFor({ kind: "wallet", brand: brand.key })}
-            onClick={() => onSelect({ kind: "wallet", brand: brand.key })}
-          />
-        ))}
-      </div>
+      <Row
+        icon={
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-fuchsia-50 shrink-0 ring-1 ring-fuchsia-100">
+            <Wallet className="w-5 h-5 text-fuchsia-600" />
+          </div>
+        }
+        title="Pay via Wallets"
+        subtitle="PhonePe, Mobikwik, Airtel Money & more"
+        disabled={disabled}
+        isLoading={disabled && selectedId === "wallet"}
+        failedNote={failedNoteFor({ kind: "wallet" })}
+        onClick={() => handleSelect({ kind: "wallet" }, "wallet")}
+      />
 
       {/* ── Netbanking ────────────────────────────────────── */}
       <CategoryHeader>Netbanking</CategoryHeader>
@@ -199,8 +214,9 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         title="Pay via Netbanking"
         subtitle="All major Indian banks"
         disabled={disabled}
+        isLoading={disabled && selectedId === "netbanking"}
         failedNote={failedNoteFor({ kind: "netbanking" })}
-        onClick={() => onSelect({ kind: "netbanking" })}
+        onClick={() => handleSelect({ kind: "netbanking" }, "netbanking")}
       />
 
       {/* ── Cash on Delivery ──────────────────────────────── */}
@@ -214,8 +230,9 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         title="Cash on Delivery"
         subtitle={`Pay ₹${total.toLocaleString("en-IN")} when delivered`}
         disabled={disabled}
+        isLoading={disabled && selectedId === "cod"}
         failedNote={failedNoteFor({ kind: "cod" })}
-        onClick={() => onSelect({ kind: "cod" })}
+        onClick={() => handleSelect({ kind: "cod" }, "cod")}
       />
 
       {/* ── Trust footer ──────────────────────────────────── */}

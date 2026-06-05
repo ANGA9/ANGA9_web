@@ -367,7 +367,7 @@ export default function CustomerCartPage() {
             </div>
 
             {/* Sticky Bottom Order Bar (Positioned above MobileBottomNav) */}
-            <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-12px_40px_rgba(0,0,0,0.12)] animate-in slide-in-from-bottom duration-500">
+            <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 animate-in slide-in-from-bottom duration-500">
 
               <div className="px-4 py-3 flex gap-4 items-center">
                 <div className="hidden xs:flex flex-col">
@@ -378,7 +378,7 @@ export default function CustomerCartPage() {
                 <button
                   disabled={isPlacingOrder}
                   onClick={handleProceedToCheckout}
-                  className="flex-1 h-[52px] bg-[#4338CA] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-indigo-200"
+                  className="flex-1 h-[52px] bg-[#4338CA] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70"
                 >
                   {isPlacingOrder ? (
                     <Loader2 className="w-6 h-6 animate-spin" />

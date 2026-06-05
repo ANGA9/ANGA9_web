@@ -44,14 +44,14 @@ export default function SellerStorefrontEditor() {
     async function load() {
       setLoading(true);
       try {
-        const profile = await api.get<{ seller_profile: SellerProfile } | SellerProfile>(
+        const profile = await api.get<{ sellerProfile: SellerProfile } | SellerProfile>(
           `/api/users/seller-profile`,
           { silent: true },
         );
         if (cancelled) return;
         const p: SellerProfile =
-          profile && typeof profile === "object" && "seller_profile" in profile
-            ? (profile as { seller_profile: SellerProfile }).seller_profile
+          profile && typeof profile === "object" && "sellerProfile" in profile
+            ? (profile as { sellerProfile: SellerProfile }).sellerProfile
             : (profile as SellerProfile) ?? {};
         setBannerUrl(p?.storefront_banner_url ?? "");
         setAboutMd(p?.about_md ?? "");

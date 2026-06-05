@@ -66,7 +66,7 @@ function ExploreContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
-  const { items: recentlyViewed } = useRecentlyViewed();
+  const { items: recentlyViewed, removeItem } = useRecentlyViewed();
 
   // Redirect desktop visitors to home — this page is mobile-only
   useEffect(() => {
@@ -568,49 +568,61 @@ function ExploreContent() {
                       )
                     : 0;
                 return (
-                  <Link
-                    key={item.id}
-                    href={`/products/${item.id}`}
-                    className="shrink-0 w-[124px] rounded-xl border bg-white overflow-hidden transition-shadow hover:shadow-sm"
-                    style={{ borderColor: t.border }}
-                  >
-                    <div className="relative w-full h-[124px] bg-[#F8FAFC]">
-                      {item.imageUrl ? (
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          fill
-                          sizes="124px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#D1D5DB] text-[10px]">
-                          No image
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-2">
-                      <p
-                        className="text-[12px] font-medium leading-tight line-clamp-2"
-                        style={{ color: t.textPrimary }}
-                      >
-                        {item.name}
-                      </p>
-                      <div className="mt-1 flex items-baseline gap-1">
-                        <span
-                          className="text-[12.5px] font-bold"
-                          style={{ color: t.textPrimary }}
-                        >
-                          ₹{item.price.toLocaleString("en-IN")}
-                        </span>
-                        {discount > 0 && (
-                          <span className="text-[10px] font-semibold" style={{ color: "#16A34A" }}>
-                            {discount}% off
-                          </span>
+                  <div key={item.id} className="relative shrink-0 w-[124px]">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeItem(item.id);
+                      }}
+                      className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white/95 border border-gray-200 text-gray-500 flex items-center justify-center cursor-pointer z-10 shadow-sm backdrop-blur-sm active:scale-95 transition-transform"
+                      aria-label="Remove from recently viewed"
+                    >
+                      <X size={14} />
+                    </button>
+                    <Link
+                      href={`/products/${item.id}`}
+                      className="block w-full h-full rounded-xl border bg-white overflow-hidden transition-shadow hover:shadow-sm"
+                      style={{ borderColor: t.border }}
+                    >
+                      <div className="relative w-full h-[124px] bg-[#F8FAFC]">
+                        {item.imageUrl ? (
+                          <Image
+                            src={item.imageUrl}
+                            alt={item.name}
+                            fill
+                            sizes="124px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[#D1D5DB] text-[10px]">
+                            No image
+                          </div>
                         )}
                       </div>
-                    </div>
-                  </Link>
+                      <div className="p-2">
+                        <p
+                          className="text-[12px] font-medium leading-tight line-clamp-2"
+                          style={{ color: t.textPrimary }}
+                        >
+                          {item.name}
+                        </p>
+                        <div className="mt-1 flex items-baseline gap-1">
+                          <span
+                            className="text-[12.5px] font-bold"
+                            style={{ color: t.textPrimary }}
+                          >
+                            ₹{item.price.toLocaleString("en-IN")}
+                          </span>
+                          {discount > 0 && (
+                            <span className="text-[10px] font-semibold" style={{ color: "#16A34A" }}>
+                              {discount}% off
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 );
               })}
             </div>

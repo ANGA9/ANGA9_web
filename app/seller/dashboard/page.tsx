@@ -408,7 +408,7 @@ export default function DashboardHome() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(val: number) => formatINR(val)} />
+                      <Tooltip formatter={(val: any) => formatINR(Number(val))} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>

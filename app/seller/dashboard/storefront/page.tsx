@@ -68,7 +68,7 @@ export default function SellerStorefrontEditor() {
           setAboutMd(sf.profile.about_md ?? "");
           setPublished(sf.profile.storefront_published);
           setSocial(sf.profile.social_links ?? {});
-          setBusinessName(sf.profile.business_name ?? "");
+          setBusinessName(sf.profile.store_name ?? "");
           setLogoUrl(sf.profile.logo_url ?? "");
         } catch {
           /* defaults */

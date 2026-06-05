@@ -6,12 +6,9 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import type { PaymentMethod } from "@/lib/usePayment";
 
 // ── Brand catalogue ─────────────────────────────────────────────
-
-const UPI_BRANDS: { key: "google_pay" | "phonepe" | "paytm"; label: string; sub: string }[] = [
-  { key: "google_pay", label: "Google Pay", sub: "Pay via UPI" },
-  { key: "phonepe",    label: "PhonePe",    sub: "Pay via UPI" },
-  { key: "paytm",      label: "Paytm",      sub: "Pay via UPI" },
-];
+// No per-app UPI rows (GPay/PhonePe/Paytm): brand preselection via
+// `apps` was removed (it broke desktop checkout), so those rows all
+// opened the identical Razorpay UPI section — one button says it honestly.
 
 const WALLET_BRANDS: { key: "phonepe" | "mobikwik" | "airtelmoney" | "olamoney"; label: string }[] = [
   { key: "phonepe",     label: "PhonePe Wallet" },
@@ -148,31 +145,18 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
 
       {/* ── Recommended (UPI) ─────────────────────────────── */}
       <CategoryHeader hint="Fast, free, and secure">Recommended</CategoryHeader>
-      <div className="space-y-2">
-        {UPI_BRANDS.map((brand) => (
-          <Row
-            key={`upi-${brand.key}`}
-            icon={<BrandIcon name={brand.key} label={brand.label} fallbackColor="#3B82F6" />}
-            title={brand.label}
-            subtitle={brand.sub}
-            disabled={disabled}
-            failedNote={failedNoteFor({ kind: "upi", brand: brand.key })}
-            onClick={() => onSelect({ kind: "upi", brand: brand.key })}
-          />
-        ))}
-        <Row
-          icon={
-            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-blue-50 shrink-0 ring-1 ring-blue-100">
-              <Smartphone className="w-5 h-5 text-blue-600" />
-            </div>
-          }
-          title="Other UPI Apps / Enter VPA"
-          subtitle="BHIM, Cred, or any UPI app"
-          disabled={disabled}
-          failedNote={failedNoteFor({ kind: "upi" })}
-          onClick={() => onSelect({ kind: "upi" })}
-        />
-      </div>
+      <Row
+        icon={
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-blue-50 shrink-0 ring-1 ring-blue-100">
+            <Smartphone className="w-5 h-5 text-blue-600" />
+          </div>
+        }
+        title="Pay via UPI"
+        subtitle="GPay, PhonePe, Paytm, BHIM & more"
+        disabled={disabled}
+        failedNote={failedNoteFor({ kind: "upi" })}
+        onClick={() => onSelect({ kind: "upi" })}
+      />
 
       {/* ── Cards ─────────────────────────────────────────── */}
       <CategoryHeader>Cards</CategoryHeader>

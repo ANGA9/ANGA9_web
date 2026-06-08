@@ -22,6 +22,7 @@ export default function CustomerWishlistPage() {
     id: item.productId,
     name: item.name,
     seller: item.seller_name,
+    seller_id: item.seller_id,
     category: "",
     originalPrice: item.base_price,
     price: item.sale_price ?? item.base_price,

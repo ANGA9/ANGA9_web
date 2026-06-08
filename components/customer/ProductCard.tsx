@@ -12,6 +12,7 @@ export interface Product {
   id: string;
   name: string;
   seller: string;
+  seller_id?: string;
   category: string;
   originalPrice: number;
   price: number;
@@ -200,9 +201,26 @@ export default function ProductCard({
 
           {/* Seller name — hidden if null/unknown */}
           {sellerLabel && (
-            <p className="text-[11px] md:text-xs mb-1 pr-7 md:pr-8 truncate" style={{ color: t.textSecondary }}>
-              {sellerLabel}
-            </p>
+            <div className="mb-1 pr-7 md:pr-8 truncate">
+              {product.seller_id ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/sellers/${product.seller_id}`);
+                  }}
+                  className="text-[11px] md:text-xs truncate hover:underline hover:text-[#1A6FD4] transition-colors cursor-pointer"
+                  style={{ color: t.textSecondary }}
+                >
+                  {sellerLabel}
+                </button>
+              ) : (
+                <p className="text-[11px] md:text-xs truncate" style={{ color: t.textSecondary }}>
+                  {sellerLabel}
+                </p>
+              )}
+            </div>
           )}
 
           {/* Product name — 2-line clamp */}

@@ -57,6 +57,7 @@ const BOTTOM_NAV_H = "calc(56px + env(safe-area-inset-bottom, 0px))";
 function toCardProduct(p: SearchProduct): Product {
   return {
     id: p.id, name: p.name, seller: p.seller_name || "",
+    seller_id: p.seller_id,
     category: p.category_name || "",
     originalPrice: p.base_price,
     price: p.sale_price ?? p.base_price,

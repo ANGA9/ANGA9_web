@@ -52,6 +52,7 @@ function toCardProduct(p: SearchProduct): Product {
     id: p.id,
     name: p.name,
     seller: p.seller_name || "",
+    seller_id: p.seller_id,
     category: p.category_name || "",
     originalPrice: p.base_price,
     price: p.sale_price ?? p.base_price,

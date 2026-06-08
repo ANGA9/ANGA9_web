@@ -1,19 +1,35 @@
+import Link from "next/link";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
-import { CATEGORY_TREE } from "@/lib/categories";
+import type { CategoryTab } from "@/lib/useCategories";
 
 interface MegaDropdownProps {
-  tab: string;
+  tab: CategoryTab;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  /** Close the dropdown after a navigation click */
+  onNavigate: () => void;
+}
+
+const ITEMS_PER_COLUMN = 8;
+
+/** Search filters by category_name (exact ES term match), so links pass the name. */
+function searchHref(categoryName: string): string {
+  return `/search?category=${encodeURIComponent(categoryName)}`;
 }
 
 export default function MegaDropdown({
   tab,
   onMouseEnter,
   onMouseLeave,
+  onNavigate,
 }: MegaDropdownProps) {
-  const columns = CATEGORY_TREE[tab];
-  if (!columns) return null;
+  if (tab.children.length === 0) return null;
+
+  // Chunk children into columns for the multi-column layout
+  const columns: CategoryTab["children"][] = [];
+  for (let i = 0; i < tab.children.length; i += ITEMS_PER_COLUMN) {
+    columns.push(tab.children.slice(i, i + ITEMS_PER_COLUMN));
+  }
 
   return (
     <div
@@ -41,31 +57,37 @@ export default function MegaDropdown({
         }}
       >
         {columns.map((col, idx) => (
-          <div 
-            key={col.heading} 
+          <div
+            key={idx}
             className="min-w-[160px] px-6 py-6"
             style={{
-              background: idx % 2 === 1 ? t.bgBlueTint : "#FFFFFF"
+              background: idx % 2 === 1 ? t.bgBlueTint : "#FFFFFF",
             }}
           >
-            <h4
-              className="text-sm md:text-base font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5"
-              style={{
-                color: t.bluePrimary,
-                borderBottom: `2px solid ${t.bluePrimary}`,
-              }}
-            >
-              {col.heading}
-            </h4>
+            {idx === 0 && (
+              <h4
+                className="text-sm md:text-base font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5"
+                style={{
+                  color: t.bluePrimary,
+                  borderBottom: `2px solid ${t.bluePrimary}`,
+                }}
+              >
+                <Link href={searchHref(tab.name)} onClick={onNavigate} className="hover:underline">
+                  All {tab.name}
+                </Link>
+              </h4>
+            )}
             <ul className="space-y-1">
-              {col.items.map((item) => (
-                <li key={item}>
-                  <button
+              {col.map((item) => (
+                <li key={item.slug}>
+                  <Link
+                    href={searchHref(item.name)}
+                    onClick={onNavigate}
                     className="block text-sm md:text-[15px] leading-[1.6] py-0.5 transition-colors hover:text-[#1A6FD4] text-left w-full"
                     style={{ color: t.textPrimary }}
                   >
-                    {item}
-                  </button>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>

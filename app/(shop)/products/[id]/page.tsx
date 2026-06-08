@@ -466,9 +466,9 @@ export default function ProductDetailPage() {
             {discount > 0 && (
               <>
                 <span className="line-through text-sm md:text-base" style={{ color: t.textMuted }}>
-                  {formatINR(product.base_price)}
+                  MRP {formatINR(product.base_price)}
                 </span>
-                <span className="text-sm font-semibold" style={{ color: t.inStock }}>{discount}% off</span>
+                <span className="text-sm font-semibold" style={{ color: t.inStock }}>{discount}% below MRP</span>
               </>
             )}
           </div>

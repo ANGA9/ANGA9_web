@@ -402,7 +402,7 @@ function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (i
                 <span className="rv-card-orig-price">
                   {formatINR(item.originalPrice)}
                 </span>
-                <span className="rv-card-discount">-{discount}%</span>
+                <span className="rv-card-discount">↓{discount}% MRP</span>
               </>
             )}
           </div>

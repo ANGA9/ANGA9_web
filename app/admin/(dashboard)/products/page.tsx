@@ -213,7 +213,7 @@ export default function AdminProductsPage() {
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Product</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Seller</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Price</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Wholesale / MRP</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-center">Stock</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>

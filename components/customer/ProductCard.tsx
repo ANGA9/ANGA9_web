@@ -143,7 +143,7 @@ export default function ProductCard({
               className="absolute top-2.5 left-2.5 z-10 rounded-[6px] text-xs font-bold text-white shadow-sm"
               style={{ background: "#1A6FD4", padding: "3px 7px" }}
             >
-              -{discount}%
+              {discount}% below MRP
             </span>
           )}
 

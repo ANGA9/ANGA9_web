@@ -778,7 +778,7 @@ export default function CheckoutPage() {
                       </p>
                       {disc > 0 && (
                         <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
-                          {disc}% off
+                          {disc}% below MRP
                         </span>
                       )}
                     </div>

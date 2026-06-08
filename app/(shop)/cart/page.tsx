@@ -250,7 +250,7 @@ export default function CustomerCartPage() {
                               {formatINR(item.base_price)}
                             </span>
                             <span className="px-1.5 py-0.5 rounded text-green-700 bg-green-50 text-[11px] font-bold">
-                              {disc}% off
+                              {disc}% below MRP
                             </span>
                           </div>
                         )}
@@ -317,12 +317,12 @@ export default function CustomerCartPage() {
                 </h3>
                 <div className="space-y-3 text-[15px]">
                   <div className="flex justify-between">
-                    <span className="text-gray-500 font-medium">Subtotal ({items.length} items)</span>
+                    <span className="text-gray-500 font-medium">MRP Total ({items.length} items)</span>
                     <span className="text-gray-900 font-bold">{formatINR(totalOriginal)}</span>
                   </div>
                   {totalSavings > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500 font-medium">Discount</span>
+                      <span className="text-gray-500 font-medium">Savings vs MRP</span>
                       <span className="text-green-600 font-bold">
                         − {formatINR(totalSavings)}
                       </span>

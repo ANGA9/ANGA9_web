@@ -48,7 +48,7 @@ const SORT_OPTIONS = [
   { value: "price_asc", label: "Price: Low to High" },
   { value: "price_desc", label: "Price: High to Low" },
   { value: "ratings", label: "Top Rated" },
-  { value: "discount", label: "Best Discount" },
+  { value: "discount", label: "% Below MRP" },
 ];
 
 const ACCENT = "#4338CA";

@@ -146,9 +146,10 @@ export default function AddProductPage() {
     if (!form.name.trim() || form.name.length < 3) errs.push("Product name must be at least 3 characters");
     if (!form.description.trim() || form.description.length < 10) errs.push("Description must be at least 10 characters");
     const price = parseFloat(form.base_price);
-    if (!price || price <= 0) errs.push("Price must be greater than 0");
+    if (!price || price <= 0) errs.push("MRP must be greater than 0");
     const salePrice = form.sale_price ? parseFloat(form.sale_price) : null;
-    if (salePrice !== null && salePrice >= price) errs.push("Sale price must be less than base price");
+    if (salePrice === null || salePrice <= 0) errs.push("Wholesale price is required");
+    else if (salePrice > price) errs.push("Wholesale price cannot exceed MRP");
     const qty = parseInt(form.min_order_qty);
     if (!qty || qty < 1) errs.push("Min order quantity must be at least 1");
     if (!form.category_id) errs.push("Category is required");
@@ -190,7 +191,7 @@ export default function AddProductPage() {
         country_of_origin: form.country_of_origin,
         gst_rate: parseFloat(form.gst_rate) || 18,
       };
-      if (salePrice !== null) body.sale_price = salePrice;
+      body.sale_price = salePrice;
       if (tagArray.length > 0) body.tags = tagArray;
       if (form.hsn_code) body.hsn_code = form.hsn_code;
       if (form.brand.trim()) body.brand = form.brand.trim();
@@ -369,18 +370,20 @@ export default function AddProductPage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className={labelCls}>Base Price (₹) <span className="text-red-500">*</span></label>
+                <label className={labelCls}>MRP (₹) <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
                   <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.base_price} onChange={e => set("base_price", e.target.value)} placeholder="0.00" />
                 </div>
+                <p className="text-[12px] text-gray-400 mt-1.5">Maximum Retail Price printed on the pack. Buyers see this struck through.</p>
               </div>
               <div>
-                <label className={labelCls}>Sale Price (₹) <span className="text-gray-400 font-medium ml-1">(Optional)</span></label>
+                <label className={labelCls}>Wholesale Price (₹) <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
                   <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.sale_price} onChange={e => set("sale_price", e.target.value)} placeholder="0.00" />
                 </div>
+                <p className="text-[12px] text-gray-400 mt-1.5">Per-unit price B2B buyers pay. Cannot exceed MRP.</p>
               </div>
             </div>
             
@@ -505,7 +508,7 @@ export default function AddProductPage() {
                 {[
                   { text: `Min ${MIN_IMAGES} photo uploaded`, done: images.filter(i => !i.uploading).length >= MIN_IMAGES },
                   { text: "Category selected", done: !!form.category_id },
-                  { text: "Pricing & Stock added", done: parseFloat(form.base_price) > 0 && parseInt(form.initial_stock) >= 0 }
+                  { text: "Pricing & Stock added", done: parseFloat(form.base_price) > 0 && parseFloat(form.sale_price) > 0 && parseInt(form.initial_stock) >= 0 }
                 ].map((item, i) => (
                   <li key={i} className={`text-[13px] font-medium flex items-start gap-2 ${item.done ? "text-green-600" : "text-gray-500"}`}>
                     <CheckCircle2 className={`w-4 h-4 mt-0.5 shrink-0 ${item.done ? "text-green-500" : "text-gray-300"}`} />

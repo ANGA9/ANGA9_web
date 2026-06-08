@@ -617,7 +617,7 @@ function ExploreContent() {
                           </span>
                           {discount > 0 && (
                             <span className="text-[10px] font-semibold" style={{ color: "#16A34A" }}>
-                              {discount}% off
+                              ↓{discount}% MRP
                             </span>
                           )}
                         </div>

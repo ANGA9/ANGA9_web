@@ -220,7 +220,7 @@ export default function ProductsPage() {
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/80">
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Pricing</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Wholesale / MRP</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">Date Added</th>
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>

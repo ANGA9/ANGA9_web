@@ -18,13 +18,14 @@ import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import ProductReviews from "@/components/customer/ProductReviews";
 
+// Mirrors VARIANT_FIELDS in product-service (no name/is_active columns in DB)
 interface ProductVariant {
   id: string;
   sku: string;
-  name: string;
-  price_offset: number;
-  attributes: Record<string, string>;
-  is_active: boolean;
+  /** Absolute price for this variant; null = use the product's wholesale price */
+  price_override: number | null;
+  attributes: Record<string, string> | null;
+  image_url: string | null;
 }
 
 interface ProductCategory {
@@ -121,8 +122,7 @@ export default function ProductDetailPage() {
       setProduct(productRes.product);
       setInventory(inventoryRes || []);
       if (productRes.product.product_variants?.length) {
-        const active = productRes.product.product_variants.find((v) => v.is_active);
-        if (active) setSelectedVariant(active.id);
+        setSelectedVariant(productRes.product.product_variants[0].id);
       }
       setQuantity(productRes.product.min_order_qty || 1);
     } catch {
@@ -165,12 +165,13 @@ export default function ProductDetailPage() {
 
   const getCurrentPrice = () => {
     if (!product) return 0;
-    let price = product.sale_price ?? product.base_price;
+    const defaultPrice = product.sale_price ?? product.base_price;
     if (selectedVariant) {
       const variant = product.product_variants?.find((v) => v.id === selectedVariant);
-      if (variant) price += variant.price_offset;
+      // price_override is an absolute variant price, not an offset
+      if (variant && variant.price_override != null) return variant.price_override;
     }
-    return price;
+    return defaultPrice;
   };
 
   const handleAddToCart = async () => {
@@ -182,7 +183,7 @@ export default function ProductDetailPage() {
     if (adding) return;
     setAdding(true);
     try {
-      await addItem(product!.id, quantity);
+      await addItem(product!.id, quantity, selectedVariant || undefined);
       setAdded(true);
       toast.success(`${product!.name} added to cart!`, { icon: <ShoppingCart size={18} color="#059669" /> });
       setTimeout(() => setAdded(false), 2000);
@@ -259,7 +260,7 @@ export default function ProductDetailPage() {
   const discount = product.sale_price && product.base_price > product.sale_price
     ? Math.round(((product.base_price - product.sale_price) / product.base_price) * 100)
     : 0;
-  const variants = product.product_variants?.filter((v) => v.is_active) || [];
+  const variants = product.product_variants || [];
   const sellerProfiles = Array.isArray(product.users?.seller_profiles) 
     ? product.users?.seller_profiles[0] 
     : product.users?.seller_profiles;
@@ -505,10 +506,10 @@ export default function ProductDetailPage() {
                       background: selectedVariant === v.id ? `${t.bluePrimary}10` : "#FFFFFF",
                       color: selectedVariant === v.id ? t.bluePrimary : t.textPrimary,
                     }}>
-                    {v.name || v.sku}
-                    {v.price_offset !== 0 && (
+                    {v.attributes ? Object.values(v.attributes).join(" / ") : v.sku}
+                    {v.price_override != null && v.price_override !== (product.sale_price ?? product.base_price) && (
                       <span className="ml-1 text-xs" style={{ color: t.textMuted }}>
-                        ({v.price_offset > 0 ? "+" : ""}{formatINR(v.price_offset)})
+                        ({formatINR(v.price_override)})
                       </span>
                     )}
                   </button>

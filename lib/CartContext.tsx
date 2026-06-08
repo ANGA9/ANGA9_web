@@ -25,7 +25,7 @@ interface CartContextValue {
   count: number;
   loading: boolean;
   isGuest: boolean;
-  addItem(productId: string, qty?: number): Promise<void>;
+  addItem(productId: string, qty?: number, variantId?: string): Promise<void>;
   updateQty(productId: string, qty: number): Promise<void>;
   removeItem(productId: string): Promise<void>;
   clearCart(): Promise<void>;
@@ -98,7 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     refreshCart();
   }, [refreshCart]);
 
-  const addItem = useCallback(async (productId: string, qty = 1) => {
+  const addItem = useCallback(async (productId: string, qty = 1, variantId?: string) => {
     if (!user) {
       let sessionId = getGuestSessionId();
       if (!sessionId) {
@@ -109,12 +109,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
       if (sessionId) {
-        await api.post("/api/cart/guest/items", { sessionId, productId, qty }, { silent: true });
+        await api.post("/api/cart/guest/items", { sessionId, productId, qty, variantId }, { silent: true });
         toast.success("Added to cart");
       }
       return;
     }
-    await api.post<{ count: number }>("/api/cart/items", { productId, qty });
+    await api.post<{ count: number }>("/api/cart/items", { productId, qty, variantId });
     await refreshCart();
   }, [user, refreshCart]);
 

@@ -25,6 +25,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [productCommission, setProductCommission] = useState<number | null>(null);
+  const [sellerCommission, setSellerCommission] = useState<number>(0);
   const { dbUser } = useAuth();
 
   useEffect(() => {
@@ -63,6 +64,25 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       setLoading(false);
     })();
   }, [id]);
+
+  useEffect(() => {
+    if (!dbUser?.id) return;
+    (async () => {
+      try {
+        const token = await getToken();
+        if (!token) return;
+        const res = await fetch(`${API}/api/seller/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const profile = await res.json();
+          if (profile && profile.commission_rate) {
+            setSellerCommission(profile.commission_rate);
+          }
+        }
+      } catch { /* ignore */ }
+    })();
+  }, [dbUser?.id, getToken]);
 
   function set(k: string, v: string) {
     setForm((prev) => ({ ...prev, [k]: v }));
@@ -251,7 +271,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     </div>
                   ) : (
                     <div className="flex flex-col items-end">
-                      <span className="text-[18px] font-black text-purple-700">{(dbUser?.commission_rate || 0) * 100}%</span>
+                      <span className="text-[18px] font-black text-purple-700">{sellerCommission * 100}%</span>
                       <span className="text-[11px] font-bold text-purple-600/80 uppercase tracking-wide px-2 bg-purple-100 rounded-full mt-1">Tier Default</span>
                     </div>
                   )}

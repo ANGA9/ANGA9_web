@@ -9,6 +9,7 @@ export interface DbUser {
   id: string;
   auth_uid: string;
   role: "customer" | "seller" | "admin";
+  admin_level?: "super_admin" | "admin" | null;
   phone?: string;
   email?: string;
   full_name?: string;

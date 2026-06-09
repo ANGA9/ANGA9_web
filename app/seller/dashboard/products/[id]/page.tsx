@@ -28,6 +28,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     (async () => {
       try {
+        const prodRes = await fetch(`${API}/api/products/${id}`);
         if (prodRes.ok) {
           const p = await prodRes.json();
           const product = p.data || p.product || p;

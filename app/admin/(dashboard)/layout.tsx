@@ -17,7 +17,6 @@ const SUPER_ADMIN_ROUTES = [
   "/admin/chatbot",
   "/admin/ads",
   "/admin/coupons",
-  "/admin/categories",
 ];
 
 function getCookie(name: string): string | null {

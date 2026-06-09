@@ -27,7 +27,9 @@ import {
   Footprints,
   RectangleHorizontal,
   Sofa,
-import { PanelTop, Flower2 } from "lucide-react";
+  PanelTop,
+  Flower2
+} from "lucide-react";
 import { useCategories } from "@/lib/useCategories";
 
 /* ─── Brand palette ─── */
@@ -77,6 +79,7 @@ const POPULAR_CATEGORIES: { label: string; icon: React.ElementType; href: string
   { label: "Home Decor",   icon: Flower2,                 href: "/search?q=home+decor" },
 ];
 
+export default function MobileMenuPage() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("POPULAR");
   const { tabs: categoriesTree } = useCategories();

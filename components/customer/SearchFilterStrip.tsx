@@ -3,9 +3,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { ArrowUpDown, SlidersHorizontal, X, Check, Search } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
-import { CATEGORY_TREE, TOP_LEVEL_CATEGORIES } from "@/lib/categories";
+import { useCategories } from "@/lib/useCategories";
 
-const FILTER_TABS = TOP_LEVEL_CATEGORIES;
 const APPLY_INDIGO = "#4338CA";
 const BOTTOM_NAV_OFFSET = "calc(56px + env(safe-area-inset-bottom, 0px))";
 
@@ -38,9 +37,20 @@ export default function SearchFilterStrip({
 }: SearchFilterStripProps) {
   const [activeModal, setActiveModal] = useState<ModalKind | null>(null);
   const [isClosing, setIsClosing] = useState(false);
-  const [activeFilterTab, setActiveFilterTab] = useState<string>(FILTER_TABS[0]);
+  
+  const { tabs: categoriesTree, loading } = useCategories();
+  const TOP_LEVEL_CATEGORIES = categoriesTree.map(t => t.name);
+  const FILTER_TABS = TOP_LEVEL_CATEGORIES;
+
+  const [activeFilterTab, setActiveFilterTab] = useState<string>("");
   const [filterSearch, setFilterSearch] = useState("");
   const [draftSort, setDraftSort] = useState<string>(sortParam);
+
+  useEffect(() => {
+    if (FILTER_TABS.length > 0 && !activeFilterTab) {
+      setActiveFilterTab(FILTER_TABS[0]);
+    }
+  }, [FILTER_TABS, activeFilterTab]);
 
   const openModal = (kind: ModalKind) => {
     setIsClosing(false);
@@ -81,13 +91,13 @@ export default function SearchFilterStrip({
   };
 
   const filterTabSubItems = useMemo<string[]>(() => {
-    const cols = CATEGORY_TREE[activeFilterTab];
-    if (!cols) return [];
-    const items = cols.flatMap((c) => c.items);
+    const tab = categoriesTree.find(t => t.name === activeFilterTab);
+    if (!tab) return [];
+    const items = tab.children.map(c => c.name);
     if (!filterSearch.trim()) return items;
     const q = filterSearch.toLowerCase();
     return items.filter((i) => i.toLowerCase().includes(q));
-  }, [activeFilterTab, filterSearch]);
+  }, [activeFilterTab, filterSearch, categoriesTree]);
 
   const sheetAnimClass = isClosing ? "sheet-anim-out" : "sheet-anim-in";
   const overlayAnimClass = isClosing ? "overlay-anim-out" : "overlay-anim-in";
@@ -307,18 +317,21 @@ export default function SearchFilterStrip({
                   )}
                 </div>
                 <div className="space-y-5">
-                  {(CATEGORY_TREE[activeFilterTab] ?? []).map((col) => {
+                  {(() => {
+                    const tab = categoriesTree.find(t => t.name === activeFilterTab);
+                    if (!tab) return null;
+                    const items = tab.children.map(c => c.name);
                     const visibleItems = filterSearch.trim()
-                      ? col.items.filter((i) => i.toLowerCase().includes(filterSearch.toLowerCase()))
-                      : col.items;
+                      ? items.filter((i) => i.toLowerCase().includes(filterSearch.toLowerCase()))
+                      : items;
                     if (visibleItems.length === 0) return null;
                     return (
-                      <div key={col.heading}>
+                      <div>
                         <p
                           className="text-xs font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5 border-b"
                           style={{ color: APPLY_INDIGO, borderColor: APPLY_INDIGO }}
                         >
-                          {col.heading}
+                          {activeFilterTab} Subcategories
                         </p>
                         <div className="space-y-2">
                           {visibleItems.map((item) => (
@@ -351,7 +364,7 @@ export default function SearchFilterStrip({
                         </div>
                       </div>
                     );
-                  })}
+                  })()}
                   {filterTabSubItems.length === 0 && filterSearch.trim() && (
                     <p className="text-sm text-gray-400">No items match &quot;{filterSearch}&quot;.</p>
                   )}

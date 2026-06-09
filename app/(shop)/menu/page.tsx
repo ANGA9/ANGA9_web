@@ -27,10 +27,8 @@ import {
   Footprints,
   RectangleHorizontal,
   Sofa,
-  PanelTop,
-  Flower2,
-} from "lucide-react";
-import { CATEGORY_TREE, type CategoryColumn } from "@/lib/categories";
+import { PanelTop, Flower2 } from "lucide-react";
+import { useCategories } from "@/lib/useCategories";
 
 /* ─── Brand palette ─── */
 const BRAND = {
@@ -48,23 +46,7 @@ const BRAND = {
   iconActive: "#146EB4",
 };
 
-/* ─── Category meta with icons — monochrome brand palette ─── */
-interface CategoryMeta {
-  key: string;
-  label: string;
-  icon: React.ElementType;
-}
 
-const CATEGORIES: CategoryMeta[] = [
-  { key: "POPULAR",                label: "Popular",     icon: Star },
-  { key: "WOMENSWEAR",             label: "Women",       icon: Shirt },
-  { key: "MENSWEAR",               label: "Men",         icon: UserRound },
-  { key: "KIDS & INFANTS",         label: "Kids & Baby", icon: Baby },
-  { key: "ACTIVEWEAR",             label: "Activewear",  icon: Dumbbell },
-  { key: "ACCESSORIES",            label: "Accessories",  icon: Watch },
-  { key: "BED, BATH & KITCHEN",    label: "Bed & Bath",  icon: BedDouble },
-  { key: "HOME DECOR & FLOORING",  label: "Home Decor",  icon: Lamp },
-];
 
 /* ─── Popular section data — icons instead of emojis ─── */
 interface PopularItem {
@@ -95,9 +77,9 @@ const POPULAR_CATEGORIES: { label: string; icon: React.ElementType; href: string
   { label: "Home Decor",   icon: Flower2,                 href: "/search?q=home+decor" },
 ];
 
-export default function MobileMenuPage() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("POPULAR");
+  const { tabs: categoriesTree } = useCategories();
 
   // Redirect desktop visitors to home — this page is mobile-only
   useEffect(() => {
@@ -110,8 +92,7 @@ export default function MobileMenuPage() {
     return () => mq.removeEventListener("change", onChange);
   }, [router]);
 
-  const activeMeta = CATEGORIES.find((c) => c.key === activeCategory);
-  const columns: CategoryColumn[] = CATEGORY_TREE[activeCategory] || [];
+  const activeMeta = categoriesTree.find((c) => c.slug === activeCategory);
 
   return (
     <div
@@ -169,13 +150,27 @@ export default function MobileMenuPage() {
             .menu-aside::-webkit-scrollbar { display: none; }
           `}</style>
           <div className="flex flex-col menu-aside">
-            {CATEGORIES.map((cat) => {
-              const isActive = activeCategory === cat.key;
-              const Icon = cat.icon;
+            {/* Hardcoded Popular Tab */}
+            <button
+              onClick={() => setActiveCategory("POPULAR")}
+              className="relative flex flex-col items-center gap-1.5 py-3.5 px-2 transition-all"
+              style={{ background: activeCategory === "POPULAR" ? BRAND.bgCard : "transparent" }}
+            >
+              {activeCategory === "POPULAR" && <div className="absolute left-0 top-2 bottom-2 rounded-r-full" style={{ width: 3, background: BRAND.primary }} />}
+              <div className="relative flex items-center justify-center rounded-full transition-all" style={{ width: 42, height: 42, background: activeCategory === "POPULAR" ? BRAND.primaryLight : "transparent" }}>
+                <Star style={{ width: 19, height: 19, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.iconDefault, strokeWidth: activeCategory === "POPULAR" ? 2.2 : 1.8 }} />
+              </div>
+              <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "10px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
+                Popular
+              </span>
+            </button>
+
+            {categoriesTree.map((cat) => {
+              const isActive = activeCategory === cat.slug;
               return (
                 <button
-                  key={cat.key}
-                  onClick={() => setActiveCategory(cat.key)}
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.slug)}
                   className="relative flex flex-col items-center gap-1.5 py-3.5 px-2 transition-all"
                   style={{
                     background: isActive ? BRAND.bgCard : "transparent",
@@ -192,24 +187,23 @@ export default function MobileMenuPage() {
                     />
                   )}
 
-                  {/* Icon circle */}
+                  {/* Icon circle / fallback */}
                   <div
-                    className="relative flex items-center justify-center rounded-full transition-all"
+                    className="relative flex items-center justify-center rounded-full transition-all overflow-hidden"
                     style={{
                       width: 42,
                       height: 42,
                       background: isActive ? BRAND.primaryLight : "transparent",
+                      border: cat.image_url ? `1px solid ${BRAND.borderLight}` : 'none'
                     }}
                   >
-                    <Icon
-                      className="transition-colors"
-                      style={{
-                        width: 19,
-                        height: 19,
-                        color: isActive ? BRAND.primary : BRAND.iconDefault,
-                        strokeWidth: isActive ? 2.2 : 1.8,
-                      }}
-                    />
+                    {cat.image_url ? (
+                      <img src={cat.image_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[14px] font-bold uppercase" style={{ color: isActive ? BRAND.primary : BRAND.iconDefault }}>
+                        {cat.name.substring(0, 2)}
+                      </span>
+                    )}
                   </div>
 
                   {/* Label */}
@@ -223,7 +217,7 @@ export default function MobileMenuPage() {
                       maxWidth: 76,
                     }}
                   >
-                    {cat.label}
+                    {cat.name}
                   </span>
                 </button>
               );
@@ -375,20 +369,20 @@ export default function MobileMenuPage() {
                 >
                   {activeMeta && (
                     <div
-                      className="flex items-center justify-center rounded-xl"
+                      className="flex items-center justify-center rounded-xl overflow-hidden"
                       style={{
                         width: 40,
                         height: 40,
-                        background: BRAND.primaryMid,
+                        background: BRAND.bgCard,
                       }}
                     >
-                      <activeMeta.icon
-                        style={{
-                          width: 20,
-                          height: 20,
-                          color: BRAND.primary,
-                        }}
-                      />
+                      {activeMeta.image_url ? (
+                        <img src={activeMeta.image_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[14px] font-bold uppercase text-gray-500">
+                          {activeMeta.name.substring(0, 2)}
+                        </span>
+                      )}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -396,19 +390,18 @@ export default function MobileMenuPage() {
                       className="text-[15px] font-bold tracking-tight"
                       style={{ color: BRAND.text }}
                     >
-                      {activeMeta?.label || activeCategory}
+                      {activeMeta?.name || activeCategory}
                     </h2>
                     <p
                       className="text-[11px] font-medium"
                       style={{ color: BRAND.textMuted }}
                     >
-                      {columns.reduce((sum, col) => sum + col.items.length, 0)}{" "}
-                      items
+                      {activeMeta?.children.length || 0} items
                     </p>
                   </div>
                   <Link
                     href={`/search?q=${encodeURIComponent(
-                      activeMeta?.label || activeCategory
+                      activeMeta?.name || activeCategory
                     )}`}
                     className="text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors"
                     style={{
@@ -420,74 +413,58 @@ export default function MobileMenuPage() {
                   </Link>
                 </div>
 
-                {/* Subcategory Groups */}
+                {/* Subcategory Group */}
                 <div className="flex flex-col gap-4">
-                  {columns.map((col) => (
-                    <div key={col.heading}>
-                      {/* Group heading */}
-                      <div className="flex items-center gap-2 mb-2 px-0.5">
-                        <h3
-                          className="text-[11px] font-black uppercase tracking-widest"
-                          style={{ color: BRAND.textMuted }}
+                  <div>
+                    {/* Items list */}
+                    <div className="flex flex-col">
+                      {activeMeta?.children.map((item, idx) => (
+                        <Link
+                          key={item.slug}
+                          href={`/search?q=${encodeURIComponent(item.name)}`}
+                          className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors group"
+                          style={{
+                            borderBottom:
+                              idx < activeMeta.children.length - 1
+                                ? `1px solid ${BRAND.borderLight}`
+                                : "none",
+                          }}
                         >
-                          {col.heading}
-                        </h3>
-                        <div
-                          className="flex-1 h-px"
-                          style={{ background: BRAND.borderLight }}
-                        />
-                      </div>
-
-                      {/* Items list */}
-                      <div className="flex flex-col">
-                        {col.items.map((item, idx) => (
-                          <Link
-                            key={item}
-                            href={`/search?q=${encodeURIComponent(item)}`}
-                            className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors group"
+                          {/* Item initial */}
+                          <div
+                            className="flex items-center justify-center rounded-lg shrink-0"
                             style={{
-                              borderBottom:
-                                idx < col.items.length - 1
-                                  ? `1px solid ${BRAND.borderLight}`
-                                  : "none",
+                              width: 36,
+                              height: 36,
+                              background: BRAND.bg,
+                              border: `1px solid ${BRAND.borderLight}`,
                             }}
                           >
-                            {/* Item initial */}
-                            <div
-                              className="flex items-center justify-center rounded-lg shrink-0"
+                            <span
+                              className="text-[14px] font-semibold"
                               style={{
-                                width: 36,
-                                height: 36,
-                                background: BRAND.bg,
-                                border: `1px solid ${BRAND.borderLight}`,
+                                color: BRAND.textSecondary,
                               }}
                             >
-                              <span
-                                className="text-[14px] font-semibold"
-                                style={{
-                                  color: BRAND.textSecondary,
-                                }}
-                              >
-                                {item.charAt(0)}
-                              </span>
-                            </div>
-
-                            <span
-                              className="flex-1 text-[13.5px] font-semibold group-hover:text-gray-900 transition-colors"
-                              style={{ color: BRAND.text }}
-                            >
-                              {item}
+                              {item.name.charAt(0).toUpperCase()}
                             </span>
+                          </div>
 
-                            <ChevronRight
-                              className="w-4 h-4 group-hover:text-gray-400 transition-colors"
-                              style={{ color: BRAND.textMuted }}
-                            />
-                          </Link>
-                        ))}
-                      </div>
+                          <span
+                            className="flex-1 text-[13.5px] font-semibold group-hover:text-gray-900 transition-colors"
+                            style={{ color: BRAND.text }}
+                          >
+                            {item.name}
+                          </span>
+
+                          <ChevronRight
+                            className="w-4 h-4 group-hover:text-gray-400 transition-colors"
+                            style={{ color: BRAND.textMuted }}
+                          />
+                        </Link>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </>
             )}

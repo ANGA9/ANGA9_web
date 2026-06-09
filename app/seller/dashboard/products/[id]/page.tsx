@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, LayoutList, IndianRupee, FileText } from "lucide-react";
 import Link from "next/link";
+import CategoryMultiSelect from "@/components/seller/CategoryMultiSelect";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 const UNIT_OPTIONS = ["piece", "set", "box", "pack", "roll", "kg", "g", "L", "mL", "pair", "dozen", "meter"];
@@ -15,10 +16,10 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const [form, setForm] = useState({
     name: "", description: "", base_price: "", sale_price: "",
-    min_order_qty: "1", category_id: "", unit: "piece",
+    min_order_qty: "1", unit: "piece",
     tags: "", hsn_code: "",
+    category_ids: [] as string[],
   });
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -27,27 +28,29 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     (async () => {
       try {
-        const [catRes, prodRes] = await Promise.all([
-          fetch(`${API}/api/categories`),
-          fetch(`${API}/api/products/${id}`),
-        ]);
-        if (catRes.ok) {
-          const d = await catRes.json();
-          setCategories(d.categories || d.data || d || []);
-        }
         if (prodRes.ok) {
           const p = await prodRes.json();
           const product = p.data || p.product || p;
+          
+          let catIds: string[] = [];
+          if (Array.isArray(product.product_categories)) {
+            catIds = product.product_categories.map((pc: any) => pc.category_id);
+          } else if (Array.isArray(product.category_ids)) {
+            catIds = product.category_ids;
+          } else if (product.category_id) {
+            catIds = [product.category_id];
+          }
+
           setForm({
             name: product.name || "",
             description: product.description || "",
             base_price: String(product.base_price || ""),
             sale_price: product.sale_price ? String(product.sale_price) : "",
             min_order_qty: String(product.min_order_qty || 1),
-            category_id: product.category_id || "",
             unit: product.unit || "piece",
             tags: Array.isArray(product.tags) ? product.tags.join(", ") : (product.tags || ""),
             hsn_code: product.hsn_code || "",
+            category_ids: catIds,
           });
         }
       } catch {
@@ -74,7 +77,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     else if (salePrice > price) errs.push("Wholesale price cannot exceed MRP");
     const qty = parseInt(form.min_order_qty);
     if (!qty || qty < 1) errs.push("Min order quantity must be at least 1");
-    if (!form.category_id) errs.push("Category is required");
+    if (form.category_ids.length === 0) errs.push("At least one category is required");
+    if (form.category_ids.length > 5) errs.push("Maximum 5 categories allowed");
     if (form.hsn_code && !/^\d{4,8}$/.test(form.hsn_code)) errs.push("HSN code must be 4-8 digits");
     if (errs.length) {
       setErrors(errs);
@@ -94,7 +98,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         description: form.description.trim(),
         base_price: price,
         min_order_qty: qty,
-        category_id: form.category_id,
+        category_ids: form.category_ids,
         unit: form.unit,
       };
       body.sale_price = salePrice;
@@ -195,16 +199,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               <textarea className={inputCls + " h-32 py-4 resize-y"} value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Describe your product in detail..." maxLength={2000} />
             </div>
             <div>
-              <label className={labelCls}>Category <span className="text-red-500">*</span></label>
-              <div className="relative">
-                <select className={inputCls + " appearance-none cursor-pointer pr-10"} value={form.category_id} onChange={(e) => set("category_id", e.target.value)} required>
-                  <option value="">Select a category</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-              </div>
+              <label className={labelCls}>Categories <span className="text-red-500">*</span></label>
+              <CategoryMultiSelect
+                value={form.category_ids}
+                onChange={(ids) => { setForm(prev => ({ ...prev, category_ids: ids })); setErrors([]); }}
+              />
             </div>
           </section>
 

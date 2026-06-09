@@ -20,16 +20,20 @@ export interface CategoryChild {
 
 /** A top-level category tab with its children grouped for the mega dropdown */
 export interface CategoryTab {
+  id: string;
   name: string;
   slug: string;
+  image_url: string | null;
   children: CategoryChild[];
 }
 
 function buildTabs(categories: ApiCategory[]): CategoryTab[] {
   const topLevel = categories.filter((c) => !c.parent_id);
   return topLevel.map((top) => ({
+    id: top.id,
     name: top.name,
     slug: top.slug,
+    image_url: top.image_url,
     children: categories
       .filter((c) => c.parent_id === top.id)
       .map((c) => ({ name: c.name, slug: c.slug })),

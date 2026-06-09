@@ -5,6 +5,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, ImagePlus, Video, X, PackageOpen, LayoutList, IndianRupee, Truck, FileText } from "lucide-react";
 import Link from "next/link";
+import CategoryMultiSelect from "@/components/seller/CategoryMultiSelect";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -33,31 +34,19 @@ export default function AddProductPage() {
 
   const [form, setForm] = useState({
     name: "", description: "", base_price: "", sale_price: "",
-    min_order_qty: "1", category_id: "", unit: "piece",
+    min_order_qty: "1", unit: "piece",
     tags: "", hsn_code: "", gst_rate: "18",
     initial_stock: "", brand: "", country_of_origin: "India",
     weight_kg: "", return_policy: "", warranty: "", sku: "",
+    category_ids: [] as string[],
   });
   const [images, setImages] = useState<UploadedFile[]>([]);
   const [videos, setVideos] = useState<UploadedFile[]>([]);
-  const [categories, setCategories] = useState<{ id: string, name: string }[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`${API}/api/categories`);
-        if (res.ok) {
-          const d = await res.json();
-          setCategories(d.categories || d.data || d || []);
-        }
-      } catch (err) {
-        console.error("Failed to fetch categories:", err);
-      }
-    })();
-  }, []);
+  // categories fetched within CategoryMultiSelect now
 
   function set(k: string, v: string) {
     setForm(prev => ({ ...prev, [k]: v }));
@@ -152,7 +141,8 @@ export default function AddProductPage() {
     else if (salePrice > price) errs.push("Wholesale price cannot exceed MRP");
     const qty = parseInt(form.min_order_qty);
     if (!qty || qty < 1) errs.push("Min order quantity must be at least 1");
-    if (!form.category_id) errs.push("Category is required");
+    if (form.category_ids.length === 0) errs.push("At least one category is required");
+    if (form.category_ids.length > 5) errs.push("Maximum 5 categories allowed");
     if (form.hsn_code && !/^\d{4,8}$/.test(form.hsn_code)) errs.push("HSN code must be 4-8 digits");
     const stock = parseInt(form.initial_stock);
     if (Number.isNaN(stock) || stock < 0) errs.push("Initial stock is required (0 or more)");
@@ -182,7 +172,7 @@ export default function AddProductPage() {
         description: form.description.trim(),
         base_price: price,
         min_order_qty: qty,
-        category_id: form.category_id,
+        category_ids: form.category_ids,
         unit: form.unit,
         status: "pending_review",
         images: readyImages.map(i => i.url),
@@ -350,16 +340,11 @@ export default function AddProductPage() {
               <textarea className={inputCls + " h-32 py-4 resize-y"} value={form.description} onChange={e => set("description", e.target.value)} placeholder="Describe your product's features, benefits, and specifications in detail..." maxLength={2000} />
             </div>
             <div>
-              <label className={labelCls}>Category <span className="text-red-500">*</span></label>
-              <div className="relative">
-                <select className={inputCls + " appearance-none cursor-pointer pr-10"} value={form.category_id} onChange={e => set("category_id", e.target.value)} required>
-                  <option value="">Select a category</option>
-                  {categories.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-              </div>
+              <label className={labelCls}>Categories <span className="text-red-500">*</span></label>
+              <CategoryMultiSelect
+                value={form.category_ids}
+                onChange={(ids) => { setForm(prev => ({ ...prev, category_ids: ids })); setErrors([]); }}
+              />
             </div>
           </section>
 
@@ -507,7 +492,7 @@ export default function AddProductPage() {
               <ul className="space-y-3">
                 {[
                   { text: `Min ${MIN_IMAGES} photo uploaded`, done: images.filter(i => !i.uploading).length >= MIN_IMAGES },
-                  { text: "Category selected", done: !!form.category_id },
+                  { text: "Category selected", done: form.category_ids.length > 0 },
                   { text: "Pricing & Stock added", done: parseFloat(form.base_price) > 0 && parseFloat(form.sale_price) > 0 && parseInt(form.initial_stock) >= 0 }
                 ].map((item, i) => (
                   <li key={i} className={`text-[13px] font-medium flex items-start gap-2 ${item.done ? "text-green-600" : "text-gray-500"}`}>

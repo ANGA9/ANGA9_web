@@ -19,6 +19,7 @@ import {
   Bot,
   UserCheck,
   Ticket,
+  Tags,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -48,6 +49,7 @@ const NAV: NavItem[] = [
   { label: "Reports", href: "/admin/reports", icon: BarChart3, superOnly: true },
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
   { label: "Coupons", href: "/admin/coupons", icon: Ticket, superOnly: true },
+  { label: "Categories", href: "/admin/categories", icon: Tags, superOnly: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },
 ];
 

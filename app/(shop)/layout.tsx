@@ -11,9 +11,10 @@ import { WishlistProvider } from "@/lib/WishlistContext";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import ChatWidget from "@/components/chatbot/ChatWidget";
 import { useAuth } from "@/lib/AuthContext";
+import { useState } from "react";
 
 export default function CustomerShopLayout({
   children,
@@ -21,6 +22,7 @@ export default function CustomerShopLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [showBanner, setShowBanner] = useState(true);
   const { user, loading: authLoading } = useAuth();
   const isCheckout = pathname === "/checkout";
   const isWishlist = pathname === "/wishlist";
@@ -46,6 +48,40 @@ export default function CustomerShopLayout({
             <a href="#main-content" className="skip-to-content">
               Skip to main content
             </a>
+
+            {/* ══════════ GLOBAL ANNOUNCEMENT BANNER ══════════ */}
+            {showBanner && (
+              <>
+                <style dangerouslySetInnerHTML={{ __html: `
+                  @keyframes marquee {
+                    0% { transform: translateX(100vw); }
+                    100% { transform: translateX(-100%); }
+                  }
+                  .animate-marquee {
+                    display: inline-block;
+                    white-space: nowrap;
+                    animation: marquee 20s linear infinite;
+                    will-change: transform;
+                  }
+                `}} />
+                <div className="bg-gradient-to-r from-[#8B5CF6] to-[#1A6FD4] text-white overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10">
+                  <div className="animate-marquee font-black tracking-wide text-[14px] uppercase flex items-center gap-4 flex-1">
+                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                    <span className="opacity-50">•</span>
+                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                    <span className="opacity-50">•</span>
+                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                  </div>
+                  <button 
+                    onClick={() => setShowBanner(false)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+                    aria-label="Dismiss banner"
+                  >
+                    <X className="w-4 h-4 text-white" />
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
             <div className="hidden md:block">

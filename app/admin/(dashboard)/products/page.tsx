@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 import {
   Loader2,
   Package,
@@ -11,6 +12,7 @@ import {
   Star,
   StarOff,
   Archive,
+  Percent,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -20,6 +22,7 @@ interface Product {
   slug: string;
   base_price: number;
   sale_price: number | null;
+  commission_rate?: number | null;
   status: string;
   moderation_status: string;
   is_featured: boolean;
@@ -67,6 +70,9 @@ function capitalize(s: string) {
 }
 
 export default function AdminProductsPage() {
+  const { dbUser } = useAuth();
+  const isSuperAdmin = dbUser?.admin_level === "super_admin";
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -75,6 +81,12 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  // Commission Modal State
+  const [editingCommission, setEditingCommission] = useState<Product | null>(null);
+  const [commissionInput, setCommissionInput] = useState<string>("");
+  const [savingCommission, setSavingCommission] = useState(false);
+
   const limit = 20;
 
   const fetchProducts = useCallback(async () => {
@@ -137,6 +149,43 @@ export default function AdminProductsPage() {
       toast.error("Failed to archive product");
     }
     setActionLoading(null);
+  };
+
+  const handleEditCommission = (product: Product) => {
+    setEditingCommission(product);
+    setCommissionInput(
+      product.commission_rate !== null && product.commission_rate !== undefined
+        ? (product.commission_rate * 100).toString()
+        : ""
+    );
+  };
+
+  const saveCommission = async () => {
+    if (!editingCommission) return;
+    
+    let rate: number | null = null;
+    if (commissionInput.trim() !== "") {
+      rate = parseFloat(commissionInput) / 100;
+      if (isNaN(rate) || rate < 0 || rate > 1) {
+        toast.error("Please enter a valid percentage between 0 and 100");
+        return;
+      }
+    }
+
+    setSavingCommission(true);
+    try {
+      await api.patch(`/api/products/${editingCommission.id}/commission`, { commission_rate: rate });
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === editingCommission.id ? { ...p, commission_rate: rate } : p
+        )
+      );
+      toast.success("Commission rate updated");
+      setEditingCommission(null);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update commission rate");
+    }
+    setSavingCommission(false);
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -261,6 +310,13 @@ export default function AdminProductsPage() {
                       ) : (
                         <span className="font-bold text-[15px] text-gray-900">{formatINR(p.base_price)}</span>
                       )}
+                      {(p.commission_rate !== null && p.commission_rate !== undefined) && (
+                        <div className="mt-1 flex justify-end">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                            Com: {p.commission_rate * 100}%
+                          </span>
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={`text-[15px] font-black ${p.stock <= 0 ? 'text-red-500' : p.stock < 10 ? 'text-yellow-500' : 'text-gray-900'}`}>
@@ -281,6 +337,15 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {isSuperAdmin && (
+                          <button
+                            onClick={() => handleEditCommission(p)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-purple-50 text-gray-400 hover:text-purple-600 transition-colors"
+                            title="Edit Commission Override"
+                          >
+                            <Percent className="w-4 h-4" />
+                          </button>
+                        )}
                         <button
                           onClick={() => toggleFeatured(p.id, p.is_featured)}
                           disabled={actionLoading === p.id}
@@ -333,6 +398,55 @@ export default function AdminProductsPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Commission Modal */}
+      {editingCommission && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-200 w-full max-w-sm overflow-hidden flex flex-col">
+            <div className="px-6 py-5 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">Edit Commission Rate</h3>
+              <p className="text-sm text-gray-500 font-medium mt-1 truncate">
+                {editingCommission.name}
+              </p>
+            </div>
+            <div className="p-6">
+              <label className="block text-[13px] font-bold text-gray-700 mb-2">
+                Custom Commission Rate (%)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                value={commissionInput}
+                onChange={(e) => setCommissionInput(e.target.value)}
+                placeholder="e.g. 5 (Leave empty for default)"
+                className="w-full h-11 px-4 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
+              />
+              <p className="mt-2 text-xs text-gray-500">
+                Leave empty to fallback to the seller's tier commission rate.
+              </p>
+            </div>
+            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+              <button
+                onClick={() => setEditingCommission(null)}
+                className="px-4 py-2 rounded-xl text-[13px] font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-colors"
+                disabled={savingCommission}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveCommission}
+                disabled={savingCommission}
+                className="px-5 py-2 rounded-xl text-[13px] font-bold text-white bg-[#8B5CF6] hover:bg-purple-600 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-2"
+              >
+                {savingCommission && <Loader2 className="w-4 h-4 animate-spin" />}
+                Save
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

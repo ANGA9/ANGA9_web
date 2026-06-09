@@ -24,6 +24,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [productCommission, setProductCommission] = useState<number | null>(null);
+  const { dbUser } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -53,6 +55,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             hsn_code: product.hsn_code || "",
             category_ids: catIds,
           });
+          setProductCommission(product.commission_rate ?? null);
         }
       } catch {
         setErrors(["Failed to load product"]);
@@ -229,6 +232,30 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                   <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder="0.00" />
                 </div>
                 <p className="text-[12px] text-gray-400 mt-1.5">Per-unit price B2B buyers pay. Cannot exceed MRP.</p>
+              </div>
+            </div>
+            
+            <div className="pt-2">
+              <div className="flex items-center justify-between p-4 bg-purple-50/50 border border-purple-100 rounded-2xl">
+                <div>
+                  <h3 className="text-[14px] font-bold text-purple-900 mb-0.5">Platform Commission</h3>
+                  <p className="text-[13px] font-medium text-purple-700/80">
+                    The fee deducted from your wholesale price when this product is sold.
+                  </p>
+                </div>
+                <div className="text-right">
+                  {productCommission !== null ? (
+                    <div className="flex flex-col items-end">
+                      <span className="text-[18px] font-black text-purple-700">{productCommission * 100}%</span>
+                      <span className="text-[11px] font-bold text-purple-600/80 uppercase tracking-wide px-2 bg-purple-100 rounded-full mt-1">Custom Rate</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-end">
+                      <span className="text-[18px] font-black text-purple-700">{(dbUser?.commission_rate || 0) * 100}%</span>
+                      <span className="text-[11px] font-bold text-purple-600/80 uppercase tracking-wide px-2 bg-purple-100 rounded-full mt-1">Tier Default</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             

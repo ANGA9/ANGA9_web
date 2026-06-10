@@ -2,24 +2,21 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound } from "lucide-react";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
-type LoginMode = "password" | "otp";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export default function SellerLoginPage() {
+export default function SellerRegisterPage() {
   const [tab, setTab] = useState<Tab>("phone");
   const [step, setStep] = useState<Step>("input");
-  const [loginMode, setLoginMode] = useState<LoginMode>("password");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,51 +24,6 @@ export default function SellerLoginPage() {
   const [canResend, setCanResend] = useState(true);
 
   const supabase = getSupabaseBrowserClient();
-
-  async function completeLogin(accessToken: string) {
-    // Call backend to verify and get user + seller profile info
-    const res = await fetch(`${API_URL}/api/auth/verify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessToken }),
-    });
-
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || "Verification failed");
-    }
-
-    const { user, sellerProfile } = await res.json();
-
-    const hostname = window.location.hostname;
-    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
-    const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
-    document.cookie = `portal=seller; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
-
-    const sellerHost = hostname.endsWith("anga9.com") ? "https://seller.anga9.com" : "";
-
-    if (user.role === "seller" && sellerProfile?.onboarding_complete) {
-      window.location.href = `${sellerHost}/dashboard`;
-    } else if (user.role === "seller" && !sellerProfile?.onboarding_complete) {
-      window.location.href = `${sellerHost}/onboarding`;
-    } else {
-      // Customer or new user → upgrade to seller role, then onboarding
-      try {
-        await fetch(`${API_URL}/api/auth/role`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ userId: user.id, role: "seller" }),
-        });
-      } catch {
-        // Role upgrade failed — still redirect to onboarding, backend will handle
-        console.warn("Role upgrade request failed, proceeding to onboarding");
-      }
-      window.location.href = `${sellerHost}/onboarding`;
-    }
-  }
 
   /* ─── Email submit ─── */
   async function handleEmailSubmit(e: React.FormEvent) {
@@ -85,29 +37,16 @@ export default function SellerLoginPage() {
 
     setLoading(true);
     try {
-      if (loginMode === "password") {
-        if (!password) {
-          setError("Please enter your password");
-          setLoading(false);
-          return;
-        }
-        const { data, error: signInErr } = await supabase.auth.signInWithPassword({ email: trimmed, password });
-        if (signInErr) throw signInErr;
-        if (data.session) {
-          await completeLogin(data.session.access_token);
-        }
-      } else {
-        const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
-        if (otpErr) throw otpErr;
-        setStep("otp");
-        startResendTimer(60);
-      }
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
+      if (otpErr) throw otpErr;
+      setStep("otp");
+      startResendTimer(60);
     } catch (err: any) {
-      console.error("Email login error:", err);
+      console.error("Email OTP error:", err);
       if (err.message?.includes("rate limit")) {
         setError("Too many attempts. Please try again later.");
       } else {
-        setError(err.message || "Failed to login. Please check your credentials.");
+        setError(err.message || "Failed to send OTP. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -126,29 +65,16 @@ export default function SellerLoginPage() {
 
     setLoading(true);
     try {
-      if (loginMode === "password") {
-        if (!password) {
-          setError("Please enter your password");
-          setLoading(false);
-          return;
-        }
-        const { data, error: signInErr } = await supabase.auth.signInWithPassword({ phone: normalized, password });
-        if (signInErr) throw signInErr;
-        if (data.session) {
-          await completeLogin(data.session.access_token);
-        }
-      } else {
-        const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
-        if (otpErr) throw otpErr;
-        setStep("otp");
-        startResendTimer(30);
-      }
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
+      if (otpErr) throw otpErr;
+      setStep("otp");
+      startResendTimer(30);
     } catch (err: any) {
-      console.error("Phone login error:", err);
+      console.error("Phone OTP error:", err);
       if (err.message?.includes("rate limit")) {
         setError("Too many attempts. Please try again later.");
       } else {
-        setError(err.message || "Failed to login. Please check your credentials.");
+        setError(err.message || "Failed to send OTP. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -229,7 +155,48 @@ export default function SellerLoginPage() {
         return;
       }
 
-      await completeLogin(accessToken);
+      // Call backend to verify and get user + seller profile info
+      const res = await fetch(`${API_URL}/api/auth/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Verification failed");
+      }
+
+      const { user, sellerProfile } = await res.json();
+
+      const hostname = window.location.hostname;
+      const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+      const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
+      document.cookie = `portal=seller; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+
+      const sellerHost = hostname.endsWith("anga9.com") ? "https://seller.anga9.com" : "";
+
+      if (user.role === "seller" && sellerProfile?.onboarding_complete) {
+        window.location.href = `${sellerHost}/dashboard`;
+      } else if (user.role === "seller" && !sellerProfile?.onboarding_complete) {
+        window.location.href = `${sellerHost}/onboarding`;
+      } else {
+        // Customer or new user → upgrade to seller role, then onboarding
+        try {
+          await fetch(`${API_URL}/api/auth/role`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ userId: user.id, role: "seller" }),
+          });
+        } catch {
+          // Role upgrade failed — still redirect to onboarding, backend will handle
+          console.warn("Role upgrade request failed, proceeding to onboarding");
+        }
+        window.location.href = `${sellerHost}/onboarding`;
+      }
     } catch (err: any) {
       console.error("OTP verify error:", err);
       if (err.message?.includes("expired")) {
@@ -372,27 +339,6 @@ export default function SellerLoginPage() {
         </div>
       </div>
 
-      {loginMode === "password" && (
-        <div>
-          <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
-            Password
-          </label>
-          <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-            <span className="flex items-center pl-4 pr-2">
-              <Lock className="w-4 h-4 text-[#9CA3AF]" />
-            </span>
-            <div className="w-px h-6 bg-[#D0E3F7]" />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-            />
-          </div>
-        </div>
-      )}
-
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
           <p className="text-sm md:text-base text-red-600">{error}</p>
@@ -405,41 +351,19 @@ export default function SellerLoginPage() {
         className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
       >
         {loading ? (
-          <span className="flex items-center gap-2">{spinner} Logging in...</span>
+          <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
         ) : (
-          loginMode === "password" ? "Login" : "Request OTP"
+          "Request OTP"
         )}
       </button>
 
       <div className="flex flex-col gap-2 pt-2">
-        {loginMode === "password" ? (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("otp"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-4 h-4" />
-            Login with OTP instead (Forgot Password?)
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("password"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <Lock className="w-4 h-4" />
-            Login with Password
-          </button>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-2 pt-2">
         <button
           type="button"
-          onClick={() => { window.location.href = "/seller/register"; }}
+          onClick={() => { window.location.href = "/seller/login"; }}
           className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center"
         >
-          New here? Register with us
+          Already have an account? Login here
         </button>
       </div>
 
@@ -477,27 +401,6 @@ export default function SellerLoginPage() {
         </div>
       </div>
 
-      {loginMode === "password" && (
-        <div>
-          <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
-            Password
-          </label>
-          <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-            <span className="flex items-center pl-4 pr-2">
-              <Lock className="w-4 h-4 text-[#9CA3AF]" />
-            </span>
-            <div className="w-px h-6 bg-[#D0E3F7]" />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-            />
-          </div>
-        </div>
-      )}
-
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
           <p className="text-sm md:text-base text-red-600">{error}</p>
@@ -510,41 +413,19 @@ export default function SellerLoginPage() {
         className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
       >
         {loading ? (
-          <span className="flex items-center gap-2">{spinner} Logging in...</span>
+          <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
         ) : (
-          loginMode === "password" ? "Login" : "Request OTP"
+          "Request OTP"
         )}
       </button>
 
       <div className="flex flex-col gap-2 pt-2">
-        {loginMode === "password" ? (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("otp"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-4 h-4" />
-            Login with OTP instead (Forgot Password?)
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("password"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <Lock className="w-4 h-4" />
-            Login with Password
-          </button>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-2 pt-2">
         <button
           type="button"
-          onClick={() => { window.location.href = "/seller/register"; }}
+          onClick={() => { window.location.href = "/seller/login"; }}
           className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center"
         >
-          New here? Register with us
+          Already have an account? Login here
         </button>
       </div>
 
@@ -647,14 +528,14 @@ export default function SellerLoginPage() {
   const formContent = step === "otp" ? otpForm : (tab === "email" ? emailForm : phoneForm);
 
   /* ─── Heading text ─── */
-  const heading = step === "otp" ? "Verify OTP" : "Login to your account";
+  const heading = step === "otp" ? "Verify OTP" : "Create Seller Account";
   const subheading = step === "otp"
     ? "Enter the verification code we sent"
-    : "Sign in to manage your store";
-  const desktopHeading = step === "otp" ? "Verify OTP" : "Login to your account";
+    : "Register to start selling on ANGA9";
+  const desktopHeading = step === "otp" ? "Verify OTP" : "Create Seller Account";
   const desktopSubheading = step === "otp"
     ? "Enter the verification code we sent"
-    : "Sign in with your email or phone to manage your wholesale business";
+    : "Register with your email or phone to start your wholesale business";
 
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (

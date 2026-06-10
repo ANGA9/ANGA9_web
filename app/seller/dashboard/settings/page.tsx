@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2 } from "lucide-react";
+import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock } from "lucide-react";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -53,6 +54,13 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Password states
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
   useEffect(() => {
     if (authLoading) return;
     (async () => {
@@ -87,6 +95,32 @@ export default function SettingsPage() {
       setTimeout(() => setSaved(false), 3000);
     }
     setSaving(false);
+  }
+
+  async function handlePasswordSave() {
+    setPasswordError("");
+    if (!password || password.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+
+    setPasswordSaving(true);
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.updateUser({ password });
+    
+    if (error) {
+      setPasswordError(error.message);
+    } else {
+      setPasswordSaved(true);
+      setPassword("");
+      setConfirmPassword("");
+      setTimeout(() => setPasswordSaved(false), 3000);
+    }
+    setPasswordSaving(false);
   }
 
   if (loading) return (
@@ -148,6 +182,57 @@ export default function SettingsPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm mt-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                <Lock className="w-5 h-5 text-[#1A6FD4]" />
+              </div>
+              <div>
+                <h2 className="text-[18px] font-bold text-gray-900 leading-tight">Security</h2>
+                <p className="text-[14px] text-gray-500 font-medium">Update your seller portal password.</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">New Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  className="w-full h-11 px-4 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter password"
+                  className="w-full h-11 px-4 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
+                />
+              </div>
+
+              {passwordError && (
+                <p className="text-red-600 text-sm font-medium">{passwordError}</p>
+              )}
+              {passwordSaved && (
+                <p className="text-green-600 text-sm font-medium">Password updated successfully!</p>
+              )}
+
+              <button
+                onClick={handlePasswordSave}
+                disabled={passwordSaving}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-[14px] font-bold text-white transition-all shadow-sm hover:shadow-md hover:bg-gray-800 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+              >
+                {passwordSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {passwordSaving ? "Updating..." : "Update Password"}
+              </button>
             </div>
           </div>
 

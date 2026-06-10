@@ -29,6 +29,9 @@ export interface SellerFormData {
   // Step 6 - Pickup
   pickup_address_same: boolean;
   pickup_address: string;
+  // Step 7 - Password
+  password?: string;
+  confirm_password?: string;
 }
 
 export const INITIAL_FORM: SellerFormData = {
@@ -39,6 +42,7 @@ export const INITIAL_FORM: SellerFormData = {
   bank_account_name: "", bank_account_number: "", bank_account_confirm: "",
   bank_ifsc: "", bank_name: "", bank_branch: "",
   pickup_address_same: true, pickup_address: "",
+  password: "", confirm_password: "",
 };
 
 export const STEP_TITLES = [
@@ -48,6 +52,7 @@ export const STEP_TITLES = [
   "Tax & KYC",
   "Bank Account",
   "Pickup Address",
+  "Password Setup",
   "Review & Submit",
 ];
 
@@ -75,6 +80,7 @@ export function validateStep(step: number, form: SellerFormData): string[] {
     case 0:
       if (!form.full_name.trim()) errors.push("Full name is required");
       if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.push("Valid email is required");
+      if (!form.phone.trim() || !/^\d{10}$/.test(form.phone)) errors.push("Valid 10-digit phone number is required");
       break;
     case 1:
       if (!form.business_name.trim()) errors.push("Business name is required");
@@ -106,6 +112,12 @@ export function validateStep(step: number, form: SellerFormData): string[] {
     case 5:
       if (!form.pickup_address_same && !form.pickup_address.trim())
         errors.push("Pickup address is required");
+      break;
+    case 6:
+      if (!form.password || form.password.length < 6)
+        errors.push("Password must be at least 6 characters");
+      if (form.password !== form.confirm_password)
+        errors.push("Passwords do not match");
       break;
   }
   return errors;

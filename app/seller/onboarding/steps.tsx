@@ -7,7 +7,8 @@ const labelCls = "block text-sm md:text-base font-medium text-[#4B5563] mb-1.5";
 const inputCls = "h-11 w-full rounded-lg border border-[#E8EEF4] bg-white px-4 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors";
 const selectCls = inputCls + " appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239CA3AF%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] bg-[length:20px] pr-10";
 
-export function Step1({ form, set }: P) {
+export function Step1({ form, set, registeredVia }: P & { registeredVia: 'email' | 'phone' }) {
+  const isEmailReg = registeredVia === 'email';
   return (
     <div className="space-y-5">
       <div>
@@ -17,28 +18,32 @@ export function Step1({ form, set }: P) {
       <div>
         <label className={labelCls}>Email Address *</label>
         <input 
-          className={inputCls + " bg-[#F8FBFF] text-[#9CA3AF] cursor-not-allowed"} 
+          className={inputCls + (isEmailReg ? " bg-[#F8FBFF] text-[#9CA3AF] cursor-not-allowed" : "")} 
           type="email" 
           value={form.email} 
-          disabled 
-          readOnly 
+          onChange={e => !isEmailReg && set("email", e.target.value)}
+          disabled={isEmailReg}
+          readOnly={isEmailReg}
           placeholder="you@example.com" 
         />
-        <p className="text-xs md:text-sm text-[#9CA3AF] mt-1.5">Associated with your account. Cannot be changed here.</p>
+        {isEmailReg && <p className="text-xs md:text-sm text-[#9CA3AF] mt-1.5">Associated with your account. Cannot be changed here.</p>}
       </div>
       <div>
-        <label className={labelCls}>Phone Number</label>
-        <div className="flex items-center rounded-lg border border-[#E8EEF4] bg-white focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-[#1A6FD4]/10 transition-colors overflow-hidden">
-          <span className="flex items-center px-3 bg-[#F8FBFF] text-sm text-[#4B5563] font-medium self-stretch border-r border-[#E8EEF4]">+91</span>
+        <label className={labelCls}>Phone Number *</label>
+        <div className={`flex items-center rounded-lg border border-[#E8EEF4] ${!isEmailReg ? 'bg-[#F8FBFF] cursor-not-allowed' : 'bg-white focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-[#1A6FD4]/10'} transition-colors overflow-hidden`}>
+          <span className={`flex items-center px-3 ${!isEmailReg ? 'bg-[#F8FBFF]' : 'bg-[#F8FBFF]'} text-sm text-[#4B5563] font-medium self-stretch border-r border-[#E8EEF4]`}>+91</span>
           <input 
-            className="flex-1 h-11 px-3 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] border-none outline-none focus:outline-none focus:ring-0 bg-transparent" 
+            className={`flex-1 h-11 px-3 text-sm text-[#1A1A2E] placeholder:text-[#9CA3AF] border-none outline-none focus:outline-none focus:ring-0 bg-transparent ${!isEmailReg ? 'text-[#9CA3AF] cursor-not-allowed' : ''}`}
             style={{ boxShadow: "none" }}
             type="tel" 
             value={form.phone} 
-            onChange={e => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} 
+            onChange={e => isEmailReg && set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} 
+            disabled={!isEmailReg}
+            readOnly={!isEmailReg}
             placeholder="10-digit number" 
           />
         </div>
+        {!isEmailReg && <p className="text-xs md:text-sm text-[#9CA3AF] mt-1.5">Associated with your account. Cannot be changed here.</p>}
       </div>
     </div>
   );
@@ -154,7 +159,21 @@ export function Step6({ form, set }: P) {
   );
 }
 
-export function Step7({ form, onEdit }: { form: SellerFormData; onEdit: (step: number) => void }) {
+export function Step7({ form, set }: P) {
+  return (
+    <div className="space-y-5">
+      <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 text-sm md:text-base text-[#4B5563]">
+        Set a secure password for your seller account. You will use your Email/Phone and this password to log in.
+      </div>
+      <div><label className={labelCls}>Password *</label>
+        <input className={inputCls} type="password" value={form.password || ""} onChange={e => set("password", e.target.value)} placeholder="At least 6 characters" /></div>
+      <div><label className={labelCls}>Confirm Password *</label>
+        <input className={inputCls} type="password" value={form.confirm_password || ""} onChange={e => set("confirm_password", e.target.value)} placeholder="Re-enter password" /></div>
+    </div>
+  );
+}
+
+export function Step8({ form, onEdit }: { form: SellerFormData; onEdit: (step: number) => void }) {
   const Section = ({ title, step, children }: { title: string; step: number; children: React.ReactNode }) => (
     <div className="border border-[#E8EEF4] rounded-xl p-5 mb-4">
       <div className="flex items-center justify-between mb-3">
@@ -196,6 +215,9 @@ export function Step7({ form, onEdit }: { form: SellerFormData; onEdit: (step: n
       </Section>
       <Section title="Pickup Address" step={5}>
         <Row label="Address" value={form.pickup_address_same ? "Same as business address" : form.pickup_address} />
+      </Section>
+      <Section title="Password Setup" step={6}>
+        <Row label="Password" value={form.password ? "********" : ""} />
       </Section>
     </div>
   );

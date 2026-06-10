@@ -94,7 +94,7 @@ export default function SellerLandingHeader() {
               Login
             </SellerLink>
             <SellerLink
-              href="/seller/login"
+              href="/seller/register"
               className="hidden lg:inline-flex h-[42px] items-center justify-center rounded-lg bg-[#4338CA] px-6 text-sm font-bold text-white shadow-md shadow-[#4338CA]/20 transition-all hover:-translate-y-[1px] hover:bg-[#3730A3]"
             >
               Start Selling
@@ -180,7 +180,7 @@ export default function SellerLandingHeader() {
             Login to Dashboard
           </SellerLink>
           <SellerLink
-            href="/seller/login"
+            href="/seller/register"
             className="flex items-center justify-center gap-2 w-full h-[52px] rounded-xl bg-[#4338CA] font-bold text-white text-base shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >

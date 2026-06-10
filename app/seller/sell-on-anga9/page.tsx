@@ -84,7 +84,7 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
                   Start Selling
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -425,7 +425,7 @@ export default function SellerLandingPage() {
                 Sell your products to crores of customers on ANGA9 at 10% commission
               </p>
               <Link
-                href="/seller/login"
+                href="/seller/register"
                 className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#4338CA] px-8 text-base md:text-lg font-bold text-white shadow-lg shadow-[#4338CA]/20 transition-all hover:scale-[1.02] hover:bg-[#3730A3]"
               >
                 Start Selling

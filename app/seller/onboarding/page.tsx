@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { ChevronLeft, ChevronRight, Save, CheckCircle2, Loader2, Send } from "lucide-react";
 import { SellerFormData, INITIAL_FORM, STEP_TITLES, validateStep } from "./types";
-import { Step1, Step2, Step3, Step4, Step5, Step6, Step7 } from "./steps";
+import { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8 } from "./steps";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -35,6 +36,7 @@ export default function OnboardingPage() {
         setForm(prev => ({
           ...prev,
           email: prev.email || user.email || "",
+          phone: prev.phone || user.phone || "",
           full_name: prev.full_name || (user.user_metadata?.full_name as string) || "",
         }));
       }
@@ -87,6 +89,7 @@ export default function OnboardingPage() {
           setForm(prev => ({
             ...prev,
             email: prev.email || user.email || "",
+            phone: prev.phone || user.phone || "",
             full_name: prev.full_name || (user.user_metadata?.full_name as string) || "",
           }));
         }
@@ -114,6 +117,7 @@ export default function OnboardingPage() {
         gstin: form.gstin || undefined,
         pan_number: form.pan_number || undefined,
         aadhaar_number: form.aadhaar_number || undefined,
+        phone: form.phone || undefined,
         bank_account_name: form.bank_account_name || undefined,
         bank_account_number: form.bank_account_number || undefined,
         bank_ifsc: form.bank_ifsc || undefined,
@@ -138,12 +142,20 @@ export default function OnboardingPage() {
           body: JSON.stringify(payload),
         });
       }
+
+      if (payload.phone) {
+        await fetch(`${API}/api/users/profile`, {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: payload.phone }),
+        });
+      }
     } catch { /* ignore */ }
     setSaving(false);
   }
 
   function handleNext() {
-    if (step < 6) {
+    if (step < 7) {
       const errs = validateStep(step, form);
       if (errs.length) { setErrors(errs); return; }
       setErrors([]);
@@ -163,6 +175,18 @@ export default function OnboardingPage() {
       await saveProgress();
       const token = await getToken();
       if (!token) return;
+      
+      // Update Supabase password if provided
+      if (form.password) {
+        const supabase = getSupabaseBrowserClient();
+        const { error } = await supabase.auth.updateUser({ password: form.password });
+        if (error) {
+          setErrors([error.message || "Failed to set password. Please try again."]);
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const res = await fetch(`${API}/api/users/seller-profile/submit`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -182,14 +206,17 @@ export default function OnboardingPage() {
     );
   }
 
+  const registeredVia = user?.phone ? 'phone' : 'email';
+
   const stepContent = [
-    <Step1 key={0} form={form} set={setField} />,
+    <Step1 key={0} form={form} set={setField} registeredVia={registeredVia} />,
     <Step2 key={1} form={form} set={setField} />,
     <Step3 key={2} form={form} set={setField} />,
     <Step4 key={3} form={form} set={setField} />,
     <Step5 key={4} form={form} set={setField} />,
     <Step6 key={5} form={form} set={setField} />,
-    <Step7 key={6} form={form} onEdit={(s) => setStep(s)} />,
+    <Step7 key={6} form={form} set={setField} />,
+    <Step8 key={7} form={form} onEdit={(s) => setStep(s)} />,
   ];
 
   return (
@@ -198,7 +225,7 @@ export default function OnboardingPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm md:text-base font-semibold text-[#1A6FD4]">
-            Step {step + 1} of 7
+            Step {step + 1} of 8
           </p>
           <p className="text-sm md:text-base text-[#9CA3AF]">{STEP_TITLES[step]}</p>
         </div>
@@ -239,7 +266,7 @@ export default function OnboardingPage() {
           {STEP_TITLES[step]}
         </h2>
         <p className="text-sm md:text-base text-[#9CA3AF] mb-6">
-          {step === 6 ? "Review your information before submitting" : "Fill in the details below to continue"}
+          {step === 7 ? "Review your information before submitting" : "Fill in the details below to continue"}
         </p>
 
         {/* Errors */}
@@ -276,7 +303,7 @@ export default function OnboardingPage() {
           </button>
         </div>
 
-        {step < 6 ? (
+        {step < 7 ? (
           <button
             onClick={handleNext}
             className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"

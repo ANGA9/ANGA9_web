@@ -33,10 +33,11 @@ export default function OnboardingPage() {
     if (!session) {
       // Pre-fill email from user if available
       if (user) {
+        const cleanPhone = user.phone ? user.phone.replace(/^\+?91/, '') : "";
         setForm(prev => ({
           ...prev,
           email: prev.email || user.email || "",
-          phone: prev.phone || user.phone || "",
+          phone: prev.phone || cleanPhone,
           full_name: prev.full_name || (user.user_metadata?.full_name as string) || "",
         }));
       }
@@ -86,10 +87,11 @@ export default function OnboardingPage() {
         }
         // Pre-fill from auth user
         if (user) {
+          const cleanPhone = user.phone ? user.phone.replace(/^\+?91/, '') : "";
           setForm(prev => ({
             ...prev,
             email: prev.email || user.email || "",
-            phone: prev.phone || user.phone || "",
+            phone: prev.phone || cleanPhone,
             full_name: prev.full_name || (user.user_metadata?.full_name as string) || "",
           }));
         }

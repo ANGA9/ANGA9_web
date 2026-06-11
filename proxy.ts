@@ -10,6 +10,7 @@ const SELLER_PUBLIC_PATHS = [
   "/seller/shipping",
   "/seller/grow-business",
   "/seller/login",
+  "/seller/register",
 ];
 
 function isSellerPublicPath(pathname: string): boolean {

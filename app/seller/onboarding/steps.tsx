@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { Eye, EyeOff, CheckCircle2, Circle } from "lucide-react";
 import { SellerFormData, BUSINESS_TYPES, INDIAN_STATES } from "./types";
 
 type P = { form: SellerFormData; set: (k: keyof SellerFormData, v: any) => void };
@@ -160,15 +162,67 @@ export function Step6({ form, set }: P) {
 }
 
 export function Step7({ form, set }: P) {
+  const [showPassword, setShowPassword] = useState(false);
+  const pw = form.password || "";
+
+  const rules = [
+    { label: "At least 8 characters", valid: pw.length >= 8 },
+    { label: "One alphabet", valid: /[a-zA-Z]/.test(pw) },
+    { label: "One number", valid: /[0-9]/.test(pw) },
+    { label: "One special character", valid: /[^a-zA-Z0-9]/.test(pw) },
+  ];
+
   return (
     <div className="space-y-5">
       <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 text-sm md:text-base text-[#4B5563]">
         Set a secure password for your seller account. You will use your Email/Phone and this password to log in.
       </div>
-      <div><label className={labelCls}>Password *</label>
-        <input className={inputCls} type="password" value={form.password || ""} onChange={e => set("password", e.target.value)} placeholder="At least 6 characters" /></div>
-      <div><label className={labelCls}>Confirm Password *</label>
-        <input className={inputCls} type="password" value={form.confirm_password || ""} onChange={e => set("confirm_password", e.target.value)} placeholder="Re-enter password" /></div>
+      <div>
+        <label className={labelCls}>Password *</label>
+        <div className="relative">
+          <input 
+            className={inputCls} 
+            type={showPassword ? "text" : "password"} 
+            value={pw} 
+            onChange={e => set("password", e.target.value)} 
+            placeholder="Create password" 
+            autoComplete="new-password"
+          />
+          <button 
+            type="button" 
+            onClick={() => setShowPassword(!showPassword)} 
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+          {rules.map((rule, i) => (
+            <div key={i} className="flex items-center gap-2">
+              {rule.valid ? (
+                <CheckCircle2 size={14} className="text-green-500" />
+              ) : (
+                <Circle size={14} className="text-gray-300" />
+              )}
+              <span className={`text-xs ${rule.valid ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
+                {rule.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label className={labelCls}>Confirm Password *</label>
+        <input 
+          className={inputCls} 
+          type={showPassword ? "text" : "password"} 
+          value={form.confirm_password || ""} 
+          onChange={e => set("confirm_password", e.target.value)} 
+          placeholder="Re-enter password" 
+          autoComplete="new-password"
+        />
+      </div>
     </div>
   );
 }

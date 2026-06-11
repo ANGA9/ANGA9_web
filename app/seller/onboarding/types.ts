@@ -114,8 +114,14 @@ export function validateStep(step: number, form: SellerFormData): string[] {
         errors.push("Pickup address is required");
       break;
     case 6:
-      if (!form.password || form.password.length < 6)
-        errors.push("Password must be at least 6 characters");
+      if (!form.password || form.password.length < 8)
+        errors.push("Password must be at least 8 characters");
+      if (!/[a-zA-Z]/.test(form.password || ""))
+        errors.push("Password must contain at least one alphabet");
+      if (!/[0-9]/.test(form.password || ""))
+        errors.push("Password must contain at least one number");
+      if (!/[^a-zA-Z0-9]/.test(form.password || ""))
+        errors.push("Password must contain at least one special character");
       if (form.password !== form.confirm_password)
         errors.push("Passwords do not match");
       break;

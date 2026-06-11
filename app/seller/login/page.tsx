@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound } from "lucide-react";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound, Eye, EyeOff } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
@@ -25,6 +25,7 @@ export default function SellerLoginPage() {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   const supabase = getSupabaseBrowserClient();
 
@@ -383,12 +384,21 @@ export default function SellerLoginPage() {
             </span>
             <div className="w-px h-6 bg-[#D0E3F7]" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              autoComplete="new-password"
               className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
       )}
@@ -488,12 +498,21 @@ export default function SellerLoginPage() {
             </span>
             <div className="w-px h-6 bg-[#D0E3F7]" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              autoComplete="new-password"
               className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
       )}

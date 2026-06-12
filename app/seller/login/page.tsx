@@ -374,10 +374,9 @@ export default function SellerLoginPage() {
 
   /* ─── Logo ─── */
   const logo = (
-    <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = "/seller"}>
-      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
-      <div className="w-px h-6 bg-gray-300 mx-2" />
-      <span className="text-sm font-bold tracking-wider text-[#4B5563] uppercase">Seller Hub</span>
+    <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer" onClick={() => window.location.href = "/seller"}>
+      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={90} height={28} className="sm:w-[100px] sm:h-[32px]" priority style={{ objectFit: "contain" }} />
+      <span className="inline-block border-l-2 border-[#E8EEF4] pl-2 sm:pl-3 ml-0.5 sm:ml-1 text-[11px] sm:text-sm font-bold tracking-wide text-[#4B5563] uppercase">SELLER HUB</span>
     </div>
   );
 
@@ -871,11 +870,17 @@ export default function SellerLoginPage() {
   const mobileView = (
     <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF] relative">
       <WatercolorBg />
-      <div className="relative z-10 flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
-        <a href="/seller/sell-on-anga9" className="transition-opacity hover:opacity-70">
-          <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
+      <div className="relative z-10 flex items-center justify-between bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-3 py-3">
+        <div className="flex items-center gap-2">
+          <a href="/seller/sell-on-anga9" className="transition-opacity hover:opacity-70 shrink-0">
+            <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
+          </a>
+          {logo}
+        </div>
+        <a href="#" className="shrink-0 flex items-center justify-center gap-1.5 bg-white text-[#1A1A2E] border border-[#1A1A2E] rounded-md px-3 py-1.5 text-sm font-bold tracking-wide shadow-sm hover:bg-gray-50 transition-colors">
+          <Smartphone className="w-4 h-4" />
+          Get App
         </a>
-        {logo}
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">

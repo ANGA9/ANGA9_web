@@ -6,6 +6,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck, Store } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
+import IndianPatternBg from "@/components/seller/IndianPatternBg";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
@@ -539,15 +540,16 @@ export default function SellerRegisterPage() {
 
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
-    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF]">
-      <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
+    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF] relative">
+      <IndianPatternBg />
+      <div className="relative z-10 flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
         <a href="/seller/sell-on-anga9" className="transition-opacity hover:opacity-70">
           <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
         </a>
         {logo}
       </div>
 
-      <div className="flex-1 flex flex-col px-4 pt-8 pb-6">
+      <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
           <div className="mb-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
@@ -562,8 +564,9 @@ export default function SellerRegisterPage() {
 
   /* ─── DESKTOP VIEW (md+) ─── */
   const desktopView = (
-    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF]">
-      <div className="w-full bg-white border-b border-[#E8EEF4]">
+    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF] relative">
+      <IndianPatternBg />
+      <div className="relative z-10 w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
           <div className="flex items-center gap-6">
@@ -579,7 +582,7 @@ export default function SellerRegisterPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-8 py-8">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}

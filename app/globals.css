@@ -181,3 +181,9 @@
     padding-inline: 48px;
   }
 }
+
+/* Hide default browser password reveal eye icon (prevents double icons in Edge/etc) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}

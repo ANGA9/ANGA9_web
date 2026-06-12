@@ -18,7 +18,7 @@ const NAV = [
   { label: "Help & Support", href: "/seller/dashboard/help", icon: LifeBuoy },
   { label: "Profile", href: "/seller/dashboard/profile", icon: UserCircle },
   { label: "Storefront", href: "/seller/dashboard/storefront", icon: Store },
-  { label: "Settings", href: "/seller/dashboard/settings", icon: Settings },
+  { label: "Settings & Password", href: "/seller/dashboard/settings", icon: Settings },
 ];
 
 export default function SellerSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {

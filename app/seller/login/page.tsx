@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound, Eye, EyeOff, CheckCircle2, Circle } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
+import IndianPatternBg from "@/components/seller/IndianPatternBg";
 
 type Tab = "email" | "phone";
-type Step = "input" | "otp";
+type Step = "input" | "otp" | "reset_password";
 type LoginMode = "password" | "otp";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -26,6 +27,10 @@ export default function SellerLoginPage() {
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const supabase = getSupabaseBrowserClient();
 
@@ -230,6 +235,13 @@ export default function SellerLoginPage() {
         return;
       }
 
+      // If in forgot password mode, show the reset form instead of logging in
+      if (forgotMode) {
+        setStep("reset_password");
+        setError("");
+        return;
+      }
+
       await completeLogin(accessToken);
     } catch (err: any) {
       console.error("OTP verify error:", err);
@@ -303,6 +315,62 @@ export default function SellerLoginPage() {
     setOtp(["", "", "", "", "", ""]);
     setError("");
   }
+
+  /* ─── Reset password after OTP ─── */
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (!newPassword || newPassword.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (!/[a-zA-Z]/.test(newPassword)) {
+      setError("Password must contain at least one letter.");
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      setError("Password must contain at least one number.");
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(newPassword)) {
+      setError("Password must contain at least one special character.");
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error: updateErr } = await supabase.auth.updateUser({ password: newPassword });
+      if (updateErr) throw updateErr;
+
+      setResetSuccess(true);
+      // Wait a moment then complete login
+      setTimeout(async () => {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token;
+        if (accessToken) {
+          await completeLogin(accessToken);
+        }
+      }, 1500);
+    } catch (err: any) {
+      setError(err.message || "Failed to update password.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const pwRules = [
+    { label: "At least 8 characters", valid: newPassword.length >= 8 },
+    { label: "One alphabet", valid: /[a-zA-Z]/.test(newPassword) },
+    { label: "One number", valid: /[0-9]/.test(newPassword) },
+    { label: "One special character", valid: /[^a-zA-Z0-9]/.test(newPassword) },
+  ];
+  const passwordsMatch = newPassword.length > 0 && confirmNewPassword.length > 0 && newPassword === confirmNewPassword;
+  const passwordsMismatch = confirmNewPassword.length > 0 && newPassword !== confirmNewPassword;
 
   /* ─── Logo ─── */
   const logo = (
@@ -423,18 +491,20 @@ export default function SellerLoginPage() {
 
       <div className="flex flex-col gap-2 pt-2">
         {loginMode === "password" ? (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("otp"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-4 h-4" />
-            Login with OTP instead (Forgot Password?)
-          </button>
+          <div className="w-full flex justify-end">
+            <button
+              type="button"
+              onClick={() => { setForgotMode(true); setLoginMode("otp"); setError(""); }}
+              className="text-sm text-[#DC2626] font-medium hover:underline flex items-center gap-1.5"
+            >
+              <KeyRound className="w-4 h-4" />
+              Forgot Password?
+            </button>
+          </div>
         ) : (
           <button
             type="button"
-            onClick={() => { setLoginMode("password"); setError(""); }}
+            onClick={() => { setForgotMode(false); setLoginMode("password"); setError(""); }}
             className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
@@ -537,18 +607,20 @@ export default function SellerLoginPage() {
 
       <div className="flex flex-col gap-2 pt-2">
         {loginMode === "password" ? (
-          <button
-            type="button"
-            onClick={() => { setLoginMode("otp"); setError(""); }}
-            className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-4 h-4" />
-            Login with OTP instead (Forgot Password?)
-          </button>
+          <div className="w-full flex justify-end">
+            <button
+              type="button"
+              onClick={() => { setForgotMode(true); setLoginMode("otp"); setError(""); }}
+              className="text-sm text-[#DC2626] font-medium hover:underline flex items-center gap-1.5"
+            >
+              <KeyRound className="w-4 h-4" />
+              Forgot Password?
+            </button>
+          </div>
         ) : (
           <button
             type="button"
-            onClick={() => { setLoginMode("password"); setError(""); }}
+            onClick={() => { setForgotMode(false); setLoginMode("password"); setError(""); }}
             className="text-sm text-[#1A6FD4] font-medium hover:underline flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
@@ -663,29 +735,145 @@ export default function SellerLoginPage() {
   );
 
   /* ─── Form content switcher ─── */
-  const formContent = step === "otp" ? otpForm : (tab === "email" ? emailForm : phoneForm);
+  const resetPasswordForm = (
+    <form onSubmit={handleResetPassword} className="space-y-5">
+      <button
+        type="button"
+        onClick={() => { setStep("input"); setForgotMode(false); setLoginMode("password"); setNewPassword(""); setConfirmNewPassword(""); setError(""); }}
+        className="flex items-center gap-1.5 text-sm md:text-base font-medium text-[#1A6FD4] hover:text-[#155bb5] transition-colors mb-1"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Login
+      </button>
+
+      {resetSuccess ? (
+        <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
+          <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-3" />
+          <p className="text-lg font-bold text-green-800 mb-1">Password Updated!</p>
+          <p className="text-sm text-green-600">Redirecting you to your dashboard...</p>
+        </div>
+      ) : (
+        <>
+          <div className="rounded-lg bg-[#EAF2FF] border border-[#D0E3F7] px-3.5 py-3 text-sm text-[#4B5563]">
+            Your identity has been verified. Set a new secure password below.
+          </div>
+
+          <div>
+            <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">New Password</label>
+            <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
+              <span className="flex items-center pl-4 pr-2">
+                <Lock className="w-4 h-4 text-[#9CA3AF]" />
+              </span>
+              <div className="w-px h-6 bg-[#D0E3F7]" />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Create new password"
+                autoComplete="new-password"
+                className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {pwRules.map((rule, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  {rule.valid ? (
+                    <CheckCircle2 size={14} className="text-green-500" />
+                  ) : (
+                    <Circle size={14} className="text-gray-300" />
+                  )}
+                  <span className={`text-xs ${rule.valid ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
+                    {rule.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">Confirm New Password</label>
+            <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
+              <span className="flex items-center pl-4 pr-2">
+                <Lock className="w-4 h-4 text-[#9CA3AF]" />
+              </span>
+              <div className="w-px h-6 bg-[#D0E3F7]" />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                placeholder="Re-enter new password"
+                autoComplete="new-password"
+                className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
+              />
+            </div>
+            {passwordsMatch && (
+              <p className="text-xs text-green-600 font-medium mt-1.5 flex items-center gap-1">
+                <CheckCircle2 size={12} /> Passwords match
+              </p>
+            )}
+            {passwordsMismatch && (
+              <p className="text-xs text-red-500 font-medium mt-1.5">Passwords do not match</p>
+            )}
+          </div>
+
+          {error && (
+            <div className="rounded-lg bg-red-50 border border-red-100 px-3.5 py-2.5">
+              <p className="text-sm md:text-base text-red-600">{error}</p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">{spinner} Updating...</span>
+            ) : (
+              <>
+                <Lock className="w-4.5 h-4.5" />
+                Update Password
+              </>
+            )}
+          </button>
+        </>
+      )}
+    </form>
+  );
+
+  const formContent = step === "reset_password" ? resetPasswordForm : step === "otp" ? otpForm : (tab === "email" ? emailForm : phoneForm);
 
   /* ─── Heading text ─── */
-  const heading = step === "otp" ? "Verify OTP" : "Login to your account";
-  const subheading = step === "otp"
-    ? "Enter the verification code we sent"
+  const heading = step === "reset_password" ? "Set New Password" : step === "otp" ? (forgotMode ? "Verify Identity" : "Verify OTP") : "Login to your account";
+  const subheading = step === "reset_password" ? "Create a strong new password" : step === "otp"
+    ? (forgotMode ? "Verify your identity to reset password" : "Enter the verification code we sent")
     : "Sign in to manage your store";
-  const desktopHeading = step === "otp" ? "Verify OTP" : "Login to your account";
-  const desktopSubheading = step === "otp"
-    ? "Enter the verification code we sent"
+  const desktopHeading = step === "reset_password" ? "Set New Password" : step === "otp" ? (forgotMode ? "Verify Identity" : "Verify OTP") : "Login to your account";
+  const desktopSubheading = step === "reset_password" ? "Create a strong new password for your seller account" : step === "otp"
+    ? (forgotMode ? "Verify your identity with OTP to reset your password" : "Enter the verification code we sent")
     : "Sign in with your email or phone to manage your wholesale business";
 
+  /* ─── Indian pattern SVG background ─── */
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
-    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF]">
-      <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
+    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF] relative">
+      <IndianPatternBg />
+      <div className="relative z-10 flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
         <a href="/seller/sell-on-anga9" className="transition-opacity hover:opacity-70">
           <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
         </a>
         {logo}
       </div>
 
-      <div className="flex-1 flex flex-col px-4 pt-8 pb-6">
+      <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
           <div className="mb-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
@@ -700,8 +888,9 @@ export default function SellerLoginPage() {
 
   /* ─── DESKTOP VIEW (md+) ─── */
   const desktopView = (
-    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF]">
-      <div className="w-full bg-white border-b border-[#E8EEF4]">
+    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF] relative">
+      <IndianPatternBg />
+      <div className="relative z-10 w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
           <div className="flex items-center gap-6">
@@ -717,7 +906,7 @@ export default function SellerLoginPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-8 py-8">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock } from "lucide-react";
+import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock, Eye, EyeOff, Circle } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -57,9 +57,20 @@ export default function SettingsPage() {
   // Password states
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+
+  // Live validation
+  const pwRules = [
+    { label: "At least 8 characters", valid: password.length >= 8 },
+    { label: "One alphabet", valid: /[a-zA-Z]/.test(password) },
+    { label: "One number", valid: /[0-9]/.test(password) },
+    { label: "One special character", valid: /[^a-zA-Z0-9]/.test(password) },
+  ];
+  const passwordsMatch = password.length > 0 && confirmPassword.length > 0 && password === confirmPassword;
+  const passwordsMismatch = confirmPassword.length > 0 && password !== confirmPassword;
 
   useEffect(() => {
     if (authLoading) return;
@@ -99,8 +110,20 @@ export default function SettingsPage() {
 
   async function handlePasswordSave() {
     setPasswordError("");
-    if (!password || password.length < 6) {
-      setPasswordError("Password must be at least 6 characters.");
+    if (!password || password.length < 8) {
+      setPasswordError("Password must be at least 8 characters.");
+      return;
+    }
+    if (!/[a-zA-Z]/.test(password)) {
+      setPasswordError("Password must contain at least one letter.");
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setPasswordError("Password must contain at least one number.");
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      setPasswordError("Password must contain at least one special character.");
       return;
     }
     if (password !== confirmPassword) {
@@ -137,24 +160,111 @@ export default function SettingsPage() {
       <div className="hidden md:flex items-center justify-between mb-8">
         <div className="flex items-baseline gap-3">
           <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
-            Settings
+            Settings & Password
           </h1>
           <span className="text-[18px] font-bold text-gray-400">
-            Manage your preferences
+            Manage your password and preferences
           </span>
         </div>
       </div>
 
       {/* ── Mobile Header ── */}
       <div className="md:hidden flex flex-col gap-2 mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Settings</h1>
-        <p className="text-[14px] text-gray-500 font-medium">Manage your preferences</p>
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Settings & Password</h1>
+        <p className="text-[14px] text-gray-500 font-medium">Manage your password and preferences</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 md:gap-10">
         <div className="flex-1 max-w-3xl">
-          
+
+          {/* ── Password Section (FIRST) ── */}
           <div className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                <Lock className="w-5 h-5 text-[#1A6FD4]" />
+              </div>
+              <div>
+                <h2 className="text-[18px] font-bold text-gray-900 leading-tight">Change Password</h2>
+                <p className="text-[14px] text-gray-500 font-medium">Update your seller portal password.</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">New Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
+                    placeholder="Create new password"
+                    autoComplete="new-password"
+                    className="w-full h-11 px-4 pr-12 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {pwRules.map((rule, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      {rule.valid ? (
+                        <CheckCircle2 size={14} className="text-green-500" />
+                      ) : (
+                        <Circle size={14} className="text-gray-300" />
+                      )}
+                      <span className={`text-xs ${rule.valid ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
+                        {rule.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">Confirm New Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(""); }}
+                  placeholder="Re-enter password"
+                  autoComplete="new-password"
+                  className="w-full h-11 px-4 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
+                />
+                {passwordsMatch && (
+                  <p className="text-xs text-green-600 font-medium mt-1.5 flex items-center gap-1">
+                    <CheckCircle2 size={12} /> Passwords match
+                  </p>
+                )}
+                {passwordsMismatch && (
+                  <p className="text-xs text-red-500 font-medium mt-1.5">Passwords do not match</p>
+                )}
+              </div>
+
+              {passwordError && (
+                <p className="text-red-600 text-sm font-medium">{passwordError}</p>
+              )}
+              {passwordSaved && (
+                <p className="text-green-600 text-sm font-medium">Password updated successfully!</p>
+              )}
+
+              <button
+                onClick={handlePasswordSave}
+                disabled={passwordSaving}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-[14px] font-bold text-white transition-all shadow-sm hover:shadow-md hover:bg-gray-800 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+              >
+                {passwordSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {passwordSaving ? "Updating..." : "Update Password"}
+              </button>
+            </div>
+          </div>
+
+          {/* ── Notification Section (SECOND) ── */}
+          <div className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm mt-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                 <Mail className="w-5 h-5 text-[#1A6FD4]" />
@@ -182,57 +292,6 @@ export default function SettingsPage() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 md:p-8 shadow-sm mt-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <Lock className="w-5 h-5 text-[#1A6FD4]" />
-              </div>
-              <div>
-                <h2 className="text-[18px] font-bold text-gray-900 leading-tight">Security</h2>
-                <p className="text-[14px] text-gray-500 font-medium">Update your seller portal password.</p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">New Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="w-full h-11 px-4 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-[14px] font-bold text-gray-700 mb-1.5">Confirm New Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter password"
-                  className="w-full h-11 px-4 rounded-xl border border-gray-200 text-[15px] focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors"
-                />
-              </div>
-
-              {passwordError && (
-                <p className="text-red-600 text-sm font-medium">{passwordError}</p>
-              )}
-              {passwordSaved && (
-                <p className="text-green-600 text-sm font-medium">Password updated successfully!</p>
-              )}
-
-              <button
-                onClick={handlePasswordSave}
-                disabled={passwordSaving}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-[14px] font-bold text-white transition-all shadow-sm hover:shadow-md hover:bg-gray-800 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
-              >
-                {passwordSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                {passwordSaving ? "Updating..." : "Update Password"}
-              </button>
             </div>
           </div>
 

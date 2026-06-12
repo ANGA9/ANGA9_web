@@ -222,6 +222,14 @@ export function Step7({ form, set }: P) {
           placeholder="Re-enter password" 
           autoComplete="new-password"
         />
+        {pw.length > 0 && (form.confirm_password || "").length > 0 && pw === form.confirm_password && (
+          <p className="text-xs text-green-600 font-medium mt-1.5 flex items-center gap-1">
+            <CheckCircle2 size={12} /> Passwords match
+          </p>
+        )}
+        {(form.confirm_password || "").length > 0 && pw !== form.confirm_password && (
+          <p className="text-xs text-red-500 font-medium mt-1.5">Passwords do not match</p>
+        )}
       </div>
     </div>
   );

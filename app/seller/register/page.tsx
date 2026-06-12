@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Mail, Phone, ShieldCheck, Store } from "lucide-react";
+import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Smartphone } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
@@ -273,9 +273,11 @@ export default function SellerRegisterPage() {
 
   /* ─── Logo ─── */
   const logo = (
-    <a href="/" className="shrink-0">
+    <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = "/seller"}>
       <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={100} height={34} priority style={{ objectFit: "contain" }} />
-    </a>
+      <div className="w-px h-6 bg-gray-300 mx-2" />
+      <span className="text-sm font-bold tracking-wider text-[#4B5563] uppercase">Seller Hub</span>
+    </div>
   );
 
   /* ─── Spinner ─── */
@@ -320,7 +322,7 @@ export default function SellerRegisterPage() {
   const emailForm = (
     <form onSubmit={handleEmailSubmit} className="space-y-5">
       <div>
-        <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
+        <label className="block text-sm md:text-base font-medium text-black mb-2">
           Email Address
         </label>
         <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
@@ -380,7 +382,7 @@ export default function SellerRegisterPage() {
   const phoneForm = (
     <form onSubmit={handlePhoneSubmit} className="space-y-5">
       <div>
-        <label className="block text-sm md:text-base font-medium text-[#4B5563] mb-2">
+        <label className="block text-sm md:text-base font-medium text-black mb-2">
           Mobile Number
         </label>
         <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
@@ -550,7 +552,7 @@ export default function SellerRegisterPage() {
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-[28px] shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] border border-slate-200 p-6">
           <div className="mb-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
             <p className="text-sm md:text-base text-[#4B5563]">{subheading}</p>
@@ -571,12 +573,12 @@ export default function SellerRegisterPage() {
           {logo}
           <div className="flex items-center gap-6">
             <a
-              href="/seller/sell-on-anga9"
+              href="#"
               className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
               style={{ fontSize: '16px' }}
             >
-              <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
-              Sell on ANGA9
+              <Smartphone style={{ width: 18, height: 18, color: "#1A6FD4" }} />
+              Download our App
             </a>
           </div>
         </div>
@@ -584,7 +586,7 @@ export default function SellerRegisterPage() {
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
+          <div className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] border border-slate-200 overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}
             <div className="relative w-[500px] shrink-0 bg-[#EAF2FF] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">

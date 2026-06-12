@@ -10,6 +10,7 @@ export default function WatercolorBg() {
         fill
         className="object-cover"
         priority
+        unoptimized
       />
     </div>
   );

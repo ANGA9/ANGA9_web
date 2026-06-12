@@ -274,7 +274,7 @@ export default function SellerRegisterPage() {
   /* ─── Logo ─── */
   const logo = (
     <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer" onClick={() => window.location.href = "/seller"}>
-      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={90} height={28} className="sm:w-[100px] sm:h-[32px]" priority style={{ objectFit: "contain" }} />
+      <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={90} height={28} className="sm:w-[100px] sm:h-[32px]" priority unoptimized style={{ objectFit: "contain" }} />
       <span className="inline-block border-l-2 border-[#E8EEF4] pl-2 sm:pl-3 ml-0.5 sm:ml-1 text-[11px] sm:text-sm font-bold tracking-wide text-[#4B5563] uppercase">SELLER HUB</span>
     </div>
   );
@@ -601,6 +601,7 @@ export default function SellerRegisterPage() {
                   fill
                   className="object-cover"
                   priority
+                  unoptimized
                 />
               </div>
             </div>

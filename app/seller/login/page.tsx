@@ -6,7 +6,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Lock, KeyRound, Eye, EyeOff
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { cdnUrl } from "@/lib/utils";
-import IndianPatternBg from "@/components/seller/IndianPatternBg";
+import WatercolorBg from "@/components/seller/WatercolorBg";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp" | "reset_password";
@@ -462,10 +462,11 @@ export default function SellerLoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="pr-4 text-black hover:text-[#1A6FD4] transition-colors flex items-center gap-1.5"
               tabIndex={-1}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span className="text-xs font-bold w-8 text-left">{showPassword ? "Hide" : "Show"}</span>
             </button>
           </div>
         </div>
@@ -495,7 +496,7 @@ export default function SellerLoginPage() {
             <button
               type="button"
               onClick={() => { setForgotMode(true); setLoginMode("otp"); setError(""); }}
-              className="text-sm text-[#DC2626] font-medium hover:underline flex items-center gap-1.5"
+              className="text-sm text-black font-medium underline hover:text-[#1A1A2E] flex items-center gap-1.5"
             >
               <KeyRound className="w-4 h-4" />
               Forgot Password?
@@ -578,10 +579,11 @@ export default function SellerLoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="pr-4 text-black hover:text-[#1A6FD4] transition-colors flex items-center gap-1.5"
               tabIndex={-1}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span className="text-xs font-bold w-8 text-left">{showPassword ? "Hide" : "Show"}</span>
             </button>
           </div>
         </div>
@@ -776,10 +778,11 @@ export default function SellerLoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+                className="pr-4 text-black hover:text-[#1A6FD4] transition-colors flex items-center gap-1.5"
                 tabIndex={-1}
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                <span className="text-xs font-bold w-8 text-left">{showPassword ? "Hide" : "Show"}</span>
               </button>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
@@ -865,7 +868,7 @@ export default function SellerLoginPage() {
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
     <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF] relative">
-      <IndianPatternBg />
+      <WatercolorBg />
       <div className="relative z-10 flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3">
         <a href="/seller/sell-on-anga9" className="transition-opacity hover:opacity-70">
           <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
@@ -889,7 +892,7 @@ export default function SellerLoginPage() {
   /* ─── DESKTOP VIEW (md+) ─── */
   const desktopView = (
     <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF] relative">
-      <IndianPatternBg />
+      <WatercolorBg />
       <div className="relative z-10 w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
@@ -910,42 +913,15 @@ export default function SellerLoginPage() {
         <div className="w-full max-w-[1000px]">
           <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}
-            <div className="relative w-[500px] shrink-0 bg-gradient-to-br from-[#1A6FD4] to-[#4338CA]">
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/20" />
-                <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full bg-white/10" />
-                <div className="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-white/15" />
-              </div>
-              <div className="relative z-10 flex flex-col justify-center h-full p-10">
-                <div className="mb-8">
-                  <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                    <Store className="w-4 h-4 text-white" />
-                    <span className="text-sm md:text-base font-semibold text-white">Seller Portal</span>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-                    Manage your wholesale business on ANGA9
-                  </h2>
-                  <p className="text-base text-white/80 leading-relaxed max-w-[350px]">
-                    List products, track orders, and grow your revenue with India&apos;s fastest growing B2B marketplace.
-                  </p>
-                </div>
-                <div className="space-y-4">
-                  {[
-                    { label: "10% Commission", desc: "Keep all your profits" },
-                    { label: "7-Day Payments", desc: "Fast & reliable payouts" },
-                    { label: "Pan-India Reach", desc: "19,000+ serviceable pincodes" },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
-                        <ShieldCheck className="w-4 h-4 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-sm md:text-base font-semibold text-white">{item.label}</p>
-                        <p className="text-xs md:text-sm text-white/60">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div className="relative w-[500px] shrink-0 bg-[#EAF2FF] flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Image
+                  src="/images/login_illustration.png"
+                  alt="Login to ANGA9 Seller Portal"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
             </div>
 

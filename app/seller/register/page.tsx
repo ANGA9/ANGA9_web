@@ -552,7 +552,7 @@ export default function SellerRegisterPage() {
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">
-        <div className="bg-white/95 backdrop-blur-md rounded-[28px] shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] border border-slate-200 p-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-[28px] shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] border border-black p-6">
           <div className="mb-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
             <p className="text-sm md:text-base text-[#4B5563]">{subheading}</p>
@@ -586,7 +586,7 @@ export default function SellerRegisterPage() {
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
-          <div className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] border border-slate-200 overflow-hidden flex min-h-[560px]">
+          <div className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] border border-black overflow-hidden flex min-h-[560px]">
             {/* Left panel — Seller hero */}
             <div className="relative w-[500px] shrink-0 bg-[#EAF2FF] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">

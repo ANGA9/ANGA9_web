@@ -323,8 +323,8 @@ export default function CustomerLoginPage() {
 
       <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
         By continuing, you agree to ANGA9&apos;s{" "}
-        <Link href="#" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
-        <Link href="#" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
+        <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+        <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
       </p>
     </form>
   );
@@ -376,8 +376,8 @@ export default function CustomerLoginPage() {
 
       <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
         By continuing, you agree to ANGA9&apos;s{" "}
-        <Link href="#" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
-        <Link href="#" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
+        <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+        <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
       </p>
     </form>
   );

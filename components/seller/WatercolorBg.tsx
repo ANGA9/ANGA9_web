@@ -1,16 +1,16 @@
 "use client";
-import Image from "next/image";
+
+import { cdnUrl } from "@/lib/utils";
 
 export default function WatercolorBg() {
   return (
     <div className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.12] mix-blend-multiply">
-      <Image
-        src="/images/indian_pattern_strong.png"
-        alt="Indian Background Pattern"
-        fill
-        className="object-cover"
-        priority
-        unoptimized
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={cdnUrl("/images/indian_pattern_strong.png")}
+        alt=""
+        className="w-full h-full object-cover"
+        loading="eager"
       />
     </div>
   );

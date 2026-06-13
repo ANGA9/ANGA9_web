@@ -595,13 +595,12 @@ export default function SellerRegisterPage() {
             {/* Left panel — Seller hero */}
             <div className="relative w-[500px] shrink-0 bg-[#EAF2FF] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
-                <Image
-                  src="/images/register_illustration.png"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cdnUrl("/images/register_illustration.png")}
                   alt="Register for ANGA9 Seller Portal"
-                  fill
-                  className="object-cover"
-                  priority
-                  unoptimized
+                  className="w-full h-full object-cover"
+                  loading="eager"
                 />
               </div>
             </div>

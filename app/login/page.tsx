@@ -9,6 +9,7 @@ import { normalizeIndianPhone } from "@/lib/phone";
 import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 import { cdnUrl } from "@/lib/utils";
+import WatercolorBg from "@/components/seller/WatercolorBg";
 
 type Tab = "email" | "phone";
 type Step = "input" | "otp";
@@ -483,16 +484,19 @@ export default function CustomerLoginPage() {
 
   /* ─── MOBILE VIEW (<md) ─── */
   const mobileView = (
-    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF]">
-      <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3 sticky top-0 z-10">
-        <Link href="/" className="transition-opacity hover:opacity-70">
-          <ArrowLeft className="w-6 h-6 text-[#1A1A2E]" />
-        </Link>
-        {logo}
+    <div className="flex flex-col min-h-screen md:hidden bg-gradient-to-b from-[#EAF2FF] to-[#F8FBFF] relative">
+      <WatercolorBg />
+      <div className="relative z-10 flex items-center justify-between bg-white/80 backdrop-blur-sm border-b border-[#E8EEF4] px-4 py-3 sticky top-0">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="transition-opacity hover:opacity-70">
+            <ArrowLeft className="w-6 h-6 text-[#1A1A2E]" />
+          </Link>
+          {logo}
+        </div>
       </div>
 
-      <div className="flex-1 flex flex-col px-4 pt-8 pb-6">
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(26,111,212,0.08)] p-6">
+      <div className="relative z-10 flex-1 flex flex-col px-4 pt-8 pb-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-[28px] shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] border border-black p-6">
           <div className="mb-2">
             <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E] mb-1">{heading}</h2>
             <p className="text-sm md:text-base text-[#4B5563]">{subheading}</p>
@@ -506,23 +510,24 @@ export default function CustomerLoginPage() {
 
   /* ─── DESKTOP VIEW (md+) ─── */
   const desktopView = (
-    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF]">
-      <div className="w-full bg-white border-b border-[#E8EEF4]">
+    <div className="hidden md:flex flex-col min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F0F6FF] to-[#F8FBFF] relative">
+      <WatercolorBg />
+      <div className="relative z-10 w-full bg-white border-b border-[#E8EEF4]">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1280, padding: "0 32px", height: 56 }}>
           {logo}
           <div className="flex items-center gap-6">
             <Link
               href="/seller/sell-on-anga9"
-              className="flex items-center gap-2 font-bold text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: '15px' }}
+              className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
+              style={{ fontSize: '16px' }}
             >
               <Store style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Sell on ANGA9
             </Link>
             <Link
               href="#"
-              className="flex items-center gap-2 font-bold text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
-              style={{ fontSize: '15px' }}
+              className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
+              style={{ fontSize: '16px' }}
             >
               <Download style={{ width: 18, height: 18, color: "#1A6FD4" }} />
               Download App
@@ -531,26 +536,19 @@ export default function CustomerLoginPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-8 py-8">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-8 py-8">
         <div className="w-full max-w-[1000px]">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(26,111,212,0.10)] overflow-hidden flex min-h-[560px]">
-            <div className="relative flex-1 min-w-[400px]">
-              <Image
-                src={cdnUrl("/login-hero.png")}
-                alt="Shopping illustration"
-                fill
-                style={{ objectFit: "cover" }}
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/90 via-[#0A192F]/40 to-transparent mix-blend-multiply" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-12">
-                <h2 className="text-3xl md:text-4xl font-black text-white leading-tight mb-3">
-                  Shop from India&apos;s finest sellers
-                </h2>
-                <p className="text-base md:text-lg text-white/80 font-medium leading-relaxed max-w-sm">
-                  Get access to your Orders, Wishlist and Recommendations
-                </p>
+          <div className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] border border-black overflow-hidden flex min-h-[560px]">
+            {/* Left panel */}
+            <div className="relative w-[500px] shrink-0 bg-[#EAF2FF] flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cdnUrl("/images/customer_login_illustration.png")}
+                  alt="Login to ANGA9"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
               </div>
             </div>
 

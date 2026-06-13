@@ -10,7 +10,7 @@ interface MegaDropdownProps {
   onNavigate: () => void;
 }
 
-const ITEMS_PER_COLUMN = 8;
+const ITEMS_PER_COLUMN = 5;
 
 /** Search filters by category_name (exact ES term match), so links pass the name. */
 function searchHref(categoryName: string): string {

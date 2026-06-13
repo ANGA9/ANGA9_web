@@ -347,95 +347,100 @@ export default function CustomerTopNav() {
               </button>
               {pincodeOpen && (
                 <div
-                  className="absolute right-0 top-[calc(100%+8px)] w-[320px] rounded-2xl border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] z-50 p-4"
+                  className="absolute right-0 top-[calc(100%+12px)] w-[360px] rounded-[20px] border bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] z-50 overflow-hidden flex flex-col"
                   style={{ borderColor: t.border }}
                 >
-                  <div className="text-[14px] font-bold mb-1" style={{ color: t.textPrimary }}>
-                    Enter delivery pincode
+                  <div className="px-5 pt-5 pb-4 border-b border-gray-100">
+                    <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">
+                      Enter delivery pincode
+                    </div>
+                    <div className="text-[13px] text-gray-500">
+                      We&apos;ll show prices and shipping times for your area
+                    </div>
                   </div>
-                  <div className="text-[12.5px] mb-3" style={{ color: t.textMuted }}>
-                    We&apos;ll show prices and shipping times for your area.
-                  </div>
-                  <div className="flex items-center justify-between gap-1.5 mb-2">
-                    {[0, 1, 2, 3, 4, 5].map((idx) => (
-                      <input
-                        key={idx}
-                        id={`desktop-pin-${idx}`}
-                        ref={idx === 0 ? pincodeInputRef : undefined}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        value={pincodeInput[idx] || ""}
-                        autoFocus={idx === 0}
-                        onChange={(e) => {
-                          const digit = e.target.value.replace(/\D/g, "").slice(-1);
-                          const arr = pincodeInput.split("");
-                          arr[idx] = digit;
-                          while (arr.length < 6) arr.push("");
-                          const newVal = arr.join("").replace(/[^0-9]/g, "").slice(0, 6);
-                          handlePincodeChange(newVal);
-                          if (digit && idx < 5) {
-                            const next = document.getElementById(`desktop-pin-${idx + 1}`) as HTMLInputElement;
-                            next?.focus();
-                          }
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Backspace" && !pincodeInput[idx] && idx > 0) {
-                            const prev = document.getElementById(`desktop-pin-${idx - 1}`) as HTMLInputElement;
-                            prev?.focus();
+                  
+                  <div className="p-5 pb-6 bg-[#FAFAFA]">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      {[0, 1, 2, 3, 4, 5].map((idx) => (
+                        <input
+                          key={idx}
+                          id={`desktop-pin-${idx}`}
+                          ref={idx === 0 ? pincodeInputRef : undefined}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={pincodeInput[idx] || ""}
+                          autoFocus={idx === 0}
+                          onChange={(e) => {
+                            const digit = e.target.value.replace(/\D/g, "").slice(-1);
                             const arr = pincodeInput.split("");
-                            arr[idx - 1] = "";
-                            handlePincodeChange(arr.join("").replace(/[^0-9]/g, ""));
-                          }
-                        }}
-                        className="w-10 h-12 rounded-lg border-2 text-center text-[18px] font-bold text-gray-900 outline-none transition-all focus:border-[#1A6FD4]"
-                        style={{
-                          borderColor: pincodeError ? '#DC2626' : pincodeInput[idx] ? t.bluePrimary : t.borderSearch,
-                          background: pincodeInput[idx] ? '#F8FBFF' : '#FFFFFF',
-                        }}
-                      />
-                    ))}
-                  </div>
-                  {pincodeLoading && (
-                    <div className="text-[12px] text-gray-500 mb-2 font-medium">Looking up pincode...</div>
-                  )}
-                  {detectedLocality && (
-                    <div className="mb-3 flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2 text-[12.5px] font-semibold text-green-800">
-                      <MapPin style={{ width: 14, height: 14 }} className="text-green-600 shrink-0" />
-                      {detectedLocality}
+                            arr[idx] = digit;
+                            while (arr.length < 6) arr.push("");
+                            const newVal = arr.join("").replace(/[^0-9]/g, "").slice(0, 6);
+                            handlePincodeChange(newVal);
+                            if (digit && idx < 5) {
+                              const next = document.getElementById(`desktop-pin-${idx + 1}`) as HTMLInputElement;
+                              next?.focus();
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Backspace" && !pincodeInput[idx] && idx > 0) {
+                              const prev = document.getElementById(`desktop-pin-${idx - 1}`) as HTMLInputElement;
+                              prev?.focus();
+                              const arr = pincodeInput.split("");
+                              arr[idx - 1] = "";
+                              handlePincodeChange(arr.join("").replace(/[^0-9]/g, ""));
+                            }
+                          }}
+                          className="w-11 h-14 rounded-xl border-2 text-center text-[20px] font-bold text-[#1A1A2E] outline-none transition-all focus:border-[#1A6FD4] focus:shadow-[0_0_0_3px_rgba(26,111,212,0.15)]"
+                          style={{
+                            borderColor: pincodeError ? '#DC2626' : pincodeInput[idx] ? '#1A6FD4' : '#E5E7EB',
+                            background: pincodeInput[idx] ? '#F0F6FF' : '#FFFFFF',
+                          }}
+                        />
+                      ))}
                     </div>
-                  )}
-                  <button
-                    onClick={useMyLocation}
-                    disabled={ipDetectLoading}
-                    title="Use device location (asks for permission)"
-                    className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-[13px] font-bold transition-opacity disabled:opacity-60"
-                    style={{ borderColor: t.borderSearch, color: t.bluePrimary }}
-                  >
-                    <RotateCw style={{ width: 14, height: 14 }} className={ipDetectLoading ? "animate-spin" : ""} />
-                    {ipDetectLoading ? "Detecting…" : "Use my location"}
-                  </button>
-                  {pincodeError && (
-                    <div className="mt-2 text-[12.5px]" style={{ color: t.outOfStock }}>
-                      {pincodeError}
-                    </div>
-                  )}
-                  {(ipDetected || ipDetectError || ipDetectLoading) && (
-                    <div className="mt-3 rounded-lg border p-2.5 text-[12px]" style={{ borderColor: t.border, backgroundColor: t.bgBlueTint }}>
-                      <div className="font-bold mb-0.5" style={{ color: t.textSecondary }}>
-                        Detection result
+                    {pincodeLoading && (
+                      <div className="text-[12px] text-gray-500 mb-2 font-medium text-center">Looking up pincode...</div>
+                    )}
+                    {detectedLocality && (
+                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-green-50 border border-green-100 px-3 py-2.5 text-[13px] font-semibold text-green-800">
+                        <MapPin style={{ width: 14, height: 14 }} className="text-green-600 shrink-0" />
+                        <span className="truncate">{detectedLocality}</span>
                       </div>
-                      {ipDetectLoading ? (
-                        <div style={{ color: t.textMuted }}>Checking…</div>
-                      ) : ipDetectError ? (
-                        <div style={{ color: t.outOfStock }}>{ipDetectError}</div>
-                      ) : ipDetected ? (
-                        <div style={{ color: t.textPrimary }}>
-                          {ipDetected.city}, {ipDetected.pincode}
+                    )}
+                    <button
+                      onClick={useMyLocation}
+                      disabled={ipDetectLoading}
+                      title="Use device location (asks for permission)"
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 px-3 py-3 text-[14px] font-bold transition-all disabled:opacity-60 hover:bg-[#F8FBFF]"
+                      style={{ borderColor: '#E5E7EB', color: t.bluePrimary }}
+                    >
+                      <RotateCw style={{ width: 16, height: 16 }} className={ipDetectLoading ? "animate-spin" : ""} />
+                      {ipDetectLoading ? "Detecting…" : "Use my location"}
+                    </button>
+                    {pincodeError && (
+                      <div className="mt-3 text-[13px] font-medium text-center" style={{ color: t.outOfStock }}>
+                        {pincodeError}
+                      </div>
+                    )}
+                    {(ipDetected || ipDetectError || ipDetectLoading) && (
+                      <div className="mt-4 rounded-xl border p-3 text-[12.5px] bg-white shadow-sm" style={{ borderColor: t.border }}>
+                        <div className="font-bold mb-1" style={{ color: t.textSecondary }}>
+                          Detection result
                         </div>
-                      ) : null}
-                    </div>
-                  )}
+                        {ipDetectLoading ? (
+                          <div style={{ color: t.textMuted }}>Checking…</div>
+                        ) : ipDetectError ? (
+                          <div style={{ color: t.outOfStock }}>{ipDetectError}</div>
+                        ) : ipDetected ? (
+                          <div style={{ color: t.textPrimary }}>
+                            {ipDetected.city}, {ipDetected.pincode}
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

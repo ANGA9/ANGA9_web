@@ -60,6 +60,7 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const [cartWarnings, setCartWarnings] = useState<string[]>([]);
+  const [itemErrors, setItemErrors] = useState<Map<string, string>>(new Map());
   const [cartBlocked, setCartBlocked] = useState(false);
   const [validating, setValidating] = useState(true);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
@@ -104,19 +105,36 @@ export default function CheckoutPage() {
         let blocked = false;
 
         // Check actual item availability from validated response
+        const newErrors = new Map<string, string>();
+        let matchedWarnings = new Set<string>();
+
         if (res?.items?.length) {
-          const unavailableItems = res.items.filter(item => !item.available);
-          if (unavailableItems.length > 0) {
+          const unavail = res.items.filter(item => !item.available);
+          if (unavail.length > 0) {
             blocked = true;
-            unavailableItems.forEach(item => {
-              warnings.push(`"${item.name}" is currently unavailable.`);
+            unavail.forEach(item => {
+              let msg = "Currently out of stock or requested quantity unavailable.";
+              if (res.warnings) {
+                const match = res.warnings.find(w => w.includes(`"${item.name}"`));
+                if (match) {
+                  matchedWarnings.add(match);
+                  if (match.includes("—")) {
+                    msg = match.split("—")[1].trim();
+                  } else {
+                    msg = match.replace(`"${item.name}" is `, "").trim();
+                  }
+                  msg = msg.charAt(0).toUpperCase() + msg.slice(1);
+                }
+              }
+              newErrors.set(item.productId, msg);
             });
           }
         }
+        setItemErrors(newErrors);
 
         // Only show warnings if validation actually found issues
         if (res?.valid === false && warnings.length === 0 && res?.warnings?.length) {
-          warnings.push(...res.warnings);
+          warnings.push(...res.warnings.filter(w => !matchedWarnings.has(w)));
           blocked = true;
         }
 
@@ -757,34 +775,43 @@ export default function CheckoutPage() {
                 const disc = item.base_price > price
                   ? Math.round(((item.base_price - price) / item.base_price) * 100)
                   : 0;
+                const itemError = itemErrors.get(item.productId);
                 return (
-                  <div key={item.productId} className="flex items-center gap-6 py-3 border-b last:border-0" style={{ borderColor: t.border }}>
-                    <div
-                      className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
-                      style={{ background: t.bgBlueTint }}
-                    >
-                      {item.images?.[0] ? (
-                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <PackageOpen className="h-7 w-7" style={{ color: t.bluePrimary }} />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[17px] font-medium truncate" style={{ color: t.textPrimary }}>
-                        {item.name}
+                  <div key={item.productId} className="flex flex-col py-3 border-b last:border-0" style={{ borderColor: t.border }}>
+                    <div className="flex items-center gap-6">
+                      <div
+                        className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-50"
+                        style={{ background: t.bgBlueTint }}
+                      >
+                        {item.images?.[0] ? (
+                          <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <PackageOpen className="h-7 w-7" style={{ color: t.bluePrimary }} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[17px] font-medium truncate" style={{ color: t.textPrimary }}>
+                          {item.name}
+                        </p>
+                        <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">
+                          Qty: {item.qty} x {formatINR(price)}
+                        </p>
+                        {disc > 0 && (
+                          <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
+                            {disc}% below MRP
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[20px] font-bold shrink-0" style={{ color: t.textPrimary }}>
+                        {formatINR(price * item.qty)}
                       </p>
-                      <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">
-                        Qty: {item.qty} x {formatINR(price)}
-                      </p>
-                      {disc > 0 && (
-                        <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
-                          {disc}% below MRP
-                        </span>
-                      )}
                     </div>
-                    <p className="text-[20px] font-bold shrink-0" style={{ color: t.textPrimary }}>
-                      {formatINR(price * item.qty)}
-                    </p>
+                    {itemError && (
+                      <div className="flex items-center gap-2 text-red-600 text-[13px] font-medium mt-3 bg-red-50/50 p-2.5 rounded-lg border border-red-100">
+                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                        {itemError}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -975,19 +1002,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {cartWarnings.length > 0 && (
-              <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  <span className="text-xs font-semibold text-amber-700">
-                    {cartBlocked ? "Cannot proceed — fix these issues:" : "Warnings:"}
-                  </span>
-                </div>
-                {cartWarnings.map((w, i) => (
-                  <p key={i} className="text-xs text-amber-700 ml-6">• {w}</p>
-                ))}
-              </div>
-            )}
+
 
             {/* No-address warning */}
             {!hasAddress && !loadingAddresses && (

@@ -530,9 +530,9 @@ export default function ProductDetailPage() {
               <span className="flex items-center justify-center w-14 h-12 text-base font-bold border-x" style={{ borderColor: t.border, color: t.textPrimary }}>
                 {quantity}
               </span>
-              <button onClick={() => setQuantity((q) => q + 1)}
+              <button onClick={() => setQuantity((q) => (stock.quantity && q < stock.quantity ? q + 1 : q))}
                 className="flex items-center justify-center w-12 h-12 transition-colors hover:bg-gray-50 active:bg-gray-100"
-                disabled={stock.status === "out"}>
+                disabled={stock.status === "out" || quantity >= stock.quantity}>
                 <Plus className="w-4 h-4" style={{ color: t.textSecondary }} />
               </button>
             </div>

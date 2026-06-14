@@ -140,17 +140,17 @@ export default function ProductCard({
           {/* Discount badge */}
           {discount > 0 && (
             <span
-              className="absolute top-2.5 left-2.5 z-10 rounded-[6px] text-xs font-bold text-white shadow-sm"
-              style={{ background: "#1A6FD4", padding: "3px 7px" }}
+              className="absolute bottom-2.5 left-2.5 z-10 rounded text-[11px] font-black tracking-wider bg-white/95 backdrop-blur-sm border border-gray-100 shadow-sm flex items-center gap-1 text-gray-900"
+              style={{ padding: "4px 8px" }}
             >
-              {discount}% below MRP
+              <span>{discount}% OFF</span>
             </span>
           )}
 
           {/* Status badge */}
           {product.badge && (
             <span
-              className="absolute bottom-2.5 left-2.5 z-10 rounded-md px-2 py-0.5 text-xs font-bold shadow-sm"
+              className="absolute top-2.5 left-2.5 z-10 rounded-md px-2 py-0.5 text-xs font-bold shadow-sm"
               style={{
                 background: product.badge === "Top Rated" ? "#EAF2FF" : "#FFCC00",
                 color: product.badge === "Top Rated" ? "#1A6FD4" : "#1A1A2E",

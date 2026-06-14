@@ -260,8 +260,8 @@ export default function CustomerHomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
                 className="animate-pulse rounded-xl border"
@@ -271,7 +271,7 @@ export default function CustomerHomePage() {
           </div>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

@@ -263,7 +263,7 @@ export default function PublicSellerStorefront() {
               <p className="text-[15px] text-gray-500 font-medium">This seller hasn't listed any products yet.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {products.map((prod) => {
                 const price = prod.sale_price ?? prod.base_price;
                 const hasDiscount = prod.sale_price && prod.base_price > prod.sale_price;
@@ -283,8 +283,8 @@ export default function PublicSellerStorefront() {
                         <div className="w-full h-full flex items-center justify-center"><Package size={48} className="text-gray-200" /></div>
                       )}
                       {hasDiscount && (
-                        <div className="absolute top-4 left-4 bg-[#EF4444] text-white text-[12px] font-bold px-3 py-1.5 rounded-xl shadow-md">
-                          {discountPct}% OFF
+                        <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm border border-gray-100 text-[12px] font-black tracking-wider px-3 py-1.5 rounded-xl shadow-md flex items-center gap-1 text-gray-900">
+                          <span>{discountPct}% OFF</span>
                         </div>
                       )}
                     </div>

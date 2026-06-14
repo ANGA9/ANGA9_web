@@ -140,8 +140,9 @@ export default function BrandManagementPage() {
       
       {showCreateModal && (
         <CreateBrandModal 
+          open={showCreateModal}
           onClose={() => setShowCreateModal(false)}
-          onSuccess={handleBrandCreated}
+          onCreated={handleBrandCreated}
         />
       )}
     </main>

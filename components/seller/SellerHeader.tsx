@@ -2,12 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
+import { useBrand } from "@/lib/BrandContext";
 import { Menu, LogOut, User } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import { cdnUrl } from "@/lib/utils";
 
 export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => void }) {
   const { logout } = useAuth();
+  const { brands, activeBrandId, setActiveBrandId } = useBrand();
   
   return (
     <header className="sticky top-0 z-50 h-[72px] bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center px-4 sm:px-6 transition-all">
@@ -28,6 +30,20 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
       <div className="flex-1" />
       
       <div className="flex items-center gap-3 sm:gap-5">
+        {brands.length > 0 && (
+          <select 
+            value={activeBrandId || ''} 
+            onChange={(e) => setActiveBrandId(e.target.value)}
+            className="text-[13px] font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 outline-none hover:border-gray-300 transition-colors max-w-[150px] sm:max-w-[200px] truncate"
+          >
+            {brands.map(b => (
+              <option key={b.id} value={b.id}>
+                {b.seller_profiles?.store_name || b.full_name || 'Unnamed Brand'}
+              </option>
+            ))}
+          </select>
+        )}
+
         <div className="relative text-gray-500 hover:text-[#1A6FD4] transition-colors">
           <NotificationBell portalType="seller" />
         </div>

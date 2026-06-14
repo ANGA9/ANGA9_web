@@ -1,3 +1,5 @@
+import { BrandProvider } from "@/lib/BrandContext";
+
 export const metadata = {
   title: "ANGA Seller Portal",
   description: "Manage your wholesale business on ANGA",
@@ -8,5 +10,5 @@ export default function SellerRootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <BrandProvider>{children}</BrandProvider>;
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, LayoutList, IndianRupee, FileText } from "lucide-react";
 import Link from "next/link";
 import CategoryMultiSelect from "@/components/seller/CategoryMultiSelect";
+import { useBrand } from "@/lib/BrandContext";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 const UNIT_OPTIONS = ["piece", "set", "box", "pack", "roll", "kg", "g", "L", "mL", "pair", "dozen", "meter"];
@@ -13,6 +14,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const { id } = use(params);
 
   const { getToken } = useAuth();
+  const { activeBrandId } = useBrand();
   const router = useRouter();
   const [form, setForm] = useState({
     name: "", description: "", base_price: "", sale_price: "",
@@ -130,9 +132,17 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       else body.tags = [];
       if (form.hsn_code) body.hsn_code = form.hsn_code;
 
+      const patchHeaders: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+      // Without X-Brand-ID, editing a child brand's product would fail the
+      // backend ownership check (seller_id !== user.id) and 403.
+      if (activeBrandId) patchHeaders["X-Brand-ID"] = activeBrandId;
+
       const res = await fetch(`${API}/api/products/${id}`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: patchHeaders,
         body: JSON.stringify(body),
       });
       if (res.ok) {

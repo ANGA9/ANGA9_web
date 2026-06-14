@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import Link from "next/link";
 import { IndianRupee, ShoppingCart, Package, Plus, Clock, CheckCircle2, Store, Loader2, ArrowRight, TrendingUp, AlertCircle, RefreshCw } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -83,9 +84,7 @@ export default function DashboardHome() {
         const token = await getToken();
         if (!token) { setLoaded(true); return; }
 
-        const profileRes = await fetch(`${API}/api/users/seller-profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const profileRes = await sellerFetch(`${API}/api/users/seller-profile`);
         if (profileRes.ok) {
           const { sellerProfile } = await profileRes.json();
           if (sellerProfile) {
@@ -97,9 +96,9 @@ export default function DashboardHome() {
 
         try {
           if (dbUser) {
-            const prodRes = await fetch(`${API}/api/products?seller_id=${dbUser.id}&status=active&limit=1`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            // seller_id must follow the active brand, not just the logged-in user.
+            const sid = effectiveSellerId(dbUser.id);
+            const prodRes = await sellerFetch(`${API}/api/products?seller_id=${sid}&status=active&limit=1`);
             if (prodRes.ok) {
               const d = await prodRes.json();
               setStats(prev => ({ ...prev, products: d.total || 0 }));
@@ -108,9 +107,7 @@ export default function DashboardHome() {
         } catch { /* ignore */ }
 
         try {
-          const orderRes = await fetch(`${API}/api/orders/seller`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const orderRes = await sellerFetch(`${API}/api/orders/seller`);
           if (orderRes.ok) {
             const d = await orderRes.json();
             const orders: RecentOrder[] = d.orders || [];
@@ -124,9 +121,7 @@ export default function DashboardHome() {
         } catch { /* ignore */ }
 
         try {
-          const analyticsRes = await fetch(`${API}/api/users/seller-analytics?period=${period}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const analyticsRes = await sellerFetch(`${API}/api/users/seller-analytics?period=${period}`);
           if (analyticsRes.ok) {
             const d = await analyticsRes.json();
             setAnalytics(d);

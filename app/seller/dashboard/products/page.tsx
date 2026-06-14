@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import Link from "next/link";
 import { Plus, Loader2, Package, Pencil, Search, ChevronLeft, ChevronRight, Filter, AlertCircle, Eye } from "lucide-react";
 
@@ -68,15 +69,13 @@ export default function ProductsPage() {
         ? "active,pending_review,draft,archived,rejected"
         : statusFilter;
       const params = new URLSearchParams({
-        seller_id: dbUser.id,
+        seller_id: effectiveSellerId(dbUser.id),
         status: statuses,
         limit: String(limit),
         offset: String((page - 1) * limit),
       });
       if (search) params.set("search", search);
-      const res = await fetch(`${API}/api/products?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await sellerFetch(`${API}/api/products?${params}`);
       if (res.ok) {
         const d = await res.json();
         setProducts(d.data || []);

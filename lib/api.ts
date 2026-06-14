@@ -28,13 +28,68 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
   }
 
   try {
+    const headers: Record<string, string> = {};
     const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
-    if (!session) return {};
-    return { Authorization: `Bearer ${session.access_token}` };
+    
+    if (session) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+
+    // Inject X-Brand-ID if we have one selected
+    if (typeof window !== 'undefined') {
+      const activeBrand = localStorage.getItem('anga_active_brand_id');
+      if (activeBrand) {
+        headers['X-Brand-ID'] = activeBrand;
+      }
+    }
+
+    return headers;
   } catch {
     // Supabase client may not be initialized (e.g. admin pages)
     return {};
   }
+}
+
+/**
+ * Read the active brand id chosen in the Brand Switcher.
+ * Returns null when no brand is selected (parent acts as self).
+ */
+export function getActiveBrandId(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("anga_active_brand_id");
+}
+
+/**
+ * The effective seller id to use for `seller_id=` query params and storage
+ * folders. Pages that filter products/orders by an explicit seller_id must
+ * use THIS, not dbUser.id — otherwise switching brands has no effect on reads.
+ */
+export function effectiveSellerId(fallbackUserId: string): string {
+  return getActiveBrandId() || fallbackUserId;
+}
+
+/**
+ * Drop-in replacement for `fetch(\`${API}/...\`, { headers: { Authorization }})`
+ * used across the seller dashboard. It attaches the Supabase bearer token AND
+ * the X-Brand-ID header (when a child brand is active), so every seller-portal
+ * request operates on the selected brand's context. Returns the raw Response so
+ * existing `res.ok` / `res.json()` call sites keep working unchanged.
+ *
+ * `path` may be an absolute URL or a path; callers currently pass
+ * `\`${API}${path}\``, which is preserved.
+ */
+export async function sellerFetch(
+  input: string,
+  init: RequestInit = {},
+): Promise<Response> {
+  const authHeaders = await getAuthHeaders(); // includes Authorization + X-Brand-ID
+  return fetch(input, {
+    ...init,
+    headers: {
+      ...authHeaders,
+      ...(init.headers as Record<string, string> | undefined),
+    },
+  });
 }
 
 async function request<T = unknown>(

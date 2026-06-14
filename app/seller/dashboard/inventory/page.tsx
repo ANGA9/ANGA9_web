@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import { Loader2, Package, AlertTriangle, XCircle, ChevronLeft, ChevronRight, Pencil, Check, X, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -55,13 +56,11 @@ export default function InventoryPage() {
       if (!token) return;
 
       const params = new URLSearchParams({
-        seller_id: dbUser.id,
+        seller_id: effectiveSellerId(dbUser.id),
         status: "active,pending_review,draft,archived,rejected",
         limit: "200",
       });
-      const res = await fetch(`${API}/api/products?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await sellerFetch(`${API}/api/products?${params}`);
       if (!res.ok) { setLoading(false); return; }
       const prodRes = await res.json();
       const products: Product[] = prodRes?.data || prodRes?.products || [];
@@ -73,9 +72,7 @@ export default function InventoryPage() {
         const batchResults = await Promise.all(
           batch.map(async (p) => {
             try {
-              const stockRes = await fetch(`${API}/api/inventory/${p.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              const stockRes = await sellerFetch(`${API}/api/inventory/${p.id}`);
               if (!stockRes.ok) return { product: p, stock: null };
               const s = await stockRes.json();
               const stock = Array.isArray(s) ? s[0] || null : s;
@@ -103,12 +100,9 @@ export default function InventoryPage() {
     try {
       const token = await getToken();
       if (!token) { setSaving(false); return; }
-      const res = await fetch(`${API}/api/inventory/${productId}`, {
+      const res = await sellerFetch(`${API}/api/inventory/${productId}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quantity: parseInt(editQty, 10),
           low_stock_threshold: parseInt(editThreshold, 10),

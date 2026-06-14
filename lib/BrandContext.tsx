@@ -1,0 +1,98 @@
+"use client";
+
+import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "./api";
+
+interface Brand {
+  id: string;
+  role: string;
+  full_name: string;
+  seller_profiles?: {
+    store_name: string;
+    logo_url?: string;
+  };
+}
+
+interface BrandContextType {
+  activeBrandId: string | null;
+  brands: Brand[];
+  isLoading: boolean;
+  setActiveBrandId: (id: string) => void;
+  refreshBrands: () => Promise<void>;
+}
+
+const BrandContext = createContext<BrandContextType | undefined>(undefined);
+
+// Listen to storage events so tabs sync active brand
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e) => {
+    if (e.key === "anga_active_brand_id") {
+      // Just dispatch a custom event that our context can listen to
+      window.dispatchEvent(new Event("brand_change"));
+    }
+  });
+}
+
+export function BrandProvider({ children }: { children: React.ReactNode }) {
+  const [activeBrandId, setActiveBrandIdState] = useState<string | null>(null);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchBrands = async () => {
+    try {
+      const res = await api.get<{ brands: Brand[] }>("/api/users/brands", { silent: true });
+      if (res && res.brands) {
+        setBrands(res.brands);
+      }
+    } catch (err) {
+      console.error("Failed to fetch brands", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Initial fetch
+    fetchBrands();
+
+    // Check local storage
+    const stored = localStorage.getItem("anga_active_brand_id");
+    if (stored) {
+      setActiveBrandIdState(stored);
+    }
+
+    // Sync across tabs or same-tab manual changes
+    const onBrandChange = () => {
+      const updated = localStorage.getItem("anga_active_brand_id");
+      if (updated !== activeBrandId) {
+        setActiveBrandIdState(updated);
+      }
+    };
+
+    window.addEventListener("brand_change", onBrandChange);
+    return () => window.removeEventListener("brand_change", onBrandChange);
+  }, [activeBrandId]);
+
+  const setActiveBrandId = (id: string) => {
+    localStorage.setItem("anga_active_brand_id", id);
+    setActiveBrandIdState(id);
+    window.dispatchEvent(new Event("brand_change"));
+    
+    // Reload the page to ensure all state is cleanly re-fetched with the new brand
+    window.location.reload();
+  };
+
+  return (
+    <BrandContext.Provider value={{ activeBrandId, brands, isLoading, setActiveBrandId, refreshBrands: fetchBrands }}>
+      {children}
+    </BrandContext.Provider>
+  );
+}
+
+export function useBrand() {
+  const context = useContext(BrandContext);
+  if (context === undefined) {
+    throw new Error("useBrand must be used within a BrandProvider");
+  }
+  return context;
+}

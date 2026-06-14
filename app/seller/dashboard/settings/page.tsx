@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { sellerFetch } from "@/lib/api";
 import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock, Eye, EyeOff, Circle } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
@@ -77,7 +78,7 @@ export default function SettingsPage() {
     (async () => {
       const token = await getToken();
       if (!token) { setLoading(false); return; }
-      const res = await fetch(`${API}/api/users/seller-profile`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await sellerFetch(`${API}/api/users/seller-profile`);
       if (res.ok) {
         const { sellerProfile: p } = await res.json();
         if (p?.notification_preferences) {
@@ -97,9 +98,9 @@ export default function SettingsPage() {
     setSaving(true);
     const token = await getToken();
     if (token) {
-      await fetch(`${API}/api/users/seller-profile`, {
+      await sellerFetch(`${API}/api/users/seller-profile`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notification_preferences: prefs }),
       });
       setSaved(true);

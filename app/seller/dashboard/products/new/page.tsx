@@ -5,6 +5,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, ImagePlus, Video, X, PackageOpen, LayoutList, IndianRupee, Truck, FileText } from "lucide-react";
 import Link from "next/link";
+import { useBrand } from "@/lib/BrandContext";
 import CategoryMultiSelect from "@/components/seller/CategoryMultiSelect";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -27,6 +28,7 @@ interface UploadedFile {
 
 export default function AddProductPage() {
   const { getToken, dbUser } = useAuth();
+  const { activeBrandId } = useBrand();
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
   const imgInputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +64,8 @@ export default function AddProductPage() {
       return null;
     }
     const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
-    const path = `${authUid}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const targetFolder = activeBrandId || dbUser.id;
+    const path = `${targetFolder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const { error } = await supabase.storage.from(bucket).upload(path, file, {
       cacheControl: "3600",
       upsert: false,
@@ -190,9 +193,19 @@ export default function AddProductPage() {
       if (form.warranty.trim()) body.warranty = form.warranty.trim();
       if (form.sku.trim()) body.sku = form.sku.trim();
 
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+      // Critical: when a child brand is active, the product must be created
+      // under that brand's seller_id. This raw fetch bypasses the api client,
+      // so we inject X-Brand-ID manually — otherwise the product is created
+      // under the parent while its images sit in the child's storage folder.
+      if (activeBrandId) headers["X-Brand-ID"] = activeBrandId;
+
       const res = await fetch(`${API}/api/products`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(body),
       });
       if (res.ok) {

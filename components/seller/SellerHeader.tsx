@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useBrand } from "@/lib/BrandContext";
-import { Menu, LogOut, User, Plus } from "lucide-react";
+import { Menu, LogOut, User, Plus, Store } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import CreateBrandModal from "@/components/seller/CreateBrandModal";
 import { cdnUrl } from "@/lib/utils";
@@ -41,24 +41,32 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
       <div className="flex-1" />
       
       <div className="flex items-center gap-3 sm:gap-5">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           {brands.length > 0 && (
-            <select
-              value={activeBrandId || ''}
-              onChange={(e) => setActiveBrandId(e.target.value)}
-              className="text-[13px] font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 outline-none hover:border-gray-300 transition-colors max-w-[150px] sm:max-w-[200px] truncate"
-            >
-              {brands.map(b => (
-                <option key={b.id} value={b.id}>
-                  {b.seller_profiles?.store_name || b.full_name || 'Unnamed Brand'}
-                </option>
-              ))}
-            </select>
+            <div className="relative group/brand hidden sm:block">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Store className="w-4 h-4 text-[#1A6FD4]" />
+              </div>
+              <select
+                value={activeBrandId || ''}
+                onChange={(e) => setActiveBrandId(e.target.value)}
+                className="appearance-none cursor-pointer pl-9 pr-8 py-2 bg-[#F8FBFF] border border-[#1A6FD4]/20 hover:border-[#1A6FD4]/50 hover:bg-[#F0F7FF] rounded-xl text-[14px] font-bold text-[#1A6FD4] outline-none transition-all shadow-sm max-w-[150px] sm:max-w-[220px] truncate"
+              >
+                {brands.map(b => (
+                  <option key={b.id} value={b.id} className="text-gray-900 font-medium">
+                    {b.seller_profiles?.store_name || b.full_name || 'Unnamed Brand'}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A6FD4]/70"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
           )}
           <button
             onClick={() => setShowCreateBrand(true)}
             title="Add a new brand"
-            className="flex items-center gap-1 h-[34px] px-2.5 rounded-lg bg-[#1A6FD4]/10 text-[#1A6FD4] border border-[#1A6FD4]/20 text-[13px] font-bold hover:bg-[#1A6FD4]/15 transition-colors"
+            className="flex items-center gap-1.5 bg-blue-50 text-[#1A6FD4] border border-blue-200 hover:bg-[#1A6FD4] hover:text-white hover:border-[#1A6FD4] transition-all px-3 py-2 rounded-xl text-[13px] font-bold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Add Brand</span>

@@ -6,6 +6,7 @@ import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
 const NAV = [
   { label: "Dashboard", href: "/seller/dashboard", icon: LayoutDashboard },
+  { label: "Brand Management", href: "/seller/dashboard/brands", icon: Store },
   { label: "Products", href: "/seller/dashboard/products", icon: Package },
   { label: "Reviews", href: "/seller/dashboard/reviews", icon: Star },
   { label: "Ad Campaigns", href: "/seller/dashboard/ads", icon: Megaphone },

@@ -18,6 +18,19 @@ async function getStats(token: string) {
   }
 }
 
+async function getLeaderboard(token: string) {
+  try {
+    const res = await fetch(`${API_URL}/api/support/leaderboard?period=7d`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const { data } = await res.json();
+    return data || [];
+  } catch (e) {
+    return [];
+  }
+}
+
 export default async function SupportDashboardPage() {
   const supabase = await getSupabaseServerClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -26,6 +39,7 @@ export default async function SupportDashboardPage() {
 
   const stats = await getStats(session.access_token);
   const tickets = stats?.data || [];
+  const leaderboard = await getLeaderboard(session.access_token);
 
   const openCount = tickets.filter((t: any) => t.status === "open").length;
   const inProgressCount = tickets.filter((t: any) => t.status === "in_progress").length;
@@ -86,8 +100,8 @@ export default async function SupportDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-teal-100 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+      <div className="grid grid-cols-1 gap-8">
+        <div className="bg-white rounded-2xl border border-teal-100 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
           <div className="p-6 border-b border-teal-50 flex items-center justify-between">
             <h2 className="text-lg font-bold text-gray-900">Recent Tickets</h2>
             <Link href="/support/dashboard/tickets" className="text-sm font-bold text-teal-600 hover:text-teal-700">
@@ -129,29 +143,6 @@ export default async function SupportDashboardPage() {
                 <p className="text-sm mt-1">No active tickets right now.</p>
               </div>
             )}
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl shadow-sm overflow-hidden text-white flex flex-col min-h-[400px]">
-          <div className="p-6 border-b border-teal-500/30">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-teal-200" /> Top Agents (7 Days)
-            </h2>
-          </div>
-          <div className="p-6 flex-1 flex flex-col">
-            <div className="flex-1 flex items-center justify-center text-center px-4">
-              <div>
-                <p className="text-teal-100 font-medium leading-relaxed mb-6">
-                  Ready to see where you rank among the team? Resolve tickets to climb the leaderboard.
-                </p>
-                <Link 
-                  href="/support/dashboard/leaderboard"
-                  className="inline-flex items-center gap-2 bg-white text-teal-800 px-6 py-3 rounded-xl font-bold hover:bg-teal-50 transition-colors shadow-sm"
-                >
-                  View Leaderboard <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>

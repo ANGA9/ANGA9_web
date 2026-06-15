@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AlertCircle, ArrowLeft, Mail, ShieldCheck, Loader2 } from "lucide-react";
+import { AlertCircle, ArrowRight, Mail, ShieldCheck, Loader2 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { cdnUrl } from "@/lib/utils";
 
@@ -11,7 +11,7 @@ type Step = "email" | "otp";
 export default function AdminLoginPage() {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
@@ -78,8 +78,7 @@ export default function AdminLoginPage() {
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    const code = otp.join("");
-    if (code.length !== 6) {
+    if (otp.length !== 6) {
       setError("Please enter the 6-digit OTP");
       return;
     }
@@ -88,7 +87,7 @@ export default function AdminLoginPage() {
     try {
       const { data, error: verifyErr } = await supabase.auth.verifyOtp({
         email: email.trim(),
-        token: code,
+        token: otp,
         type: "email",
       });
       if (verifyErr) throw verifyErr;
@@ -107,27 +106,23 @@ export default function AdminLoginPage() {
         await supabase.auth.signOut();
         setError(`Lookup failed: ${dbErr.message}. Check that your users row exists and RLS allows self-read.`);
         setStep("email");
-        setOtp(["", "", "", "", "", ""]);
+        setOtp("");
         setLoading(false);
         return;
       }
 
-      // Treat both "admin" and "super_admin" as admin-portal roles. The
-      // dashboard layout further gates super-admin-only pages by admin_level.
       const role = dbUser?.role;
       const isAdmin = role === "admin" || role === "super_admin";
       if (!dbUser || !isAdmin) {
         console.warn("[admin-login] access denied — role was", role);
         await supabase.auth.signOut();
-        setError(`Access denied. role=${role ?? "<none>"} is not an admin role.`);
+        setError(`Access denied. You do not have an admin role.`);
         setStep("email");
-        setOtp(["", "", "", "", "", ""]);
+        setOtp("");
         setLoading(false);
         return;
       }
 
-      // If the DB role is super_admin, treat it as the level too — so the
-      // dashboard layout's SUPER_ADMIN_ROUTES guard lets you in everywhere.
       const level = dbUser.admin_level || (role === "super_admin" ? "super_admin" : "admin");
       document.cookie = "portal=admin; path=/; max-age=86400";
       document.cookie = `admin_level=${level}; path=/; max-age=86400`;
@@ -145,187 +140,149 @@ export default function AdminLoginPage() {
     }
   }
 
-  function handleOtpChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-    if (value.length > 1) {
-      const digits = value.replace(/\D/g, "").slice(0, 6).split("");
-      if (digits.length > 1) {
-        const next = [...otp];
-        let maxIndex = index;
-        digits.forEach((d, i) => {
-          if (index + i < 6) {
-            next[index + i] = d;
-            maxIndex = index + i;
-          }
-        });
-        setOtp(next);
-        const parent = e.target.parentElement;
-        const targetInput = parent?.children[maxIndex] as HTMLInputElement;
-        targetInput?.focus();
-        return;
-      }
-      value = value.slice(-1);
-    }
-    if (value && !/^\d$/.test(value)) return;
-    const next = [...otp];
-    next[index] = value;
-    setOtp(next);
-    if (value && index < 5) {
-      const parent = e.target.parentElement;
-      const nextInput = parent?.children[index + 1] as HTMLInputElement;
-      if (nextInput) {
-        nextInput.focus();
-        nextInput.select();
-      }
-    }
-  }
-
-  function handleOtpKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const parent = (e.currentTarget as HTMLElement).parentElement;
-      const prevInput = parent?.children[index - 1] as HTMLInputElement;
-      prevInput?.focus();
-    }
-    if (e.key === "ArrowRight" && index < 5) {
-      const parent = (e.currentTarget as HTMLElement).parentElement;
-      const nextInput = parent?.children[index + 1] as HTMLInputElement;
-      nextInput?.focus();
-    }
-    if (e.key === "ArrowLeft" && index > 0) {
-      const parent = (e.currentTarget as HTMLElement).parentElement;
-      const prevInput = parent?.children[index - 1] as HTMLInputElement;
-      prevInput?.focus();
-    }
-  }
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4">
-      <div className="w-full max-w-[440px]">
-        {/* Login Card */}
-        <div className="rounded-2xl border border-[#E8EEF4] bg-white px-10 py-12 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
-          {/* Logo */}
-          <div className="mb-8 text-center">
-            <div className="flex justify-center mb-6">
-              <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={140} height={46} priority style={{ objectFit: "contain" }} />
-            </div>
-            <h1 className="text-2xl font-medium text-[#202124] mb-2 tracking-tight">Sign in</h1>
-            <p className="text-[15px] text-[#5f6368]">to continue to Admin Portal</p>
+    <div className="min-h-screen w-full flex bg-purple-50 font-sans">
+      {/* Left side: Hero / Branding */}
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 bg-[#8B5CF6] text-white relative overflow-hidden">
+        {/* Abstract shapes */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+          <div className="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] rounded-full bg-purple-400 blur-3xl mix-blend-screen" />
+          <div className="absolute bottom-[10%] -left-[20%] w-[80%] h-[80%] rounded-full bg-[#4C1D95] blur-3xl mix-blend-multiply" />
+        </div>
+
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg p-1">
+            <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={32} height={32} style={{ objectFit: "contain" }} />
+          </div>
+          <span className="text-2xl font-black tracking-tight">ANGA9 Admin</span>
+        </div>
+
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-5xl font-black tracking-tight leading-[1.1] mb-6">
+            Command<br />
+            <span className="text-purple-200">& Control</span>
+          </h1>
+          <p className="text-purple-50 text-lg font-medium leading-relaxed mb-8">
+            The secure gateway for managing platform operations, verifying sellers, and overseeing the marketplace.
+          </p>
+        </div>
+
+        <div className="relative z-10">
+          <p className="text-purple-200/80 text-sm font-semibold tracking-wider uppercase">
+            Internal Secure Access Only
+          </p>
+        </div>
+      </div>
+
+      {/* Right side: Login Form */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 sm:p-12">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-black text-gray-900 tracking-tight">Admin Portal</h2>
+            <p className="text-gray-500 mt-2 font-medium">
+              Sign in to manage the ANGA9 ecosystem
+            </p>
           </div>
 
-          {step === "email" ? (
-            <>
-              {error && (
-                <div className="mb-6 flex items-start gap-2 rounded-lg bg-[#FCE8E6] px-4 py-3">
-                  <AlertCircle className="h-5 w-5 text-[#D93025] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#D93025]">{error}</p>
-                </div>
-              )}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl flex items-start gap-3 shadow-sm">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" />
+              <p className="text-sm font-semibold">{error}</p>
+            </div>
+          )}
 
-              <form onSubmit={handleEmailSubmit} className="space-y-8">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-[#1A1A2E]">Email address</label>
-                  <div className="flex items-center rounded-lg border border-[#E8EEF4] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-[#1A6FD4]/10 transition-all overflow-hidden">
-                    <span className="flex items-center pl-4 pr-2">
-                      <Mail className="w-4 h-4 text-[#9CA3AF]" />
-                    </span>
-                    <input
-                      type="email"
-                      placeholder="admin@anga9.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      autoFocus
-                      autoComplete="off"
-                      className="flex-1 h-11 text-sm outline-none bg-transparent px-2 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-                    />
-                  </div>
+          {step === "email" ? (
+            <form onSubmit={handleEmailSubmit} className="space-y-6">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider pl-1">
+                  Email Address
+                </label>
+                <div className="relative group">
+                  <Mail className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-[#8B5CF6]" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-2xl text-[15px] font-medium text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#8B5CF6]/10 focus:border-[#8B5CF6] transition-all shadow-sm"
+                    placeholder="admin@anga9.com"
+                  />
                 </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="h-11 w-full rounded-lg bg-[#1A6FD4] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155bb5] hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none flex items-center justify-center gap-2"
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  {loading ? "Sending OTP..." : "Request OTP"}
-                </button>
-              </form>
-            </>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading || !email}
+                className="w-full h-[52px] bg-[#8B5CF6] text-white rounded-2xl text-[15px] font-bold shadow-[0_4px_14px_0_rgba(139,92,246,0.39)] hover:bg-[#7C3AED] hover:shadow-[0_6px_20px_rgba(139,92,246,0.23)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2 group"
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Continue
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
           ) : (
-            <>
-              <div className="mb-8">
-                <button
-                  type="button"
-                  onClick={() => { setStep("email"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                  className="flex items-center gap-1.5 text-[15px] font-medium text-[#1A73E8] hover:text-[#174EA6] transition-colors mb-2"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
-                <p className="text-[15px] text-[#5f6368]">
-                  Enter the verification code sent to <br />
-                  <span className="font-medium text-[#202124]">{email}</span>
+            <form onSubmit={handleVerify} className="space-y-6">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider pl-1">
+                  Secure OTP Code
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-2xl text-center text-2xl tracking-[0.5em] font-black text-gray-900 focus:outline-none focus:ring-4 focus:ring-[#8B5CF6]/10 focus:border-[#8B5CF6] transition-all shadow-sm"
+                  placeholder="------"
+                />
+                <p className="text-center text-sm font-medium text-gray-500 mt-3">
+                  Sent to <span className="text-gray-900 font-bold">{email}</span>
                 </p>
               </div>
 
-              {error && (
-                <div className="mb-6 flex items-start gap-2 rounded-lg bg-[#FCE8E6] px-4 py-3">
-                  <AlertCircle className="h-5 w-5 text-[#D93025] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#D93025]">{error}</p>
-                </div>
-              )}
-
-              <form onSubmit={handleVerify} className="space-y-8">
-                <div className="flex justify-between gap-2 py-2">
-                  {otp.map((d, i) => (
-                    <input
-                      key={i}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={6}
-                      value={d}
-                      onChange={(e) => handleOtpChange(i, e)}
-                      onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                      onFocus={(e) => e.target.select()}
-                      autoFocus={i === 0}
-                      autoComplete="one-time-code"
-                      className="h-12 w-11 rounded-lg border border-[#DADCE0] bg-white focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 text-center text-xl font-bold text-[#202124] outline-none transition-all"
-                    />
-                  ))}
-                </div>
-
-                <div className="flex flex-col gap-4">
+              <div className="pt-2 flex flex-col gap-3">
+                <button
+                  type="submit"
+                  disabled={loading || otp.length !== 6}
+                  className="w-full h-[52px] bg-[#8B5CF6] text-white rounded-2xl text-[15px] font-bold shadow-[0_4px_14px_0_rgba(139,92,246,0.39)] hover:bg-[#7C3AED] hover:shadow-[0_6px_20px_rgba(139,92,246,0.23)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify & Secure Login"}
+                </button>
+                
+                <div className="flex gap-2 w-full">
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => { setStep("email"); setOtp(""); }}
                     disabled={loading}
-                    className="h-11 w-full rounded-lg bg-[#1A73E8] text-sm font-medium text-white shadow-sm transition-all hover:bg-[#1558D6] active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none flex items-center justify-center gap-2"
+                    className="flex-1 h-[48px] bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-2xl text-[14px] font-bold transition-colors"
                   >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                    {loading ? "Verifying..." : "Verify & Sign In"}
+                    Back
                   </button>
-
-                  <div className="text-center">
-                    <p className="text-[14px] text-[#5f6368]">
-                      Didn&apos;t receive the code?{" "}
-                      {canResend ? (
-                        <button type="button" onClick={handleResend} disabled={loading} className="font-medium text-[#1A73E8] hover:underline disabled:opacity-50">
-                          Resend OTP
-                        </button>
-                      ) : (
-                        <span className="font-medium text-[#5f6368]">
-                          Resend in <span className="font-bold">{resendTimer}s</span>
-                        </span>
-                      )}
-                    </p>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={loading || !canResend}
+                    className="flex-1 h-[48px] bg-transparent text-[#8B5CF6] hover:text-[#7C3AED] hover:bg-purple-50 rounded-2xl text-[14px] font-bold transition-colors disabled:opacity-50"
+                  >
+                    {canResend ? "Resend OTP" : `Resend in ${resendTimer}s`}
+                  </button>
                 </div>
-              </form>
-            </>
+              </div>
+            </form>
           )}
-        </div>
 
-        <p className="mt-6 text-center text-xs text-[#4B5563]">
-          Back to{" "}
-          <a href="/" className="font-medium text-[#1A6FD4] hover:underline">Homepage</a>
-        </p>
+          <div className="pt-8 border-t border-gray-100 mt-8">
+            <p className="text-center text-xs font-medium text-gray-400">
+              Back to <a href="/" className="font-bold text-[#8B5CF6] hover:underline">Homepage</a>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

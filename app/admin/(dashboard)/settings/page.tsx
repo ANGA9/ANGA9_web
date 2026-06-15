@@ -13,13 +13,6 @@ interface ConfigState {
   payout_hold_days: number;
 }
 
-interface AdminUser {
-  id: string;
-  full_name: string | null;
-  email: string | null;
-  admin_level: 'super_admin' | 'admin';
-}
-
 const DEFAULT_CONFIG: ConfigState = {
   commission_rates: { standard: 0.10, premium: 0.08, enterprise: 0.05 },
   shipping_fee: 500,
@@ -30,19 +23,13 @@ const DEFAULT_CONFIG: ConfigState = {
 
 export default function AdminSettingsPage() {
   const [config, setConfig] = useState<ConfigState>(DEFAULT_CONFIG);
-  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [togglingAdmin, setTogglingAdmin] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const [configRes, adminsRes, meRes] = await Promise.all([
-          api.get<Record<string, unknown>>("/api/admin/config", { silent: true }),
-          api.get<{ data: AdminUser[] }>("/api/admin/users?role=admin", { silent: true }).catch(() => ({ data: [] })),
-          api.get<{ user: { id: string } }>("/api/auth/me", { silent: true }).catch(() => null)
-        ]);
+        const configRes = await api.get<Record<string, unknown>>("/api/admin/config", { silent: true });
         
         if (configRes) {
           const cr = configRes.commission_rates as ConfigState["commission_rates"] | undefined;
@@ -53,11 +40,6 @@ export default function AdminSettingsPage() {
             tax_rate: Number(configRes.tax_rate) || DEFAULT_CONFIG.tax_rate,
             payout_hold_days: Number(configRes.payout_hold_days) || DEFAULT_CONFIG.payout_hold_days,
           });
-        }
-        
-        if (adminsRes?.data) {
-          const filteredAdmins = (meRes && meRes.user) ? adminsRes.data.filter((a) => a.id !== meRes.user.id) : adminsRes.data;
-          setAdmins(filteredAdmins);
         }
       } catch { /* use defaults */ }
       setLoading(false);
@@ -81,18 +63,7 @@ export default function AdminSettingsPage() {
     setSaving(false);
   };
 
-  const toggleAdminLevel = async (adminId: string, currentLevel: string) => {
-    const newLevel = currentLevel === "super_admin" ? "admin" : "super_admin";
-    setTogglingAdmin(adminId);
-    try {
-      await api.patch(`/api/admin/users/${adminId}/admin-level`, { admin_level: newLevel });
-      setAdmins(admins.map(a => a.id === adminId ? { ...a, admin_level: newLevel } : a));
-      toast.success("Admin level updated");
-    } catch {
-      toast.error("Failed to update admin level");
-    }
-    setTogglingAdmin(null);
-  };
+
 
   if (loading) {
     return (
@@ -255,65 +226,6 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setConfig((c) => ({ ...c, payout_hold_days: Number(e.target.value) }))}
               />
             </div>
-          </div>
-        </div>
-
-        {/* Admin Management */}
-        <div className="bg-white rounded-3xl border border-gray-200 p-8 shadow-sm relative overflow-hidden group">
-          <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-red-50 group-hover:scale-125 transition-transform duration-700" />
-          
-          <div className="flex items-center gap-3 mb-6 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <h2 className="text-[18px] font-bold text-gray-900 leading-tight">Admin Management</h2>
-              <p className="text-[13px] font-medium text-gray-500">Manage internal team roles and access levels</p>
-            </div>
-          </div>
-
-          <div className="relative z-10 border border-gray-100 rounded-2xl overflow-hidden bg-white">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th className="px-6 py-3 text-[12px] font-bold text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-[12px] font-bold text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-[12px] font-bold text-gray-500 uppercase tracking-wider">Level</th>
-                  <th className="px-6 py-3 text-[12px] font-bold text-gray-500 uppercase tracking-wider text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {admins.map((admin) => (
-                  <tr key={admin.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-3 px-6 text-[14px] font-medium text-gray-900">{admin.full_name || 'Admin User'}</td>
-                    <td className="py-3 px-6 text-[14px] text-gray-500">{admin.email}</td>
-                    <td className="py-3 px-6">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wide ${
-                        admin.admin_level === 'super_admin' 
-                          ? 'bg-purple-50 text-purple-700 border-purple-200' 
-                          : 'bg-green-50 text-green-700 border-green-200'
-                      }`}>
-                        {admin.admin_level === 'super_admin' ? 'Super Admin' : 'Admin'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-6 text-right">
-                      <button
-                        onClick={() => toggleAdminLevel(admin.id, admin.admin_level)}
-                        disabled={togglingAdmin === admin.id}
-                        className="text-[13px] font-bold text-[#8B5CF6] hover:text-[#7C3AED] disabled:opacity-50 transition-colors"
-                      >
-                        {togglingAdmin === admin.id ? 'Updating...' : (admin.admin_level === 'super_admin' ? 'Demote to Admin' : 'Promote to Super')}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {admins.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-[14px] text-gray-500">No admin users found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>

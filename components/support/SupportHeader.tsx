@@ -1,8 +1,12 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { ShieldCheck, LogOut, Menu, UserCircle } from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { api } from "@/lib/api";
+
+import { cdnUrl } from "@/lib/utils";
 
 export default function SupportHeader({
   onMenuClick,
@@ -12,12 +16,23 @@ export default function SupportHeader({
   const [userName, setUserName] = useState("Agent");
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getUser().then((res: any) => {
-      if (res.data?.user?.email) {
-        setUserName(res.data.user.email.split("@")[0]);
+    let active = true;
+    (async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        await supabase.auth.getSession();
+        const res = await api.get<{ user: any }>("/api/users/profile", { silent: true });
+        if (active && res?.user) {
+          const p = res.user;
+          setUserName(p.full_name || `Support ${p.id.slice(0, 4).toUpperCase()}`);
+        }
+      } catch {
+        // Fallback to "Agent" which is the default state
       }
-    });
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleSignOut = async () => {
@@ -27,37 +42,45 @@ export default function SupportHeader({
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full h-[72px] bg-white border-b border-teal-100 z-50 px-4 lg:px-6 flex items-center justify-between shadow-sm">
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onMenuClick}
-          className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-50 transition-colors"
+    <header className="fixed top-0 left-0 w-full z-50 h-[72px] bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center px-4 sm:px-6 transition-all">
+      <button
+        className="lg:hidden mr-4 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-700 transition-colors"
+        onClick={onMenuClick}
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      <Link href="/support/dashboard" className="shrink-0 flex items-center gap-3 group">
+        <div className="relative h-7 w-[100px] sm:h-8 sm:w-[120px] transition-transform group-hover:scale-105">
+          <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" fill priority style={{ objectFit: "contain", objectPosition: "left" }} />
+        </div>
+      </Link>
+
+      <span className="ml-4 text-[11px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm"
+        style={{ color: "#0D9488", backgroundColor: "#0D94881A", borderWidth: 1, borderColor: "#0D948833" }}
+      >
+        Support Portal
+      </span>
+
+      <div className="flex-1" />
+
+      <div className="flex items-center gap-3 sm:gap-5">
+        <div className="h-6 w-px bg-gray-200 hidden sm:block" />
+
+        <div
+          className="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-colors cursor-default"
+          title={userName}
         >
-          <Menu className="w-5 h-5" />
-        </button>
-
-        <Link href="/support/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-sm">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <span className="text-xl font-black tracking-tight text-gray-900 hidden sm:block">
-            ANGA9 <span className="text-teal-600 font-bold">Support</span>
-          </span>
-        </Link>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-100">
-          <UserCircle className="w-4 h-4 text-teal-600" />
-          <span className="text-sm font-bold text-teal-900">{userName}</span>
+          <User className="w-4 h-4 font-bold" />
         </div>
 
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-2 px-4 h-10 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 text-sm font-bold transition-all border border-transparent hover:border-red-100"
+          title="Logout"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
         >
           <LogOut className="w-4 h-4" />
-          <span className="hidden sm:block">Sign Out</span>
+          <span className="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </header>

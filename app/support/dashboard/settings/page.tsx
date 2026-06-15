@@ -21,15 +21,15 @@ export default function SettingsPage() {
     let active = true;
     (async () => {
       try {
-        // The dashboard layout already gated this route; ensure the browser
-        // client has hydrated its session so api() can attach the token.
         const supabase = getSupabaseBrowserClient();
         await supabase.auth.getSession();
 
-        const res = await api.get<Profile>("/api/users/profile");
+        const res = await api.get<{ user: Profile }>("/api/users/profile");
         if (!active) return;
-        setProfile(res);
-        setDisplayName(res.full_name || "");
+        
+        const p = res.user;
+        setProfile(p);
+        setDisplayName(p?.full_name || `Support ${p?.id?.slice(0, 4).toUpperCase() || ""}`);
       } catch {
         if (active) toast.error("Failed to load your profile");
       } finally {
@@ -50,9 +50,10 @@ export default function SettingsPage() {
     }
     setSaving(true);
     try {
-      const updated = await api.patch<Profile>("/api/users/profile", {
+      const res = await api.patch<{ user: Profile }>("/api/users/profile", {
         full_name: trimmed,
       });
+      const updated = res.user;
       setProfile(updated);
       setDisplayName(updated.full_name || trimmed);
       toast.success("Display name updated");
@@ -80,7 +81,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">
-              {profile?.full_name || profile?.email || "Loading..."}
+              {profile ? (profile.full_name || `Support ${profile.id.slice(0, 4).toUpperCase()}`) : "Loading..."}
             </h2>
             <div className="flex items-center gap-2 mt-1">
               <ShieldCheck className="w-4 h-4 text-teal-600" />

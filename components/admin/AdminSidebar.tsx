@@ -20,6 +20,7 @@ import {
   UserCheck,
   Ticket,
   Tags,
+  Headset,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -46,6 +47,7 @@ const NAV: NavItem[] = [
   { label: "Users", href: "/admin/users", icon: Users, superOnly: true },
   { label: "Payouts", href: "/admin/payouts", icon: Wallet, superOnly: true },
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
+  { label: "Live Agents", href: "/admin/agents", icon: Headset },
   { label: "Reports", href: "/admin/reports", icon: BarChart3, superOnly: true },
   { label: "Team Management", href: "/admin/team", icon: ShieldCheck, superOnly: true },
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },

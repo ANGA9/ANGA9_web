@@ -150,11 +150,9 @@ export default function AdminLoginPage() {
           <div className="absolute bottom-[10%] -left-[20%] w-[80%] h-[80%] rounded-full bg-[#4C1D95] blur-3xl mix-blend-multiply" />
         </div>
 
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg p-1">
-            <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" width={32} height={32} style={{ objectFit: "contain" }} />
-          </div>
-          <span className="text-2xl font-black tracking-tight">ANGA9 Admin</span>
+        <div className="relative z-10 flex items-center gap-2">
+          <img src={cdnUrl("/anga9-logo.png")} alt="ANGA9" className="h-[28px] w-auto brightness-0 invert translate-y-[2px]" />
+          <span className="text-[28px] font-black tracking-tight">Admin Portal</span>
         </div>
 
         <div className="relative z-10 max-w-xl">

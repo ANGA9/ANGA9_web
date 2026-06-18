@@ -81,11 +81,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const portalMatch = document.cookie.match(/(^| )portal=([^;]+)/);
     const currentPortal = portalMatch ? portalMatch[2] : null;
 
-    if (isAdminPage || currentPortal === "admin") return;
-
     const isSellerHost = window.location.hostname.startsWith("seller.");
     const isSellerPath = window.location.pathname.startsWith("/seller");
-    if (currentPortal === "seller" || isSellerHost || isSellerPath) return;
+
+    if (authUser) {
+      if (isAdminPage || currentPortal === "admin") return;
+      if (currentPortal === "seller" || isSellerHost || isSellerPath) return;
+    }
 
     const hostname = window.location.hostname;
     const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
@@ -154,13 +156,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Clear local state FIRST to prevent stale data on next login.
     localStorage.removeItem('anga_active_brand_id');
     setCookies(null);
+    
     // Redirect immediately — this prevents React from re-rendering
     // in a broken intermediate state (user=null while page still shows
     // authenticated UI), which causes hydration error #418.
-    // supabase.auth.signOut() is fire-and-forget; the server will
-    // invalidate the refresh token regardless.
-    supabase.auth.signOut();
     window.location.href = "/";
+
+    // Delay signOut slightly to ensure the browser has started navigating
+    // before the auth state actually changes.
+    setTimeout(() => {
+      supabase.auth.signOut();
+    }, 50);
   }, [supabase, setCookies]);
 
   /**

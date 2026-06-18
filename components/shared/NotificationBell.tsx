@@ -69,6 +69,9 @@ export default function NotificationBell({ portalType }: NotificationBellProps) 
   const fetchUnreadCount = useCallback(async (): Promise<boolean> => {
     if (!user) return true;
     try {
+      const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
+      if (!session) return true;
+
       const res = await api.get<{ count: number }>(
         "/api/notifications/unread-count",
         { silent: true },

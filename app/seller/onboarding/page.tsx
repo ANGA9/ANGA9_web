@@ -225,19 +225,18 @@ export default function OnboardingPage() {
     <div className="mx-auto max-w-[680px] px-4 py-8 sm:py-12 relative z-10">
       <div className="bg-white/95 backdrop-blur-md rounded-[28px] sm:rounded-[32px] border border-black shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] sm:shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] p-6 sm:p-8 sm:px-10">
         {/* Progress stepper */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm md:text-base font-semibold text-[#1A6FD4]">
-              Step {step + 1} of 8
+        <div className="pb-6 mb-8 border-b border-[#E8EEF4]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-bold text-[#1A6FD4] tracking-wide">
+              STEP {step + 1} OF 8
             </p>
-            <p className="text-sm md:text-base text-[#9CA3AF]">{STEP_TITLES[step]}</p>
           </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2">
           {STEP_TITLES.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                i < step ? "bg-[#22C55E]" : i === step ? "bg-[#1A6FD4]" : "bg-[#E8EEF4]"
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                i < step ? "bg-[#22C55E]" : i === step ? "bg-[#1A6FD4]" : "bg-[#F1F5F9]"
               }`}
             />
           ))}
@@ -250,13 +249,13 @@ export default function OnboardingPage() {
               onClick={() => { if (i < step) setStep(i); }}
               className={`flex flex-col items-center gap-1.5 group ${i <= step ? "cursor-pointer" : "cursor-default"}`}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold transition-all ${
-                i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#E8EEF4] text-[#9CA3AF]"
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
+                i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#F1F5F9] text-[#94A3B8]"
               }`}>
                   {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
                 </div>
-                <span className={`text-xs md:text-sm font-medium max-w-[70px] text-center leading-tight ${
-                  i <= step ? "text-[#1A1A2E]" : "text-[#9CA3AF]"
+                <span className={`text-[11px] md:text-xs max-w-[64px] text-center leading-snug mt-0.5 ${
+                  i <= step ? "font-bold text-[#1E293B]" : "font-medium text-[#64748B]"
                 }`}>{title}</span>
               </button>
           ))}

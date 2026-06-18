@@ -21,6 +21,7 @@ import {
   Ticket,
   Tags,
   Headset,
+  ShieldAlert,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -53,6 +54,7 @@ const NAV: NavItem[] = [
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
   { label: "Coupons", href: "/admin/coupons", icon: Ticket, superOnly: true },
   { label: "Categories", href: "/admin/categories", icon: Tags },
+  { label: "Risk & Fraud", href: "/admin/risk", icon: ShieldAlert, superOnly: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },
 ];
 

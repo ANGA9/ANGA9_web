@@ -588,6 +588,16 @@ export default function CustomerAccountPage() {
         </button>
       </div>
 
+      {(!user?.phone && !dbUser?.phone) && (
+        <div className="mt-5 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3 animate-in fade-in">
+          <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-[14px] font-bold text-blue-900">Verify your phone to unlock your welcome bonus</h4>
+            <p className="text-[13px] text-blue-700 mt-0.5 leading-snug">A verified phone number is required to claim your first-order coins bonus and secure your account.</p>
+          </div>
+        </div>
+      )}
+
       {isEditingProfile ? (
         <div className="mt-6 sm:mt-8 pt-6 border-t border-gray-100 animate-in fade-in slide-in-from-top-4 duration-300">
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

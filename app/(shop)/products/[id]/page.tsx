@@ -17,6 +17,10 @@ import toast from "react-hot-toast";
 import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import ProductReviews from "@/components/customer/ProductReviews";
+import { recommendationsApi } from "@/lib/recommendationsApi";
+import ProductRail from "@/components/customer/ProductRail";
+import type { Product } from "@/components/customer/ProductCard";
+
 
 // Mirrors VARIANT_FIELDS in product-service (no name/is_active columns in DB)
 interface ProductVariant {
@@ -92,6 +96,8 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [alsoBoughtProducts, setAlsoBoughtProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -115,12 +121,17 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
       setError(null);
-      const [productRes, inventoryRes] = await Promise.all([
+      const [productRes, inventoryRes, similarRes, alsoBoughtRes] = await Promise.all([
         api.get<{ product: ProductDetail }>(`/api/products/${productId}`),
         api.get<InventoryItem[]>(`/api/inventory/${productId}`, { silent: true }),
+        recommendationsApi.getSimilar(productId),
+        recommendationsApi.getAlsoBought(productId),
       ]);
       setProduct(productRes.product);
       setInventory(inventoryRes || []);
+      setSimilarProducts(similarRes);
+      setAlsoBoughtProducts(alsoBoughtRes);
+      
       if (productRes.product.product_variants?.length) {
         setSelectedVariant(productRes.product.product_variants[0].id);
       }
@@ -136,7 +147,7 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [fetchProduct]);
 
-  // Track recently viewed
+  // Track recently viewed and send telemetry
   useEffect(() => {
     if (product) {
       addRecentlyViewed({
@@ -146,6 +157,8 @@ export default function ProductDetailPage() {
         originalPrice: product.base_price,
         imageUrl: product.images?.[0],
       });
+      // Telemetry: Record view for recommendation engine
+      recommendationsApi.recordView(product.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
@@ -670,6 +683,10 @@ export default function ProductDetailPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6">
         <ProductReviews productId={product.id} />
       </div>
+
+      {/* ══════════ RECOMMENDATIONS ══════════ */}
+      <ProductRail title="Similar Products" products={similarProducts} />
+      <ProductRail title="Customers Also Bought" products={alsoBoughtProducts} />
 
       {/* ══════════ RECENTLY VIEWED ══════════ */}
       <RecentlyViewed excludeId={product.id} />

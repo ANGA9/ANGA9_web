@@ -20,6 +20,9 @@ import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
+import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
+import ProductRail from "@/components/customer/ProductRail";
+import { Heart, TrendingUp as TrendingIcon } from "lucide-react";
 
 const categoryIcons = [
   { name: "Home Decor", icon: Home },
@@ -72,6 +75,7 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
 
 export default function CustomerHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [homeRails, setHomeRails] = useState<HomeRails | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
@@ -107,14 +111,17 @@ export default function CustomerHomePage() {
         if (categoryParam) queryParams.set("category", categoryParam);
 
         // Fetch products and categories in parallel
-        const [productsRes, categoriesRes] = await Promise.all([
+        const [productsRes, categoriesRes, railsRes] = await Promise.all([
           api.get<{ data: ApiProduct[]; total: number }>(
             `/api/products?${queryParams.toString()}`
           ),
           api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
+          recommendationsApi.getHomeRails(),
         ]);
 
         if (cancelled) return;
+        
+        setHomeRails(railsRes);
 
         // Build category lookup and cache it for loadMore.
         const catMap = new Map<string, string>();
@@ -225,7 +232,25 @@ export default function CustomerHomePage() {
       {/* Hero */}
       <HeroBanner />
 
-      {/* Recently Viewed (only visible if user has history) */}
+      {/* Personalized Rails (Wishlist & Server-driven Trending) */}
+      {homeRails && (
+        <div className="mt-8">
+          <ProductRail 
+            title="Trending Products" 
+            products={homeRails.trending} 
+            icon={TrendingIcon} 
+            iconColor="#F59E0B"
+          />
+          <ProductRail 
+            title="Based on your Wishlist" 
+            products={homeRails.wishlistBased} 
+            icon={Heart} 
+            iconColor="#DC2626"
+          />
+        </div>
+      )}
+
+      {/* Recently Viewed (Local storage fallback) */}
       <RecentlyViewed />
 
 

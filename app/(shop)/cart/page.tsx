@@ -24,6 +24,9 @@ import { useLoginSheet } from "@/lib/LoginSheetContext";
 import CartSummary from "@/components/customer/CartSummary";
 import EmptyState from "@/components/shared/EmptyState";
 import toast from "react-hot-toast";
+import { recommendationsApi } from "@/lib/recommendationsApi";
+import ProductRail from "@/components/customer/ProductRail";
+import type { Product } from "@/components/customer/ProductCard";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -35,6 +38,7 @@ export default function CustomerCartPage() {
   const { open: openLoginSheet } = useLoginSheet();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
+  const [alsoBoughtProducts, setAlsoBoughtProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   const handleProceedToCheckout = () => {
@@ -50,6 +54,15 @@ export default function CustomerCartPage() {
   useEffect(() => {
     refreshCart();
   }, [refreshCart]);
+
+  const primaryCartItem = items[0]?.productId;
+  useEffect(() => {
+    if (primaryCartItem) {
+      recommendationsApi.getAlsoBought(primaryCartItem).then(setAlsoBoughtProducts);
+    } else {
+      setAlsoBoughtProducts([]);
+    }
+  }, [primaryCartItem]);
 
   const subtotal = items.reduce(
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
@@ -353,6 +366,11 @@ export default function CustomerCartPage() {
               </div>
             </div>
 
+            {/* Mobile Cross-sell Rail */}
+            {alsoBoughtProducts.length > 0 && (
+              <ProductRail title="You may also need" products={alsoBoughtProducts} compact />
+            )}
+
             <div className="bg-white mt-4 pb-12 px-4 md:px-0">
               <div className="flex flex-col items-center gap-4 py-8 border-t border-gray-100">
                 <div className="flex items-center gap-6 opacity-40">
@@ -517,6 +535,13 @@ export default function CustomerCartPage() {
             <div className="col-span-12 xl:col-span-4">
               <CartSummary subtotal={subtotal} />
             </div>
+          </div>
+        )}
+        
+        {/* Desktop Cross-sell Rail */}
+        {items.length > 0 && alsoBoughtProducts.length > 0 && (
+          <div className="mt-8">
+            <ProductRail title="You may also need" products={alsoBoughtProducts} />
           </div>
         )}
       </div>

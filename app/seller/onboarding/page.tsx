@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
+import { toast } from "react-hot-toast";
 import { ChevronLeft, ChevronRight, Save, CheckCircle2, Loader2, Send } from "lucide-react";
 import { SellerFormData, INITIAL_FORM, STEP_TITLES, validateStep } from "./types";
 import { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8 } from "./steps";
@@ -100,7 +101,7 @@ export default function OnboardingPage() {
     })();
   }, [authLoading, session, user, getToken]);
 
-  async function saveProgress() {
+  async function saveProgress(showToast = false) {
     setSaving(true);
     try {
       const token = await getToken();
@@ -152,7 +153,14 @@ export default function OnboardingPage() {
           body: JSON.stringify({ phone: payload.phone }),
         });
       }
-    } catch { /* ignore */ }
+      if (showToast) {
+        toast.success("Draft saved successfully");
+      }
+    } catch { 
+      if (showToast) {
+        toast.error("Failed to save draft");
+      }
+    }
     setSaving(false);
   }
 
@@ -295,7 +303,7 @@ export default function OnboardingPage() {
             <ChevronLeft className="w-4 h-4" /> Previous
           </button>
             <button
-              onClick={saveProgress}
+              onClick={() => saveProgress(true)}
               disabled={saving}
               className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60 bg-white"
             >

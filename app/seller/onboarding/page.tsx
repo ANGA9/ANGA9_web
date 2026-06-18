@@ -222,15 +222,16 @@ export default function OnboardingPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-[680px] px-4 py-8 sm:py-12">
-      {/* Progress stepper */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm md:text-base font-semibold text-[#1A6FD4]">
-            Step {step + 1} of 8
-          </p>
-          <p className="text-sm md:text-base text-[#9CA3AF]">{STEP_TITLES[step]}</p>
-        </div>
+    <div className="mx-auto max-w-[680px] px-4 py-8 sm:py-12 relative z-10">
+      <div className="bg-white/95 backdrop-blur-md rounded-[28px] sm:rounded-[32px] border border-black shadow-[0_16px_40px_-10px_rgba(26,111,212,0.12)] sm:shadow-[0_20px_60px_-15px_rgba(26,111,212,0.15)] p-6 sm:p-8 sm:px-10">
+        {/* Progress stepper */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm md:text-base font-semibold text-[#1A6FD4]">
+              Step {step + 1} of 8
+            </p>
+            <p className="text-sm md:text-base text-[#9CA3AF]">{STEP_TITLES[step]}</p>
+          </div>
         <div className="flex gap-1.5">
           {STEP_TITLES.map((_, i) => (
             <div
@@ -252,18 +253,18 @@ export default function OnboardingPage() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold transition-all ${
                 i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#E8EEF4] text-[#9CA3AF]"
               }`}>
-                {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
-              </div>
-              <span className={`text-xs md:text-sm font-medium max-w-[70px] text-center leading-tight ${
-                i <= step ? "text-[#1A1A2E]" : "text-[#9CA3AF]"
-              }`}>{title}</span>
-            </button>
+                  {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
+                </div>
+                <span className={`text-xs md:text-sm font-medium max-w-[70px] text-center leading-tight ${
+                  i <= step ? "text-[#1A1A2E]" : "text-[#9CA3AF]"
+                }`}>{title}</span>
+              </button>
           ))}
         </div>
       </div>
 
-      {/* Card */}
-      <div className="bg-white rounded-2xl border border-[#E8EEF4] shadow-[0_4px_24px_rgba(26,111,212,0.06)] p-6 sm:p-8">
+      {/* Form Area */}
+      <div className="mb-8">
         <h2 className="text-xl md:text-2xl sm:text-2xl md:text-3xl font-bold text-[#1A1A2E] mb-1">
           {STEP_TITLES[step]}
         </h2>
@@ -285,20 +286,20 @@ export default function OnboardingPage() {
       </div>
 
       {/* Navigation buttons */}
-      <div className="flex flex-col-reverse md:flex-row md:items-center justify-between mt-8 gap-4">
+      <div className="flex flex-col-reverse md:flex-row md:items-center justify-between mt-8 gap-4 pt-6 border-t border-[#E8EEF4]">
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <button
-            onClick={handlePrev}
-            disabled={step === 0}
-            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none bg-white"
-          >
+            <button
+              onClick={handlePrev}
+              disabled={step === 0}
+              className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-40 disabled:pointer-events-none bg-white"
+            >
             <ChevronLeft className="w-4 h-4" /> Previous
           </button>
-          <button
-            onClick={saveProgress}
-            disabled={saving}
-            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60 bg-white"
-          >
+            <button
+              onClick={saveProgress}
+              disabled={saving}
+              className="flex-1 md:flex-none flex items-center justify-center gap-1.5 h-12 md:h-11 px-5 rounded-lg border border-[#E8EEF4] text-sm md:text-base font-semibold text-[#4B5563] hover:border-[#1A6FD4] transition-colors disabled:opacity-60 bg-white"
+            >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span className="hidden sm:inline">Save Draft</span>
             <span className="sm:hidden">Save</span>
@@ -306,22 +307,23 @@ export default function OnboardingPage() {
         </div>
 
         {step < 7 ? (
-          <button
-            onClick={handleNext}
-            className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
-          >
+            <button
+              onClick={handleNext}
+              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#1A6FD4] text-sm md:text-base font-semibold text-white hover:bg-[#155bb5] shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+            >
             Next <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#4338CA] text-sm md:text-base font-semibold text-white hover:bg-[#3730A3] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
-          >
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg bg-[#4338CA] text-sm md:text-base font-semibold text-white hover:bg-[#3730A3] shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60"
+            >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Verification
           </button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

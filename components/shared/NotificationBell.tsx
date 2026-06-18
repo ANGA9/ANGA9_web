@@ -6,6 +6,7 @@ import { Bell, Check, CheckCheck, Trash2, Package, CreditCard, Truck, AlertCircl
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 interface Notification {
   id: string;

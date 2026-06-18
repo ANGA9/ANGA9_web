@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "./api";
+import { getSupabaseBrowserClient } from "./supabase";
 
 interface Brand {
   id: string;
@@ -40,9 +41,30 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
 
   const fetchBrands = async () => {
     try {
+      // Don't call the API if there's no session — prevents 401 errors
+      // in the console after logout or for unauthenticated visitors.
+      const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
+      if (!session) {
+        setBrands([]);
+        setIsLoading(false);
+        return;
+      }
+
       const res = await api.get<{ brands: Brand[] }>("/api/users/brands", { silent: true });
       if (res && res.brands) {
         setBrands(res.brands);
+
+        // Validate stored brand belongs to the current user. If a previous
+        // user's brand ID is still in localStorage (e.g. shared browser,
+        // logout didn't clear), nuke it so we don't leak their data.
+        const stored = localStorage.getItem("anga_active_brand_id");
+        if (stored) {
+          const ownsIt = res.brands.some((b) => b.id === stored);
+          if (!ownsIt) {
+            localStorage.removeItem("anga_active_brand_id");
+            setActiveBrandIdState(null);
+          }
+        }
       }
     } catch (err) {
       console.error("Failed to fetch brands", err);

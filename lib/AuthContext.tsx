@@ -134,6 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setCookies(null);
         setDbUser(null);
+        // Clear stale brand context when user signs out so the next
+        // login doesn't inherit a brand belonging to a different seller.
+        localStorage.removeItem('anga_active_brand_id');
       }
 
       setLoading(false);
@@ -148,9 +151,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
-    setDbUser(null);
+    // Clear local state FIRST to prevent stale data on next login.
+    localStorage.removeItem('anga_active_brand_id');
     setCookies(null);
+    // Redirect immediately — this prevents React from re-rendering
+    // in a broken intermediate state (user=null while page still shows
+    // authenticated UI), which causes hydration error #418.
+    // supabase.auth.signOut() is fire-and-forget; the server will
+    // invalidate the refresh token regardless.
+    supabase.auth.signOut();
     window.location.href = "/";
   }, [supabase, setCookies]);
 

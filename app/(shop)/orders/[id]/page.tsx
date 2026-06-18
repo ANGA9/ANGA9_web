@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, AlertTriangle, Loader2, CheckCircle2, MessageSquare, Info } from "lucide-react";
 import { api } from "@/lib/api";
 import { disputesApi, Dispute, DisputeType } from "@/lib/disputesApi";
+import { pdcApi, PdcEligibilityResponse } from "@/lib/pdcApi";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import toast from "react-hot-toast";
 
@@ -34,6 +35,15 @@ const DISPUTE_TYPE_LABELS: Record<DisputeType, string> = {
   other: "Other",
 };
 
+const REASON_CODES = [
+  { id: 'defective', label: "Item is defective or doesn't work" },
+  { id: 'damaged', label: 'Item or packaging is damaged' },
+  { id: 'wrong_item', label: 'Wrong item was sent' },
+  { id: 'missing_parts', label: 'Missing parts or accessories' },
+  { id: 'not_as_described', label: 'Item does not match description' },
+  { id: 'no_longer_needed', label: 'No longer needed' }
+];
+
 export default function OrderDisputePage() {
   const { id } = useParams() as { id: string };
   const [loading, setLoading] = useState(true);
@@ -44,7 +54,15 @@ export default function OrderDisputePage() {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<DisputeType>("return");
+  const [requestedQty, setRequestedQty] = useState(1);
+  const [reasonCode, setReasonCode] = useState(REASON_CODES[0].id);
+  const [resolutionMode, setResolutionMode] = useState<'refund_source'|'refund_wallet'|'replace'>("refund_source");
   const [reason, setReason] = useState("");
+
+  // PDC state
+  const [showPdcModal, setShowPdcModal] = useState(false);
+  const [pdcEligibility, setPdcEligibility] = useState<PdcEligibilityResponse | null>(null);
+  const [pdcAccepting, setPdcAccepting] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -80,15 +98,48 @@ export default function OrderDisputePage() {
       const res = await disputesApi.raiseDispute(id, {
         order_item_id: order.items[0].id,
         type,
+        requested_qty: requestedQty,
+        reason_code: reasonCode,
+        resolution_mode: resolutionMode,
         reason: reason.trim(),
       });
       setDispute(res.dispute);
       setShowForm(false);
-      toast.success("Issue reported successfully");
+      
+      // Check PDC eligibility
+      try {
+        const pdcRes = await pdcApi.checkEligibility(order.items[0].id);
+        if (pdcRes.eligible) {
+          setPdcEligibility(pdcRes);
+          setShowPdcModal(true);
+        } else {
+          toast.success("Issue reported successfully");
+        }
+      } catch (err) {
+        toast.success("Issue reported successfully"); // fallback
+      }
+      
     } catch (err: any) {
       toast.error(err.message || "Failed to submit dispute");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleAcceptPdc = async () => {
+    if (!dispute) return;
+    try {
+      setPdcAccepting(true);
+      await pdcApi.acceptCoins(dispute.id);
+      toast.success(`₹${pdcEligibility?.total_coins} Coins credited to your wallet!`);
+      setShowPdcModal(false);
+      // reload dispute to get updated status
+      const dRes = await disputesApi.getDisputesForOrder(id);
+      if (dRes.items && dRes.items.length > 0) setDispute(dRes.items[0]);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to accept coins");
+    } finally {
+      setPdcAccepting(false);
     }
   };
 
@@ -137,7 +188,51 @@ export default function OrderDisputePage() {
   const item = order.items?.[0];
 
   return (
-    <div className="mx-auto max-w-2xl py-6 px-4 md:px-0">
+    <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 relative">
+      {/* PDC Modal */}
+      {showPdcModal && pdcEligibility && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+                <span className="text-3xl">🪙</span>
+              </div>
+              <h2 className="text-2xl font-black mb-2">Wait! Want instant refund?</h2>
+              <p className="text-amber-50 font-medium">Get your refund instantly in ANGA9 Coins + a 5% bonus.</p>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <button 
+                onClick={handleAcceptPdc}
+                disabled={pdcAccepting}
+                className="w-full relative overflow-hidden group bg-gray-900 hover:bg-black text-white p-4 rounded-xl font-bold flex flex-col items-center justify-center transition-all disabled:opacity-70"
+              >
+                {pdcAccepting ? (
+                  <Loader2 className="w-6 h-6 animate-spin my-2" />
+                ) : (
+                  <>
+                    <span className="text-lg">Get ₹{pdcEligibility.total_coins} now as ANGA9 Coins</span>
+                    <span className="text-xs text-gray-400 font-normal mt-1">(Includes ₹{pdcEligibility.bonus_coins} bonus • Expires in 90 days)</span>
+                  </>
+                )}
+              </button>
+
+              <button 
+                onClick={() => {
+                  setShowPdcModal(false);
+                  toast.success("Issue reported. Refund will process normally.");
+                }}
+                disabled={pdcAccepting}
+                className="w-full bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 p-4 rounded-xl font-bold flex flex-col items-center justify-center transition-all"
+              >
+                <span>Continue with cash refund</span>
+                <span className="text-xs text-gray-500 font-normal mt-1">(Takes 4-8 business days to source account)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Link href="/orders" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 mb-6">
         <ArrowLeft className="w-4 h-4" />
         Back to Orders
@@ -191,7 +286,19 @@ export default function OrderDisputePage() {
               </div>
               <div className="pb-6">
                 <p className="text-sm font-bold text-gray-900 mb-1">Issue Reported ({DISPUTE_TYPE_LABELS[dispute.type]})</p>
-                <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 mt-2">"{dispute.reason}"</p>
+                {dispute.requested_qty && <p className="text-sm font-semibold text-amber-700 mt-1">Quantity: {dispute.requested_qty}</p>}
+                {dispute.resolution_mode && (
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mt-1">
+                    Requested: {dispute.resolution_mode.replace('_', ' ')}
+                  </p>
+                )}
+                {dispute.refund_amount != null && dispute.refund_amount > 0 && (
+                  <p className="text-sm font-bold text-gray-900 mt-1">Est. Refund: ₹{dispute.refund_amount}</p>
+                )}
+                <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 mt-2">
+                  {dispute.reason_code && <span className="font-bold block mb-1 border-b pb-1 border-gray-200">{REASON_CODES.find(r => r.id === dispute.reason_code)?.label || dispute.reason_code}</span>}
+                  "{dispute.reason}"
+                </p>
                 <p className="text-xs text-gray-400 mt-2">{new Date(dispute.created_at).toLocaleString()}</p>
               </div>
             </div>
@@ -238,27 +345,71 @@ export default function OrderDisputePage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <h2 className="text-lg font-black text-gray-900 mb-4">Report an Issue</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">Issue Type</label>
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value as DisputeType)}
+                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                >
+                  {Object.entries(DISPUTE_TYPE_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">Quantity Affected</label>
+                <select
+                  value={requestedQty}
+                  onChange={(e) => setRequestedQty(parseInt(e.target.value, 10))}
+                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                >
+                  {Array.from({ length: item?.quantity || 1 }).map((_, i) => (
+                    <option key={i+1} value={i+1}>{i+1}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1.5">Issue Type</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1.5">Reason Code</label>
               <select
-                value={type}
-                onChange={(e) => setType(e.target.value as DisputeType)}
+                value={reasonCode}
+                onChange={(e) => setReasonCode(e.target.value)}
                 className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
               >
-                {Object.entries(DISPUTE_TYPE_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
+                {REASON_CODES.map(r => (
+                  <option key={r.id} value={r.id}>{r.label}</option>
                 ))}
               </select>
             </div>
+
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1.5">Details</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1.5">Preferred Resolution</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: 'refund_source', label: 'Refund to Original source' },
+                  { id: 'refund_wallet', label: 'Refund to Wallet' },
+                  { id: 'replace', label: 'Replacement' }
+                ].map(rm => (
+                  <label key={rm.id} className={`flex items-center justify-center p-3 text-sm border rounded-xl cursor-pointer transition-colors ${resolutionMode === rm.id ? 'bg-blue-50 border-blue-600 text-blue-700 font-bold' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                    <input type="radio" className="hidden" name="resolution_mode" value={rm.id} checked={resolutionMode === rm.id} onChange={(e) => setResolutionMode(e.target.value as any)} />
+                    <span className="text-center">{rm.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1.5">Additional Details</label>
               <textarea
                 required
                 minLength={5}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Please describe the issue in detail..."
-                className="w-full rounded-xl border-gray-200 border p-3 text-sm h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                className="w-full rounded-xl border-gray-200 border p-3 text-sm h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
               />
             </div>
             <div className="flex gap-3 pt-2">

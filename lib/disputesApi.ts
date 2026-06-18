@@ -13,6 +13,11 @@ export interface Dispute {
   reason: string;
   evidence_images: string[];
   status: DisputeStatus;
+  requested_qty?: number;
+  reason_code?: string;
+  resolution_mode?: 'refund_source' | 'refund_wallet' | 'replace';
+  refund_amount?: number;
+  qc_status?: 'pending' | 'passed' | 'failed';
   seller_response: string | null;
   seller_responded_at: string | null;
   admin_resolution: string | null;
@@ -33,16 +38,21 @@ export interface RaiseDisputeBody {
   order_item_id: string;
   type: DisputeType;
   reason: string;
+  requested_qty?: number;
+  reason_code?: string;
+  resolution_mode?: 'refund_source' | 'refund_wallet' | 'replace';
   evidence_images?: string[];
 }
 
 export interface SellerRespondBody {
   seller_response: string;
+  qc_status?: 'pending' | 'passed' | 'failed';
   request_admin?: boolean;
 }
 
 export interface AdminResolveBody {
   status: 'resolved_refund' | 'resolved_replace' | 'resolved_rejected';
+  resolution_mode?: 'refund_source' | 'refund_wallet' | 'replace';
   admin_resolution?: string;
 }
 

@@ -12,6 +12,7 @@ export default function AdminDisputesPage() {
   const [statusFilter, setStatusFilter] = useState<DisputeStatus | "all">("all");
 
   const [resolutionNote, setResolutionNote] = useState("");
+  const [resolutionMode, setResolutionMode] = useState<'refund_source'|'refund_wallet'|'replace'>('refund_source');
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
@@ -38,6 +39,7 @@ export default function AdminDisputesPage() {
       setSubmitting(true);
       await disputesApi.adminResolve(selectedDispute.id, {
         status,
+        resolution_mode: resolutionMode,
         admin_resolution: resolutionNote.trim() || undefined,
       });
       toast.success("Dispute resolved successfully");
@@ -148,6 +150,7 @@ export default function AdminDisputesPage() {
                         onClick={() => {
                           setSelectedDispute(d);
                           setResolutionNote("");
+                          setResolutionMode((d.resolution_mode as any) || 'refund_source');
                         }}
                         className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#8B5CF6] text-white text-[12px] font-bold hover:bg-[#7C3AED] transition-all shadow-sm opacity-0 group-hover:opacity-100"
                       >
@@ -186,22 +189,35 @@ export default function AdminDisputesPage() {
             
             <div className="p-8 overflow-y-auto custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="space-y-3">
-                  <h3 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-red-400" />
                     Customer Complaint
                   </h3>
-                  <div className="text-[14px] font-medium text-gray-700 bg-red-50/50 p-6 rounded-[24px] border border-red-100 italic leading-relaxed">
+                  <div className="flex gap-2 flex-wrap mb-2">
+                    {selectedDispute.requested_qty && <span className="text-[11px] font-bold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200">Qty: {selectedDispute.requested_qty}</span>}
+                    {selectedDispute.resolution_mode && <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200">Req: {selectedDispute.resolution_mode.replace('_', ' ')}</span>}
+                    {selectedDispute.refund_amount != null && selectedDispute.refund_amount > 0 && <span className="text-[11px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-200">Refund: ₹{selectedDispute.refund_amount}</span>}
+                  </div>
+                  <div className="text-[14px] font-medium text-gray-700 bg-red-50/50 p-6 rounded-[24px] border border-red-100 italic leading-relaxed mt-1">
+                    {selectedDispute.reason_code && <span className="font-bold not-italic block mb-2">{selectedDispute.reason_code}</span>}
                     "{selectedDispute.reason}"
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h3 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-blue-400" />
                     Seller Response
                   </h3>
-                  <div className="text-[14px] font-medium text-gray-700 bg-blue-50/50 p-6 rounded-[24px] border border-blue-100 italic leading-relaxed">
+                  {selectedDispute.qc_status && (
+                    <div className="mb-2">
+                      <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${selectedDispute.qc_status === 'passed' ? 'bg-green-50 text-green-700 border-green-200' : selectedDispute.qc_status === 'failed' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                        QC: {selectedDispute.qc_status.toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="text-[14px] font-medium text-gray-700 bg-blue-50/50 p-6 rounded-[24px] border border-blue-100 italic leading-relaxed mt-1">
                     {selectedDispute.seller_response ? `"${selectedDispute.seller_response}"` : <span className="text-gray-400 font-bold">Waiting for seller response...</span>}
                   </div>
                 </div>
@@ -228,6 +244,19 @@ export default function AdminDisputesPage() {
                     className="w-full rounded-2xl border border-gray-200 bg-gray-50 p-5 text-[14px] font-medium text-gray-900 placeholder:text-gray-400 h-32 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6] transition-all resize-none mb-6 shadow-inner"
                   />
                   
+                  <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">Refund Destination (if issuing refund)</label>
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    {[
+                      { id: 'refund_source', label: 'Original Source' },
+                      { id: 'refund_wallet', label: 'Wallet Coins' }
+                    ].map(rm => (
+                      <label key={rm.id} className={`flex items-center justify-center p-3 text-[13px] border rounded-xl cursor-pointer transition-colors ${resolutionMode === rm.id ? 'bg-[#8B5CF6]/10 border-[#8B5CF6] text-[#8B5CF6] font-bold' : 'border-gray-200 text-gray-600 hover:bg-gray-50 font-medium'}`}>
+                        <input type="radio" className="hidden" name="admin_res_mode" value={rm.id} checked={resolutionMode === rm.id} onChange={(e) => setResolutionMode(e.target.value as any)} />
+                        <span>{rm.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <button
                       onClick={() => handleResolve('resolved_refund')}

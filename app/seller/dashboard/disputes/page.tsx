@@ -19,6 +19,7 @@ export default function SellerDisputesPage() {
   const [statusFilter, setStatusFilter] = useState<DisputeStatus | "all">("all");
 
   const [response, setResponse] = useState("");
+  const [qcStatus, setQcStatus] = useState<'pending'|'passed'|'failed'>('pending');
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
@@ -51,6 +52,7 @@ export default function SellerDisputesPage() {
       setSubmitting(true);
       await disputesApi.sellerRespond(selectedDispute.order_id, selectedDispute.id, {
         seller_response: response.trim(),
+        qc_status: qcStatus,
       });
       toast.success("Response sent successfully", {
         style: { borderRadius: '16px', background: '#333', color: '#fff' }
@@ -177,9 +179,14 @@ export default function SellerDisputesPage() {
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${d.status === "open" ? "bg-red-50 text-red-500" : "bg-gray-100 text-gray-500"}`}>
                           <AlertTriangle className="w-4 h-4" />
                         </div>
-                        <span className="font-bold text-[14px] text-gray-900 capitalize">
-                          {d.type.replace('_', ' ')}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-[14px] text-gray-900 capitalize">
+                            {d.type.replace('_', ' ')}
+                          </span>
+                          {d.requested_qty && (
+                            <span className="text-[12px] font-medium text-gray-500 mt-0.5">Qty: {d.requested_qty}</span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-5">
@@ -197,6 +204,7 @@ export default function SellerDisputesPage() {
                         onClick={() => {
                           setSelectedDispute(d);
                           setResponse("");
+                          setQcStatus(d.qc_status || 'pending');
                         }}
                         className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-white border border-gray-200 text-gray-700 hover:text-[#1A6FD4] hover:border-[#1A6FD4] hover:shadow-sm transition-all active:scale-95 font-bold text-[13px]"
                       >
@@ -238,7 +246,11 @@ export default function SellerDisputesPage() {
               
               {/* Customer Bubble */}
               <div className="flex flex-col gap-2 max-w-[85%]">
-                <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider px-1">Customer Issue</span>
+                <div className="flex items-center gap-2 px-1">
+                  <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Customer Issue</span>
+                  {selectedDispute.requested_qty && <span className="text-[11px] font-bold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200 shadow-sm">Qty: {selectedDispute.requested_qty}</span>}
+                  {selectedDispute.refund_amount != null && selectedDispute.refund_amount > 0 && <span className="text-[11px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-200 shadow-sm">Refund: ₹{selectedDispute.refund_amount}</span>}
+                </div>
                 <div className="bg-gray-100 rounded-2xl rounded-tl-sm p-4 text-[14px] text-gray-800 font-medium leading-relaxed border border-gray-200">
                   {selectedDispute.reason}
                 </div>
@@ -255,6 +267,7 @@ export default function SellerDisputesPage() {
               )}
 
               {/* Admin Bubble */}
+              {/* Admin Bubble */}
               {selectedDispute.admin_resolution && (
                 <div className="flex flex-col gap-2 w-full items-center mt-8">
                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider bg-white px-2 z-10">Admin Resolution</span>
@@ -267,9 +280,26 @@ export default function SellerDisputesPage() {
               {/* Response Form */}
               {selectedDispute.status === "open" && (
                 <form onSubmit={handleRespond} className="mt-8 pt-6 border-t border-gray-100">
-                  <h3 className="text-[15px] font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <MessageCircle className="w-4 h-4 text-[#1A6FD4]" /> Reply to Customer
+                  <h3 className="text-[15px] font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4 text-[#1A6FD4]" /> Reply & QC Status
                   </h3>
+                  
+                  <div className="mb-4">
+                    <label className="block text-[13px] font-bold text-gray-700 mb-2">Quality Check Status</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: 'pending', label: 'Pending' },
+                        { id: 'passed', label: 'Passed QC' },
+                        { id: 'failed', label: 'Failed QC' }
+                      ].map(qc => (
+                        <label key={qc.id} className={`flex items-center justify-center p-2.5 text-[13px] border rounded-xl cursor-pointer transition-colors ${qcStatus === qc.id ? 'bg-[#e8f1fb] border-[#1A6FD4] text-[#1A6FD4] font-bold' : 'border-gray-200 text-gray-600 hover:bg-gray-50 font-medium'}`}>
+                          <input type="radio" className="hidden" name="qc_status" value={qc.id} checked={qcStatus === qc.id} onChange={(e) => setQcStatus(e.target.value as any)} />
+                          <span>{qc.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
                   <textarea
                     required
                     minLength={5}

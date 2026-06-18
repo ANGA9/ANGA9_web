@@ -30,6 +30,7 @@ interface LedgerEntry {
   order_id: string | null;
   refund_id: string | null;
   note: string | null;
+  expires_at?: string | null;
   created_at: string;
 }
 
@@ -171,17 +172,27 @@ export default function CustomerCoinsPage() {
               Balance and history
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[15px] font-bold text-gray-400">1 Coin = ₹1</span>
-            <span className="inline-flex items-center gap-2 bg-[#FFF7ED] border border-[#FDBA74] text-[#9A3412] text-[16px] font-black px-5 py-2.5 rounded-full shadow-sm">
-              <CoinsIcon className="w-5 h-5" />
-              {balance ?? 0} coins
-            </span>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-3">
+              <span className="text-[15px] font-bold text-gray-400">1 Coin = ₹1</span>
+              <span className="inline-flex items-center gap-2 bg-[#FFF7ED] border border-[#FDBA74] text-[#9A3412] text-[16px] font-black px-5 py-2.5 rounded-full shadow-sm">
+                <CoinsIcon className="w-5 h-5" />
+                {balance ?? 0} coins
+              </span>
+            </div>
+            {entries.some(e => e.expires_at && new Date(e.expires_at) > new Date() && e.delta > 0) && (() => {
+              const expiringEntry = entries.find(e => e.expires_at && new Date(e.expires_at) > new Date() && e.delta > 0)!;
+              return (
+                <div className="text-sm font-bold text-red-600 bg-red-50 border border-red-200 px-3 py-1 rounded-lg">
+                  ⚠️ {expiringEntry.delta} coins expiring on {formatDate(expiringEntry.expires_at!)}
+                </div>
+              );
+            })()}
           </div>
         </div>
 
         {/* ── Coin Balance Strip (mobile only) ── */}
-        <div className="flex items-center justify-between py-3 mb-4 border-b border-gray-100 md:hidden">
+        <div className="flex items-center justify-between py-3 mb-2 border-b border-gray-100 md:hidden">
           <div className="flex items-center gap-2 text-[14px] font-bold text-gray-500">
             <CoinsIcon className="w-4 h-4 text-[#F59E0B]" />
             <span>1 Coin = ₹1</span>
@@ -194,6 +205,15 @@ export default function CustomerCoinsPage() {
             </span>
           </div>
         </div>
+        {/* Mobile Expiry Banner */}
+        {entries.some(e => e.expires_at && new Date(e.expires_at) > new Date() && e.delta > 0) && (() => {
+          const expiringEntry = entries.find(e => e.expires_at && new Date(e.expires_at) > new Date() && e.delta > 0)!;
+          return (
+            <div className="mb-4 md:hidden text-[13px] font-bold text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-lg text-center">
+              ⚠️ {expiringEntry.delta} coins expiring on {formatDate(expiringEntry.expires_at!)}
+            </div>
+          );
+        })()}
 
         {/* ── Categories (How to earn & spend) ── */}
         <section className="mb-6 md:mb-10">
@@ -267,6 +287,11 @@ export default function CustomerCoinsPage() {
                         <div className="text-[13px] font-medium text-gray-500 mt-1 truncate">
                           {formatDate(entry.created_at)}{entry.note ? ` · ${entry.note}` : ""}
                         </div>
+                        {entry.expires_at && entry.delta > 0 && new Date(entry.expires_at) > new Date() && (
+                          <div className="text-[12px] font-semibold text-amber-600 mt-0.5">
+                            Expires: {formatDate(entry.expires_at)}
+                          </div>
+                        )}
                       </div>
                       <div className="shrink-0 text-right">
                         <div className={`text-[15px] md:text-[16px] font-black ${isCredit ? "text-emerald-600" : "text-gray-900"}`}>

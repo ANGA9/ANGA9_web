@@ -20,6 +20,9 @@ import ProductReviews from "@/components/customer/ProductReviews";
 import { recommendationsApi } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
 import type { Product } from "@/components/customer/ProductCard";
+import { dealsApi, type Deal } from "@/lib/dealsApi";
+import DealTimer from "@/components/customer/DealTimer";
+import DealAlerts from "@/components/customer/DealAlerts";
 
 
 // Mirrors VARIANT_FIELDS in product-service (no name/is_active columns in DB)
@@ -98,6 +101,7 @@ export default function ProductDetailPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [alsoBoughtProducts, setAlsoBoughtProducts] = useState<Product[]>([]);
+  const [activeDeal, setActiveDeal] = useState<Deal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,16 +125,18 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
       setError(null);
-      const [productRes, inventoryRes, similarRes, alsoBoughtRes] = await Promise.all([
+      const [productRes, inventoryRes, similarRes, alsoBoughtRes, dealsRes] = await Promise.all([
         api.get<{ product: ProductDetail }>(`/api/products/${productId}`),
         api.get<InventoryItem[]>(`/api/inventory/${productId}`, { silent: true }),
         recommendationsApi.getSimilar(productId),
         recommendationsApi.getAlsoBought(productId),
+        dealsApi.getDeals({ product_id: productId, active_only: true }).catch(() => []),
       ]);
       setProduct(productRes.product);
       setInventory(inventoryRes || []);
       setSimilarProducts(similarRes);
       setAlsoBoughtProducts(alsoBoughtRes);
+      setActiveDeal(dealsRes?.[0] || null);
       
       if (productRes.product.product_variants?.length) {
         setSelectedVariant(productRes.product.product_variants[0].id);
@@ -178,7 +184,7 @@ export default function ProductDetailPage() {
 
   const getCurrentPrice = () => {
     if (!product) return 0;
-    const defaultPrice = product.sale_price ?? product.base_price;
+    const defaultPrice = activeDeal ? activeDeal.deal_price : (product.sale_price ?? product.base_price);
     if (selectedVariant) {
       const variant = product.product_variants?.find((v) => v.id === selectedVariant);
       // price_override is an absolute variant price, not an offset
@@ -472,6 +478,11 @@ export default function ProductDetailPage() {
             )}
           </div>
 
+          {/* Deal Timer */}
+          {activeDeal && activeDeal.ends_at && (
+            <DealTimer endsAt={activeDeal.ends_at} />
+          )}
+
           {/* Price */}
           <div className="flex items-baseline gap-3 mb-4">
             <span className="font-bold" style={{ color: t.textPrimary, fontSize: 'clamp(28px, 5vw, 36px)' }}>
@@ -499,7 +510,14 @@ export default function ProductDetailPage() {
             </span>
           </div>
 
-
+          {/* Alerts: Notify Me */}
+          <div className="mb-5">
+            <DealAlerts 
+              productId={product.id} 
+              isOutOfStock={stock.status === "out"} 
+              targetPrice={currentPrice * 0.95} // Arbitrary target for quick subscribe
+            />
+          </div>
 
           {/* Min order */}
           <p className="text-sm mb-5" style={{ color: t.textSecondary }}>

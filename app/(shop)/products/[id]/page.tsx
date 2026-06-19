@@ -459,30 +459,9 @@ export default function ProductDetailPage() {
           )}
 
           {/* Name */}
-          <h1 className="font-bold leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(22px, 4vw, 30px)' }}>
+          <h1 className="font-medium leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(20px, 3.5vw, 24px)' }}>
             {product.name}
           </h1>
-
-          {/* Seller */}
-          <div className="mb-8 -ml-3.5">
-            {storePublished ? (
-              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 hover:border-gray-200 transition-all group cursor-pointer">
-                <Store className="w-[18px] h-[18px] text-gray-400 group-hover:text-blue-500 transition-colors" />
-                <span className="text-[15px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{displaySellerName}</span>
-                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 bg-white rounded-full shadow-sm" />
-              </Link>
-            ) : (
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gray-50/80 border border-gray-100">
-                <Store className="w-[18px] h-[18px] text-gray-400" />
-                <span className="text-[15px] font-semibold text-gray-700">{displaySellerName}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Deal Timer */}
-          {activeDeal && activeDeal.ends_at && (
-            <DealTimer endsAt={activeDeal.ends_at} />
-          )}
 
           {/* Price */}
           <div className="flex items-baseline gap-3 mb-4">
@@ -499,25 +478,30 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Stock Status */}
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 rounded-full" style={{
-              background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
-            }} />
-            <span className="text-sm font-medium" style={{
-              color: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
-            }}>
-              {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock — ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Stock info unavailable"}
-            </span>
-          </div>
+          {/* Deal Timer */}
+          {activeDeal && activeDeal.ends_at && (
+            <DealTimer endsAt={activeDeal.ends_at} />
+          )}
 
-          {/* Alerts: Notify Me */}
-          <div className="mb-5">
-            <DealAlerts 
-              productId={product.id} 
-              isOutOfStock={stock.status === "out"} 
-              targetPrice={currentPrice * 0.95} // Arbitrary target for quick subscribe
-            />
+          {/* Stock Status & Notify Me */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-100 pb-5">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{
+                background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
+              }} />
+              <span className="text-sm font-medium" style={{
+                color: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
+              }}>
+                {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock — ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Stock info unavailable"}
+              </span>
+            </div>
+            <div className="-mt-2">
+              <DealAlerts 
+                productId={product.id} 
+                isOutOfStock={stock.status === "out"} 
+                targetPrice={currentPrice * 0.95} 
+              />
+            </div>
           </div>
 
           {/* Min order */}
@@ -639,9 +623,9 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Description */}
-          {product.description && (
-            <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
-              <h2 className="font-semibold text-base mb-3" style={{ color: t.textPrimary }}>Description</h2>
+          <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
+            <h2 className="font-semibold text-base mb-3" style={{ color: t.textPrimary }}>Description</h2>
+            {product.description ? (
               <div className="text-sm md:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                 {descriptionLong && !descExpanded ? (
                   <>{product.description.slice(0, 150)}...</>
@@ -649,20 +633,37 @@ export default function ProductDetailPage() {
                   product.description
                 )}
               </div>
-              {descriptionLong && (
-                <button onClick={() => setDescExpanded(!descExpanded)}
-                  className="flex items-center gap-1 mt-2 text-sm font-semibold transition-colors hover:opacity-80"
-                  style={{ color: t.bluePrimary }}>
-                  {descExpanded ? <><ChevronUp className="w-4 h-4" /> Show less</> : <><ChevronDown className="w-4 h-4" /> Read more</>}
-                </button>
+            ) : null}
+            {product.description && descriptionLong && (
+              <button onClick={() => setDescExpanded(!descExpanded)}
+                className="flex items-center gap-1 mt-2 text-sm font-semibold transition-colors hover:opacity-80"
+                style={{ color: t.bluePrimary }}>
+                {descExpanded ? <><ChevronUp className="w-4 h-4" /> Show less</> : <><ChevronDown className="w-4 h-4" /> Read more</>}
+              </button>
+            )}
+            
+            {/* Seller Info */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <h2 className="font-semibold text-sm mb-3 text-gray-500 uppercase tracking-wider">Sold By</h2>
+              {storePublished ? (
+                <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 hover:border-gray-200 transition-all group cursor-pointer">
+                  <Store className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  <span className="text-[15px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{displaySellerName}</span>
+                  <CheckCircle2 className="w-5 h-5 text-green-500 bg-white rounded-full shadow-sm" />
+                </Link>
+              ) : (
+                <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100">
+                  <Store className="w-5 h-5 text-gray-400" />
+                  <span className="text-[15px] font-semibold text-gray-700">{displaySellerName}</span>
+                </div>
               )}
             </div>
-          )}
+          </div>
 
           {/* Tags */}
           {product.tags && product.tags.length > 0 && (
-            <div className="mt-6">
-              <h2 className="font-semibold text-sm mb-2" style={{ color: t.textPrimary }}>Tags</h2>
+            <div className="mt-6 border-t pt-6 border-gray-100">
+              <h2 className="font-semibold text-sm mb-3" style={{ color: t.textPrimary }}>Tags</h2>
               <div className="flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
                   <span key={tag} className="rounded-full px-3 py-1 text-xs md:text-sm font-medium"
@@ -699,7 +700,7 @@ export default function ProductDetailPage() {
       </div>
 
       {/* ══════════ Q&A ══════════ */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6 mt-16">
         <ProductQA productId={product.id} />
       </div>
 

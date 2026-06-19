@@ -36,10 +36,10 @@ export default function DealTimer({ endsAt }: { endsAt: string }) {
   }
 
   return (
-    <div className="flex items-center gap-2 text-[13px] font-medium text-gray-500 mb-4">
-      <Clock className="w-4 h-4 text-red-500" />
-      <span>Deal ends in:</span>
-      <div className="flex items-center gap-1 font-mono font-bold text-red-600 text-[14px]">
+    <div className="flex items-center gap-2 bg-[#EA580C] text-white px-3 py-1.5 rounded-full mb-4 inline-flex shadow-sm">
+      <Clock className="w-4 h-4 animate-pulse" />
+      <span className="text-[13px] font-semibold tracking-wide">Deal ends in</span>
+      <div className="flex items-center gap-0.5 font-mono font-bold text-[14px] bg-white/20 px-2 py-0.5 rounded-md ml-1">
         {timeLeft.d > 0 && <span>{timeLeft.d}d</span>}
         <span>{timeLeft.h.toString().padStart(2, "0")}h</span>
         <span>:</span>

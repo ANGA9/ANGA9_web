@@ -473,7 +473,7 @@ export default function ProductDetailPage() {
                 <span className="line-through text-sm md:text-base" style={{ color: t.textMuted }}>
                   MRP {formatINR(product.base_price)}
                 </span>
-                <span className="text-sm font-semibold" style={{ color: t.inStock }}>{discount}% below MRP</span>
+                <span className="text-sm font-semibold" style={{ color: '#4338CA' }}>{discount}% below MRP</span>
               </>
             )}
           </div>
@@ -649,7 +649,7 @@ export default function ProductDetailPage() {
                 <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 hover:border-gray-200 transition-all group cursor-pointer">
                   <Store className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
                   <span className="text-[15px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{displaySellerName}</span>
-                  <CheckCircle2 className="w-5 h-5 text-green-500 bg-white rounded-full shadow-sm" />
+                  <CheckCircle2 className="w-5 h-5 text-[#2563EB] bg-white rounded-full shadow-sm" />
                 </Link>
               ) : (
                 <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100">
@@ -667,7 +667,7 @@ export default function ProductDetailPage() {
               <div className="flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
                   <span key={tag} className="rounded-full px-3 py-1 text-xs md:text-sm font-medium"
-                    style={{ background: t.bgBlueTint, color: t.bluePrimary }}>
+                    style={{ background: '#F1F5F9', color: '#475569' }}>
                     {tag}
                   </span>
                 ))}

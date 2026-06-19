@@ -20,8 +20,8 @@ export default function MembershipPage() {
   useEffect(() => {
     fetchProfile();
     // Pre-fetch Razorpay Key ID
-    api.get<{ value: { key_id: string } }>("/api/admin/config", { silent: true })
-       .then(res => setRazorpayKeyId(res?.razorpay?.key_id))
+    api.get<{ razorpay?: { key_id: string } }>("/api/admin/config", { silent: true })
+       .then(res => setRazorpayKeyId(res?.razorpay?.key_id || null))
        .catch(() => {});
   }, []);
 

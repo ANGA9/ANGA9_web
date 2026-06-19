@@ -6,7 +6,7 @@ export interface BulkImportResult {
   errors: Array<{ index: number; error: string }>;
 }
 
-export const catalogApi = {
+export const bulkApi = {
   /**
    * Upload a CSV file of products.
    * Expected columns: name, description, base_price, sale_price, category_ids, min_order_qty, initial_stock
@@ -37,5 +37,21 @@ export const catalogApi = {
    */
   importJson: async (products: any[]): Promise<BulkImportResult> => {
     return api.post<BulkImportResult>("/api/products/bulk-import", { products });
+  },
+
+  /**
+   * Bulk update prices for multiple products.
+   * Expects array of { id, base_price, sale_price }
+   */
+  updatePrices: async (updates: any[]): Promise<{ updated: number }> => {
+    return api.post<{ updated: number }>("/api/products/bulk-prices", { updates });
+  },
+
+  /**
+   * Bulk update stock for multiple products/variants.
+   * Expects array of { product_id, variant_id, quantity }
+   */
+  updateStock: async (updates: any[]): Promise<{ updated: number }> => {
+    return api.post<{ updated: number }>("/api/inventory/bulk-update", { updates });
   },
 };

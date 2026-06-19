@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import Link from "next/link";
-import { Plus, Loader2, Package, Pencil, Search, ChevronLeft, ChevronRight, Filter, AlertCircle, Eye } from "lucide-react";
+import { Plus, Loader2, Package, Pencil, Search, ChevronLeft, ChevronRight, Filter, AlertCircle, Eye, Upload, Edit3, Award } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -116,12 +116,32 @@ export default function ProductsPage() {
             {total} product{total !== 1 ? "s" : ""}
           </span>
         </div>
-        <Link
-          href="/seller/dashboard/products/new"
-          className="inline-flex items-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-3 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98]"
-        >
-          <Plus className="w-5 h-5" /> Add New Product
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/seller/dashboard/products/quality"
+            className="inline-flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-[14px] font-bold text-gray-700 transition-all shadow-sm hover:shadow hover:bg-gray-50 active:scale-[0.98]"
+          >
+            <Award className="w-5 h-5 text-amber-500" /> Quality
+          </Link>
+          <Link
+            href="/seller/dashboard/products/bulk-edit"
+            className="inline-flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-[14px] font-bold text-gray-700 transition-all shadow-sm hover:shadow hover:bg-gray-50 active:scale-[0.98]"
+          >
+            <Edit3 className="w-5 h-5" /> Bulk Edit
+          </Link>
+          <Link
+            href="/seller/dashboard/products/bulk-upload"
+            className="inline-flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-[14px] font-bold text-gray-700 transition-all shadow-sm hover:shadow hover:bg-gray-50 active:scale-[0.98]"
+          >
+            <Upload className="w-5 h-5" /> Bulk Upload
+          </Link>
+          <Link
+            href="/seller/dashboard/products/new"
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#1A6FD4] px-5 py-3 text-[14px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98]"
+          >
+            <Plus className="w-5 h-5" /> Add New
+          </Link>
+        </div>
       </div>
 
       {/* ── Mobile Header ── */}
@@ -130,12 +150,32 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">Products</h1>
           <span className="text-[14px] text-gray-500 font-medium px-3 py-1 bg-gray-100 rounded-full">{total}</span>
         </div>
-        <Link
-          href="/seller/dashboard/products/new"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1A6FD4] px-4 py-2.5 text-[14px] font-bold text-white shadow-sm w-full mt-2"
-        >
-          <Plus className="w-4 h-4" /> Add Product
-        </Link>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <Link
+            href="/seller/dashboard/products/quality"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+          >
+            <Award className="w-4 h-4 text-amber-500" /> Quality
+          </Link>
+          <Link
+            href="/seller/dashboard/products/bulk-edit"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+          >
+            <Edit3 className="w-4 h-4" /> Edit
+          </Link>
+          <Link
+            href="/seller/dashboard/products/bulk-upload"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+          >
+            <Upload className="w-4 h-4" /> Upload
+          </Link>
+          <Link
+            href="/seller/dashboard/products/new"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1A6FD4] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm w-full"
+          >
+            <Plus className="w-4 h-4" /> Add
+          </Link>
+        </div>
       </div>
 
       {/* ── Filters Bar ── */}

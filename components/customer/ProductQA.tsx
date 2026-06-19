@@ -107,12 +107,13 @@ export default function ProductQA({ productId }: { productId: string }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border p-6 md:p-8" style={{ borderColor: t.border }}>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-          <HelpCircle className="w-5 h-5 text-[#1A6FD4]" />
+    <section className="mt-12 md:mt-16 border-t pt-8 md:pt-10" style={{ borderColor: t.border }}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold" style={{ color: t.textPrimary }}>
+            Customer Questions & Answers
+          </h2>
         </div>
-        <h2 className="text-xl font-bold text-gray-900 tracking-tight">Customer Questions & Answers</h2>
       </div>
 
       <div className="mb-10 bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-100">
@@ -138,9 +139,19 @@ export default function ProductQA({ productId }: { productId: string }) {
       </div>
 
       {questions.length === 0 ? (
-        <div className="text-center py-8">
-          <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 text-[15px]">No questions have been asked yet. Be the first to ask!</p>
+        <div
+          className="rounded-2xl border p-10 md:p-16 text-center bg-gray-50/30 flex flex-col items-center"
+          style={{ borderColor: t.border }}
+        >
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border mb-5" style={{ borderColor: t.border }}>
+            <MessageSquare className="w-8 h-8 text-gray-300" />
+          </div>
+          <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: t.textPrimary }}>
+            No questions yet
+          </h3>
+          <p className="text-sm md:text-base max-w-sm" style={{ color: t.textSecondary }}>
+            No questions have been asked yet. Be the first to ask!
+          </p>
         </div>
       ) : (
         <div className="space-y-8 divide-y divide-gray-100">
@@ -238,6 +249,6 @@ export default function ProductQA({ productId }: { productId: string }) {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

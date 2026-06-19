@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PackageOpen, Heart, ShoppingCart, Loader2, X } from "lucide-react";
+import { PackageOpen, Heart, ShoppingCart, Loader2, X, Zap } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/WishlistContext";
@@ -17,7 +17,7 @@ export interface Product {
   originalPrice: number;
   price: number;
   minOrder: string;
-  badge?: "Top Rated" | "New Arrival";
+  badge?: "Top Rated" | "New Arrival" | "Flash Deal";
   imageUrl?: string;
 }
 
@@ -150,12 +150,15 @@ export default function ProductCard({
           {/* Status badge */}
           {product.badge && (
             <span
-              className="absolute top-2.5 left-2.5 z-10 rounded-md px-2 py-0.5 text-xs font-bold shadow-sm"
+              className={`absolute top-2.5 left-2.5 z-10 rounded-md px-2 py-1 text-[11px] uppercase font-bold shadow-sm flex items-center gap-1 ${
+                product.badge === "Flash Deal" ? "bg-white text-gray-900" : ""
+              }`}
               style={{
-                background: product.badge === "Top Rated" ? "#EAF2FF" : "#FFCC00",
-                color: product.badge === "Top Rated" ? "#1A6FD4" : "#1A1A2E",
+                background: product.badge === "Flash Deal" ? undefined : product.badge === "Top Rated" ? "#EAF2FF" : "#FFCC00",
+                color: product.badge === "Flash Deal" ? undefined : product.badge === "Top Rated" ? "#1A6FD4" : "#1A1A2E",
               }}
             >
+              {product.badge === "Flash Deal" && <Zap className="w-3.5 h-3.5 fill-yellow-400 text-yellow-500" />}
               {product.badge}
             </span>
           )}

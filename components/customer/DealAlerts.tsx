@@ -48,7 +48,7 @@ export default function DealAlerts({ productId, isOutOfStock, targetPrice }: Dea
       <button
         onClick={handleStockAlert}
         disabled={loading || subscribedStock}
-        className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 mt-2"
+        className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 hover:underline w-fit"
         style={{ color: subscribedStock ? "#059669" : "#64748B" }}
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : subscribedStock ? <BellRing className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
@@ -62,7 +62,7 @@ export default function DealAlerts({ productId, isOutOfStock, targetPrice }: Dea
     <button
       onClick={handlePriceAlert}
       disabled={loading || subscribedPrice}
-      className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 mt-2"
+      className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 hover:underline w-fit"
       style={{ color: subscribedPrice ? "#059669" : "#64748B" }}
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : subscribedPrice ? <BellRing className="w-4 h-4" /> : <Bell className="w-4 h-4" />}

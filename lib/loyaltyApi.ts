@@ -1,6 +1,19 @@
 import { api } from "./api";
-import { type Membership, type LoyaltyTier } from "@anga9/shared";
-export type { Membership, LoyaltyTier };
+export interface LoyaltyTier {
+  name: string;
+  min_spend?: number;
+  multiplier: number;
+  threshold?: number;
+}
+
+export interface Membership {
+  id: string;
+  user_id: string;
+  plan: string;
+  status: string;
+  starts_at: string;
+  ends_at: string;
+}
 
 export interface LoyaltyProfile {
   spend: number;

@@ -69,7 +69,7 @@ export default function MembershipPage() {
           }
         },
         prefill: {
-          name: user?.full_name || "",
+          name: (user as any)?.full_name || (user as any)?.first_name || "",
           email: user?.email || "",
           contact: user?.phone || "",
         },

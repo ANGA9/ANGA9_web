@@ -1,5 +1,6 @@
 import { api } from "./api";
 import { type Membership, type LoyaltyTier } from "@anga9/shared";
+export type { Membership, LoyaltyTier };
 
 export interface LoyaltyProfile {
   spend: number;

@@ -183,7 +183,11 @@ export default function SellerDealsPage() {
                           {deal.products?.name || "Unknown Product"}
                         </div>
                         <div className="text-[12px] text-gray-500 font-medium mt-1 flex items-center gap-1">
-                          <Tag className="w-3 h-3" /> {deal.type === 'flash_sale' ? 'Flash Sale' : 'Discount'}
+                          <Tag className="w-3 h-3" /> {
+                            deal.type === 'flash' ? 'Flash Sale' : 
+                            deal.type === 'deal_of_day' ? 'Deal of the Day' : 
+                            deal.type === 'quantity' ? 'Quantity Discount' : deal.type
+                          }
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -240,7 +244,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
   
   const [formData, setFormData] = useState({
     product_id: "",
-    type: "flash_sale" as "flash_sale" | "discount",
+    type: "flash" as "flash" | "deal_of_day" | "quantity",
     deal_price: "",
     start_date: "",
     start_time: "",
@@ -402,8 +406,9 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                 value={formData.type}
                 onChange={e => setFormData({ ...formData, type: e.target.value as any })}
               >
-                <option value="flash_sale">⚡ Flash Sale</option>
-                <option value="discount">🏷️ Discount</option>
+                <option value="flash">⚡ Flash Sale</option>
+                <option value="deal_of_day">🏷️ Deal of the Day</option>
+                <option value="quantity">📦 Bulk/Quantity Discount</option>
               </select>
             </div>
             <div>

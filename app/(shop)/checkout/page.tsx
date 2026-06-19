@@ -17,6 +17,7 @@ import {
   type PaymentMethod,
 } from "@/lib/usePayment";
 import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
+import { loyaltyApi, type LoyaltyProfile } from "@/lib/loyaltyApi";
 import toast from "react-hot-toast";
 
 interface Address {
@@ -88,6 +89,7 @@ export default function CheckoutPage() {
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const [coinBalance, setCoinBalance] = useState(0);
   const [coinsToUse, setCoinsToUse] = useState(0);
+  const [loyaltyProfile, setLoyaltyProfile] = useState<LoyaltyProfile | null>(null);
 
   // Inline address form state
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -163,6 +165,9 @@ export default function CheckoutPage() {
     api.get<{ balance: number }>("/api/users/me/coins", { silent: true })
       .then(res => { if (res?.balance) setCoinBalance(res.balance); })
       .catch(() => {});
+    loyaltyApi.getLoyaltyProfile()
+      .then(setLoyaltyProfile)
+      .catch(() => {});
   }, []);
 
   // ── Recover from refresh/close mid-payment ────────────────────
@@ -236,7 +241,8 @@ export default function CheckoutPage() {
 
   const afterCoupon = subtotal - couponDiscount;
   const gst = Math.round(afterCoupon * 0.18);
-  const delivery = afterCoupon > 10000 ? 0 : 500;
+  const isPlusMember = !!loyaltyProfile?.membership;
+  const delivery = isPlusMember ? 0 : (afterCoupon > 10000 ? 0 : 500);
   const totalBeforeCoins = afterCoupon + gst + delivery;
 
   const maxCoinsAllowed = Math.min(coinBalance, Math.floor(totalBeforeCoins));
@@ -970,7 +976,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span style={{ color: t.textSecondary }}>Delivery Charges</span>
+                <span style={{ color: t.textSecondary }}>Delivery Charges {isPlusMember ? <span className="ml-1 px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 text-[10px] font-bold uppercase">ANGA9+</span> : null}</span>
                 <span className="font-bold" style={{ color: delivery === 0 ? t.inStock : t.textPrimary }}>
                   {delivery === 0 ? "FREE" : formatINR(delivery)}
                 </span>

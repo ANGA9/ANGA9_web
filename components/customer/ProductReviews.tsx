@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Star, ThumbsUp, X, Loader2, ChevronDown, Image as ImageIcon, Video as VideoIcon, Trash2 } from "lucide-react";
+import { Star, ThumbsUp, X, Loader2, ChevronDown, Image as ImageIcon, Video as VideoIcon, Trash2, CheckCircle2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
@@ -247,9 +247,14 @@ export default function ProductReviews({ productId }: Props) {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex flex-col gap-1.5">
                   <StarRow rating={r.rating} size={15} />
-                  <time className="text-[11px] md:text-xs font-semibold uppercase tracking-wider" style={{ color: t.textSecondary }}>
-                    {formatDate(r.created_at)}
-                  </time>
+                  <div className="flex items-center gap-2">
+                    <time className="text-[11px] md:text-xs font-semibold uppercase tracking-wider" style={{ color: t.textSecondary }}>
+                      {formatDate(r.created_at)}
+                    </time>
+                    <span className="flex items-center gap-1 text-[10px] md:text-[11px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-100 uppercase tracking-wider">
+                      <CheckCircle2 className="w-3 h-3" /> Verified Purchase
+                    </span>
+                  </div>
                 </div>
               </div>
               

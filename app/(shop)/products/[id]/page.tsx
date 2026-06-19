@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import ProductReviews from "@/components/customer/ProductReviews";
+import ProductQA from "@/components/customer/ProductQA";
 import { recommendationsApi } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
 import type { Product } from "@/components/customer/ProductCard";
@@ -695,6 +696,11 @@ export default function ProductDetailPage() {
             Buy Now
           </button>
         </div>
+      </div>
+
+      {/* ══════════ Q&A ══════════ */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6">
+        <ProductQA productId={product.id} />
       </div>
 
       {/* ══════════ REVIEWS ══════════ */}

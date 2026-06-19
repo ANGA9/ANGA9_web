@@ -23,6 +23,9 @@ import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import EmptyState from "@/components/shared/EmptyState";
+import { dealsApi, type Deal } from "@/lib/dealsApi";
+import ProductRail from "@/components/customer/ProductRail";
+import { Zap } from "lucide-react";
 
 /* ─── Types ─── */
 interface SearchProduct {
@@ -87,6 +90,7 @@ function SearchPageContent() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<SearchFilters | null>(null);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const [flashDeals, setFlashDeals] = useState<Product[]>([]);
   const suggestFetched = useRef(false);
 
   // Sheet state
@@ -125,12 +129,39 @@ function SearchPageContent() {
         if (maxPriceParam) params.set("maxPrice", maxPriceParam);
         params.set("page", String(pageParam));
         params.set("limit", "12");
-        const [searchRes, filtersRes] = await Promise.all([
+        const [searchRes, filtersRes, dealsRes] = await Promise.all([
           api.get<SearchResponse>(`/api/search?${params.toString()}`),
           filters ? Promise.resolve(filters) : api.get<SearchFilters>("/api/search/filters", { silent: true }),
+          dealsApi.getDeals({ active_only: true }).catch(() => []),
         ]);
         if (cancelled) return;
-        const mapped = (searchRes?.data ?? []).map(toCardProduct);
+
+        // Process Flash Deals
+        const dealsProducts = dealsRes
+          .filter((d: Deal) => d.products)
+          .map((d: Deal) => ({
+            id: d.product_id,
+            name: d.products!.name,
+            seller: "",
+            category: "", // search category name is not strictly needed here
+            originalPrice: d.products!.base_price,
+            price: d.deal_price,
+            minOrder: `${d.products!.min_order_qty || 1} ${d.products!.unit || 'unit'}${d.products!.min_order_qty! > 1 ? "s" : ""}`,
+            badge: "Flash Deal" as "New Arrival",
+            imageUrl: d.products!.images?.[0] || undefined,
+          }));
+        setFlashDeals(dealsProducts);
+
+        const dealsMap = new Map(dealsProducts.map((dp: Product) => [dp.id, dp]));
+        const mapped = (searchRes?.data ?? []).map((p) => {
+          const card = toCardProduct(p);
+          const deal = dealsMap.get(card.id);
+          if (deal) {
+            card.price = deal.price;
+            card.badge = "Flash Deal" as "New Arrival";
+          }
+          return card;
+        });
         setProducts(mapped);
         setTotal(searchRes?.total ?? 0);
         setTotalPages(searchRes?.totalPages ?? 0);
@@ -414,6 +445,18 @@ function SearchPageContent() {
             </div>
           )}
         </div>
+
+        {/* ── Flash Deals Rail ── */}
+        {flashDeals.length > 0 && pageParam === 1 && (
+          <div className="mb-6 px-1.5 md:px-0">
+            <ProductRail 
+              title="Flash Deals" 
+              products={flashDeals} 
+              icon={Zap} 
+              iconColor="#EF4444"
+            />
+          </div>
+        )}
 
         {/* ── Content Grid ── */}
         <div className="flex gap-6 lg:gap-8 px-0 md:px-0">

@@ -789,6 +789,7 @@ export default function CustomerAccountPage() {
                 </div>
                 <div className="flex flex-col">
                   <MenuItem icon={Package} label="My Orders" onClick={() => router.push('/orders')} />
+                  <MenuItem icon={Bell} label="My Alerts" onClick={() => router.push('/account/alerts')} />
                   <MenuItem icon={Coins} label="My Coins" badge={coinBalance != null && coinBalance > 0 ? coinBalance : undefined} onClick={() => router.push('/account/coins')} />
                   <MenuItem icon={MapPin} label="Addresses" onClick={() => { setActiveNav("Addresses"); setMobileMenuOpen(false); }} />
 
@@ -995,6 +996,16 @@ export default function CustomerAccountPage() {
                     {coinBalance}
                   </span>
                 )}
+              </Link>
+
+              <Link
+                href="/account/alerts"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
+                <div className="flex items-center gap-3">
+                  <Bell className="h-5 w-5 text-gray-400" />
+                  My Alerts
+                </div>
               </Link>
 
               <Link

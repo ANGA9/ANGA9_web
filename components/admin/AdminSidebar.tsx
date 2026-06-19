@@ -22,6 +22,9 @@ import {
   Tags,
   Headset,
   ShieldAlert,
+  Tag,
+  MessageSquare,
+  Crown,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -39,12 +42,14 @@ type NavItem = {
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Deals", href: "/admin/deals", icon: Tag },
   { label: "Ad Campaigns", href: "/admin/ads", icon: Megaphone, superOnly: true },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Disputes", href: "/admin/orders/disputes", icon: AlertTriangle },
   { label: "Sellers", href: "/admin/sellers", icon: Store },
   { label: "Pending Sellers", href: "/admin/pending-sellers", icon: UserCheck, badgeKey: "pendingSellers" },
   { label: "Product Reviews", href: "/admin/reviews", icon: ClipboardCheck, badgeKey: "pendingReviews" },
+  { label: "Product Q&A", href: "/admin/qa", icon: MessageSquare },
   { label: "Users", href: "/admin/users", icon: Users, superOnly: true },
   { label: "Payouts", href: "/admin/payouts", icon: Wallet, superOnly: true },
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
@@ -53,6 +58,7 @@ const NAV: NavItem[] = [
   { label: "Team Management", href: "/admin/team", icon: ShieldCheck, superOnly: true },
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
   { label: "Coupons", href: "/admin/coupons", icon: Ticket, superOnly: true },
+  { label: "Loyalty", href: "/admin/loyalty", icon: Crown, superOnly: true },
   { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Risk & Fraud", href: "/admin/risk", icon: ShieldAlert, superOnly: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },

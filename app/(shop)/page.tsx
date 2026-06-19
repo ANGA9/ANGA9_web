@@ -22,7 +22,8 @@ import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
 import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
-import { Heart, TrendingUp as TrendingIcon } from "lucide-react";
+import { dealsApi, type Deal } from "@/lib/dealsApi";
+import { Heart, TrendingUp as TrendingIcon, Zap } from "lucide-react";
 
 const categoryIcons = [
   { name: "Home Decor", icon: Home },
@@ -76,6 +77,7 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
 export default function CustomerHomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [homeRails, setHomeRails] = useState<HomeRails | null>(null);
+  const [flashDeals, setFlashDeals] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
@@ -110,13 +112,14 @@ export default function CustomerHomePage() {
         queryParams.set("sort_by", sortParam);
         if (categoryParam) queryParams.set("category", categoryParam);
 
-        // Fetch products and categories in parallel
-        const [productsRes, categoriesRes, railsRes] = await Promise.all([
+        // Fetch products, categories, rails, and active deals in parallel
+        const [productsRes, categoriesRes, railsRes, dealsRes] = await Promise.all([
           api.get<{ data: ApiProduct[]; total: number }>(
             `/api/products?${queryParams.toString()}`
           ),
           api.get<{ categories: ApiCategory[] } | ApiCategory[]>("/api/categories").catch(() => ({ categories: [] })),
           recommendationsApi.getHomeRails(),
+          dealsApi.getDeals({ active_only: true }).catch(() => []),
         ]);
 
         if (cancelled) return;
@@ -132,10 +135,34 @@ export default function CustomerHomePage() {
         }
         catMapRef.current = catMap;
 
+        // Process Flash Deals
+        const dealsProducts = dealsRes
+          .filter((d: Deal) => d.products)
+          .map((d: Deal) => ({
+            id: d.product_id,
+            name: d.products!.name,
+            seller: "",
+            category: d.products!.category_id ? catMap.get(d.products!.category_id) || "" : "",
+            originalPrice: d.products!.base_price,
+            price: d.deal_price,
+            minOrder: `${d.products!.min_order_qty || 1} ${d.products!.unit || 'unit'}${d.products!.min_order_qty! > 1 ? "s" : ""}`,
+            badge: "Flash Deal" as "New Arrival", // Force type casting for our quick badge addition
+            imageUrl: d.products!.images?.[0] || undefined,
+          }));
+        setFlashDeals(dealsProducts);
+
         const items = productsRes?.data ?? [];
-        const mapped = items.map((p) =>
-          toCardProduct(p, p.category_id ? catMap.get(p.category_id) : undefined)
-        );
+        const dealsMap = new Map(dealsProducts.map(dp => [dp.id, dp]));
+
+        const mapped = items.map((p) => {
+          const card = toCardProduct(p, p.category_id ? catMap.get(p.category_id) : undefined);
+          const deal = dealsMap.get(card.id);
+          if (deal) {
+            card.price = deal.price;
+            card.badge = "Flash Deal" as "New Arrival";
+          }
+          return card;
+        });
         
         // Final safety check: remove duplicates within the same batch
         const seen = new Set();
@@ -231,6 +258,18 @@ export default function CustomerHomePage() {
 
       {/* Hero */}
       <HeroBanner />
+
+      {/* Flash Deals Rail */}
+      {flashDeals.length > 0 && (
+        <div className="mt-8">
+          <ProductRail 
+            title="Flash Deals" 
+            products={flashDeals} 
+            icon={Zap} 
+            iconColor="#EF4444"
+          />
+        </div>
+      )}
 
       {/* Personalized Rails (Wishlist & Server-driven Trending) */}
       {homeRails && (

@@ -14,6 +14,12 @@ export interface Deal {
   products?: {
     seller_id: string;
     name: string;
+    base_price: number;
+    sale_price?: number;
+    images?: string[];
+    min_order_qty?: number;
+    unit?: string;
+    category_id?: string;
   };
 }
 
@@ -39,6 +45,14 @@ export const dealsApi = {
 
   async subscribeStockAlert(productId: string) {
     return api.post("/api/deals/stock-alert", { product_id: productId });
+  },
+
+  async listAlerts() {
+    return api.get<{ price_alerts: any[]; stock_alerts: any[] }>("/api/deals/alerts");
+  },
+
+  async deleteAlert(type: "price" | "stock", id: string) {
+    return api.delete(`/api/deals/alerts/${type}/${id}`);
   },
 
   async createDeal(payload: Partial<Deal>) {

@@ -17,6 +17,7 @@ import {
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { api } from "@/lib/api";
+import { loyaltyApi, type LoyaltyProfile } from "@/lib/loyaltyApi";
 import toast from "react-hot-toast";
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -79,6 +80,7 @@ export default function CustomerCoinsPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loyaltyProfile, setLoyaltyProfile] = useState<LoyaltyProfile | null>(null);
 
   const fetchBalance = useCallback(async () => {
     try {
@@ -87,6 +89,15 @@ export default function CustomerCoinsPage() {
     } catch {
       toast.error("Failed to load coin balance");
       setBalance(0);
+    }
+  }, []);
+
+  const fetchLoyaltyProfile = useCallback(async () => {
+    try {
+      const data = await loyaltyApi.getLoyaltyProfile();
+      setLoyaltyProfile(data);
+    } catch {
+      // Non-blocking
     }
   }, []);
 
@@ -108,14 +119,14 @@ export default function CustomerCoinsPage() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const [, first] = await Promise.all([fetchBalance(), fetchPage()]);
+      const [, first, profile] = await Promise.all([fetchBalance(), fetchPage(), fetchLoyaltyProfile()]);
       if (cancelled) return;
       setEntries(first.entries);
       setCursor(first.nextCursor);
       setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [user, fetchBalance, fetchPage]);
+  }, [user, fetchBalance, fetchPage, fetchLoyaltyProfile]);
 
   const handleLoadMore = async () => {
     if (!cursor) return;
@@ -171,6 +182,11 @@ export default function CustomerCoinsPage() {
             <span className="text-[18px] font-bold text-gray-400">
               Balance and history
             </span>
+            {loyaltyProfile && (
+              <span className="ml-2 inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 text-[13px] font-bold px-3 py-1 rounded-full border border-purple-200">
+                {loyaltyProfile.tier.name} Tier
+              </span>
+            )}
           </div>
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-center gap-3">
@@ -246,6 +262,17 @@ export default function CustomerCoinsPage() {
                 <span className="block font-medium text-[13px] text-gray-500 leading-tight">Apply coins to reduce your total.</span>
               </div>
             </div>
+            {loyaltyProfile && (
+              <div className="flex items-center gap-3 md:gap-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-5 shadow-sm col-span-1 sm:col-span-3">
+                <span className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl shrink-0" style={{ backgroundColor: "#F3E8FF" }}>
+                  <CoinsIcon className="h-5 w-5 md:h-6 md:w-6" style={{ color: "#7E22CE" }} />
+                </span>
+                <div>
+                  <span className="block font-bold text-[15px] md:text-[16px] text-gray-900 leading-tight mb-0.5">Your Earn Rate</span>
+                  <span className="block font-medium text-[13px] text-gray-500 leading-tight">You earn {loyaltyProfile.tier.multiplier * loyaltyProfile.base_earn_rate * 100}% of your order value as coins.</span>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

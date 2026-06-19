@@ -116,24 +116,25 @@ export default function ProductQA({ productId }: { productId: string }) {
         </div>
       </div>
 
-      <div className="mb-10 bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-100">
-        <h3 className="text-[15px] font-bold text-gray-900 mb-3">Have a question about this product?</h3>
+      <div className="mb-12">
         <form onSubmit={handleAsk} className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            placeholder="Type your question here..."
-            className="flex-1 h-12 px-4 rounded-xl border border-gray-200 focus:border-[#1A6FD4] focus:ring-1 focus:ring-[#1A6FD4] outline-none text-[15px]"
-            value={newQuestion}
-            onChange={(e) => setNewQuestion(e.target.value)}
-            disabled={submittingQ}
-          />
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="Have a question about this product?"
+              className="w-full h-12 md:h-14 px-4 md:px-5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none text-[15px] placeholder-gray-500 font-medium"
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              disabled={submittingQ}
+            />
+          </div>
           <button
             type="submit"
             disabled={submittingQ || !newQuestion.trim()}
-            className="h-12 px-6 rounded-xl font-bold text-white shadow-sm active:scale-95 transition-all disabled:opacity-50"
-            style={{ background: t.bluePrimary }}
+            className="h-12 md:h-14 px-8 rounded-xl font-bold text-white shadow-sm hover:shadow-md active:scale-[0.98] transition-all disabled:opacity-50 sm:w-auto w-full flex items-center justify-center gap-2"
+            style={{ background: t.primaryCta }}
           >
-            {submittingQ ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Ask Question"}
+            {submittingQ ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ask Question"}
           </button>
         </form>
       </div>

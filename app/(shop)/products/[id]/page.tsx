@@ -484,12 +484,14 @@ export default function ProductDetailPage() {
           )}
 
           {/* Stock Status & Notify Me */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 mb-6 border-b border-gray-100 pb-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-6 border-b border-gray-100 pb-5">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{
-                background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
-              }} />
-              <span className="text-sm font-medium leading-none" style={{
+              <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                <div className="w-2 h-2 rounded-full" style={{
+                  background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
+                }} />
+              </div>
+              <span className="text-[13.5px] md:text-sm font-medium leading-none" style={{
                 color: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
               }}>
                 {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock — ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Stock info unavailable"}

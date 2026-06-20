@@ -1,9 +1,9 @@
-import { api } from "./api";
+import { api, getAuthHeaders, sellerFetch } from "./api";
 
 export interface BulkImportResult {
   success: boolean;
   imported: number;
-  errors: Array<{ index: number; error: string }>;
+  errors: Array<{ row: number; reason: string }>;
 }
 
 export const bulkApi = {
@@ -15,12 +15,11 @@ export const bulkApi = {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch("/api/products/bulk-upload", {
+    const headers = await getAuthHeaders();
+    // Use the API_URL from api.ts or just rely on relative path
+    // We will just use sellerFetch which does all this for us!
+    const res = await sellerFetch("/api/products/bulk-upload", {
       method: "POST",
-      headers: {
-        // Automatically picks up multipart boundary
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
       body: formData,
     });
 
@@ -43,15 +42,15 @@ export const bulkApi = {
    * Bulk update prices for multiple products.
    * Expects array of { id, base_price, sale_price }
    */
-  updatePrices: async (updates: any[]): Promise<{ updated: number }> => {
-    return api.post<{ updated: number }>("/api/products/bulk-prices", { updates });
+  updatePrices: async (updates: any[]): Promise<{ updatedCount: number }> => {
+    return api.post<{ updatedCount: number }>("/api/products/bulk-prices", { updates });
   },
 
   /**
    * Bulk update stock for multiple products/variants.
    * Expects array of { product_id, variant_id, quantity }
    */
-  updateStock: async (updates: any[]): Promise<{ updated: number }> => {
-    return api.post<{ updated: number }>("/api/inventory/bulk-update", { updates });
+  updateStock: async (items: any[]): Promise<{ updated: number }> => {
+    return api.post<{ updated: number }>("/api/inventory/bulk-update", { items });
   },
 };

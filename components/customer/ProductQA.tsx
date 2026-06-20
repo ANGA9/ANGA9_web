@@ -29,7 +29,7 @@ export default function ProductQA({ productId }: { productId: string }) {
   const fetchQuestions = async () => {
     try {
       const data = await qaApi.getQuestions(productId);
-      setQuestions(data.questions || []);
+      setQuestions(data.data || []);
     } catch {
       // toast.error("Failed to load Q&A");
     } finally {
@@ -89,7 +89,7 @@ export default function ProductQA({ productId }: { productId: string }) {
       setQuestions(prev => prev.map(q => ({
         ...q,
         answers: q.answers?.map(a => 
-          a.id === answerId ? { ...a, helpful_votes: a.helpful_votes + 1 } : a
+          a.id === answerId ? { ...a, helpful_count: a.helpful_count + 1 } : a
         )
       })));
       toast.success("Marked as helpful");
@@ -169,7 +169,7 @@ export default function ProductQA({ productId }: { productId: string }) {
                   </div>
                   <p className="text-[15px] text-gray-800 font-medium leading-relaxed mb-4">
                     <span className="font-bold text-gray-400 mr-2">Q:</span>
-                    {q.question_text}
+                    {q.body}
                   </p>
 
                   <div className="space-y-4 ml-2 sm:ml-6 border-l-2 border-gray-100 pl-4">
@@ -182,19 +182,22 @@ export default function ProductQA({ productId }: { productId: string }) {
                               {a.is_seller && (
                                 <span className="bg-[#1A6FD4]/10 text-[#1A6FD4] text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Seller</span>
                               )}
+                              {a.is_verified_buyer && !a.is_seller && (
+                                <span className="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Verified Buyer</span>
+                              )}
                             </span>
                             <span className="text-xs text-gray-500">{new Date(a.created_at).toLocaleDateString()}</span>
                           </div>
                           <p className="text-[14px] text-gray-700 leading-relaxed mb-3">
                             <span className="font-bold text-[#1A6FD4] mr-2">A:</span>
-                            {a.answer_text}
+                            {a.body}
                           </p>
                           <button
                             onClick={() => handleHelpful(a.id)}
                             className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#1A6FD4] transition-colors"
                           >
                             <ThumbsUp className="w-3.5 h-3.5" />
-                            Helpful ({a.helpful_votes})
+                            Helpful ({a.helpful_count})
                           </button>
                         </div>
                       ))

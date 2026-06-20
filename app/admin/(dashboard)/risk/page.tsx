@@ -114,12 +114,12 @@ export default function AdminRiskPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
                           <span className="text-[12px] font-bold text-gray-600">
-                            {event.user_id.slice(0, 2).toUpperCase()}
+                            {event.actor_id ? event.actor_id.slice(0, 2).toUpperCase() : '??'}
                           </span>
                         </div>
                         <div>
                           <div className="text-[14px] font-bold text-gray-900 truncate max-w-[150px]">
-                            {event.user_id}
+                            {event.actor_id}
                           </div>
                         </div>
                       </div>
@@ -141,11 +141,11 @@ export default function AdminRiskPage() {
                         <span className="text-[12px] font-medium text-gray-400">Risk Score</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {event.signals.map((sig, idx) => (
-                          <span key={idx} className="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
-                            {sig}
+                        {event.signal_type && (
+                          <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                            {event.signal_type}
                           </span>
-                        ))}
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">

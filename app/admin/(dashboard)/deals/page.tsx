@@ -69,6 +69,7 @@ export default function AdminDealsPage() {
                 <tr>
                   <th className="px-6 py-4">Product</th>
                   <th className="px-6 py-4">Seller ID</th>
+                  <th className="px-6 py-4">Type</th>
                   <th className="px-6 py-4">Deal Price</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Timeline</th>
@@ -105,8 +106,16 @@ export default function AdminDealsPage() {
                         {deal.products?.seller_id || "N/A"}
                       </td>
                       <td className="px-6 py-4">
+                        <span className="px-2 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold capitalize">
+                          {deal.type?.replace('_', ' ') || 'Flash'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-gray-900">₹{deal.deal_price}</span>
+                          {deal.quantity_threshold && (
+                            <span className="text-xs text-gray-500">(Min: {deal.quantity_threshold})</span>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4">

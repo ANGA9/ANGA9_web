@@ -8,9 +8,9 @@ export interface PdcEligibilityResponse {
 }
 
 export const pdcApi = {
-  checkEligibility: (orderItemId: string) =>
-    api.get<PdcEligibilityResponse>(`/api/orders/items/${orderItemId}/pdc/eligibility`),
+  checkEligibility: (orderId: string, orderItemId: string, requestedQty: number) =>
+    api.get<PdcEligibilityResponse>(`/api/orders/pdc/eligibility?order_id=${orderId}&order_item_id=${orderItemId}&requested_qty=${requestedQty}`),
     
   acceptCoins: (disputeId: string) =>
-    api.post<{ message: string }>(`/api/orders/disputes/${disputeId}/pdc/accept-coins`, {}),
+    api.post<{ message: string }>(`/api/orders/pdc/accept-coins`, { dispute_id: disputeId }),
 };

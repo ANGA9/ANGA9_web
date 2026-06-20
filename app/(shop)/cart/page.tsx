@@ -65,7 +65,7 @@ export default function CustomerCartPage() {
   }, [primaryCartItem]);
 
   const subtotal = items.reduce(
-    (sum, item) => sum + (item.sale_price ?? item.base_price) * item.qty,
+    (sum, item) => sum + (item.effective_price ?? item.sale_price ?? item.base_price) * item.qty,
     0
   );
   const totalOriginal = items.reduce(

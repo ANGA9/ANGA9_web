@@ -14,6 +14,7 @@ interface CartItem {
   slug: string;
   base_price: number;
   sale_price?: number | null;
+  effective_price?: number;
   seller_id: string;
   images: string[];
   unit: string;

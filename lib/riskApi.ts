@@ -2,10 +2,10 @@ import { api } from "./api";
 
 export interface RiskEvent {
   id: string;
-  user_id: string;
+  actor_id: string;
   action: string;
   score: number;
-  signals: string[];
+  signal_type: string;
   context: Record<string, any>;
   created_at: string;
   user_email?: string;

@@ -165,8 +165,8 @@ export default function BulkUploadPage() {
                   <div className="max-h-64 overflow-y-auto rounded-xl border border-red-100 bg-red-50/50 p-2 space-y-2">
                     {result.errors.map((err, i) => (
                       <div key={i} className="flex gap-3 bg-white p-3 rounded-lg border border-red-100 text-[13px]">
-                        <span className="font-bold text-red-700 min-w-[50px]">Row {err.index}</span>
-                        <span className="text-gray-700 font-medium">{err.error}</span>
+                        <span className="font-bold text-red-700 min-w-[50px]">Row {err.row}</span>
+                        <span className="text-gray-700 font-medium">{err.reason}</span>
                       </div>
                     ))}
                   </div>

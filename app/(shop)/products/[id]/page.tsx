@@ -185,7 +185,17 @@ export default function ProductDetailPage() {
 
   const getCurrentPrice = () => {
     if (!product) return 0;
-    const defaultPrice = activeDeal ? activeDeal.deal_price : (product.sale_price ?? product.base_price);
+    let base = product.sale_price ?? product.base_price;
+    if (activeDeal) {
+      if (activeDeal.type === 'quantity') {
+        if (activeDeal.quantity_threshold && quantity >= activeDeal.quantity_threshold) {
+          base = activeDeal.deal_price;
+        }
+      } else {
+        base = activeDeal.deal_price;
+      }
+    }
+    const defaultPrice = base;
     if (selectedVariant) {
       const variant = product.product_variants?.find((v) => v.id === selectedVariant);
       // price_override is an absolute variant price, not an offset
@@ -475,6 +485,11 @@ export default function ProductDetailPage() {
                 </span>
                 <span className="text-sm font-semibold" style={{ color: '#4338CA' }}>{discount}% below MRP</span>
               </>
+            )}
+            {activeDeal && activeDeal.type === 'quantity' && activeDeal.quantity_threshold && quantity < activeDeal.quantity_threshold && (
+              <span className="text-sm font-semibold ml-2 px-2 py-1 rounded bg-[#EA580C] text-white">
+                ₹{activeDeal.deal_price} on {activeDeal.quantity_threshold}+ units
+              </span>
             )}
           </div>
 

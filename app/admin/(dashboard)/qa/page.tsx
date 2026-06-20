@@ -6,7 +6,7 @@ import { Loader2, MessageSquare, Check, X as XIcon, EyeOff } from "lucide-react"
 import { toast } from "react-hot-toast";
 
 interface QaItem {
-  type: "question" | "answer";
+  type: "questions" | "answers";
   id: string;
   product_id?: string;
   question_id?: string;
@@ -32,15 +32,15 @@ export default function AdminQaPage() {
       const data = await qaApi.adminGetQa();
       // The backend returns a mixed array of questions and answers
       // We map them to a unified QaItem interface
-      const mapped: QaItem[] = data.items.map(item => {
-        const isQ = "question_text" in item;
+      const mapped: QaItem[] = data.data.map(item => {
+        const isQ = !item.question_id;
         return {
-          type: isQ ? "question" : "answer",
+          type: isQ ? "questions" : "answers",
           id: item.id,
           product_id: item.product_id,
           question_id: item.question_id,
-          user_id: item.user_id,
-          text: isQ ? item.question_text : item.answer_text,
+          user_id: item.user_id || item.asker_id || item.author_id,
+          text: item.body,
           status: item.status,
           created_at: item.created_at,
           users: item.users,
@@ -73,7 +73,7 @@ export default function AdminQaPage() {
         return <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold uppercase">Rejected</span>;
       case "hidden":
         return <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-xs font-bold uppercase">Hidden</span>;
-      case "pending":
+      case "pending_review":
       default:
         return <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase">Pending</span>;
     }
@@ -123,9 +123,9 @@ export default function AdminQaPage() {
                   <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider border ${
-                        item.type === "question" ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-purple-50 text-purple-700 border-purple-100"
+                        item.type === "questions" ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-purple-50 text-purple-700 border-purple-100"
                       }`}>
-                        {item.type}
+                        {item.type === "questions" ? "question" : "answer"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -172,7 +172,7 @@ export default function AdminQaPage() {
                             <XIcon className="w-4 h-4" />
                           </button>
                         )}
-                        {item.status !== "hidden" && item.status !== "pending" && (
+                        {item.status !== "hidden" && item.status !== "pending_review" && (
                           <button
                             onClick={() => handleAction(item, "hidden")}
                             className="p-1.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"

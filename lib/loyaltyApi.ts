@@ -45,7 +45,7 @@ export const loyaltyApi = {
     razorpay_payment_id: string;
     razorpay_signature: string;
   }) => {
-    return api.post<{ membership: Membership }>(
+    return api.post<{ success: boolean; membership?: Membership }>(
       "/api/payments/memberships/verify",
       details
     );
@@ -60,12 +60,5 @@ export const loyaltyApi = {
 
   updateAdminConfig: async (config: LoyaltyConfig) => {
     return api.patch("/api/admin/config", { loyalty_config: config });
-  },
-
-  listMembers: async (page = 1, limit = 50) => {
-    // If there is no dedicated members endpoint, we might have to add one.
-    // For now, assume /api/admin/members exists or we will create it if needed.
-    // Let's implement the UI, and if it fails, we'll add the backend.
-    return api.get<{ data: any[]; total: number }>(`/api/admin/members?page=${page}&limit=${limit}`);
   }
 };

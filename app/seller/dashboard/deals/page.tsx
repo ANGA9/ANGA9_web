@@ -149,7 +149,8 @@ export default function SellerDealsPage() {
             <table className="w-full text-left text-sm border-collapse min-w-[800px]">
               <thead className="bg-gray-50/80 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-5/12">Product</th>
+                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-4/12">Product</th>
+                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
                   <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Deal Price</th>
                   <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Timeline</th>
@@ -182,16 +183,23 @@ export default function SellerDealsPage() {
                         <div className="font-bold text-[14px] text-gray-900 line-clamp-2 pr-4">
                           {deal.products?.name || "Unknown Product"}
                         </div>
-                        <div className="text-[12px] text-gray-500 font-medium mt-1 flex items-center gap-1">
-                          <Tag className="w-3 h-3" /> {
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[12px] font-bold">
+                          {
                             deal.type === 'flash' ? 'Flash Sale' : 
                             deal.type === 'deal_of_day' ? 'Deal of the Day' : 
                             deal.type === 'quantity' ? 'Quantity Discount' : deal.type
                           }
-                        </div>
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-black text-[16px] text-gray-900">₹{deal.deal_price}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-[16px] text-gray-900">₹{deal.deal_price}</span>
+                          {deal.quantity_threshold && (
+                            <span className="text-[12px] text-gray-500 font-medium">(Min {deal.quantity_threshold})</span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-lg text-[12px] font-bold border ${statusBadge}`}>

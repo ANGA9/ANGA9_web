@@ -4,8 +4,8 @@ export interface QaQuestion {
   id: string;
   product_id: string;
   user_id: string;
-  question_text: string;
-  status: "pending" | "approved" | "rejected";
+  body: string;
+  status: "pending_review" | "approved" | "rejected" | "hidden";
   created_at: string;
   users?: { full_name: string };
   answers?: QaAnswer[];
@@ -15,10 +15,11 @@ export interface QaAnswer {
   id: string;
   question_id: string;
   user_id: string;
-  answer_text: string;
+  body: string;
   is_seller: boolean;
-  status: "pending" | "approved" | "rejected";
-  helpful_votes: number;
+  is_verified_buyer?: boolean;
+  status: "pending_review" | "approved" | "rejected" | "hidden";
+  helpful_count: number;
   created_at: string;
   users?: { full_name: string };
 }
@@ -26,15 +27,15 @@ export interface QaAnswer {
 export const qaApi = {
   // Public / Customer
   getQuestions: async (productId: string) => {
-    return api.get<{ questions: QaQuestion[] }>(`/api/products/${productId}/questions`);
+    return api.get<{ data: QaQuestion[] }>(`/api/products/${productId}/questions`);
   },
 
   askQuestion: async (productId: string, question_text: string) => {
-    return api.post<{ question: QaQuestion }>(`/api/products/${productId}/questions`, { question_text });
+    return api.post<QaQuestion>(`/api/products/${productId}/questions`, { body: question_text });
   },
 
   answerQuestion: async (questionId: string, answer_text: string) => {
-    return api.post<{ answer: QaAnswer }>(`/api/products/questions/${questionId}/answers`, { answer_text });
+    return api.post<QaAnswer>(`/api/products/questions/${questionId}/answers`, { body: answer_text });
   },
 
   markHelpful: async (answerId: string) => {
@@ -43,10 +44,15 @@ export const qaApi = {
 
   // Admin
   adminGetQa: async () => {
-    return api.get<{ items: any[] }>("/api/admin/qa");
+    const qData = await api.get<{ data: any[] }>("/api/admin/qa?type=questions");
+    const aData = await api.get<{ data: any[] }>("/api/admin/qa?type=answers");
+    const combined = [...(qData.data || []), ...(aData.data || [])].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+    return { data: combined };
   },
 
-  adminModerateQa: async (type: "question" | "answer", id: string, status: "approved" | "rejected" | "hidden") => {
+  adminModerateQa: async (type: "questions" | "answers", id: string, status: "approved" | "rejected" | "hidden") => {
     return api.patch(`/api/admin/qa/${type}/${id}`, { status });
   },
 };

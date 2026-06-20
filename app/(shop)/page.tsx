@@ -274,18 +274,22 @@ export default function CustomerHomePage() {
       {/* Personalized Rails (Wishlist & Server-driven Trending) */}
       {homeRails && (
         <div className="mt-8">
-          <ProductRail 
-            title="Trending Products" 
-            products={homeRails.trending} 
-            icon={TrendingIcon} 
-            iconColor="#F59E0B"
-          />
-          <ProductRail 
-            title="Based on your Wishlist" 
-            products={homeRails.wishlistBased} 
-            icon={Heart} 
-            iconColor="#DC2626"
-          />
+          {homeRails.trending?.length > 0 && (
+            <ProductRail 
+              title="Trending Products" 
+              products={homeRails.trending} 
+              icon={TrendingIcon} 
+              iconColor="#F59E0B"
+            />
+          )}
+          {homeRails.wishlistBased?.length > 0 && (
+            <ProductRail 
+              title="Based on your Wishlist" 
+              products={homeRails.wishlistBased} 
+              icon={Heart} 
+              iconColor="#DC2626"
+            />
+          )}
         </div>
       )}
 

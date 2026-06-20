@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import { bulkApi } from "@/lib/bulkApi";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Save, Search, AlertCircle } from "lucide-react";
+import { Loader2, ArrowLeft, Save, Search, AlertCircle, Package, IndianRupee } from "lucide-react";
 import toast from "react-hot-toast";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -16,12 +16,15 @@ interface Product {
   base_price: number;
   sale_price?: number;
   status: string;
+  stock?: number | null;
 }
 
 interface ProductEditState {
   base_price: number;
   sale_price: number | "";
-  dirty: boolean;
+  quantity: number | "";
+  priceDirty: boolean;
+  stockDirty: boolean;
 }
 
 export default function BulkEditPage() {
@@ -31,6 +34,7 @@ export default function BulkEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
+  const [mode, setMode] = useState<"price" | "stock">("price");
 
   const fetchProducts = useCallback(async () => {
     if (authLoading || !dbUser) return;
@@ -48,6 +52,29 @@ export default function BulkEditPage() {
       if (res.ok) {
         const d = await res.json();
         const items: Product[] = d.data || [];
+        
+        // Fetch stock in batches of 10
+        const batchSize = 10;
+        for (let i = 0; i < items.length; i += batchSize) {
+          const batch = items.slice(i, i + batchSize);
+          await Promise.all(
+            batch.map(async (p) => {
+              try {
+                const stockRes = await sellerFetch(`${API}/api/inventory/${p.id}`);
+                if (stockRes.ok) {
+                  const s = await stockRes.json();
+                  const stock = Array.isArray(s) ? s[0] || null : s;
+                  p.stock = stock ? stock.quantity : 0;
+                } else {
+                  p.stock = 0;
+                }
+              } catch {
+                p.stock = 0;
+              }
+            })
+          );
+        }
+
         setProducts(items);
         
         // Initialize edit state
@@ -56,7 +83,9 @@ export default function BulkEditPage() {
           initialEdits[p.id] = {
             base_price: p.base_price,
             sale_price: p.sale_price ?? "",
-            dirty: false,
+            quantity: p.stock ?? 0,
+            priceDirty: false,
+            stockDirty: false,
           };
         });
         setEdits(initialEdits);
@@ -73,39 +102,63 @@ export default function BulkEditPage() {
   }, [fetchProducts]);
 
   const handleEdit = (id: string, field: keyof ProductEditState, value: number | "") => {
-    setEdits(prev => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: value,
-        dirty: true,
-      }
-    }));
+    setEdits(prev => {
+      const isPrice = field === "base_price" || field === "sale_price";
+      const isStock = field === "quantity";
+      return {
+        ...prev,
+        [id]: {
+          ...prev[id],
+          [field]: value,
+          priceDirty: isPrice ? true : prev[id].priceDirty,
+          stockDirty: isStock ? true : prev[id].stockDirty,
+        }
+      };
+    });
   };
 
   const handleSaveAll = async () => {
-    const changed = Object.entries(edits)
-      .filter(([_, state]) => state.dirty)
+    const priceChanged = Object.entries(edits)
+      .filter(([_, state]) => state.priceDirty)
       .map(([id, state]) => ({
-        id,
+        product_id: id,
         base_price: state.base_price,
         sale_price: state.sale_price === "" ? null : state.sale_price,
       }));
 
-    if (changed.length === 0) {
+    const stockChanged = Object.entries(edits)
+      .filter(([_, state]) => state.stockDirty)
+      .map(([id, state]) => ({
+        productId: id,
+        quantity: state.quantity === "" ? 0 : state.quantity,
+      }));
+
+    if (priceChanged.length === 0 && stockChanged.length === 0) {
       toast("No changes to save", { icon: "ℹ️" });
       return;
     }
 
     setSaving(true);
     try {
-      await bulkApi.updatePrices(changed);
-      toast.success(`Successfully updated ${changed.length} products`);
+      let message = "";
+      if (priceChanged.length > 0) {
+        await bulkApi.updatePrices(priceChanged);
+        message += `Updated ${priceChanged.length} prices. `;
+      }
+      if (stockChanged.length > 0) {
+        await bulkApi.updateStock(stockChanged);
+        message += `Updated ${stockChanged.length} stock items.`;
+      }
+      toast.success(message);
+      
       // Reset dirty flags
       setEdits(prev => {
         const next = { ...prev };
-        changed.forEach(c => {
-          if (next[c.id]) next[c.id].dirty = false;
+        priceChanged.forEach(c => {
+          if (next[c.product_id]) next[c.product_id].priceDirty = false;
+        });
+        stockChanged.forEach(c => {
+          if (next[c.productId]) next[c.productId].stockDirty = false;
         });
         return next;
       });
@@ -116,7 +169,7 @@ export default function BulkEditPage() {
     }
   };
 
-  const dirtyCount = Object.values(edits).filter(e => e.dirty).length;
+  const dirtyCount = Object.values(edits).filter(e => e.priceDirty || e.stockDirty).length;
 
   return (
     <main className="w-full mx-auto max-w-6xl px-4 py-8">
@@ -127,8 +180,8 @@ export default function BulkEditPage() {
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </Link>
           <div>
-            <h1 className="text-[28px] font-bold text-gray-900 tracking-tight">Bulk Edit Prices</h1>
-            <p className="text-[15px] text-gray-500 font-medium">Rapidly update base and sale prices across your catalog</p>
+            <h1 className="text-[28px] font-bold text-gray-900 tracking-tight">Bulk Edit Products</h1>
+            <p className="text-[15px] text-gray-500 font-medium">Rapidly update prices and stock across your catalog</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -148,9 +201,29 @@ export default function BulkEditPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-4 mb-6 border-b border-gray-200 pb-px">
+        <button
+          onClick={() => setMode("price")}
+          className={`flex items-center gap-2 px-4 py-3 text-[15px] font-bold transition-all border-b-2 ${
+            mode === "price" ? "border-[#1A6FD4] text-[#1A6FD4]" : "border-transparent text-gray-500 hover:text-gray-900"
+          }`}
+        >
+          <IndianRupee className="w-4 h-4" /> Edit Prices
+        </button>
+        <button
+          onClick={() => setMode("stock")}
+          className={`flex items-center gap-2 px-4 py-3 text-[15px] font-bold transition-all border-b-2 ${
+            mode === "stock" ? "border-[#1A6FD4] text-[#1A6FD4]" : "border-transparent text-gray-500 hover:text-gray-900"
+          }`}
+        >
+          <Package className="w-4 h-4" /> Edit Stock
+        </button>
+      </div>
+
       {/* Controls */}
-      <div className="bg-white rounded-3xl border border-gray-200 p-4 mb-6 shadow-sm flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
+      <div className="bg-white rounded-3xl border border-gray-200 p-4 mb-6 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
@@ -160,10 +233,12 @@ export default function BulkEditPage() {
             className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 pl-11 pr-4 py-2.5 text-[14px] font-medium text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-all"
           />
         </div>
-        <div className="flex items-center gap-2 text-[13px] font-medium text-gray-500">
-          <AlertCircle className="w-4 h-4 text-gray-400" />
-          Sale price must be lower than base price. Leave sale price empty to remove it.
-        </div>
+        {mode === "price" && (
+          <div className="flex items-center gap-2 text-[13px] font-medium text-gray-500">
+            <AlertCircle className="w-4 h-4 text-gray-400" />
+            Sale price must be lower than base price. Leave sale price empty to remove it.
+          </div>
+        )}
       </div>
 
       {/* Table */}
@@ -173,8 +248,14 @@ export default function BulkEditPage() {
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
                 <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/2">Product Name</th>
-                <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/4">Base Price (₹)</th>
-                <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/4">Sale Price (₹)</th>
+                {mode === "price" ? (
+                  <>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/4">Base Price (₹)</th>
+                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/4">Sale Price (₹)</th>
+                  </>
+                ) : (
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-1/2">Available Stock</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -194,42 +275,58 @@ export default function BulkEditPage() {
                 products.map((p) => {
                   const state = edits[p.id];
                   if (!state) return null;
-                  const hasError = state.sale_price !== "" && state.sale_price >= state.base_price;
+                  const hasError = mode === "price" && state.sale_price !== "" && state.sale_price >= state.base_price;
+                  const isRowDirty = mode === "price" ? state.priceDirty : state.stockDirty;
 
                   return (
-                    <tr key={p.id} className={`hover:bg-gray-50/50 transition-colors ${state.dirty ? 'bg-blue-50/20' : ''}`}>
+                    <tr key={p.id} className={`hover:bg-gray-50/50 transition-colors ${isRowDirty ? 'bg-blue-50/20' : ''}`}>
                       <td className="px-6 py-4">
                         <div className="font-bold text-[14px] text-gray-900 truncate pr-4">
                           {p.name}
                         </div>
-                        {state.dirty && <span className="text-[11px] font-bold text-[#1A6FD4] mt-1">Edited</span>}
+                        {isRowDirty && <span className="text-[11px] font-bold text-[#1A6FD4] mt-1">Edited</span>}
                       </td>
-                      <td className="px-6 py-4">
-                        <input
-                          type="number"
-                          min="1"
-                          value={state.base_price}
-                          onChange={(e) => handleEdit(p.id, "base_price", Number(e.target.value) || 0)}
-                          className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-900 focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-all"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <input
-                          type="number"
-                          min="1"
-                          placeholder="Optional"
-                          value={state.sale_price}
-                          onChange={(e) => handleEdit(p.id, "sale_price", e.target.value === "" ? "" : Number(e.target.value))}
-                          className={`w-full h-10 px-3 rounded-xl border bg-white text-[14px] font-bold focus:outline-none focus:ring-2 transition-all ${
-                            hasError
-                              ? "border-red-300 text-red-700 focus:border-red-500 focus:ring-red-500/20"
-                              : "border-gray-200 text-gray-900 focus:border-[#1A6FD4] focus:ring-[#1A6FD4]/10"
-                          }`}
-                        />
-                        {hasError && (
-                          <p className="text-[11px] font-bold text-red-600 mt-1">Must be &lt; Base Price</p>
-                        )}
-                      </td>
+                      
+                      {mode === "price" ? (
+                        <>
+                          <td className="px-6 py-4">
+                            <input
+                              type="number"
+                              min="1"
+                              value={state.base_price}
+                              onChange={(e) => handleEdit(p.id, "base_price", Number(e.target.value) || 0)}
+                              className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-900 focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-all"
+                            />
+                          </td>
+                          <td className="px-6 py-4">
+                            <input
+                              type="number"
+                              min="1"
+                              placeholder="Optional"
+                              value={state.sale_price}
+                              onChange={(e) => handleEdit(p.id, "sale_price", e.target.value === "" ? "" : Number(e.target.value))}
+                              className={`w-full h-10 px-3 rounded-xl border bg-white text-[14px] font-bold focus:outline-none focus:ring-2 transition-all ${
+                                hasError
+                                  ? "border-red-300 text-red-700 focus:border-red-500 focus:ring-red-500/20"
+                                  : "border-gray-200 text-gray-900 focus:border-[#1A6FD4] focus:ring-[#1A6FD4]/10"
+                              }`}
+                            />
+                            {hasError && (
+                              <p className="text-[11px] font-bold text-red-600 mt-1">Must be &lt; Base Price</p>
+                            )}
+                          </td>
+                        </>
+                      ) : (
+                        <td className="px-6 py-4">
+                          <input
+                            type="number"
+                            min="0"
+                            value={state.quantity}
+                            onChange={(e) => handleEdit(p.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))}
+                            className="w-full max-w-[200px] h-10 px-3 rounded-xl border border-gray-200 bg-white text-[14px] font-bold text-gray-900 focus:outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-all"
+                          />
+                        </td>
+                      )}
                     </tr>
                   );
                 })

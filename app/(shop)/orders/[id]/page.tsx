@@ -108,7 +108,7 @@ export default function OrderDisputePage() {
       
       // Check PDC eligibility
       try {
-        const pdcRes = await pdcApi.checkEligibility(order.items[0].id);
+        const pdcRes = await pdcApi.checkEligibility(order.id, order.items[0].id, requestedQty);
         if (pdcRes.eligible) {
           setPdcEligibility(pdcRes);
           setShowPdcModal(true);
@@ -270,13 +270,55 @@ export default function OrderDisputePage() {
       </div>
 
       {dispute ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <h2 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-6">
+          <h2 className="text-base font-black text-gray-900 mb-6 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-500" />
-            Reported Issue
+            Return / Issue Status
           </h2>
 
-          <div className="space-y-6">
+          {/* Status Timeline */}
+          <div className="mb-8 relative pl-3">
+            <div className="absolute left-[19px] top-3 bottom-3 w-0.5 bg-gray-100" />
+            <div className="space-y-6 relative">
+              
+              {/* Step 1: Raised */}
+              <div className="flex items-start gap-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${dispute ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm">Issue Raised</h4>
+                  <p className="text-xs text-gray-500 mt-0.5">We have received your report.</p>
+                </div>
+              </div>
+
+              {/* Step 2: Under Review (QC/Seller) */}
+              <div className="flex items-start gap-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${['seller_responded', 'admin_review', 'resolved_refund', 'resolved_replace', 'resolved_rejected', 'closed'].includes(dispute.status) ? 'bg-blue-600 text-white' : dispute.status === 'open' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                  <Loader2 className={`w-4 h-4 ${dispute.status === 'open' ? 'text-blue-600 animate-spin' : ''}`} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm">Under Review</h4>
+                  <p className="text-xs text-gray-500 mt-0.5">The seller or admin is reviewing your request.</p>
+                </div>
+              </div>
+
+              {/* Step 3: Resolved */}
+              <div className="flex items-start gap-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${dispute.status.startsWith('resolved') || dispute.status === 'closed' ? (dispute.status === 'resolved_rejected' ? 'bg-red-600 text-white' : 'bg-green-600 text-white') : 'bg-gray-100 text-gray-400'}`}>
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm">Resolved</h4>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {dispute.status === 'resolved_refund' ? 'Refund approved.' : dispute.status === 'resolved_replace' ? 'Replacement approved.' : dispute.status === 'resolved_rejected' ? 'Request was declined.' : 'Awaiting final resolution.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6 pt-6 border-t border-gray-100">
             <div className="flex gap-4">
               <div className="w-8 flex flex-col items-center">
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">

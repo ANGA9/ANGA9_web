@@ -484,19 +484,21 @@ export default function ProductDetailPage() {
           )}
 
           {/* Stock Status & Notify Me */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-6 border-b border-gray-100 pb-5">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                <div className="w-2 h-2 rounded-full" style={{
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit" style={{
+              background: stock.status === "in" ? `${t.inStock}15` : stock.status === "low" ? `${t.lowStock}15` : stock.status === "out" ? `${t.outOfStock}15` : '#f3f4f6',
+              border: `1px solid ${stock.status === "in" ? `${t.inStock}30` : stock.status === "low" ? `${t.lowStock}30` : stock.status === "out" ? `${t.outOfStock}30` : '#e5e7eb'}`
+            }}>
+              <div className="w-1.5 h-1.5 rounded-full" style={{
                   background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
-                }} />
-              </div>
-              <span className="text-[13.5px] md:text-sm font-medium leading-none" style={{
+              }} />
+              <span className="text-xs font-bold uppercase tracking-wider" style={{
                 color: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
               }}>
-                {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock — ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Stock info unavailable"}
+                {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock • ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Unavailable"}
               </span>
             </div>
+            
             <DealAlerts 
               productId={product.id} 
               isOutOfStock={stock.status === "out"} 

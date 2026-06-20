@@ -246,10 +246,8 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
     product_id: "",
     type: "flash" as "flash" | "deal_of_day" | "quantity",
     deal_price: "",
-    start_date: "",
-    start_time: "",
-    end_date: "",
-    end_time: "",
+    start_datetime: "",
+    end_datetime: "",
   });
 
   useEffect(() => {
@@ -288,7 +286,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.product_id || !formData.deal_price || !formData.start_date || !formData.start_time || !formData.end_date || !formData.end_time) {
+    if (!formData.product_id || !formData.deal_price || !formData.start_datetime || !formData.end_datetime) {
       toast.error("Please fill all fields");
       return;
     }
@@ -299,8 +297,8 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
         product_id: formData.product_id,
         type: formData.type,
         deal_price: Number(formData.deal_price),
-        starts_at: new Date(`${formData.start_date}T${formData.start_time}`).toISOString(),
-        ends_at: new Date(`${formData.end_date}T${formData.end_time}`).toISOString(),
+        starts_at: new Date(formData.start_datetime).toISOString(),
+        ends_at: new Date(formData.end_datetime).toISOString(),
       });
       toast.success("Deal created successfully");
       onSuccess();
@@ -427,42 +425,24 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className="block text-[14px] font-bold text-gray-700 mb-2">Starts At</label>
-              <div className="flex gap-2">
-                <input
-                  type="date"
-                  className="w-full h-12 px-3 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
-                  value={formData.start_date}
-                  onChange={e => setFormData({ ...formData, start_date: e.target.value })}
-                  required
-                />
-                <input
-                  type="time"
-                  className="w-full h-12 px-3 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
-                  value={formData.start_time}
-                  onChange={e => setFormData({ ...formData, start_time: e.target.value })}
-                  required
-                />
-              </div>
+              <label className="block text-[14px] font-bold text-gray-700 mb-2 text-left">Starts At</label>
+              <input
+                type="datetime-local"
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
+                value={formData.start_datetime}
+                onChange={e => setFormData({ ...formData, start_datetime: e.target.value })}
+                required
+              />
             </div>
             <div>
-              <label className="block text-[14px] font-bold text-gray-700 mb-2">Ends At</label>
-              <div className="flex gap-2">
-                <input
-                  type="date"
-                  className="w-full h-12 px-3 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
-                  value={formData.end_date}
-                  onChange={e => setFormData({ ...formData, end_date: e.target.value })}
-                  required
-                />
-                <input
-                  type="time"
-                  className="w-full h-12 px-3 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
-                  value={formData.end_time}
-                  onChange={e => setFormData({ ...formData, end_time: e.target.value })}
-                  required
-                />
-              </div>
+              <label className="block text-[14px] font-bold text-gray-700 mb-2 text-left">Ends At</label>
+              <input
+                type="datetime-local"
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl text-[14px] font-bold text-gray-900 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 outline-none transition-all"
+                value={formData.end_datetime}
+                onChange={e => setFormData({ ...formData, end_datetime: e.target.value })}
+                required
+              />
             </div>
           </div>
 

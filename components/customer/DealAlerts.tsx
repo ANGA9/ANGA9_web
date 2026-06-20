@@ -48,8 +48,13 @@ export default function DealAlerts({ productId, isOutOfStock, targetPrice }: Dea
       <button
         onClick={handleStockAlert}
         disabled={loading || subscribedStock}
-        className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 hover:underline w-fit"
-        style={{ color: subscribedStock ? "#059669" : "#64748B" }}
+        className="flex items-center justify-center gap-2 px-4 py-2 text-[13px] font-bold transition-all rounded-full border w-full sm:w-auto hover:bg-gray-50 active:scale-[0.98]"
+        style={{ 
+          color: subscribedStock ? "#059669" : "#4B5563",
+          borderColor: subscribedStock ? "#a7f3d0" : "#E5E7EB",
+          background: subscribedStock ? "#ecfdf5" : "#ffffff",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.02)"
+        }}
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : subscribedStock ? <BellRing className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
         {subscribedStock ? "Stock Alert Subscribed" : "Notify me when back in stock"}
@@ -62,8 +67,13 @@ export default function DealAlerts({ productId, isOutOfStock, targetPrice }: Dea
     <button
       onClick={handlePriceAlert}
       disabled={loading || subscribedPrice}
-      className="flex items-center gap-1.5 text-[13px] font-medium transition-colors hover:text-gray-900 hover:underline w-fit"
-      style={{ color: subscribedPrice ? "#059669" : "#64748B" }}
+      className="flex items-center justify-center gap-2 px-4 py-2 text-[13px] font-bold transition-all rounded-full border w-full sm:w-auto hover:bg-gray-50 active:scale-[0.98]"
+      style={{ 
+        color: subscribedPrice ? "#059669" : "#4B5563",
+        borderColor: subscribedPrice ? "#a7f3d0" : "#E5E7EB",
+        background: subscribedPrice ? "#ecfdf5" : "#ffffff",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.02)"
+      }}
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : subscribedPrice ? <BellRing className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
       {subscribedPrice ? "Price Drop Alert Subscribed" : "Notify me when price drops"}

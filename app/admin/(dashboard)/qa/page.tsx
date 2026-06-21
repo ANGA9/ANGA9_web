@@ -73,7 +73,7 @@ export default function AdminQaPage() {
         return <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold uppercase">Rejected</span>;
       case "hidden":
         return <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-xs font-bold uppercase">Hidden</span>;
-      case "pending_review":
+      case "pending":
       default:
         return <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold uppercase">Pending</span>;
     }
@@ -172,7 +172,7 @@ export default function AdminQaPage() {
                             <XIcon className="w-4 h-4" />
                           </button>
                         )}
-                        {item.status !== "hidden" && item.status !== "pending_review" && (
+                        {item.status !== "hidden" && (
                           <button
                             onClick={() => handleAction(item, "hidden")}
                             className="p-1.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"

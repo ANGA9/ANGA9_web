@@ -112,7 +112,7 @@ export default function AdminLoginPage() {
       }
 
       const role = dbUser?.role;
-      const isAdmin = role === "admin" || role === "super_admin";
+      const isAdmin = role === "admin";
       if (!dbUser || !isAdmin) {
         console.warn("[admin-login] access denied — role was", role);
         await supabase.auth.signOut();

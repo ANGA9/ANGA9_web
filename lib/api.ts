@@ -16,9 +16,12 @@ interface ApiOptions extends Omit<RequestInit, "body"> {
 
 export async function getAuthHeaders(): Promise<Record<string, string>> {
   // Dev-only admin bypass — only when NEXT_PUBLIC_ADMIN_BYPASS_TOKEN is set
-  // (which it should NEVER be in production Vercel env vars).
+  // AND we're in development mode. The backend has its own NODE_ENV guard,
+  // but this prevents the token from being used even if accidentally bundled
+  // into a production build.
   const devBypass = process.env.NEXT_PUBLIC_ADMIN_BYPASS_TOKEN;
   if (
+    process.env.NODE_ENV !== 'production' &&
     devBypass &&
     typeof window !== 'undefined' &&
     window.location.pathname.startsWith('/admin') &&

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { User as SupabaseUser, Session } from "@supabase/supabase-js";
+import { User as SupabaseUser, Session, AuthChangeEvent } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "./supabase";
 
 /** Row from public.users table (created by DB trigger on auth signup) */
@@ -44,6 +44,61 @@ const AuthContext = createContext<AuthContextType>({
   refreshUser: async () => {},
 });
 
+/**
+ * Determine the "portal context" of the current page.
+ * Returns which portal the user is currently viewing.
+ */
+function getCurrentPortalContext(): "admin" | "seller" | "support" | "customer" {
+  if (typeof window === "undefined") return "customer";
+  const path = window.location.pathname;
+  const host = window.location.hostname;
+
+  if (path.startsWith("/admin")) return "admin";
+  if (path.startsWith("/support")) return "support";
+  if (host.startsWith("seller.") || path.startsWith("/seller")) return "seller";
+  return "customer";
+}
+
+/**
+ * Read the `portal` cookie to know which portal the user LOGGED INTO.
+ */
+function getPortalCookie(): string | null {
+  if (typeof window === "undefined") return null;
+  const match = document.cookie.match(/(^| )portal=([^;]+)/);
+  return match ? match[2] : null;
+}
+
+/**
+ * Check if a Supabase session should be suppressed for the current portal.
+ *
+ * When a user logs into the seller portal, a Supabase session is stored in
+ * localStorage (shared across all subdomains). If they then visit the customer
+ * portal, we must NOT expose that session — otherwise customer components fire
+ * API calls with the seller's token, causing 401 errors.
+ *
+ * Returns true if the session should be HIDDEN from the current portal context.
+ */
+function shouldSuppressSession(): boolean {
+  if (typeof window === "undefined") return false;
+  const portalContext = getCurrentPortalContext();
+  const portalCookie = getPortalCookie();
+
+  // No cookie = no previous login, don't suppress (let login flows work)
+  if (!portalCookie) return false;
+
+  // If we're on the customer portal but logged in as seller/admin → suppress
+  if (portalContext === "customer" && (portalCookie === "seller" || portalCookie === "admin")) {
+    return true;
+  }
+
+  // If we're on the seller portal but logged in as admin → suppress
+  if (portalContext === "seller" && portalCookie === "admin") {
+    return true;
+  }
+
+  return false;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -78,15 +133,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === "undefined") return;
 
     const isAdminPage = window.location.pathname.startsWith("/admin");
-    const portalMatch = document.cookie.match(/(^| )portal=([^;]+)/);
-    const currentPortal = portalMatch ? portalMatch[2] : null;
+    const portalCookie = getPortalCookie();
 
     const isSellerHost = window.location.hostname.startsWith("seller.");
     const isSellerPath = window.location.pathname.startsWith("/seller");
 
     if (authUser) {
-      if (isAdminPage || currentPortal === "admin") return;
-      if (currentPortal === "seller" || isSellerHost || isSellerPath) return;
+      if (isAdminPage || portalCookie === "admin") return;
+      if (portalCookie === "seller" || isSellerHost || isSellerPath) return;
     }
 
     const hostname = window.location.hostname;
@@ -114,6 +168,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Restore session on mount
     supabase.auth.getSession().then(({ data: { session: s } }: { data: { session: Session | null } }) => {
+      // P0 FIX: If session exists but belongs to a different portal context,
+      // suppress it so customer components don't fire 401 API calls.
+      if (s?.user && shouldSuppressSession()) {
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
@@ -126,13 +189,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: string, s: Session | null) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, s: Session | null) => {
+      // P0 FIX: Suppress cross-portal sessions
+      if (s?.user && shouldSuppressSession()) {
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
       setSession(s);
       setUser(s?.user ?? null);
 
       if (s?.user) {
         setCookies(s.user);
-        fetchDbUser(s.user.id);
+        // P2 FIX: Only fetch dbUser on meaningful events, not token refreshes.
+        // TOKEN_REFRESHED fires every ~60 min and doesn't change the user record.
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+          fetchDbUser(s.user.id);
+        }
       } else {
         setCookies(null);
         setDbUser(null);
@@ -148,6 +223,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchDbUser, setCookies]);
 
   const getToken = useCallback(async (): Promise<string | null> => {
+    // P0 FIX: Don't return tokens for cross-portal sessions
+    if (shouldSuppressSession()) return null;
     const { data } = await supabase.auth.getSession();
     return data.session?.access_token ?? null;
   }, [supabase]);

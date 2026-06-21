@@ -95,7 +95,7 @@ export default function proxy(request: NextRequest) {
     // Protected seller routes (dashboard, onboarding, etc.)
     const portalCookie = request.cookies.get("portal");
 
-    if (!portalCookie) {
+    if (!portalCookie || portalCookie.value !== "seller") {
       const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
       const protocol = isLocalhost ? "http" : "https";
       const targetHost = isLocalhost ? host : SELLER_HOST;

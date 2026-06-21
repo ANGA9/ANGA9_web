@@ -157,16 +157,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('anga_active_brand_id');
     setCookies(null);
     
-    // Redirect immediately — this prevents React from re-rendering
-    // in a broken intermediate state (user=null while page still shows
-    // authenticated UI), which causes hydration error #418.
+    // We MUST await signOut() before navigating away.
+    // If we navigate first, the browser cancels the request and leaves the auth token
+    // in local storage. This causes the next page load to have a hydration mismatch 
+    // (server sees no cookies = logged out, client sees local storage = logged in).
+    await supabase.auth.signOut();
+    
+    // Now redirect securely
     window.location.href = "/";
-
-    // Delay signOut slightly to ensure the browser has started navigating
-    // before the auth state actually changes.
-    setTimeout(() => {
-      supabase.auth.signOut();
-    }, 50);
   }, [supabase, setCookies]);
 
   /**

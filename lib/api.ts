@@ -34,7 +34,10 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
     const headers: Record<string, string> = {};
     const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
     
-    if (session) {
+    // Import dynamically to avoid circular dependencies if any, or just import at top
+    const { shouldSuppressSession } = await import("./AuthContext");
+    
+    if (session && !shouldSuppressSession()) {
       headers['Authorization'] = `Bearer ${session.access_token}`;
     }
 

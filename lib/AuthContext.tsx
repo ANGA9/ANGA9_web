@@ -78,7 +78,7 @@ function getPortalCookie(): string | null {
  *
  * Returns true if the session should be HIDDEN from the current portal context.
  */
-function shouldSuppressSession(): boolean {
+export function shouldSuppressSession(): boolean {
   if (typeof window === "undefined") return false;
   const portalContext = getCurrentPortalContext();
   const portalCookie = getPortalCookie();

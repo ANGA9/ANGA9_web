@@ -804,6 +804,7 @@ export default function CustomerAccountPage() {
               <div className="flex flex-col">
                 <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} onClick={() => router.push('/notifications')} />
                 <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
+                <MenuItem icon={ShieldCheck} label="Data & Privacy" onClick={() => router.push('/account/privacy')} />
               </div>
             </div>
 
@@ -1035,8 +1036,16 @@ export default function CustomerAccountPage() {
                 href="/terms"
                 className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
               >
+                <FileText className="h-5 w-5 text-gray-400" />
+                Terms & Policies
+              </Link>
+
+              <Link
+                href="/account/privacy"
+                className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-bold rounded-xl transition-colors text-gray-600 hover:bg-gray-100/50"
+              >
                 <ShieldCheck className="h-5 w-5 text-gray-400" />
-                Terms & Privacy Policies
+                Data & Privacy
               </Link>
 
               <button

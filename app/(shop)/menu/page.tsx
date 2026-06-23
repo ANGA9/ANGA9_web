@@ -160,8 +160,8 @@ export default function MobileMenuPage() {
               style={{ background: activeCategory === "POPULAR" ? BRAND.bgCard : "transparent" }}
             >
               {activeCategory === "POPULAR" && <div className="absolute left-0 top-2 bottom-2 rounded-r-full" style={{ width: 3, background: BRAND.primary }} />}
-              <div className="relative flex items-center justify-center rounded-full transition-all" style={{ width: 42, height: 42, background: activeCategory === "POPULAR" ? BRAND.primaryLight : "transparent" }}>
-                <Star style={{ width: 19, height: 19, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.iconDefault, strokeWidth: activeCategory === "POPULAR" ? 2.2 : 1.8 }} />
+              <div className="relative flex items-center justify-center rounded-full transition-all overflow-hidden" style={{ width: 42, height: 42, background: activeCategory === "POPULAR" ? BRAND.primaryLight : "transparent", border: `1px solid ${BRAND.borderLight}` }}>
+                <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-cover" />
               </div>
               <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "10px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
                 Popular

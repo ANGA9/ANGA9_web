@@ -42,7 +42,7 @@ export default function CustomerShopLayout({
     <LoginSheetProvider>
       <CartProvider>
         <WishlistProvider>
-          <div className="min-h-screen" style={{ background: t.bgPage }}>
+          <div className="min-h-[100dvh] flex flex-col" style={{ background: t.bgPage }}>
 
             {/* ══════════ WCAG 2.4.1: Skip to content ══════════ */}
             <a href="#main-content" className="skip-to-content">
@@ -114,8 +114,8 @@ export default function CustomerShopLayout({
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
               id="main-content"
-              className={`${isMenu ? '' : 'mx-auto'} ${isCheckout || isMenu ? "pb-0" : "pb-20 md:pb-0"}`}
-              style={isMenu ? undefined : { maxWidth: 1400 }}
+              className={`${isMenu ? 'flex-1 flex flex-col' : 'flex-1 mx-auto'} ${isCheckout || isMenu ? "pb-0" : "pb-20 md:pb-0"}`}
+              style={{ width: "100%", ...(isMenu ? {} : { maxWidth: 1400 }) }}
             >
               {children}
             </main>

@@ -99,13 +99,7 @@ export default function MobileMenuPage() {
 
   return (
     <div
-      className="flex flex-col bg-white md:hidden"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 45,
-        overflow: "hidden",
-      }}
+      className="flex-1 flex flex-col bg-white md:hidden overflow-hidden"
     >
       {/* ── Sticky Header ── */}
       <header

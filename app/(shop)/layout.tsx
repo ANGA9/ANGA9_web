@@ -42,7 +42,7 @@ export default function CustomerShopLayout({
     <LoginSheetProvider>
       <CartProvider>
         <WishlistProvider>
-          <div className="min-h-[100dvh] flex flex-col" style={{ background: t.bgPage }}>
+          <div className={`${isMenu ? 'h-[100dvh] overflow-hidden' : 'min-h-[100dvh]'} flex flex-col`} style={{ background: t.bgPage }}>
 
             {/* ══════════ WCAG 2.4.1: Skip to content ══════════ */}
             <a href="#main-content" className="skip-to-content">

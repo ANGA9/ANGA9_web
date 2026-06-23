@@ -23,6 +23,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import CartSummary from "@/components/customer/CartSummary";
 import EmptyState from "@/components/shared/EmptyState";
+import { EmptyCartIllustration } from "@/components/shared/EmptyCartIllustration";
 import toast from "react-hot-toast";
 import { recommendationsApi } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
@@ -192,7 +193,7 @@ export default function CustomerCartPage() {
 
         {items.length === 0 ? (
           <EmptyState
-            icon={ShoppingBag}
+            illustration={<EmptyCartIllustration />}
             title="Your bag is empty"
             description="There is nothing in your bag. Let's add some items."
             actionLabel="Shop Now"
@@ -431,7 +432,7 @@ export default function CustomerCartPage() {
  
         {items.length === 0 ? (
           <EmptyState
-            icon={ShoppingBag}
+            illustration={<EmptyCartIllustration />}
             title="Your bag is empty"
             description="Time to start shopping and fill it with wonderful things!"
             actionLabel="Start Shopping"

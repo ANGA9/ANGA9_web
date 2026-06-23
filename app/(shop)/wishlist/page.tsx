@@ -10,6 +10,7 @@ import { Heart, Loader2, ShoppingCart, ArrowLeft } from "lucide-react";
 import { useCart } from "@/lib/CartContext";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { EmptyWishlistIllustration } from "@/components/shared/EmptyWishlistIllustration";
 
 export default function CustomerWishlistPage() {
   const { items, loading, removeItem, clearWishlist } = useWishlist();
@@ -133,7 +134,7 @@ export default function CustomerWishlistPage() {
 
         {products.length === 0 ? (
           <EmptyState
-            icon={Heart}
+            illustration={<EmptyWishlistIllustration />}
             title="Your wishlist is empty"
             description="Save items you love to view them later."
             actionLabel="Continue Shopping"

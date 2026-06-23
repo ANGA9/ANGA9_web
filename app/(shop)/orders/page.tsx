@@ -7,6 +7,7 @@ import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
+import { EmptyOrdersIllustration } from "@/components/shared/EmptyOrdersIllustration";
 
 const tabs = ["All Orders", "Active", "Delivered", "Cancelled"] as const;
 
@@ -216,13 +217,11 @@ function OrdersContent() {
               title: "No orders found",
               desc: "You haven't placed any orders matching this filter yet.",
             };
-            const { Icon, title, desc } = emptyConfig;
+            const { title, desc } = emptyConfig;
             return (
-              <div className="flex flex-col items-center justify-center py-16 md:py-24 text-center px-4">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-5" style={{ background: t.bgBlueTint }}>
-                  <Icon className="w-10 h-10 md:w-12 md:h-12" style={{ color: t.bluePrimary, opacity: 0.6 }} />
-                </div>
-                <h3 className="text-[17px] md:text-[20px] font-semibold mb-2" style={{ color: t.textPrimary }}>{title}</h3>
+              <div className="flex flex-col items-center justify-center py-12 md:py-16 text-center px-4">
+                <EmptyOrdersIllustration />
+                <h3 className="text-[17px] md:text-[20px] font-semibold mb-2 mt-2" style={{ color: t.textPrimary }}>{title}</h3>
                 <p className="text-[13px] md:text-[15px] mb-8 max-w-[280px]" style={{ color: t.textMuted }}>{desc}</p>
                 <Link
                   href="/"

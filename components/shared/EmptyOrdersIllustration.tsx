@@ -10,6 +10,7 @@ export function EmptyOrdersIllustration() {
         height={240} 
         className="object-contain opacity-90 hover:scale-105 transition-transform duration-500 ease-out" 
         priority
+        unoptimized={true}
       />
     </div>
   );

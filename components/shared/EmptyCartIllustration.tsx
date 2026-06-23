@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function EmptyCartIllustration() {
   return (
-    <div className="flex justify-center mb-6 mt-4 mix-blend-multiply">
+    <div className="flex justify-center mb-2 mt-0 mix-blend-multiply">
       <Image 
         src="/illustrations/empty_cart.png" 
         alt="Empty Cart" 

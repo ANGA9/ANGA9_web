@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function EmptyWishlistIllustration() {
   return (
-    <div className="flex justify-center mb-6 mt-4 mix-blend-multiply">
+    <div className="flex justify-center mb-2 mt-0 mix-blend-multiply">
       <Image 
         src="/illustrations/empty_wishlist.png" 
         alt="Empty Wishlist" 

@@ -98,7 +98,7 @@ export default function CustomerWishlistPage() {
       </header>
 
       <div className="mx-auto max-w-[1400px] px-4 md:px-12 py-4 md:py-10 pb-24 md:pb-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 md:mb-8 mt-1 md:mt-2">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 md:mb-8 mt-1 md:mt-2 md:ml-[26px]">
           <div>
             <div className="flex items-baseline gap-3">
               <h1

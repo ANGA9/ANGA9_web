@@ -112,13 +112,13 @@ function OrdersContent() {
       )}
 
       {/* Desktop-only heading & tabs */}
-      <div className="hidden md:flex items-center mb-6 lg:mb-8 mt-1 md:mt-2">
-        <h1 className="text-[24px] md:text-[32px] font-medium tracking-tight whitespace-nowrap" style={{ color: t.textPrimary }}>
+      <div className="hidden md:flex items-center justify-center relative mb-6 lg:mb-8 mt-1 md:mt-2">
+        <h1 className="absolute left-[26px] text-[24px] md:text-[32px] font-medium tracking-tight whitespace-nowrap" style={{ color: t.textPrimary }}>
           My Orders
         </h1>
         
         {/* ── Flipkart-style underline tabs ── */}
-        <div className="flex flex-1 justify-center max-w-2xl mx-auto border-b" style={{ borderColor: t.border }}>
+        <div className="flex w-full max-w-2xl border-b" style={{ borderColor: t.border }}>
           {tabs.map((tab) => {
             const isActive = activeTab === tab;
             const statusMatch = tab.replace("Active", "Processing");
@@ -249,10 +249,10 @@ function OrdersContent() {
             };
             const { title, desc } = emptyConfig;
             return (
-              <div className="flex flex-col items-center justify-center py-12 md:py-16 text-center px-4">
+              <div className="flex flex-col items-center justify-center pt-4 pb-16 md:pt-4 md:pb-24 text-center px-4">
                 <EmptyOrdersIllustration />
                 <h3 className="text-[17px] md:text-[20px] font-semibold mb-2 mt-2" style={{ color: t.textPrimary }}>{title}</h3>
-                <p className="text-[13px] md:text-[15px] mb-8 max-w-[280px]" style={{ color: t.textMuted }}>{desc}</p>
+                <p className="text-[13px] md:text-[15px] mb-5 max-w-[280px]" style={{ color: t.textMuted }}>{desc}</p>
                 <Link
                   href="/"
                   className="rounded-full md:rounded-xl px-6 py-2.5 md:px-10 md:py-3.5 text-[13px] md:text-[16px] font-semibold text-white transition-all active:scale-95"

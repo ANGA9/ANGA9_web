@@ -416,7 +416,7 @@ export default function CustomerCartPage() {
 
       {/* ══════════ DESKTOP VIEW ══════════ */}
       <div className="hidden md:block mx-auto max-w-[1400px] px-4 md:px-12 py-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 ml-[26px]">
           <div className="flex items-baseline gap-3">
             <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
               Shopping Bag

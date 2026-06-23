@@ -36,7 +36,7 @@ export default function EmptyState({
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="mt-6 md:mt-8 rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md text-white"
+          className="mt-4 md:mt-5 rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md text-white"
           style={{ background: accentColor }}
         >
           {actionLabel}

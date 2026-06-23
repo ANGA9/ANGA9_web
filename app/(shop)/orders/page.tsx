@@ -84,7 +84,7 @@ function OrdersContent() {
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
   return (
-    <div className="mx-auto max-w-4xl py-0 md:py-6 px-0 md:px-0">
+    <div className="mx-auto max-w-[1400px] py-0 md:py-6 px-0 md:px-12">
       {/* ── Mobile Header ── */}
       <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
         <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
@@ -111,15 +111,46 @@ function OrdersContent() {
         </div>
       )}
 
-      {/* Desktop-only heading */}
-      <div className="hidden md:flex items-center gap-2 mb-6 lg:mb-8 mt-1 md:mt-2">
-        <h1 className="text-[24px] md:text-[32px] font-medium tracking-tight mb-1" style={{ color: t.textPrimary }}>
+      {/* Desktop-only heading & tabs */}
+      <div className="hidden md:flex items-center mb-6 lg:mb-8 mt-1 md:mt-2">
+        <h1 className="text-[24px] md:text-[32px] font-medium tracking-tight whitespace-nowrap" style={{ color: t.textPrimary }}>
           My Orders
         </h1>
+        
+        {/* ── Flipkart-style underline tabs ── */}
+        <div className="flex flex-1 justify-center max-w-2xl mx-auto border-b" style={{ borderColor: t.border }}>
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab;
+            const statusMatch = tab.replace("Active", "Processing");
+            const count = tab === "All Orders" 
+              ? orders.length 
+              : orders.filter((o) => o.status === statusMatch).length;
+
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="relative flex-1 py-3 md:py-3.5 text-center transition-colors"
+                style={{ color: isActive ? t.bluePrimary : t.textMuted }}
+              >
+                <span className={`text-[13px] md:text-[14px] leading-tight ${isActive ? "font-semibold" : "font-medium"}`}>
+                  {tab}
+                </span>
+                <span className={`ml-1.5 text-[11px] md:text-[12px] ${isActive ? "font-semibold" : "font-normal"}`} style={{ opacity: isActive ? 0.8 : 0.5 }}>{count}</span>
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
+                    style={{ background: t.bluePrimary }}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ── Flipkart-style underline tabs ── */}
-      <div className="flex border-b mb-6" style={{ borderColor: t.border }}>
+      {/* Mobile tabs */}
+      <div className="md:hidden flex border-b mb-4" style={{ borderColor: t.border }}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           const statusMatch = tab.replace("Active", "Processing");
@@ -132,15 +163,12 @@ function OrdersContent() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className="relative flex-1 py-3 md:py-3.5 text-center transition-colors"
-              style={{
-                color: isActive ? t.bluePrimary : t.textMuted,
-              }}
+              style={{ color: isActive ? t.bluePrimary : t.textMuted }}
             >
               <span className={`text-[13px] md:text-[14px] leading-tight ${isActive ? "font-semibold" : "font-medium"}`}>
                 {tab}
               </span>
               <span className={`ml-1.5 text-[11px] md:text-[12px] ${isActive ? "font-semibold" : "font-normal"}`} style={{ opacity: isActive ? 0.8 : 0.5 }}>{count}</span>
-              {/* Active underline indicator */}
               {isActive && (
                 <span
                   className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
@@ -151,6 +179,8 @@ function OrdersContent() {
           );
         })}
       </div>
+
+      <div className="max-w-4xl mx-auto w-full">
 
       {loading ? (
         <div className="space-y-3">
@@ -235,6 +265,7 @@ function OrdersContent() {
           })()}
         </div>
       )}
+      </div>
       </div>
     </div>
   );

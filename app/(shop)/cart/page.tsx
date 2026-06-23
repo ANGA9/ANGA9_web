@@ -415,7 +415,7 @@ export default function CustomerCartPage() {
       </div>
 
       {/* ══════════ DESKTOP VIEW ══════════ */}
-      <div className="hidden md:block mx-auto max-w-[1280px] px-8 py-10">
+      <div className="hidden md:block mx-auto max-w-[1400px] px-4 md:px-12 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-baseline gap-3">
             <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
@@ -431,14 +431,16 @@ export default function CustomerCartPage() {
         </div>
  
         {items.length === 0 ? (
-          <EmptyState
-            illustration={<EmptyCartIllustration />}
-            title="Your bag is empty"
-            description="Time to start shopping and fill it with wonderful things!"
-            actionLabel="Start Shopping"
-            onAction={() => router.push("/")}
-            accentColor={t.primaryCta}
-          />
+          <div className="hidden md:flex flex-col items-center justify-center min-h-[50vh] animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <EmptyState
+              illustration={<EmptyCartIllustration />}
+              title="Your bag is empty"
+              description="Time to start shopping and fill it with wonderful things!"
+              actionLabel="Start Shopping"
+              onAction={() => router.push("/")}
+              accentColor={t.primaryCta}
+            />
+          </div>
         ) : (
           <div className="grid grid-cols-12 gap-10">
             <div className="col-span-12 xl:col-span-8 space-y-4">

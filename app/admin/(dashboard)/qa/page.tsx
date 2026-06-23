@@ -80,47 +80,48 @@ export default function AdminQaPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Q&A Moderation</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Q&A Moderation</h1>
+          <p className="text-[15px] text-gray-500 font-medium">
             Review, approve, or reject customer questions and answers.
           </p>
         </div>
       </div>
-
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="flex h-64 items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+      {/* ── Content ── */}
+      {loading ? (
+        <div className="flex h-64 items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+        </div>
+      ) : items.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <MessageSquare className="w-10 h-10 text-gray-300" />
           </div>
-        ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
-              <MessageSquare className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900">No Q&A items</h3>
-            <p className="text-sm text-gray-500 mt-2 max-w-sm">
-              There are no questions or answers to moderate right now.
-            </p>
-          </div>
-        ) : (
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Q&A items</h2>
+          <p className="text-[15px] text-gray-500 font-medium">
+            There are no questions or answers to moderate right now.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-500 border-b">
-                <tr>
-                  <th className="px-6 py-4">Type</th>
-                  <th className="px-6 py-4">Author</th>
-                  <th className="px-6 py-4 w-1/3">Content</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+            <table className="w-full text-left border-collapse min-w-[1000px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Author</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[33%]">Content</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-50">
                 {items.map((item) => (
-                  <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50 transition-colors">
+                  <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/50 transition-colors group">
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider border ${
                         item.type === "questions" ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-purple-50 text-purple-700 border-purple-100"
@@ -188,8 +189,8 @@ export default function AdminQaPage() {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

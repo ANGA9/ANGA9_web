@@ -37,46 +37,47 @@ export default function AdminDealsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Header ── */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Global Deals Monitor</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Global Deals Monitor</h1>
+          <p className="text-[15px] text-gray-500 font-medium">
             Monitor and manage all promotional deals created by sellers across the platform.
           </p>
         </div>
       </div>
-
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="flex h-64 items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+      {/* ── Content ── */}
+      {loading ? (
+        <div className="flex h-64 items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+        </div>
+      ) : deals.length === 0 ? (
+        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <Tag className="w-10 h-10 text-gray-300" />
           </div>
-        ) : deals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
-              <Tag className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900">No deals active</h3>
-            <p className="text-sm text-gray-500 mt-2 max-w-sm">
-              Sellers have not created any promotional deals yet.
-            </p>
-          </div>
-        ) : (
+          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No deals active</h2>
+          <p className="text-[15px] text-gray-500 font-medium">
+            Sellers have not created any promotional deals yet.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-500 border-b">
-                <tr>
-                  <th className="px-6 py-4">Product</th>
-                  <th className="px-6 py-4">Seller ID</th>
-                  <th className="px-6 py-4">Type</th>
-                  <th className="px-6 py-4">Deal Price</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Timeline</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+            <table className="w-full text-left border-collapse min-w-[1000px]">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Seller ID</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Deal Price</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Timeline</th>
+                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-50">
                 {deals.map((deal) => {
                   const now = new Date();
                   const start = new Date(deal.starts_at);
@@ -98,7 +99,7 @@ export default function AdminDealsPage() {
                   }
 
                   return (
-                    <tr key={deal.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={deal.id} className="hover:bg-gray-50/50 transition-colors group">
                       <td className="px-6 py-4 font-medium text-gray-900 max-w-[200px] truncate">
                         {deal.products?.name || "Unknown Product"}
                       </td>
@@ -144,8 +145,8 @@ export default function AdminDealsPage() {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

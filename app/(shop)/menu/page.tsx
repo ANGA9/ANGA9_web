@@ -417,57 +417,41 @@ export default function MobileMenuPage() {
                 </div>
 
                 {/* Subcategory Group */}
-                <div className="flex flex-col gap-4">
-                  <div>
-                    {/* Items list */}
-                    <div className="flex flex-col">
-                      {activeMeta?.children.map((item, idx) => (
-                        <Link
-                          key={item.slug}
-                          href={`/search?q=${encodeURIComponent(item.name)}`}
-                          className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors group"
-                          style={{
-                            borderBottom:
-                              idx < activeMeta.children.length - 1
-                                ? `1px solid ${BRAND.borderLight}`
-                                : "none",
-                          }}
-                        >
-                          {/* Item initial */}
-                          <div
-                            className="flex items-center justify-center rounded-lg shrink-0"
-                            style={{
-                              width: 36,
-                              height: 36,
-                              background: BRAND.bg,
-                              border: `1px solid ${BRAND.borderLight}`,
-                            }}
-                          >
-                            <span
-                              className="text-[14px] font-semibold"
-                              style={{
-                                color: BRAND.textSecondary,
-                              }}
-                            >
-                              {item.name.charAt(0).toUpperCase()}
+                <div className="grid grid-cols-3 gap-y-6 gap-x-2 pt-2">
+                  {activeMeta?.children.map((item) => (
+                    <Link
+                      key={item.slug}
+                      href={`/search?q=${encodeURIComponent(item.name)}`}
+                      className="flex flex-col items-center text-center gap-2 group active:scale-95 transition-transform"
+                    >
+                      <div
+                        className="flex items-center justify-center rounded-xl overflow-hidden transition-shadow group-hover:shadow-sm"
+                        style={{
+                          width: 68,
+                          height: 68,
+                          background: BRAND.bg,
+                          border: `1px solid ${BRAND.borderLight}`,
+                        }}
+                      >
+                        {item.image_url ? (
+                          <img src={item.image_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex flex-col items-center justify-center w-full h-full p-2 bg-gray-50">
+                            <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-8 h-8 opacity-40 mb-0.5 object-contain" />
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">
+                              {item.name.substring(0, 2)}
                             </span>
                           </div>
-
-                          <span
-                            className="flex-1 text-[13.5px] font-semibold group-hover:text-gray-900 transition-colors"
-                            style={{ color: BRAND.text }}
-                          >
-                            {item.name}
-                          </span>
-
-                          <ChevronRight
-                            className="w-4 h-4 group-hover:text-gray-400 transition-colors"
-                            style={{ color: BRAND.textMuted }}
-                          />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+                        )}
+                      </div>
+                      <span
+                        className="text-[11.5px] font-semibold leading-tight group-hover:text-gray-900 transition-colors"
+                        style={{ color: BRAND.text, maxWidth: 76 }}
+                      >
+                        {item.name}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
               </>
             )}

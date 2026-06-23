@@ -16,6 +16,7 @@ export interface ApiCategory {
 export interface CategoryChild {
   name: string;
   slug: string;
+  image_url: string | null;
 }
 
 /** A top-level category tab with its children grouped for the mega dropdown */
@@ -36,7 +37,7 @@ function buildTabs(categories: ApiCategory[]): CategoryTab[] {
     image_url: top.image_url,
     children: categories
       .filter((c) => c.parent_id === top.id)
-      .map((c) => ({ name: c.name, slug: c.slug })),
+      .map((c) => ({ name: c.name, slug: c.slug, image_url: c.image_url })),
   }));
 
   return tabs;

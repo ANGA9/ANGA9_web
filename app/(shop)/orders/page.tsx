@@ -256,7 +256,7 @@ function OrdersContent() {
                 <Link
                   href="/"
                   className="rounded-full md:rounded-xl px-6 py-2.5 md:px-10 md:py-3.5 text-[13px] md:text-[16px] font-semibold text-white transition-all active:scale-95"
-                  style={{ background: t.bluePrimary }}
+                  style={{ background: t.primaryCta }}
                 >
                   Start Shopping
                 </Link>

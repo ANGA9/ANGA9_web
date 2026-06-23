@@ -361,60 +361,6 @@ export default function MobileMenuPage() {
             ) : (
               /* ── Category Subcategories ── */
               <>
-                {/* Category Banner */}
-                <div
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4"
-                  style={{
-                    background: BRAND.primaryLight,
-                    border: `1px solid ${BRAND.border}`,
-                  }}
-                >
-                  {activeMeta && (
-                    <div
-                      className="flex items-center justify-center rounded-xl overflow-hidden"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        background: BRAND.bgCard,
-                      }}
-                    >
-                      {activeMeta.image_url ? (
-                        <img src={activeMeta.image_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-[14px] font-bold uppercase text-gray-500">
-                          {activeMeta.name.substring(0, 2)}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h2
-                      className="text-[15px] font-bold tracking-tight"
-                      style={{ color: BRAND.text }}
-                    >
-                      {activeMeta?.name || activeCategory}
-                    </h2>
-                    <p
-                      className="text-[11px] font-medium"
-                      style={{ color: BRAND.textMuted }}
-                    >
-                      {activeMeta?.children.length || 0} items
-                    </p>
-                  </div>
-                  <Link
-                    href={`/search?q=${encodeURIComponent(
-                      activeMeta?.name || activeCategory
-                    )}`}
-                    className="text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors"
-                    style={{
-                      color: BRAND.primary,
-                      background: BRAND.primaryMid,
-                    }}
-                  >
-                    View All
-                  </Link>
-                </div>
-
                 {/* Subcategory Group */}
                 <div className="grid grid-cols-3 gap-y-6 gap-x-2 pt-2">
                   {activeMeta?.children.map((item) => (

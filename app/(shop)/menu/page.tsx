@@ -160,8 +160,8 @@ export default function MobileMenuPage() {
               style={{ background: activeCategory === "POPULAR" ? BRAND.bgCard : "transparent" }}
             >
               {activeCategory === "POPULAR" && <div className="absolute left-0 top-2 bottom-2 rounded-r-full" style={{ width: 3, background: BRAND.primary }} />}
-              <div className="relative flex items-center justify-center rounded-full transition-all overflow-hidden" style={{ width: 52, height: 52, background: "transparent" }}>
-                <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-cover" />
+              <div className="relative flex items-center justify-center transition-all" style={{ width: 52, height: 52, background: "transparent" }}>
+                <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.35)" }} />
               </div>
               <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "10px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
                 Popular
@@ -192,7 +192,7 @@ export default function MobileMenuPage() {
 
                   {/* Icon circle / fallback */}
                   <div
-                    className="relative flex items-center justify-center rounded-full transition-all overflow-hidden"
+                    className="relative flex items-center justify-center transition-all"
                     style={{
                       width: 52,
                       height: 52,
@@ -200,7 +200,7 @@ export default function MobileMenuPage() {
                     }}
                   >
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt="" className="w-full h-full object-cover" />
+                      <img src={cat.image_url} alt="" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.35)" }} />
                     ) : (
                       <span className="text-[14px] font-bold uppercase" style={{ color: isActive ? BRAND.primary : BRAND.iconDefault }}>
                         {cat.name.substring(0, 2)}
@@ -370,7 +370,7 @@ export default function MobileMenuPage() {
                       className="flex flex-col items-center text-center gap-2 group active:scale-95 transition-transform"
                     >
                       <div
-                        className="flex items-center justify-center rounded-xl overflow-hidden transition-shadow group-hover:shadow-sm"
+                        className="flex items-center justify-center transition-shadow group-hover:shadow-sm"
                         style={{
                           width: 82,
                           height: 82,
@@ -378,9 +378,9 @@ export default function MobileMenuPage() {
                         }}
                       >
                         {item.image_url ? (
-                          <img src={item.image_url} alt="" className="w-full h-full object-cover" />
+                          <img src={item.image_url} alt="" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.35)" }} />
                         ) : (
-                          <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-full h-full object-cover opacity-60" />
+                          <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-full h-full object-contain opacity-60" style={{ mixBlendMode: "multiply", transform: "scale(1.2)" }} />
                         )}
                       </div>
                       <span

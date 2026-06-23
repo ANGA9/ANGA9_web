@@ -91,19 +91,26 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Detected
 
   const comps = result.address_components ?? [];
 
-  // Build line1 from the finest-grained components Ola gives us.
+  // Build line1 from the finest-grained street components Ola gives us.
   const streetNumber = pick(comps, "street_number", "premise");
   const route = pick(comps, "route", "street_address");
-  const sublocality = pick(comps, "sublocality", "sublocality_level_1", "neighborhood");
+
+  // The "area" is what a courier actually navigates by (e.g. "Koramangala").
+  // Prefer `neighborhood` — Ola's `sublocality` is often a municipal-body name
+  // ("...City Corporation") that's useless on a parcel label.
+  const area = pick(
+    comps,
+    "neighborhood",
+    "sublocality_level_1",
+    "sublocality",
+    "sublocality_level_2",
+  );
 
   const line1Parts = [streetNumber, route].filter(Boolean);
-  const line1 = line1Parts.join(", ") || sublocality || result.formatted_address || "";
+  const line1 = line1Parts.join(", ") || area || result.formatted_address || "";
 
-  // line2 = a landmark/area, avoiding repeating whatever already landed in line1.
-  const line2 =
-    sublocality && !line1.includes(sublocality)
-      ? sublocality
-      : pick(comps, "sublocality_level_2", "landmark");
+  // line2 = the area/landmark, unless it already appears in line1.
+  const line2 = area && !line1.includes(area) ? area : "";
 
   const city = pick(
     comps,

@@ -163,7 +163,7 @@ export default function MobileMenuPage() {
               <div className="relative flex items-center justify-center transition-all" style={{ width: 52, height: 52, background: "transparent" }}>
                 <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.35)" }} />
               </div>
-              <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "10px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
+              <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "11.5px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
                 Popular
               </span>
             </button>
@@ -212,7 +212,7 @@ export default function MobileMenuPage() {
                   <span
                     className="relative text-center leading-tight transition-colors"
                     style={{
-                      fontSize: "10px",
+                      fontSize: "11.5px",
                       fontWeight: isActive ? 700 : 500,
                       color: isActive ? BRAND.primary : BRAND.textSecondary,
                       letterSpacing: "0.01em",

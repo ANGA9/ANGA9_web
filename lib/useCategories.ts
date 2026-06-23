@@ -39,78 +39,7 @@ function buildTabs(categories: ApiCategory[]): CategoryTab[] {
       .map((c) => ({ name: c.name, slug: c.slug })),
   }));
 
-  // Frontend-only merge for small categories
-  let finalTabs = [...tabs];
-
-  const mergeTargets1 = ["Bath Linen", "Table Linen", "Kitchen Textiles"];
-  const toMerge1 = finalTabs.filter(t => mergeTargets1.includes(t.name));
-  
-  if (toMerge1.length > 1) {
-    const primary = toMerge1[0];
-    primary.name = "Bath, Table & Kitchen";
-    primary.slug = "bath-table-kitchen";
-    
-    const combinedChildren: CategoryChild[] = [];
-    for (const t of toMerge1) {
-      combinedChildren.push(...t.children);
-    }
-    primary.children = combinedChildren;
-    
-    finalTabs = finalTabs.filter(t => t.id === primary.id || !mergeTargets1.includes(t.name));
-  }
-
-  const mergeTargets2 = ["Bedding", "Living & Decor"];
-  const toMerge2 = finalTabs.filter(t => mergeTargets2.includes(t.name));
-  
-  if (toMerge2.length > 1) {
-    const primary = toMerge2[0];
-    primary.name = "Bedding & Living Decor";
-    primary.slug = "bedding-living-decor";
-    
-    const combinedChildren: CategoryChild[] = [];
-    for (const t of toMerge2) {
-      combinedChildren.push(...t.children);
-    }
-    primary.children = combinedChildren;
-    
-    finalTabs = finalTabs.filter(t => t.id === primary.id || !mergeTargets2.includes(t.name));
-  }
-
-  const mergeTargets3 = ["Window Treatments", "Floor Coverings"];
-  const toMerge3 = finalTabs.filter(t => mergeTargets3.includes(t.name));
-  
-  if (toMerge3.length > 1) {
-    const primary = toMerge3[0];
-    primary.name = "Floors & Windows";
-    primary.slug = "floors-windows";
-    
-    const combinedChildren: CategoryChild[] = [];
-    for (const t of toMerge3) {
-      combinedChildren.push(...t.children);
-    }
-    primary.children = combinedChildren;
-    
-    finalTabs = finalTabs.filter(t => t.id === primary.id || !mergeTargets3.includes(t.name));
-  }
-
-  const mergeTargets4 = ["Activewear", "Accessories"];
-  const toMerge4 = finalTabs.filter(t => mergeTargets4.includes(t.name));
-  
-  if (toMerge4.length > 1) {
-    const primary = toMerge4[0];
-    primary.name = "Active & Extras";
-    primary.slug = "active-extras";
-    
-    const combinedChildren: CategoryChild[] = [];
-    for (const t of toMerge4) {
-      combinedChildren.push(...t.children);
-    }
-    primary.children = combinedChildren;
-    
-    finalTabs = finalTabs.filter(t => t.id === primary.id || !mergeTargets4.includes(t.name));
-  }
-  
-  return finalTabs;
+  return tabs;
 }
 
 // Module-level cache — CategoryStrip mounts in both the shop layout and the

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket, LocateFixed } from "lucide-react";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -18,6 +18,7 @@ import {
 } from "@/lib/usePayment";
 import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
 import { loyaltyApi, type LoyaltyProfile } from "@/lib/loyaltyApi";
+import { detectAddress } from "@/lib/olaMaps";
 import toast from "react-hot-toast";
 
 interface Address {
@@ -95,6 +96,7 @@ export default function CheckoutPage() {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [savingAddress, setSavingAddress] = useState(false);
+  const [detectingLocation, setDetectingLocation] = useState(false);
 
   // Validate cart against actual product status in Supabase
   useEffect(() => {
@@ -307,6 +309,34 @@ export default function CheckoutPage() {
     setForm(EMPTY_FORM);
     setShowAddressForm(true);
     setShowAddressPicker(false);
+  };
+
+  // Auto-detect the customer's address via browser geolocation + Ola Maps
+  // reverse geocoding, then prefill the form. We merge onto the existing form
+  // (rather than replace) so a label the user already typed survives, and we
+  // never clobber a field Ola couldn't resolve with an empty string.
+  const handleDetectLocation = async () => {
+    setDetectingLocation(true);
+    try {
+      const detected = await detectAddress();
+      setForm((prev) => ({
+        ...prev,
+        line1: detected.line1 || prev.line1,
+        line2: detected.line2 || prev.line2,
+        city: detected.city || prev.city,
+        state: detected.state || prev.state,
+        pincode: detected.pincode || prev.pincode,
+      }));
+      if (detected.city || detected.pincode) {
+        toast.success("Location detected — please check your flat/house number");
+      } else {
+        toast("Got your area. Please complete the remaining fields.", { icon: "📍" });
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Couldn't detect your location");
+    } finally {
+      setDetectingLocation(false);
+    }
   };
 
   const handleSaveAddress = async () => {
@@ -531,6 +561,25 @@ export default function CheckoutPage() {
             <X className="w-4 h-4" style={{ color: t.textMuted }} />
           </button>
         </div>
+        {/* Auto-detect — fills every field below from the device's location */}
+        <button
+          type="button"
+          onClick={handleDetectLocation}
+          disabled={detectingLocation}
+          className="w-full mb-4 flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#1A6FD4]/40 bg-white px-4 py-3 text-[14px] font-bold text-[#1A6FD4] hover:bg-[#1A6FD4]/5 hover:border-[#1A6FD4] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait"
+        >
+          {detectingLocation ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Detecting your location…
+            </>
+          ) : (
+            <>
+              <LocateFixed className="w-4 h-4" />
+              Use my current location
+            </>
+          )}
+        </button>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Label</label>

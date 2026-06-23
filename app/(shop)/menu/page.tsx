@@ -99,7 +99,7 @@ export default function MobileMenuPage() {
 
   return (
     <div
-      className="flex-1 flex flex-col bg-white md:hidden overflow-hidden"
+      className="flex-1 flex flex-col bg-white md:hidden overflow-hidden min-h-0"
     >
       {/* ── Sticky Header ── */}
       <header
@@ -130,7 +130,7 @@ export default function MobileMenuPage() {
       </header>
 
       {/* ── Split Panel ── */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
         {/* ── LEFT: Category List ── */}
         <aside
           className="w-[88px] shrink-0 overflow-y-auto"

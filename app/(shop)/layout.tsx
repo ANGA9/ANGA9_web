@@ -64,7 +64,7 @@ export default function CustomerShopLayout({
                     will-change: transform;
                   }
                 `}} />
-                <div className="bg-gradient-to-r from-[#8B5CF6] to-[#1A6FD4] text-white overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10">
+                <div className="shrink-0 bg-gradient-to-r from-[#8B5CF6] to-[#1A6FD4] text-white overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10">
                   <div className="animate-marquee font-black tracking-wide text-[14px] uppercase flex items-center gap-4 flex-1">
                     <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
                     <span className="opacity-50">•</span>
@@ -114,7 +114,7 @@ export default function CustomerShopLayout({
             {/* ══════════ PAGE CONTENT ══════════ */}
             <main
               id="main-content"
-              className={`${isMenu ? 'flex-1 flex flex-col' : 'flex-1 mx-auto'} ${isCheckout || isMenu ? "pb-0" : "pb-20 md:pb-0"}`}
+              className={`${isMenu ? 'flex-1 flex flex-col min-h-0' : 'flex-1 mx-auto'} ${isCheckout || isMenu ? "pb-0" : "pb-20 md:pb-0"}`}
               style={{ width: "100%", ...(isMenu ? {} : { maxWidth: 1400 }) }}
             >
               {children}

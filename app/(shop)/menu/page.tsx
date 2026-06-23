@@ -160,7 +160,7 @@ export default function MobileMenuPage() {
               style={{ background: activeCategory === "POPULAR" ? BRAND.bgCard : "transparent" }}
             >
               {activeCategory === "POPULAR" && <div className="absolute left-0 top-2 bottom-2 rounded-r-full" style={{ width: 3, background: BRAND.primary }} />}
-              <div className="relative flex items-center justify-center rounded-full transition-all overflow-hidden" style={{ width: 42, height: 42, background: activeCategory === "POPULAR" ? BRAND.primaryLight : "transparent", border: `1px solid ${BRAND.borderLight}` }}>
+              <div className="relative flex items-center justify-center rounded-full transition-all overflow-hidden" style={{ width: 52, height: 52, background: "transparent" }}>
                 <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-cover" />
               </div>
               <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "10px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
@@ -194,10 +194,9 @@ export default function MobileMenuPage() {
                   <div
                     className="relative flex items-center justify-center rounded-full transition-all overflow-hidden"
                     style={{
-                      width: 42,
-                      height: 42,
-                      background: isActive ? BRAND.primaryLight : "transparent",
-                      border: cat.image_url ? `1px solid ${BRAND.borderLight}` : 'none'
+                      width: 52,
+                      height: 52,
+                      background: "transparent",
                     }}
                   >
                     {cat.image_url ? (
@@ -427,21 +426,15 @@ export default function MobileMenuPage() {
                       <div
                         className="flex items-center justify-center rounded-xl overflow-hidden transition-shadow group-hover:shadow-sm"
                         style={{
-                          width: 68,
-                          height: 68,
-                          background: BRAND.bg,
-                          border: `1px solid ${BRAND.borderLight}`,
+                          width: 82,
+                          height: 82,
+                          background: "transparent",
                         }}
                       >
                         {item.image_url ? (
                           <img src={item.image_url} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="flex flex-col items-center justify-center w-full h-full p-2 bg-gray-50">
-                            <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-8 h-8 opacity-40 mb-0.5 object-contain" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">
-                              {item.name.substring(0, 2)}
-                            </span>
-                          </div>
+                          <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-full h-full object-cover opacity-60" />
                         )}
                       </div>
                       <span

@@ -91,27 +91,6 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Detected
 
   const comps = result.address_components ?? [];
 
-  // Build line1 from the finest-grained street components Ola gives us.
-  const streetNumber = pick(comps, "street_number", "premise");
-  const route = pick(comps, "route", "street_address");
-
-  // The "area" is what a courier actually navigates by (e.g. "Koramangala").
-  // Prefer `neighborhood` — Ola's `sublocality` is often a municipal-body name
-  // ("...City Corporation") that's useless on a parcel label.
-  const area = pick(
-    comps,
-    "neighborhood",
-    "sublocality_level_1",
-    "sublocality",
-    "sublocality_level_2",
-  );
-
-  const line1Parts = [streetNumber, route].filter(Boolean);
-  const line1 = line1Parts.join(", ") || area || result.formatted_address || "";
-
-  // line2 = the area/landmark, unless it already appears in line1.
-  const line2 = area && !line1.includes(area) ? area : "";
-
   const city = pick(
     comps,
     "locality",
@@ -122,13 +101,67 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Detected
   const state = pick(comps, "administrative_area_level_1", "state");
   const pincode = pick(comps, "postal_code", "pincode");
 
+  // ── Street address (line1) ───────────────────────────────────────
+  // We want line1 to be as detailed as Ola can resolve — building/society name,
+  // road, layout, area — so the customer only has to add their flat/house no.
+  // Ola's `formatted_address` carries the richest chain; the discrete
+  // address_components are far sparser (often just a single "route"). So we
+  // lean on formatted_address and strip out:
+  //   • the city / state / pincode / country — they have their own fields, and
+  //   • any bare house-number token (e.g. "2", "12A") — the one thing we
+  //     deliberately leave blank for the customer to fill in.
+  const formatted = result.formatted_address ?? "";
+  const dropTail = new Set(
+    [city, state, pincode, "India"].filter(Boolean).map((s) => s.toLowerCase()),
+  );
+  const seen = new Set<string>();
+  const streetParts = formatted
+    .split(",")
+    .map((p) => p.trim())
+    // Scrub the city/state/pincode even when Ola jams them into one segment
+    // without a comma (e.g. "...HSR Layout, Karnataka 560102").
+    .map((p) => {
+      let s = p;
+      if (pincode) s = s.replace(new RegExp(`\\b${pincode}\\b`), "");
+      for (const t of [state, city]) {
+        if (t) s = s.replace(new RegExp(`\\b${t}\\b`, "i"), "");
+      }
+      return s.trim();
+    })
+    .filter(Boolean)
+    .filter((p) => !dropTail.has(p.toLowerCase()))
+    .filter((p) => !/^\d+\s*[a-z]?$/i.test(p)) // drop bare house numbers
+    .filter((p) => {
+      const key = p.toLowerCase();
+      if (seen.has(key)) return false; // de-dupe repeated tokens
+      seen.add(key);
+      return true;
+    });
+
+  // Structured fallback if formatted_address was empty or fully stripped.
+  const route = pick(comps, "route", "street_address");
+  const area = pick(
+    comps,
+    "neighborhood",
+    "sublocality_level_1",
+    "sublocality",
+    "sublocality_level_2",
+  );
+  const line1 =
+    streetParts.join(", ") ||
+    [route, area].filter(Boolean).join(", ") ||
+    area ||
+    "";
+
   return {
     line1,
-    line2,
+    // Everything navigable now lives in line1; leave line2 free for the
+    // customer to add a landmark ("near X gate") if they want.
+    line2: "",
     city,
     state,
     pincode,
-    formatted: result.formatted_address ?? "",
+    formatted,
     lat: result.geometry?.location?.lat ?? lat,
     lng: result.geometry?.location?.lng ?? lng,
   };

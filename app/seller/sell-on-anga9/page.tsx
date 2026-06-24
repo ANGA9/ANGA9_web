@@ -84,7 +84,7 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Start Selling
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -157,7 +157,7 @@ export default function SellerLandingPage() {
               {[
                 {
                   icon: IndianRupee,
-                  color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
+                  color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
                   title: "10% Commission Fee",
                   desc: "Suppliers selling on ANGA9 keep 100% of their profit by not paying any commission at all.",
                 },
@@ -169,7 +169,7 @@ export default function SellerLandingPage() {
                 },
                 {
                   icon: Clock,
-                  color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
+                  color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
                   title: "7-Day Payment Cycle",
                   desc: "Receive your earnings within 7 days of dispatch, directly deposited to your bank account.",
                 },
@@ -261,13 +261,13 @@ export default function SellerLandingPage() {
             {[
               {
                 icon: Zap,
-                color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
+                color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
                 title: "Affordable Shipping",
                 desc: "Deliver to 28,000+ pincodes with the most reliable and cost-effective shipping.",
               },
               {
                 icon: Megaphone,
-                color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
+                color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
                 title: "ANGA9 Ads",
                 desc: "Boost visibility with targeted ad tools to sell more catalogs every day.",
               },
@@ -395,7 +395,7 @@ export default function SellerLandingPage() {
               { icon: Truck, label: "Pan-India Delivery" },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/5 flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] group-hover:text-white">
+                <div className="w-12 h-12 rounded-full bg-white border-2 border-[#1A6FD4] flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-[#1A6FD4] group-hover:text-white">
                   <Icon className="h-6 w-6" />
                 </div>
                 <span className="text-sm md:text-base font-semibold text-[#4B5563] text-center whitespace-nowrap">{label}</span>
@@ -426,7 +426,7 @@ export default function SellerLandingPage() {
               </p>
               <Link
                 href="/seller/register"
-                className="inline-flex h-[52px] items-center justify-center rounded-[8px] px-8 text-base md:text-lg font-bold shadow-lg shadow-[#4338CA]/20 transition-all hover:scale-[1.02] bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
+                className="inline-flex h-[52px] items-center justify-center rounded-[8px] px-8 text-base md:text-lg font-bold shadow-sm transition-all hover:scale-[1.02] bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
               >
                 Start Selling
               </Link>

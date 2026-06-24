@@ -64,7 +64,7 @@ export default function CustomerShopLayout({
                     will-change: transform;
                   }
                 `}} />
-                <div className="shrink-0 from-[#8B5CF6] to-[#1A6FD4] overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10 bg-white border-2 border-gradient-to-r text-gradient-to-r hover:bg-gray-50">
+                <div className="shrink-0 bg-gradient-to-r from-[#8B5CF6] to-[#1A6FD4] text-white overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10">
                   <div className="animate-marquee font-black tracking-wide text-[14px] uppercase flex items-center gap-4 flex-1">
                     <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
                     <span className="opacity-50">•</span>

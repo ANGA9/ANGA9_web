@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check, CheckCircle2,
-  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock,
+  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock, Zap,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -619,7 +619,7 @@ export default function ProductDetailPage() {
               disabled={adding || stock.status === "out"}
               className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:translate-y-px disabled:opacity-50 hover:bg-indigo-50"
               style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", border: `2px solid ${stock.status === "out" ? t.textMuted : "#4338CA"}`, padding: "14px 0" }}>
-              Buy Now
+              <Zap className="w-5 h-5" /> Buy Now
             </button>
 
             <button onClick={handleWishlistToggle} disabled={togglingWishlist}
@@ -711,7 +711,7 @@ export default function ProductDetailPage() {
             disabled={adding || stock.status === "out"}
             className="flex-1 h-[48px] rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60 hover:bg-indigo-50 border-2"
             style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", borderColor: stock.status === "out" ? t.textMuted : "#4338CA" }}>
-            Buy Now
+            <Zap className="w-4 h-4" /> Buy Now
           </button>
         </div>
       </div>

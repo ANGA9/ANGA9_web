@@ -143,7 +143,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen w-full flex bg-purple-50 font-sans">
       {/* Left side: Hero / Branding */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50">
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden bg-[#8B5CF6] text-white">
         {/* Abstract shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
           <div className="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] rounded-full bg-purple-400 blur-3xl mix-blend-screen" />
@@ -211,7 +211,7 @@ export default function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={loading || !email}
-                className="w-full h-[52px] rounded-2xl text-[15px] font-bold shadow-[0_4px_14px_0_rgba(139,92,246,0.39)] hover:shadow-[0_6px_20px_rgba(139,92,246,0.23)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2 group bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
+                className="w-full h-[52px] rounded-2xl text-[15px] font-bold hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2 group bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -248,7 +248,7 @@ export default function AdminLoginPage() {
                 <button
                   type="submit"
                   disabled={loading || otp.length !== 6}
-                  className="w-full h-[52px] rounded-2xl text-[15px] font-bold shadow-[0_4px_14px_0_rgba(139,92,246,0.39)] hover:shadow-[0_6px_20px_rgba(139,92,246,0.23)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
+                  className="w-full h-[52px] rounded-2xl text-[15px] font-bold hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify & Secure Login"}
                 </button>

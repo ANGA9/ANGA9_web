@@ -3,6 +3,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/AuthContext";
 import { Toaster } from "react-hot-toast";
+import { ActivityTracker } from "@/components/ActivityTracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://anga9.com'),
@@ -82,6 +83,7 @@ export default function RootLayout({
         />
         <AuthProvider>
           <TooltipProvider>
+            <ActivityTracker />
             {children}
             <Toaster
               position="top-center"

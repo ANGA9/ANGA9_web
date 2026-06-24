@@ -25,6 +25,7 @@ import {
   Tag,
   MessageSquare,
   Crown,
+  Activity,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -55,6 +56,7 @@ const NAV: NavItem[] = [
   { label: "Support", href: "/admin/support", icon: LifeBuoy },
   { label: "Live Agents", href: "/admin/agents", icon: Headset },
   { label: "Reports", href: "/admin/reports", icon: BarChart3, superOnly: true },
+  { label: "Activity (DAU)", href: "/admin/activity", icon: Activity, superOnly: true },
   { label: "Team Management", href: "/admin/team", icon: ShieldCheck, superOnly: true },
   { label: "Chatbot", href: "/admin/chatbot", icon: Bot, superOnly: true },
   { label: "Coupons", href: "/admin/coupons", icon: Ticket, superOnly: true },

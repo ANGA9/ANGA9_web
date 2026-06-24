@@ -152,7 +152,7 @@ export default function AdminDisputesPage() {
                           setResolutionNote("");
                           setResolutionMode((d.resolution_mode as any) || 'refund_source');
                         }}
-                        className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#8B5CF6] text-white text-[12px] font-bold hover:bg-[#7C3AED] transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                        className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold transition-all shadow-sm opacity-0 group-hover:opacity-100 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
                       >
                         Review Dispute
                       </button>
@@ -261,14 +261,14 @@ export default function AdminDisputesPage() {
                     <button
                       onClick={() => handleResolve('resolved_refund')}
                       disabled={submitting}
-                      className="h-14 rounded-2xl bg-green-500 text-white font-black text-[14px] hover:bg-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-70 flex items-center justify-center uppercase tracking-wider"
+                      className="h-14 rounded-2xl font-black text-[14px] transition-all shadow-lg shadow-green-500/20 disabled:opacity-70 flex items-center justify-center uppercase tracking-wider bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                     >
                       Issue Refund
                     </button>
                     <button
                       onClick={() => handleResolve('resolved_replace')}
                       disabled={submitting}
-                      className="h-14 rounded-2xl bg-blue-600 text-white font-black text-[14px] hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-70 flex items-center justify-center uppercase tracking-wider"
+                      className="h-14 rounded-2xl font-black text-[14px] transition-all shadow-lg shadow-blue-500/20 disabled:opacity-70 flex items-center justify-center uppercase tracking-wider bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
                     >
                       Approve Replace
                     </button>

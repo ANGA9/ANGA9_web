@@ -132,7 +132,7 @@ export default function ProductQA({ productId }: { productId: string }) {
             type="submit"
             disabled={submittingQ || !newQuestion.trim()}
             className="h-12 md:h-14 px-8 rounded-xl font-bold text-white shadow-sm hover:shadow-md active:scale-[0.98] transition-all disabled:opacity-50 sm:w-auto w-full flex items-center justify-center gap-2"
-            style={{ background: t.primaryCta }}
+            style={{ background: '#FFFFFF', border: '2px solid ' + t.primaryCta, color: t.primaryCta }}
           >
             {submittingQ ? <Loader2 className="w-5 h-5 animate-spin" /> : "Ask Question"}
           </button>
@@ -180,7 +180,7 @@ export default function ProductQA({ productId }: { productId: string }) {
                             <span className="font-bold text-[14px] text-gray-900 flex items-center gap-1.5">
                               {a.users?.full_name || "Customer"}
                               {a.is_seller && (
-                                <span className="bg-[#1A6FD4]/10 text-[#1A6FD4] text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Seller</span>
+                                <span className="bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Seller</span>
                               )}
                               {a.is_verified_buyer && !a.is_seller && (
                                 <span className="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Verified Buyer</span>
@@ -228,7 +228,7 @@ export default function ProductQA({ productId }: { productId: string }) {
                             type="submit"
                             disabled={submittingA || !newAnswer.trim()}
                             className="px-5 py-2 text-[13px] font-bold text-white rounded-lg shadow-sm active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                            style={{ background: t.bluePrimary }}
+                            style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
                           >
                             {submittingA ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
                             Submit Answer

@@ -95,7 +95,7 @@ export default function PublicSellerStorefront() {
         <p className="text-[15px] font-medium text-gray-500 mb-8 max-w-md">
           {error ?? "This seller's storefront isn't published yet. Check back later."}
         </p>
-        <Link href="/" className="rounded-2xl px-8 py-3.5 text-[15px] font-bold text-white bg-[#1A6FD4] hover:bg-[#155bb5] transition-colors shadow-md">
+        <Link href="/" className="rounded-2xl px-8 py-3.5 text-[15px] font-bold transition-colors shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
           Back to Home
         </Link>
       </div>
@@ -154,7 +154,7 @@ export default function PublicSellerStorefront() {
               )}
             </div>
             {p.is_verified && (
-              <div className="absolute -bottom-3 -right-3 bg-green-500 text-white p-2.5 rounded-full shadow-xl border-4 border-white transform transition-transform hover:scale-110">
+              <div className="absolute -bottom-3 -right-3 p-2.5 rounded-full shadow-xl border-4 border-white transform transition-transform hover:scale-110 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50">
                 <BadgeCheck size={28} />
               </div>
             )}
@@ -203,7 +203,7 @@ export default function PublicSellerStorefront() {
                   {socials.map(([k, v]) => (
                     <a
                       key={k} href={v} target="_blank" rel="noopener noreferrer"
-                      className="px-4 py-2.5 bg-[#F8FAFC] hover:bg-[#1A6FD4] hover:text-white rounded-xl text-[13px] font-bold text-gray-700 capitalize transition-all shadow-sm inline-flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-[#F8FAFC] hover:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:text-white rounded-xl text-[13px] font-bold text-gray-700 capitalize transition-all shadow-sm inline-flex items-center gap-1.5"
                     >
                       {k} <ExternalLink size={14} />
                     </a>
@@ -214,7 +214,7 @@ export default function PublicSellerStorefront() {
           )}
 
           {/* Trust Badge */}
-          <div className="bg-gradient-to-br from-[#1A6FD4] to-indigo-600 rounded-3xl p-8 text-white shadow-lg relative overflow-hidden group">
+          <div className="from-[#1A6FD4] to-indigo-600 rounded-3xl p-8 shadow-lg relative overflow-hidden group bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
              <div className="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
              <ShieldCheck size={36} className="mb-5 opacity-90 drop-shadow-md" />
              <h3 className="text-[20px] font-bold mb-3 tracking-tight">Shop with Confidence</h3>

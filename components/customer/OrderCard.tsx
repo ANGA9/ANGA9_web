@@ -165,7 +165,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             <>
               <button
                 className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-all active:scale-95 text-white"
-                style={{ background: t.bluePrimary }}
+                style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 Reorder
@@ -264,7 +264,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                 <button
                   onClick={handleCancel}
                   disabled={cancelling}
-                  className="flex-1 py-3 rounded-xl bg-red-600 text-[15px] font-bold text-white hover:bg-red-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-xl text-[15px] font-bold transition-colors disabled:opacity-70 flex items-center justify-center gap-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-50"
                 >
                   {cancelling ? <Loader2 className="w-5 h-5 animate-spin" /> : "Yes, Cancel"}
                 </button>

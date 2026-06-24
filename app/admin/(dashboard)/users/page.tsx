@@ -194,7 +194,7 @@ export default function AdminUsersPage() {
                             <button
                               onClick={() => handleActivate(u.id)}
                               disabled={actionLoading === u.id}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500 text-white text-[13px] font-bold hover:bg-green-600 transition-all shadow-sm disabled:opacity-50"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all shadow-sm disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                             >
                               {actionLoading === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Activate
                             </button>

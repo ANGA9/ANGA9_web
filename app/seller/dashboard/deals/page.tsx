@@ -84,7 +84,7 @@ export default function SellerDealsPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-3 text-[14px] font-bold text-white shadow-md hover:shadow-lg hover:bg-[#155ab0] active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 rounded-2xl px-6 py-3 text-[14px] font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
         >
           <Plus className="w-5 h-5" />
           Create Deal
@@ -465,7 +465,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             <button
               type="submit"
               disabled={saving || !formData.product_id}
-              className="flex-1 h-12 rounded-2xl bg-[#1A6FD4] font-bold text-[14px] text-white shadow-md hover:shadow-lg hover:bg-[#155ab0] transition-all disabled:opacity-50 disabled:active:scale-100 active:scale-[0.98] flex items-center justify-center gap-2"
+              className="flex-1 h-12 rounded-2xl font-bold text-[14px] shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:active:scale-100 active:scale-[0.98] flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Publish Deal"}
             </button>

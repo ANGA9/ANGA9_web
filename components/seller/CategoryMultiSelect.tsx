@@ -70,7 +70,7 @@ export default function CategoryMultiSelect({ value, onChange, max = 5 }: Catego
         )}
         {value.map((id, idx) => (
           <div key={id} className="flex items-center gap-1.5 bg-[#8B5CF6]/10 text-[#8B5CF6] px-2.5 py-1 rounded-lg text-[13px] font-bold">
-            {idx === 0 && <span className="bg-[#8B5CF6] text-white text-[10px] uppercase px-1.5 py-0.5 rounded mr-1 leading-none tracking-wider font-black">Primary</span>}
+            {idx === 0 && <span className="text-[10px] uppercase px-1.5 py-0.5 rounded mr-1 leading-none tracking-wider font-black bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50">Primary</span>}
             {getCatName(id)}
             <button onClick={(e) => handleRemove(id, e)} className="hover:bg-[#8B5CF6]/20 p-0.5 rounded-full text-[#8B5CF6]">
               <X className="w-3.5 h-3.5" />

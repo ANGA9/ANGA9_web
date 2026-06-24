@@ -401,7 +401,7 @@ export default function LoginSheet() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
@@ -447,7 +447,7 @@ export default function LoginSheet() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
@@ -519,7 +519,7 @@ export default function LoginSheet() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] hover:bg-[#155bb5]"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">{spinner} Verifying...</span>

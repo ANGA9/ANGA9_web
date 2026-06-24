@@ -193,7 +193,7 @@ export default function OrderDisputePage() {
       {showPdcModal && pdcEligibility && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
+            <div className="from-amber-500 to-orange-500 p-6 text-center bg-white border-2 border-gradient-to-r text-gradient-to-r hover:bg-gray-50">
               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
                 <span className="text-3xl">🪙</span>
               </div>
@@ -205,7 +205,7 @@ export default function OrderDisputePage() {
               <button 
                 onClick={handleAcceptPdc}
                 disabled={pdcAccepting}
-                className="w-full relative overflow-hidden group bg-gray-900 hover:bg-black text-white p-4 rounded-xl font-bold flex flex-col items-center justify-center transition-all disabled:opacity-70"
+                className="w-full relative overflow-hidden group p-4 rounded-xl font-bold flex flex-col items-center justify-center transition-all disabled:opacity-70 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
               >
                 {pdcAccepting ? (
                   <Loader2 className="w-6 h-6 animate-spin my-2" />
@@ -465,7 +465,7 @@ export default function OrderDisputePage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl bg-blue-600 font-bold text-white hover:bg-blue-700 transition-colors flex justify-center items-center gap-2 text-sm disabled:opacity-70"
+                className="flex-1 py-3 rounded-xl font-bold transition-colors flex justify-center items-center gap-2 text-sm disabled:opacity-70 bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Submit Report
@@ -486,7 +486,7 @@ export default function OrderDisputePage() {
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 text-white font-bold text-sm hover:bg-black transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-colors bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
               >
                 <AlertTriangle className="w-4 h-4" />
                 Report Issue

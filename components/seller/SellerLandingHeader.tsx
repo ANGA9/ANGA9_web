@@ -95,7 +95,7 @@ export default function SellerLandingHeader() {
             </SellerLink>
             <SellerLink
               href="/seller/register"
-              className="hidden lg:inline-flex h-[42px] items-center justify-center rounded-lg bg-[#4338CA] px-6 text-sm font-bold text-white shadow-md shadow-[#4338CA]/20 transition-all hover:-translate-y-[1px] hover:bg-[#3730A3]"
+              className="hidden lg:inline-flex h-[42px] items-center justify-center rounded-lg px-6 text-sm font-bold shadow-md shadow-[#4338CA]/20 transition-all hover:-translate-y-[1px] bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
             >
               Start Selling
             </SellerLink>
@@ -181,7 +181,7 @@ export default function SellerLandingHeader() {
           </SellerLink>
           <SellerLink
             href="/seller/register"
-            className="flex items-center justify-center gap-2 w-full h-[52px] rounded-xl bg-[#4338CA] font-bold text-white text-base shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-colors"
+            className="flex items-center justify-center gap-2 w-full h-[52px] rounded-xl font-bold text-base shadow-lg shadow-[#4338CA]/25 transition-colors bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
             onClick={() => setIsMenuOpen(false)}
           >
             Start Selling <ArrowRight size={18} />

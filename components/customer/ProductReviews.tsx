@@ -180,7 +180,7 @@ export default function ProductReviews({ productId }: Props) {
             <button
               onClick={() => setShowForm(true)}
               className="flex-1 md:flex-none rounded-xl px-6 py-2.5 text-sm font-semibold text-white active:scale-[0.98] transition-all hover:opacity-90 shadow-sm whitespace-nowrap"
-              style={{ background: t.bluePrimary }}
+              style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
             >
               Write a review
             </button>
@@ -211,7 +211,7 @@ export default function ProductReviews({ productId }: Props) {
               <button
                 onClick={() => setShowForm(true)}
                 className="rounded-xl px-8 py-3 text-sm font-semibold text-white active:scale-[0.98] transition-all hover:opacity-90 shadow-md"
-                style={{ background: t.bluePrimary }}
+                style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
               >
                 Write a review
               </button>
@@ -587,7 +587,7 @@ function ReviewForm({
             onClick={handleSubmit}
             disabled={submitting}
             className="flex-1 rounded-xl px-4 py-3 text-sm font-semibold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{ background: t.bluePrimary }}
+            style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
           >
             {submitting && <Loader2 size={14} className="animate-spin" />}
             Submit review

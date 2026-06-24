@@ -158,7 +158,7 @@ export default function AdminMessageUserPage() {
           <button
             type="submit"
             disabled={submitting || !recipientId.trim() || !subject.trim() || !body.trim()}
-            className="inline-flex items-center gap-1.5 rounded-md bg-[#1A6FD4] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             <Send className="h-4 w-4" />
             {submitting ? "Sending…" : "Send message"}

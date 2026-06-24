@@ -114,7 +114,7 @@ export default function BulkUploadPage() {
                   <button
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#1A6FD4] text-[14px] font-bold text-white transition-all shadow-md hover:bg-[#155ab0] disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[14px] font-bold transition-all shadow-md disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                   >
                     {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     Upload & Process
@@ -127,7 +127,7 @@ export default function BulkUploadPage() {
                 <p className="text-[14px] text-gray-500 mb-6">or click to browse from your computer</p>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-6 py-2.5 rounded-xl bg-[#1A6FD4] text-[14px] font-bold text-white transition-all shadow-md hover:bg-[#155ab0]"
+                  className="px-6 py-2.5 rounded-xl text-[14px] font-bold transition-all shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                 >
                   Browse Files
                 </button>

@@ -62,7 +62,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
                 onClick={onClose}
                 className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-[14px] font-bold transition-all ${
                   active
-                    ? "bg-[#1A6FD4] text-white shadow-md shadow-[#1A6FD4]/20"
+                    ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white shadow-md shadow-[#1A6FD4]/20"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
@@ -75,7 +75,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
         
         <div className="p-5 border-t border-gray-100 bg-gray-50/50 mt-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1A2E] to-[#4B5563] text-white flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-xl from-[#1A1A2E] to-[#4B5563] flex items-center justify-center shadow-sm bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
               <Store className="w-5 h-5" />
             </div>
             <div className="flex flex-col">

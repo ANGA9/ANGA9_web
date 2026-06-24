@@ -38,7 +38,7 @@ export default function TicketThread({ messages, currentUserId, isAdminView = fa
                 m.is_internal
                   ? "border border-[#FDE68A] bg-[#FFFBEB] text-[#92400E]"
                   : isRightSide
-                  ? "bg-[#1A6FD4] text-white"
+                  ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white"
                   : isAdmin
                   ? "bg-[#F3E8FF] text-[#1A1A2E]"
                   : "bg-white text-gray-900 border border-gray-200"

@@ -81,7 +81,7 @@ export default function CatalogQualityPage() {
           <Target className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h2 className="text-[18px] font-bold text-gray-900 mb-2">No products to analyze</h2>
           <p className="text-[14px] text-gray-500 mb-6">Add products to your catalog to get quality scores and recommendations.</p>
-          <Link href="/seller/dashboard/products/new" className="inline-flex px-6 py-2.5 rounded-xl bg-[#1A6FD4] text-white font-bold">
+          <Link href="/seller/dashboard/products/new" className="inline-flex px-6 py-2.5 rounded-xl font-bold bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
             Add Product
           </Link>
         </div>
@@ -185,7 +185,7 @@ export default function CatalogQualityPage() {
                     <div className="sm:w-32 flex sm:flex-col items-center justify-center shrink-0">
                       <Link
                         href={`/seller/dashboard/products/${p.id}`}
-                        className="w-full flex items-center justify-center gap-1 px-4 py-2.5 bg-gray-900 text-white text-[13px] font-bold rounded-xl hover:bg-gray-800 transition-colors"
+                        className="w-full flex items-center justify-center gap-1 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-colors bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
                       >
                         Edit <ChevronRight className="w-4 h-4" />
                       </Link>

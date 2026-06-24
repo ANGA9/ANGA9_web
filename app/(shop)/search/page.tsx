@@ -319,7 +319,7 @@ function SearchPageContent() {
             >
               <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
               {wishlistCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   {wishlistCount > 99 ? "99+" : wishlistCount}
                 </span>
               )}
@@ -331,7 +331,7 @@ function SearchPageContent() {
             >
               <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
               {cartCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}

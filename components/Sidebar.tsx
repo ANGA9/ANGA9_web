@@ -75,7 +75,7 @@ export default function Sidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between px-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1A6FD4] text-white font-bold text-lg shrink-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-lg shrink-0 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
               A
             </div>
             {!collapsed && (
@@ -105,7 +105,7 @@ export default function Sidebar() {
                 className={cn(
                   "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   active
-                    ? "bg-[#1A6FD4] text-white shadow-sm"
+                    ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white shadow-sm"
                     : "text-anga-text-secondary hover:bg-anga-bg hover:text-anga-text"
                 )}
               >

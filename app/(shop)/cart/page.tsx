@@ -397,7 +397,7 @@ export default function CustomerCartPage() {
                 <button
                   disabled={isPlacingOrder}
                   onClick={handleProceedToCheckout}
-                  className="flex-1 h-[52px] bg-[#4338CA] text-white rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70"
+                  className="flex-1 h-[52px] rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
                 >
                   {isPlacingOrder ? (
                     <Loader2 className="w-6 h-6 animate-spin" />

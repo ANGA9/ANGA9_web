@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
       title: "Register Your Business",
       desc: "Sign up on ANGA9 with your business details, bank account information, and tax documents. Our streamlined registration takes less than 10 minutes. Once verified, you get instant access to the Seller Dashboard.",
       icon: UserPlus,
-      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
+      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
       highlights: ["Quick 10-minute setup", "Business verification within 24 hours", "Dedicated onboarding support"],
       image: cdnUrl("/seller-step-register.png"),
     },
@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
       title: "List Your Product Catalog",
       desc: "Upload your products with images, descriptions, pricing, and inventory details. Use our bulk upload tool for large catalogs. Set wholesale pricing tiers for B2B buyers and configure minimum order quantities.",
       icon: PackagePlus,
-      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
+      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
       highlights: ["Bulk catalog upload via CSV", "Set wholesale pricing tiers", "Configure minimum order quantities"],
       image: cdnUrl("/seller-step-list.png"),
     },
@@ -75,7 +75,7 @@ export default function HowItWorksPage() {
 
   return (
     <div
-      className="min-h-screen bg-white selection:bg-[#1A6FD4]/20 selection:text-[#1A1A2E]"
+      className="min-h-screen bg-white selection:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/20 selection:text-[#1A1A2E]"
       style={{ fontFamily: "var(--font-gilroy)" }}
     >
       {/* HEADER */}
@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
                 From registration to your first order, our streamlined process gets your business online fast. Join thousands of suppliers already growing on India&apos;s B2B marketplace.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Register Now
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -119,7 +119,7 @@ export default function HowItWorksPage() {
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Your Journey to Selling Online
           </h2>
-          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
+          <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Follow these four simple steps to get your products in front of buyers across India
           </p>
@@ -167,7 +167,7 @@ export default function HowItWorksPage() {
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             What You Need to Get Started
           </h2>
-          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
+          <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Keep these documents and details ready for a smooth registration
           </p>
@@ -175,7 +175,7 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
             {requirements.map((item, idx) => (
               <div key={idx} className="bg-white p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl hover:border-[#1A6FD4]/20 transition-all text-center">
-                <div className="w-14 h-14 rounded-2xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mx-auto mb-4 sm:mb-6">
                   <item.icon size={28} />
                 </div>
                 <h3 className="text-base md:text-lg sm:text-lg md:text-xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
@@ -192,7 +192,7 @@ export default function HowItWorksPage() {
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Common Questions
           </h2>
-          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-10 sm:mb-16 rounded-full" />
+          <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-10 sm:mb-16 rounded-full" />
 
           <div className="space-y-4 sm:space-y-6">
             {[

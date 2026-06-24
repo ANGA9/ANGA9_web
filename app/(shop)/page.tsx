@@ -348,9 +348,9 @@ export default function CustomerHomePage() {
             {loadingMore && (
               <div className="py-12 flex flex-col items-center justify-center space-y-4">
                 <div className="flex space-x-2 justify-center items-center">
-                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.3s' }}></div>
-                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.15s' }}></div>
-                  <div className="h-3 w-3 bg-[#1A6FD4] rounded-full animate-bounce"></div>
+                  <div className="h-3 w-3 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.3s' }}></div>
+                  <div className="h-3 w-3 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] rounded-full animate-bounce" style={{ animationDelay: '-0.15s' }}></div>
+                  <div className="h-3 w-3 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] rounded-full animate-bounce"></div>
                 </div>
                 <p className="text-sm font-medium text-gray-500 animate-pulse">
                   Finding more wonderful things for you...

@@ -36,7 +36,7 @@ export default function DealTimer({ endsAt }: { endsAt: string }) {
   }
 
   return (
-    <div className="flex items-center gap-2 bg-[#EA580C] text-white px-3 py-1.5 rounded-full mb-4 inline-flex shadow-sm">
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 inline-flex shadow-sm bg-white border-2 border-[#EA580C] text-[#EA580C] hover:bg-gray-50">
       <Clock className="w-4 h-4 animate-pulse" />
       <span className="text-[13px] font-semibold tracking-wide">Deal ends in</span>
       <div className="flex items-center gap-0.5 font-mono font-bold text-[14px] bg-white/20 px-2 py-0.5 rounded-md ml-1">

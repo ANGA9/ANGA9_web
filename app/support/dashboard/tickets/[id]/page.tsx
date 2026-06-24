@@ -293,7 +293,7 @@ export default function TicketChatPage() {
               </div>
 
               {isAgent && (
-                <div className="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-white font-black text-xs ml-3 flex-shrink-0 mt-auto shadow-sm">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ml-3 flex-shrink-0 mt-auto shadow-sm bg-white border-2 border-teal-700 text-teal-700 hover:bg-gray-50">
                   A
                 </div>
               )}

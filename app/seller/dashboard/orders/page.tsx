@@ -168,7 +168,7 @@ export default function OrdersPage() {
           </div>
           <button
             onClick={handleSearch}
-            className="rounded-2xl bg-gray-900 px-5 py-3 text-[14px] font-bold text-white transition-all hover:bg-gray-800 active:scale-[0.98] shrink-0"
+            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
           >
             Search
           </button>
@@ -287,7 +287,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "processing")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-yellow-500 text-yellow-500 hover:bg-gray-50"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Package className="w-4 h-4" />}
                               Process
@@ -297,7 +297,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "shipped")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-[#1A6FD4] hover:bg-[#155bb5] text-white font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
                               Ship
@@ -307,7 +307,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "delivered")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                               Deliver

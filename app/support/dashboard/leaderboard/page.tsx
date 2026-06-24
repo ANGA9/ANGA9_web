@@ -122,7 +122,7 @@ export default function LeaderboardPage() {
                   </div>
 
                   {/* Avatar (Placeholder) */}
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full from-teal-500 to-teal-700 flex items-center justify-center font-black shadow-sm flex-shrink-0 bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
                     {agent.name.charAt(0).toUpperCase()}
                   </div>
 

@@ -137,7 +137,7 @@ export default function ProductsPage() {
           </Link>
           <Link
             href="/seller/dashboard/products/new"
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#1A6FD4] px-5 py-3 text-[14px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[14px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             <Plus className="w-5 h-5" /> Add New
           </Link>
@@ -171,7 +171,7 @@ export default function ProductsPage() {
           </Link>
           <Link
             href="/seller/dashboard/products/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1A6FD4] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm w-full"
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold shadow-sm w-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             <Plus className="w-4 h-4" /> Add
           </Link>
@@ -210,7 +210,7 @@ export default function ProductsPage() {
           </div>
           <button
             onClick={handleSearch}
-            className="rounded-2xl bg-gray-900 px-5 py-3 text-[14px] font-bold text-white transition-all hover:bg-gray-800 active:scale-[0.98] shrink-0"
+            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
           >
             Search
           </button>
@@ -246,7 +246,7 @@ export default function ProductsPage() {
           {!search && (
             <Link
               href="/seller/dashboard/products/new"
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-3 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               <Plus className="w-5 h-5" /> Add Your First Product
             </Link>
@@ -313,7 +313,7 @@ export default function ProductsPage() {
                           {STATUS_LABEL[p.status] || p.status}
                         </span>
                         {p.status === "rejected" && hoveredRejected === p.id && p.review_notes && (
-                          <div className="absolute top-full left-0 mt-2 w-72 bg-gray-900 text-white rounded-2xl p-4 shadow-xl z-50 pointer-events-none">
+                          <div className="absolute top-full left-0 mt-2 w-72 rounded-2xl p-4 shadow-xl z-50 pointer-events-none bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50">
                             <p className="font-bold text-[13px] mb-2 text-red-400 flex items-center gap-1.5">
                               <AlertCircle className="w-4 h-4" /> Rejection Reason
                             </p>

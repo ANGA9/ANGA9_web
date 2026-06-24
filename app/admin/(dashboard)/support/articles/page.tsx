@@ -107,7 +107,7 @@ export default function AdminArticlesPage() {
             <span className="text-sm font-bold">All articles</span>
             <button
               onClick={startNew}
-              className="inline-flex items-center gap-1 rounded-md bg-[#1A6FD4] px-2 py-1 text-xs font-semibold text-white"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               <Plus className="h-3 w-3" /> New
             </button>
@@ -237,7 +237,7 @@ export default function AdminArticlesPage() {
             <button
               type="submit"
               disabled={saving || !slug.trim() || !title.trim() || !bodyMd.trim()}
-              className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-[#1A6FD4] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="ml-auto inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               <Save className="h-4 w-4" />
               {saving ? "Saving…" : editing ? "Update article" : "Create article"}

@@ -34,7 +34,7 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
         </div>
       </Link>
 
-      <span className="ml-4 text-[11px] font-black text-[#1A6FD4] bg-[#1A6FD4]/10 border border-[#1A6FD4]/20 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
+      <span className="ml-4 text-[11px] font-black text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 border border-[#1A6FD4]/20 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
         Seller Portal
       </span>
       
@@ -66,7 +66,7 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
           <button
             onClick={() => setShowCreateBrand(true)}
             title="Add a new brand"
-            className="flex items-center gap-1.5 bg-blue-50 text-[#1A6FD4] border border-blue-200 hover:bg-[#1A6FD4] hover:text-white hover:border-[#1A6FD4] transition-all px-3 py-2 rounded-xl text-[13px] font-bold shadow-sm"
+            className="flex items-center gap-1.5 bg-blue-50 text-[#1A6FD4] border border-blue-200 hover:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:text-white hover:border-[#1A6FD4] transition-all px-3 py-2 rounded-xl text-[13px] font-bold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Add Brand</span>

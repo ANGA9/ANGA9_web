@@ -144,7 +144,7 @@ function OrdersContent() {
                 {isActive && (
                   <span
                     className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                    style={{ background: t.bluePrimary }}
+                    style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
                   />
                 )}
               </button>
@@ -176,7 +176,7 @@ function OrdersContent() {
               {isActive && (
                 <span
                   className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                  style={{ background: t.bluePrimary }}
+                  style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
                 />
               )}
             </button>

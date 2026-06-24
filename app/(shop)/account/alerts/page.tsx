@@ -80,7 +80,7 @@ export default function MyAlertsPage() {
           <p className="text-sm text-gray-500 mt-1 max-w-sm">
             You haven't subscribed to any product alerts yet. When you see an out-of-stock item or want to wait for a price drop, click "Notify Me" on the product page.
           </p>
-          <Link href="/" className="mt-6 px-6 py-2.5 bg-[#4338CA] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity">
+          <Link href="/" className="mt-6 px-6 py-2.5 font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
             Start Shopping
           </Link>
         </div>

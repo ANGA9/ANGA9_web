@@ -52,7 +52,7 @@ export default function AdminRiskPage() {
 
         <Link
           href="/admin/risk/blocklist"
-          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-gray-900 text-white text-[14px] font-bold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md"
+          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl text-[14px] font-bold transition-all shadow-sm hover:shadow-md bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
         >
           <Ban className="w-4 h-4" />
           Manage Blocklist

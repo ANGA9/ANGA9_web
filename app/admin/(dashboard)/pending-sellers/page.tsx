@@ -225,7 +225,7 @@ export default function PendingSellersPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setReviewing(s)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#8B5CF6] text-white text-[13px] font-bold hover:bg-[#7c4ff0] transition-all shadow-sm"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all shadow-sm bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
                         >
                           <Eye className="w-4 h-4" /> Review
                         </button>
@@ -423,7 +423,7 @@ function ReviewModal({
           <button
             onClick={onApprove}
             disabled={actionLoading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-green-500 text-white text-[14px] font-bold hover:bg-green-600 transition-all shadow-sm disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[14px] font-bold transition-all shadow-sm disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
           >
             {actionLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -513,7 +513,7 @@ function RejectModal({
           <button
             onClick={() => onConfirm(reason, notes.trim())}
             disabled={actionLoading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-500 text-white text-[14px] font-bold hover:bg-red-600 transition-all shadow-sm disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[14px] font-bold transition-all shadow-sm disabled:opacity-50 bg-white border-2 border-red-500 text-red-500 hover:bg-red-50"
           >
             {actionLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

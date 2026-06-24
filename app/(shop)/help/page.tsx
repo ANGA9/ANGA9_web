@@ -140,7 +140,7 @@ export default function HelpCenterPage() {
           </h2>
           <Link
             href="/help/tickets/new"
-            className="flex items-center gap-4 rounded-2xl bg-[#1A6FD4] p-5 md:p-6 text-white hover:bg-[#155bb5] transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer"
+            className="flex items-center gap-4 rounded-2xl p-5 md:p-6 transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
               <Plus className="h-6 w-6" />

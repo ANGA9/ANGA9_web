@@ -440,7 +440,7 @@ export default function AdminProductsPage() {
               <button
                 onClick={saveCommission}
                 disabled={savingCommission}
-                className="px-5 py-2 rounded-xl text-[13px] font-bold text-white bg-[#8B5CF6] hover:bg-purple-600 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-2"
+                className="px-5 py-2 rounded-xl text-[13px] font-bold disabled:opacity-50 transition-colors shadow-sm flex items-center gap-2 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
               >
                 {savingCommission && <Loader2 className="w-4 h-4 animate-spin" />}
                 Save

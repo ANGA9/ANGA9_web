@@ -121,7 +121,7 @@ export default function MembershipPage() {
       </div>
 
       {isPlus ? (
-        <div className="bg-gradient-to-r from-purple-900 to-indigo-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="from-purple-900 to-indigo-900 rounded-3xl p-8 shadow-xl relative overflow-hidden bg-white border-2 border-gradient-to-r text-gradient-to-r hover:bg-gray-50">
           <div className="absolute top-0 right-0 p-8 opacity-20 transform translate-x-1/4 -translate-y-1/4">
             <Crown className="w-64 h-64" />
           </div>
@@ -180,7 +180,7 @@ export default function MembershipPage() {
             </div>
 
             <div className="rounded-2xl border-2 border-purple-600 p-6 flex flex-col justify-between bg-purple-50/50 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-purple-600 text-white text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md">
+              <div className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md bg-white border-2 border-purple-600 text-purple-600 hover:bg-gray-50">
                 Best Value
               </div>
               <div>
@@ -194,7 +194,7 @@ export default function MembershipPage() {
               <button
                 onClick={() => handleSubscribe("plus_yearly")}
                 disabled={purchasing !== null}
-                className="w-full h-12 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors active:scale-[0.98] shadow-md shadow-purple-600/20 flex items-center justify-center"
+                className="w-full h-12 rounded-xl font-bold transition-colors active:scale-[0.98] shadow-md shadow-purple-600/20 flex items-center justify-center bg-white border-2 border-purple-600 text-purple-600 hover:bg-gray-50"
               >
                 {purchasing === "plus_yearly" ? <Loader2 className="w-5 h-5 animate-spin" /> : "Subscribe Yearly"}
               </button>

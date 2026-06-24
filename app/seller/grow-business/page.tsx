@@ -45,7 +45,7 @@ export default function GrowBusinessPage() {
       icon: BarChart3,
       title: "Sales Analytics",
       desc: "Gain real-time insights into performance, trends, and customer behavior to make smarter decisions.",
-      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
+      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
       stats: "Real-time dashboards",
     },
     {
@@ -59,7 +59,7 @@ export default function GrowBusinessPage() {
       icon: Zap,
       title: "Recommendations",
       desc: "Discover trending products and high-potential categories based on nationwide buyer search data.",
-      color: "text-[#1A6FD4] bg-[#1A6FD4]/10",
+      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
       stats: "Data-driven insights",
     },
     {
@@ -110,7 +110,7 @@ export default function GrowBusinessPage() {
 
   return (
     <div
-      className="min-h-screen bg-white selection:bg-[#1A6FD4]/20 selection:text-[#1A1A2E]"
+      className="min-h-screen bg-white selection:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/20 selection:text-[#1A1A2E]"
       style={{ fontFamily: "var(--font-gilroy)" }}
     >
       {/* HEADER */}
@@ -133,7 +133,7 @@ export default function GrowBusinessPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Grow With Us
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -155,7 +155,7 @@ export default function GrowBusinessPage() {
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Tools to Accelerate Your Growth
           </h2>
-          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
+          <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Leverage data-driven tools built to help suppliers sell more and sell smarter
           </p>
@@ -167,7 +167,7 @@ export default function GrowBusinessPage() {
                   <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <item.icon size={24} />
                   </div>
-                  <span className="text-xs md:text-sm sm:text-xs md:text-sm font-bold text-[#1A6FD4] bg-[#1A6FD4]/10 px-2.5 py-1 rounded-full">{item.stats}</span>
+                  <span className="text-xs md:text-sm sm:text-xs md:text-sm font-bold text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 px-2.5 py-1 rounded-full">{item.stats}</span>
                 </div>
                 <h3 className="text-base md:text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
                 <p className="text-sm md:text-base sm:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
@@ -188,7 +188,7 @@ export default function GrowBusinessPage() {
               <h2 className="text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
                 Built for Wholesale & Bulk Commerce
               </h2>
-              <div className="h-1 w-16 bg-[#1A6FD4] mb-4 sm:mb-6 rounded-full" />
+              <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mb-4 sm:mb-6 rounded-full" />
               <p className="text-base sm:text-base md:text-lg text-[#4B5563] leading-relaxed mb-6 sm:mb-8">
                 ANGA9 is designed from the ground up for B2B transactions. Whether you&apos;re a manufacturer, distributor, or wholesaler, our platform gives you the tools to connect with retailers and grow your wholesale business.
               </p>
@@ -196,7 +196,7 @@ export default function GrowBusinessPage() {
               <div className="space-y-4 sm:space-y-6">
                 {b2bFeatures.map((item, idx) => (
                   <div key={idx} className="flex gap-4">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
                       <item.icon size={22} />
                     </div>
                     <div>
@@ -221,7 +221,7 @@ export default function GrowBusinessPage() {
           <h2 className="text-center text-2xl md:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] font-bold text-[#1A1A2E] mb-3 sm:mb-4">
             Tips from Top Sellers
           </h2>
-          <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-4 rounded-full" />
+          <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-4 rounded-full" />
           <p className="text-center text-base sm:text-base md:text-lg text-[#4B5563] mb-10 sm:mb-16 max-w-2xl mx-auto">
             Proven strategies from sellers who scaled their business on ANGA9
           </p>

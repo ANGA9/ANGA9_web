@@ -260,7 +260,7 @@ export default function SellerDisputesPage() {
               {selectedDispute.seller_response && (
                 <div className="flex flex-col gap-2 max-w-[85%] ml-auto items-end">
                   <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider px-1">Your Response</span>
-                  <div className="bg-[#1A6FD4] rounded-2xl rounded-tr-sm p-4 text-[14px] text-white font-medium leading-relaxed shadow-sm">
+                  <div className="rounded-2xl rounded-tr-sm p-4 text-[14px] font-medium leading-relaxed shadow-sm bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
                     {selectedDispute.seller_response}
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default function SellerDisputesPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex-[2] py-3.5 rounded-2xl bg-[#1A6FD4] font-bold text-white hover:bg-[#155bb5] transition-all active:scale-[0.98] shadow-md flex justify-center items-center gap-2 text-[15px] disabled:opacity-50 disabled:active:scale-100"
+                      className="flex-[2] py-3.5 rounded-2xl font-bold transition-all active:scale-[0.98] shadow-md flex justify-center items-center gap-2 text-[15px] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                     >
                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageSquare className="w-5 h-5" />}
                       Send Resolution

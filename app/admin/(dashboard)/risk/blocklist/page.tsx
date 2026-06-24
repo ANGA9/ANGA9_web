@@ -88,7 +88,7 @@ export default function AdminBlocklistPage() {
 
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-red-600 text-white text-[14px] font-bold hover:bg-red-700 transition-all shadow-sm hover:shadow-md"
+            className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl text-[14px] font-bold transition-all shadow-sm hover:shadow-md bg-white border-2 border-red-600 text-red-600 hover:bg-red-50"
           >
             <Plus className="w-4 h-4" />
             Add Entry
@@ -140,7 +140,7 @@ export default function AdminBlocklistPage() {
                 <button
                   type="submit"
                   disabled={adding}
-                  className="h-11 px-6 rounded-xl bg-gray-900 text-white text-[14px] font-bold hover:bg-gray-800 disabled:opacity-50 transition-all"
+                  className="h-11 px-6 rounded-xl text-[14px] font-bold disabled:opacity-50 transition-all bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
                 >
                   {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
                 </button>

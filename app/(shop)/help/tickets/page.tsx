@@ -51,7 +51,7 @@ export default function MyTicketsPage() {
         </div>
         <Link
           href="/help/tickets/new"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#1A6FD4] px-5 py-2.5 text-[14px] font-bold text-white transition-all shadow-sm hover:shadow-md hover:bg-[#155bb5] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-[14px] font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
         >
           <Plus className="h-4 w-4" /> New ticket
         </Link>

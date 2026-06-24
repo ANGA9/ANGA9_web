@@ -177,7 +177,7 @@ export default function ReviewModerationPage() {
                   <button
                     onClick={() => applyAction(r, "approved")}
                     disabled={actionId === r.id}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-green-500 text-white text-[13px] font-bold hover:bg-green-600 transition-colors disabled:opacity-50 shadow-sm"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-[13px] font-bold transition-colors disabled:opacity-50 shadow-sm bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                   >
                     {actionId === r.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                     Approve

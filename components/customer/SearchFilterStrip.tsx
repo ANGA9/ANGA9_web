@@ -135,7 +135,7 @@ export default function SearchFilterStrip({
             {hasActiveFilters && (
               <span
                 className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full absolute ml-[70px] mb-[15px]"
-                style={{ background: t.bluePrimary }}
+                style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
               />
             )}
           </button>

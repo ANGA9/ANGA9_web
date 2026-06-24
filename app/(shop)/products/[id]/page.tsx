@@ -327,7 +327,7 @@ export default function ProductDetailPage() {
           <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Open cart">
             <ShoppingCart className="w-5 h-5 text-black" />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#4338CA] text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center leading-none bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
@@ -487,7 +487,7 @@ export default function ProductDetailPage() {
               </>
             )}
             {activeDeal && activeDeal.type === 'quantity' && activeDeal.quantity_threshold && quantity < activeDeal.quantity_threshold && (
-              <span className="text-sm font-semibold ml-2 px-2 py-1 rounded bg-[#EA580C] text-white">
+              <span className="text-sm font-semibold ml-2 px-2 py-1 rounded bg-white border-2 border-[#EA580C] text-[#EA580C] hover:bg-gray-50">
                 ₹{activeDeal.deal_price} on {activeDeal.quantity_threshold}+ units
               </span>
             )}

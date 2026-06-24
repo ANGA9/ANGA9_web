@@ -41,7 +41,7 @@ export default function SellerLandingPage() {
 
   return (
     <div
-      className="min-h-screen bg-white selection:bg-[#1A6FD4]/20 selection:text-[#1A1A2E]"
+      className="min-h-screen bg-white selection:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/20 selection:text-[#1A1A2E]"
       style={{ fontFamily: "var(--font-gilroy)" }}
     >
       {/* HEADER */}
@@ -77,14 +77,14 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="mb-6 sm:mb-8 flex items-start sm:items-center gap-3 bg-white p-3 rounded-xl border border-[#E8EEF4]">
-                <span className="bg-[#FF4D4D] text-white text-xs md:text-sm font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 sm:mt-0">NEW</span>
+                <span className="text-xs md:text-sm font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 sm:mt-0 bg-white border-2 border-[#FF4D4D] text-[#FF4D4D] hover:bg-gray-50">NEW</span>
                 <p className="text-xs md:text-sm sm:text-sm md:text-base text-[#4B5563]">
                   Join India&apos;s fastest growing B2B marketplace. List your products, reach bulk buyers, and scale your wholesale business.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 bg-[#4338CA] text-white font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 hover:bg-[#3730A3] transition-all hover:scale-[1.02] flex items-center justify-center">
+                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Start Selling
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -128,7 +128,7 @@ export default function SellerLandingPage() {
               <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
                 Why Suppliers Love ANGA9
               </h2>
-              <div className="h-1 w-16 bg-[#1A6FD4] mb-8 rounded-full" />
+              <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mb-8 rounded-full" />
               <p className="text-[#6B7280] text-base md:text-lg leading-relaxed max-w-[400px] mb-8">
                 All the benefits that come with selling on ANGA9 are designed to
                 help you sell more, and make it easier to grow your business.
@@ -157,7 +157,7 @@ export default function SellerLandingPage() {
               {[
                 {
                   icon: IndianRupee,
-                  color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
+                  color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
                   title: "10% Commission Fee",
                   desc: "Suppliers selling on ANGA9 keep 100% of their profit by not paying any commission at all.",
                 },
@@ -169,7 +169,7 @@ export default function SellerLandingPage() {
                 },
                 {
                   icon: Clock,
-                  color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
+                  color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
                   title: "7-Day Payment Cycle",
                   desc: "Receive your earnings within 7 days of dispatch, directly deposited to your bank account.",
                 },
@@ -211,7 +211,7 @@ export default function SellerLandingPage() {
             <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight uppercase">
               How It Works
             </h2>
-            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mt-4 rounded-full" />
+            <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mt-4 rounded-full" />
           </div>
 
           <div className="relative pt-8">
@@ -226,7 +226,7 @@ export default function SellerLandingPage() {
                 { step: 5, title: "Receive Payments", desc: "Payments are deposited directly to your bank account safely.", icon: IndianRupee },
               ].map((item) => (
                 <div key={item.step} className="flex flex-col items-center">
-                  <div className="w-[60px] h-[60px] rounded-full bg-[#1A6FD4] text-white flex items-center justify-center shadow-lg mb-4 ring-[8px] ring-[#F8FBFF]">
+                  <div className="w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-lg mb-4 ring-[8px] ring-[#F8FBFF] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
                     <item.icon className="h-6 w-6" />
                   </div>
                   <span className="text-xs md:text-sm font-bold text-[#1A6FD4] uppercase tracking-wider mb-1">
@@ -250,7 +250,7 @@ export default function SellerLandingPage() {
             <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] mb-4 leading-tight">
               Grow Your Business With ANGA9
             </h2>
-            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
+            <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-8 rounded-full" />
             <p className="text-[#6B7280] text-base md:text-lg max-w-[500px] mx-auto">
               Access exclusive tools and insights tailored directly to boost your
               online enterprise.
@@ -261,13 +261,13 @@ export default function SellerLandingPage() {
             {[
               {
                 icon: Zap,
-                color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
+                color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
                 title: "Affordable Shipping",
                 desc: "Deliver to 28,000+ pincodes with the most reliable and cost-effective shipping.",
               },
               {
                 icon: Megaphone,
-                color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
+                color: "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4]",
                 title: "ANGA9 Ads",
                 desc: "Boost visibility with targeted ad tools to sell more catalogs every day.",
               },
@@ -306,7 +306,7 @@ export default function SellerLandingPage() {
             <h2 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] lg:text-[40px] tracking-tight mb-4">
               Seller Success Stories
             </h2>
-            <div className="h-1 w-16 bg-[#1A6FD4] mx-auto mb-8 rounded-full" />
+            <div className="h-1 w-16 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] mx-auto mb-8 rounded-full" />
             <p className="text-[#6B7280] text-base md:text-lg max-w-[500px] mx-auto">
               Real sellers, real growth. Here&apos;s what our top suppliers have
               to say.
@@ -395,7 +395,7 @@ export default function SellerLandingPage() {
               { icon: Truck, label: "Pan-India Delivery" },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-full bg-[#1A6FD4]/5 flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-[#1A6FD4] group-hover:text-white">
+                <div className="w-12 h-12 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/5 flex items-center justify-center text-[#1A6FD4] transition-colors group-hover:bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] group-hover:text-white">
                   <Icon className="h-6 w-6" />
                 </div>
                 <span className="text-sm md:text-base font-semibold text-[#4B5563] text-center whitespace-nowrap">{label}</span>
@@ -426,7 +426,7 @@ export default function SellerLandingPage() {
               </p>
               <Link
                 href="/seller/register"
-                className="inline-flex h-[52px] items-center justify-center rounded-[8px] bg-[#4338CA] px-8 text-base md:text-lg font-bold text-white shadow-lg shadow-[#4338CA]/20 transition-all hover:scale-[1.02] hover:bg-[#3730A3]"
+                className="inline-flex h-[52px] items-center justify-center rounded-[8px] px-8 text-base md:text-lg font-bold shadow-lg shadow-[#4338CA]/20 transition-all hover:scale-[1.02] bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
               >
                 Start Selling
               </Link>

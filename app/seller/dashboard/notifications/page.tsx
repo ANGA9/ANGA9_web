@@ -238,7 +238,7 @@ export default function SellerNotificationsPage() {
             <h3 className={`text-[15px] md:text-[16px] leading-tight text-gray-900 ${n.read ? "font-medium" : "font-bold"}`}>
               {n.title}
             </h3>
-            {!n.read && <span className="w-2.5 h-2.5 rounded-full shrink-0 mt-1 bg-[#1A6FD4]" />}
+            {!n.read && <span className="w-2.5 h-2.5 rounded-full shrink-0 mt-1 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]" />}
           </div>
           <p className="text-[14px] mt-1 text-gray-500 leading-relaxed">{n.body}</p>
           <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-3">

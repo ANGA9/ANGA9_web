@@ -472,7 +472,7 @@ export default function AddProductPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-8 py-4 text-[16px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[16px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <PackageOpen className="w-5 h-5" />}
               {submitting ? "Submitting..." : "Submit for Review"}
@@ -491,7 +491,7 @@ export default function AddProductPage() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
               >
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <PackageOpen className="w-5 h-5" />}
                 {submitting ? "Submitting..." : "Submit for Review"}

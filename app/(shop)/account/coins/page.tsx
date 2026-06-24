@@ -146,7 +146,7 @@ export default function CustomerCoinsPage() {
         </div>
         <h1 className="text-[22px] font-black text-gray-900">Sign in to see your coins</h1>
         <p className="text-[14px] text-gray-500 mt-2 font-medium">Earn coins on orders and refunds — 1 coin = ₹1, spend at checkout.</p>
-        <Link href="/login" className="inline-flex items-center mt-6 px-8 py-3 rounded-xl font-bold text-white text-[15px] shadow-md hover:shadow-lg active:scale-95 transition-all bg-[#1A6FD4]">
+        <Link href="/login" className="inline-flex items-center mt-6 px-8 py-3 rounded-xl font-bold text-[15px] shadow-md hover:shadow-lg active:scale-95 transition-all bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
           Log In
         </Link>
       </div>

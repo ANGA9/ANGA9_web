@@ -86,7 +86,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
       <button
         onClick={handleCheckout}
         className="mt-8 flex w-full items-center justify-center rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98] shadow-lg shadow-indigo-100"
-        style={{ background: t.primaryCta, color: t.ctaText }}
+        style={{ background: '#FFFFFF', border: '2px solid ' + t.primaryCta, color: t.primaryCta }}
       >
         Proceed to Checkout
       </button>

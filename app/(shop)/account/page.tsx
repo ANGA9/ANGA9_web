@@ -106,7 +106,7 @@ function MenuItem({
         {label}
       </span>
       {badge && (
-        <span className="mr-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+        <span className="mr-3 text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center bg-white border-2 border-red-500 text-red-500 hover:bg-red-50">
           {badge}
         </span>
       )}
@@ -487,7 +487,7 @@ export default function CustomerAccountPage() {
           <MapPin className="w-12 h-12 mx-auto mb-3 text-gray-300" />
           <p className="text-[16px] font-bold text-gray-700 mb-1">No addresses saved</p>
           <p className="text-[14px] text-gray-500 mb-6">Add an address for quick checkout</p>
-          <button onClick={openAddForm} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95" style={{ background: t.bluePrimary }}>
+          <button onClick={openAddForm} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95" style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}>
             Add your first address
           </button>
         </div>
@@ -656,7 +656,7 @@ export default function CustomerAccountPage() {
                 onClick={handleSaveProfile}
                 disabled={profileSaving}
                 className="px-6 py-2.5 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2 flex-1 sm:flex-none disabled:opacity-60"
-                style={{ background: t.bluePrimary }}
+                style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
               >
                 {profileSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Save Changes
@@ -878,7 +878,7 @@ export default function CustomerAccountPage() {
                       </div>
                       <p className="text-[16px] font-bold text-gray-900 mb-1">No addresses saved</p>
                       <p className="text-[14px] text-gray-500 mb-6">Add an address for quick checkout</p>
-                      <button onClick={openAddForm} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95" style={{ background: t.bluePrimary }}>
+                      <button onClick={openAddForm} className="px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all active:scale-95" style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}>
                         Add your first address
                       </button>
                     </div>
@@ -953,7 +953,7 @@ export default function CustomerAccountPage() {
             <Link
               href="/login"
               className="inline-flex items-center gap-2 rounded-xl px-10 py-3.5 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg active:scale-95"
-              style={{ background: t.bluePrimary }}
+              style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
             >
               Log In or Sign Up
             </Link>
@@ -1018,7 +1018,7 @@ export default function CustomerAccountPage() {
                   Notifications
                 </div>
                 {unreadNotificationsCount > 0 && (
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center bg-white border-2 border-red-500 text-red-500 hover:bg-red-50">
                     {unreadNotificationsCount}
                   </span>
                 )}
@@ -1070,7 +1070,7 @@ export default function CustomerAccountPage() {
                   </div>
                   <h2 className="text-[22px] font-black text-gray-900 tracking-tight mb-2">My Orders</h2>
                   <p className="text-[15px] mb-8 text-gray-500">Track, return, or buy items again</p>
-                  <Link href="/orders" className="inline-flex items-center gap-2 rounded-xl px-8 py-3 text-[15px] font-bold text-white transition-all hover:opacity-90 active:scale-95 shadow-md" style={{ background: t.bluePrimary }}>
+                  <Link href="/orders" className="inline-flex items-center gap-2 rounded-xl px-8 py-3 text-[15px] font-bold text-white transition-all hover:opacity-90 active:scale-95 shadow-md" style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}>
                     View All Orders <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

@@ -125,7 +125,7 @@ export default function AdminReportsPage() {
           <button
             onClick={handleExport}
             disabled={exporting || loading || !report || report.data.length === 0}
-            className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] transition-colors shadow-sm disabled:opacity-50"
+            className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-[14px] font-bold transition-colors shadow-sm disabled:opacity-50 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
           >
             {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             Export CSV

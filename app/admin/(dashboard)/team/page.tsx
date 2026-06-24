@@ -302,7 +302,7 @@ export default function TeamManagementPage() {
 
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-2 h-12 px-6 rounded-xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] transition-all shadow-sm hover:shadow-md"
+          className="flex items-center gap-2 h-12 px-6 rounded-xl text-[14px] font-bold transition-all shadow-sm hover:shadow-md bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
         >
           <UserPlus className="w-4 h-4" />
           Add Team Member
@@ -377,7 +377,7 @@ export default function TeamManagementPage() {
               <button
                 type="submit"
                 disabled={adding || !newEmail.trim()}
-                className="flex-1 h-12 px-6 bg-gray-900 text-white rounded-2xl text-[14px] font-bold hover:bg-gray-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 h-12 px-6 rounded-2xl text-[14px] font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
               >
                 {adding ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

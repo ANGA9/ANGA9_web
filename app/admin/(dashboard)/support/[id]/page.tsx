@@ -197,7 +197,7 @@ export default function AdminTicketDetailPage() {
                   ) : (
                     <button
                       onClick={handleAssignToMe}
-                      className="w-full inline-flex justify-center items-center gap-1.5 rounded-xl bg-[#8B5CF6] px-4 py-2.5 text-[14px] font-bold text-white shadow-sm hover:bg-[#7C3AED] transition-all"
+                      className="w-full inline-flex justify-center items-center gap-1.5 rounded-xl px-4 py-2.5 text-[14px] font-bold shadow-sm transition-all bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
                     >
                       <UserPlus className="w-4 h-4" /> Assign to Me
                     </button>

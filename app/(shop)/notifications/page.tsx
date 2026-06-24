@@ -308,7 +308,7 @@ export default function NotificationsPage() {
                 {timeAgo(n.sent_at)}
               </span>
               {!n.read && (
-                <span className="w-2 h-2 rounded-full bg-[#1A6FD4] shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shrink-0" />
               )}
             </div>
           </div>

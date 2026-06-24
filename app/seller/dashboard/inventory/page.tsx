@@ -330,7 +330,7 @@ export default function InventoryPage() {
                                 <button
                                   onClick={() => handleSave(row.product.id)}
                                   disabled={saving}
-                                  className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-colors shadow-sm disabled:opacity-50"
+                                  className="inline-flex items-center justify-center w-10 h-10 rounded-xl transition-colors shadow-sm disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                                   title="Save Stock"
                                 >
                                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-5 h-5" />}

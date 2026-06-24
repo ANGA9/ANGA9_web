@@ -76,7 +76,7 @@ export default function SettingsPage() {
 
       <div className="bg-white rounded-2xl border border-teal-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-2xl font-black shadow-sm">
+          <div className="w-16 h-16 rounded-2xl from-teal-500 to-teal-700 flex items-center justify-center text-2xl font-black shadow-sm bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
             {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : initial !== "?" ? initial : <User />}
           </div>
           <div>
@@ -109,7 +109,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={saving || loading || !dirty || displayName.trim().length < 2}
-                className="h-11 px-6 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none bg-teal-600 hover:bg-teal-700"
+                className="h-11 px-6 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none bg-white border-2 border-teal-600 text-teal-600 hover:bg-gray-50"
               >
                 {saving ? (
                   <>

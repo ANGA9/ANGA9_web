@@ -39,7 +39,7 @@ export default function Header() {
         >
           <Bell className="h-5 w-5" />
           {pendingCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF4D4D] text-xs md:text-sm font-bold text-white">
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs md:text-sm font-bold bg-white border-2 border-[#FF4D4D] text-[#FF4D4D] hover:bg-gray-50">
               {pendingCount > 99 ? "99+" : pendingCount}
             </span>
           )}

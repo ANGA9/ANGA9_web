@@ -105,7 +105,7 @@ export default function AdminMacrosPage() {
           <button
             type="submit"
             disabled={saving || !title.trim() || !body.trim()}
-            className="rounded-md bg-[#1A6FD4] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             {saving ? "Saving…" : "Save macro"}
           </button>

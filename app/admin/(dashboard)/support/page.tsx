@@ -88,7 +88,7 @@ export default function AdminSupportInboxPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/admin/support/new"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#8B5CF6] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm hover:shadow-md hover:bg-[#7C3AED] transition-all"
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-bold shadow-sm hover:shadow-md transition-all bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
           >
             <Plus className="h-4 w-4" /> Message a user
           </Link>

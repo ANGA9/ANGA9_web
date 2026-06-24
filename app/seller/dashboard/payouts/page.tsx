@@ -152,7 +152,7 @@ export default function PayoutsPage() {
                   setShowModal(true);
                 }}
                 disabled={available <= 0}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+                className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
               >
                 Withdraw
               </button>
@@ -315,7 +315,7 @@ export default function PayoutsPage() {
                 <button
                   type="submit"
                   disabled={requesting || !customAmount || parseFloat(customAmount) <= 0 || parseFloat(customAmount) > available}
-                  className="flex-1 h-12 rounded-xl bg-[#1A6FD4] text-[15px] font-bold text-white hover:bg-[#155bb5] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 h-12 rounded-xl text-[15px] font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                 >
                   {requesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Withdraw"}
                 </button>

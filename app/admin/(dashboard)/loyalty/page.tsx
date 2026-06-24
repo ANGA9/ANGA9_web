@@ -84,7 +84,7 @@ export default function AdminLoyaltyPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-purple-600 text-white text-[14px] font-bold hover:bg-purple-700 transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl text-[14px] font-bold transition-all shadow-sm hover:shadow-md disabled:opacity-50 bg-white border-2 border-purple-600 text-purple-600 hover:bg-gray-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Config

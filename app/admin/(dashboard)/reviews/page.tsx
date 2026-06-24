@@ -270,7 +270,7 @@ export default function ReviewsPage() {
               <button
                 onClick={handleReject}
                 disabled={!rejectNotes.trim() || actionLoading === rejectTarget.id}
-                className="flex-1 h-12 rounded-xl bg-red-500 text-white text-[14px] font-bold hover:bg-red-600 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 h-12 rounded-xl text-[14px] font-bold transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 bg-white border-2 border-red-500 text-red-500 hover:bg-red-50"
               >
                 {actionLoading === rejectTarget.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Confirm Reject
@@ -471,7 +471,7 @@ function PreviewModal({ product, sellerName, onClose, onApprove, onReject, actio
           <button
             onClick={onApprove}
             disabled={actionLoading}
-            className="flex-1 h-14 rounded-2xl bg-[#22C55E] text-white text-[15px] font-black hover:bg-green-600 transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+            className="flex-1 h-14 rounded-2xl text-[15px] font-black transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50 bg-white border-2 border-[#22C55E] text-[#22C55E] hover:bg-gray-50"
           >
             {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />} APPROVE LISTING
           </button>

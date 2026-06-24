@@ -193,7 +193,7 @@ export default function BulkEditPage() {
           <button
             onClick={handleSaveAll}
             disabled={saving || dirtyCount === 0}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#1A6FD4] text-[14px] font-bold text-white transition-all shadow-md hover:bg-[#155ab0] disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[14px] font-bold transition-all shadow-md disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save All Changes

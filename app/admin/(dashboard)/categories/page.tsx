@@ -132,7 +132,7 @@ export default function AdminCategoriesPage() {
               setEditingCategory(null);
               setShowModal(true);
             }}
-            className="inline-flex shrink-0 items-center justify-center gap-2 h-11 px-6 rounded-2xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] transition-all shadow-sm shadow-[#8B5CF6]/20"
+            className="inline-flex shrink-0 items-center justify-center gap-2 h-11 px-6 rounded-2xl text-[14px] font-bold transition-all shadow-sm shadow-[#8B5CF6]/20 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
           >
             <Plus className="w-4 h-4" />
             New Category
@@ -445,7 +445,7 @@ function CategoryModal({
             <button
               type="submit"
               disabled={submitting || !name}
-              className="flex-1 px-4 py-3 rounded-2xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 rounded-2xl text-[14px] font-bold disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
             >
               {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
               {category ? "Save Changes" : "Create"}

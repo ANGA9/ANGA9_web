@@ -107,7 +107,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
         <p className="text-[15px] text-gray-500 font-medium leading-relaxed mb-6">
           The order you are looking for does not exist or you do not have permission to view it.
         </p>
-        <Link href="/seller/dashboard/orders" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-3 text-[15px] font-bold text-white transition-all shadow-md hover:shadow-lg hover:bg-[#155bb5] active:scale-[0.98]">
+        <Link href="/seller/dashboard/orders" className="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
           <ArrowLeft className="w-5 h-5" /> Back to Orders
         </Link>
       </div>
@@ -215,7 +215,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                     <button
                       disabled={updating}
                       onClick={() => updateStatus("processing")}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-500 hover:bg-yellow-600 px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-yellow-500 text-yellow-500 hover:bg-gray-50"
                     >
                       {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
                       Mark as Processing
@@ -230,7 +230,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                     <button
                       disabled={updating}
                       onClick={() => updateStatus("shipped")}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] hover:bg-[#155bb5] px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
                     >
                       {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Truck className="w-5 h-5" />}
                       Mark as Shipped
@@ -245,7 +245,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                     <button
                       disabled={updating}
                       onClick={() => updateStatus("delivered")}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-green-500 hover:bg-green-600 px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
                     >
                       {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
                       Mark as Delivered
@@ -270,7 +270,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                 <div className="relative pl-3 border-l-2 border-blue-100 space-y-6">
                   {order.status_history.map((event, i) => (
                     <div key={event.id} className="relative">
-                      <div className={`absolute -left-[18px] top-1 w-3 h-3 rounded-full border-2 border-white ${i === order.status_history.length - 1 ? "bg-[#1A6FD4]" : "bg-blue-300"}`} />
+                      <div className={`absolute -left-[18px] top-1 w-3 h-3 rounded-full border-2 border-white ${i === order.status_history.length - 1 ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]" : "bg-blue-300"}`} />
                       <div className="flex flex-col">
                         <p className="text-[14px] font-bold text-gray-900 capitalize">{event.status}</p>
                         {event.reason && <p className="text-[13px] text-gray-500 font-medium mt-0.5">{event.reason}</p>}
@@ -292,7 +292,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
               <button
                 disabled={updating}
                 onClick={() => updateStatus("processing")}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-yellow-500 text-yellow-500 hover:bg-gray-50"
               >
                 {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
                 Mark Processing
@@ -302,7 +302,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
               <button
                 disabled={updating}
                 onClick={() => updateStatus("shipped")}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1A6FD4] px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
               >
                 {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Truck className="w-5 h-5" />}
                 Mark Shipped
@@ -312,7 +312,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
               <button
                 disabled={updating}
                 onClick={() => updateStatus("delivered")}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-green-500 px-6 py-4 text-[15px] font-bold text-white transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
               >
                 {updating ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
                 Mark Delivered

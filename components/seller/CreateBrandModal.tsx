@@ -189,7 +189,7 @@ export default function CreateBrandModal({ open, onClose, onCreated }: Props) {
           <button
             type="submit"
             disabled={loading || storeName.trim().length < 2 || !slug}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] hover:bg-[#155bb5]"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
           >
             {loading ? (
               <span className="flex items-center gap-2">

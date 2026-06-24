@@ -149,7 +149,7 @@ export default function PrivacyPage() {
               <button
                 onClick={handleDelete}
                 disabled={confirmText !== "DELETE" || isDeleting}
-                className="flex-1 px-4 py-3 rounded-xl font-bold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 rounded-xl font-bold active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-50"
               >
                 {isDeleting ? (
                   <>

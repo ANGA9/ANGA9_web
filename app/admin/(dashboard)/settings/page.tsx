@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#8B5CF6] text-white text-[14px] font-bold hover:bg-[#7C3AED] transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+          className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl text-[14px] font-bold transition-all shadow-sm hover:shadow-md disabled:opacity-50 bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes
@@ -182,7 +182,7 @@ export default function AdminSettingsPage() {
 
         {/* Shipping */}
         <div className="bg-white rounded-3xl border border-gray-200 p-8 shadow-sm relative overflow-hidden group">
-          <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-[#1A6FD4]/5 group-hover:scale-125 transition-transform duration-700" />
+          <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/5 group-hover:scale-125 transition-transform duration-700" />
           
           <div className="flex items-center gap-3 mb-6 relative z-10">
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">

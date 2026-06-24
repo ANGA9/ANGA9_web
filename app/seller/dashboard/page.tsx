@@ -180,7 +180,7 @@ export default function DashboardHome() {
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-[0.98]"
+          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
         >
           <Plus className="w-5 h-5" /> Add New Product
         </Link>
@@ -196,7 +196,7 @@ export default function DashboardHome() {
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-[#1A6FD4] text-white text-[15px] font-bold rounded-2xl shadow-md"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
         >
           <Plus className="w-5 h-5" /> Add New Product
         </Link>
@@ -234,7 +234,7 @@ export default function DashboardHome() {
           {(status === "unverified" || status === "rejected") && (
             <Link 
               href="/seller/onboarding" 
-              className="inline-flex items-center justify-center h-12 px-6 bg-[#1A6FD4] text-white text-[14px] font-bold rounded-2xl hover:bg-[#155bb5] transition-all shadow-md active:scale-95 shrink-0"
+              className="inline-flex items-center justify-center h-12 px-6 text-[14px] font-bold rounded-2xl transition-all shadow-md active:scale-95 shrink-0 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
             >
               {status === "rejected" ? "Update Application" : "Complete Setup"} <ArrowRight className="w-4 h-4 ml-2" />
             </Link>

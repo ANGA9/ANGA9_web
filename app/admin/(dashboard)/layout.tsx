@@ -92,8 +92,10 @@ export default function AdminDashboardLayout({
   if (!authed) return null;
 
   function handleLogout() {
-    document.cookie = "portal=; path=/; max-age=0";
-    document.cookie = "admin_level=; path=/; max-age=0";
+    const hostname = window.location.hostname;
+    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+    document.cookie = `portal=; path=/; max-age=0${domainAttr}`;
+    document.cookie = `admin_level=; path=/; max-age=0${domainAttr}`;
     router.push("/admin/login");
   }
 

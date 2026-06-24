@@ -124,8 +124,14 @@ export default function AdminLoginPage() {
       }
 
       const level = dbUser.admin_level || (role === "super_admin" ? "super_admin" : "admin");
-      document.cookie = "portal=admin; path=/; max-age=86400";
-      document.cookie = `admin_level=${level}; path=/; max-age=86400`;
+      
+      const hostname = window.location.hostname;
+      const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+      const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
+      const baseAttrs = `; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+
+      document.cookie = `portal=admin${baseAttrs}`;
+      document.cookie = `admin_level=${level}${baseAttrs}`;
       window.location.href = "/admin";
     } catch (err: any) {
       if (err.message?.includes("expired")) {

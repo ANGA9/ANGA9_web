@@ -16,25 +16,12 @@ export default function PrivacyPage() {
   const [confirmText, setConfirmText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // If not logged in or not a customer, they shouldn't be here
-  if (!user || (dbUser && dbUser.role !== "customer")) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-        <ShieldCheck className="w-16 h-16 text-gray-300 mb-4" />
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
-        <p className="text-gray-500 max-w-md">
-          This section is only available to customer accounts.
-        </p>
-        <button
-          onClick={() => router.back()}
-          className="mt-6 px-6 py-2.5 rounded-xl font-bold text-white shadow-md hover:shadow-lg transition-all"
-          style={{ background: t.bluePrimary }}
-        >
-          Go Back
-        </button>
-      </div>
-    );
+  // If not logged in, layout will redirect
+  if (!user) {
+    return null;
   }
+
+  const isCustomer = dbUser?.role === "customer";
 
   const handleDelete = async () => {
     if (confirmText !== "DELETE") {
@@ -72,48 +59,79 @@ export default function PrivacyPage() {
         </h1>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-              <ShieldAlert className="w-6 h-6 text-red-600" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">Delete Account</h2>
-              <p className="text-sm text-gray-600 mt-1">
-                Permanently remove your personal data and access to ANGA9.
-              </p>
-            </div>
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
+        <div className="p-6 border-b border-gray-100 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Your Privacy</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              How we protect and manage your personal data.
+            </p>
           </div>
         </div>
+        <div className="p-6 bg-gray-50/50 space-y-4">
+          <p className="text-sm text-gray-700">
+            At ANGA9, we are committed to protecting your privacy and ensuring your data is secure. We only collect the information necessary to provide you with the best B2B wholesale experience.
+          </p>
+          <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
+            <li>Your personal and business data is encrypted and securely stored.</li>
+            <li>We do not sell your personal data to third parties.</li>
+            <li>You have full control over your communication preferences.</li>
+          </ul>
+          <div className="pt-2">
+            <Link href="/privacy" target="_blank" className="text-sm font-bold text-blue-600 hover:underline">
+              Read our full Privacy Policy &rarr;
+            </Link>
+          </div>
+        </div>
+      </div>
 
-        <div className="p-6 bg-gray-50/50">
-          <div className="space-y-4">
-            <div className="flex gap-3 text-sm text-gray-700 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+      {isCustomer && (
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                <ShieldAlert className="w-6 h-6 text-red-600" />
+              </div>
               <div>
-                <p className="font-bold text-gray-900 mb-1">What happens when you delete your account?</p>
-                <ul className="list-disc pl-4 space-y-1 mt-2 text-gray-600">
-                  <li>Your profile information (name, email, phone) will be permanently anonymized.</li>
-                  <li>All your saved addresses and payment methods will be deleted.</li>
-                  <li>You will lose access to your order history and loyalty coins.</li>
-                  <li>Any active orders will still be processed and delivered, but you won't be able to track them through the app.</li>
-                </ul>
+                <h2 className="text-lg font-bold text-gray-900">Delete Account</h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Permanently remove your personal data and access to ANGA9.
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-gray-200 pt-6">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all active:scale-[0.98] gap-2"
-            >
-              <Trash2 className="w-5 h-5" />
-              Delete My Account
-            </button>
+          <div className="p-6 bg-gray-50/50">
+            <div className="space-y-4">
+              <div className="flex gap-3 text-sm text-gray-700 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                <div>
+                  <p className="font-bold text-gray-900 mb-1">What happens when you delete your account?</p>
+                  <ul className="list-disc pl-4 space-y-1 mt-2 text-gray-600">
+                    <li>Your profile information (name, email, phone) will be permanently anonymized.</li>
+                    <li>All your saved addresses and payment methods will be deleted.</li>
+                    <li>You will lose access to your order history and loyalty coins.</li>
+                    <li>Any active orders will still be processed and delivered, but you won't be able to track them through the app.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-gray-200 pt-6">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all active:scale-[0.98] gap-2"
+              >
+                <Trash2 className="w-5 h-5" />
+                Delete My Account
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Confirmation Modal */}
       {isModalOpen && (

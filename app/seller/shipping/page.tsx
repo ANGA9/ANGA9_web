@@ -33,37 +33,37 @@ export default function ShippingPage() {
       icon: Truck,
       title: "Doorstep Pickup",
       desc: "Our logistics partners pick up packages directly from your warehouse or store. No need to visit any drop-off center.",
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
     },
     {
       icon: Globe,
       title: "Pan-India Coverage",
       desc: "Deliver to 19,000+ pin codes across India. Reach buyers in metros, tier-2, tier-3 cities, and rural areas.",
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
     },
     {
       icon: IndianRupee,
       title: "Affordable Rates",
       desc: "Competitive shipping rates negotiated with top logistics partners. Lower costs mean better margins for your business.",
-      color: "text-[#22C55E] bg-[#22C55E]/10",
+        color: "bg-[#22C55E]/10 text-[#22C55E]",
     },
     {
       icon: Shield,
       title: "Shipment Protection",
       desc: "All shipments are insured against damage and loss during transit. File claims directly from your Seller Dashboard.",
-      color: "text-[#F59E0B] bg-[#F59E0B]/10",
+        color: "bg-[#F59E0B]/10 text-[#F59E0B]",
     },
     {
       icon: Clock,
       title: "Fast Delivery",
       desc: "Standard delivery in 3-7 business days across India. Express delivery options available for metro cities.",
-      color: "text-[#EF4444] bg-[#EF4444]/10",
+        color: "bg-[#EF4444]/10 text-[#EF4444]",
     },
     {
       icon: MapPin,
       title: "Real-Time Tracking",
       desc: "Track every shipment in real-time from dispatch to delivery. Both you and your buyers get live status updates.",
-      color: "text-[#0EA5E9] bg-[#0EA5E9]/10",
+        color: "bg-[#0EA5E9]/10 text-[#0EA5E9]",
     },
   ];
 
@@ -116,7 +116,7 @@ export default function ShippingPage() {
                 Focus on your products while we handle the logistics. ANGA9&apos;s integrated shipping network delivers your orders reliably to 19,000+ pin codes at the most affordable rates.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Start Shipping
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -172,7 +172,7 @@ export default function ShippingPage() {
             {deliveryZones.map((zone, idx) => (
               <div key={idx} className="bg-white p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl transition-all">
                 <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center">
                     <MapPin size={22} />
                   </div>
                   <h3 className="text-lg md:text-xl sm:text-xl md:text-2xl font-bold text-[#1A1A2E]">{zone.zone}</h3>
@@ -244,7 +244,7 @@ export default function ShippingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {packagingTips.map((tip, idx) => (
               <div key={idx} className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8EEF4]">
-                <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-4 font-bold text-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mb-4 font-bold text-lg">
                   {idx + 1}
                 </div>
                 <h3 className="text-base sm:text-base md:text-lg font-bold text-[#1A1A2E] mb-2">{tip.title}</h3>
@@ -273,7 +273,7 @@ export default function ShippingPage() {
               { icon: Warehouse, title: "Restocking Support", desc: "Returned products in resalable condition are automatically restocked in your inventory. Damaged returns are flagged for your review with photographic evidence." },
             ].map((item, idx) => (
               <div key={idx} className="flex gap-4 sm:gap-6 p-4 sm:p-6 bg-[#F8FBFF] rounded-xl sm:rounded-2xl border border-[#E8EEF4]">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
                   <item.icon size={22} />
                 </div>
                 <div>

@@ -38,42 +38,42 @@ export default function GrowBusinessPage() {
       icon: Megaphone,
       title: "ANGA9 Promotions",
       desc: "Boost visibility and reach more buyers with targeted homepage and search ads.",
-      color: "text-[#EF4444] bg-[#EF4444]/10",
+        color: "bg-[#EF4444]/10 text-[#EF4444]",
       stats: "3x more visibility",
     },
     {
       icon: BarChart3,
       title: "Sales Analytics",
       desc: "Gain real-time insights into performance, trends, and customer behavior to make smarter decisions.",
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
       stats: "Real-time dashboards",
     },
     {
       icon: Target,
       title: "Smart Pricing",
       desc: "Our AI engine recommends competitive pricing based on live market trends to maximize volume.",
-      color: "text-[#22C55E] bg-[#22C55E]/10",
+        color: "bg-[#22C55E]/10 text-[#22C55E]",
       stats: "Up to 40% more orders",
     },
     {
       icon: Zap,
       title: "Recommendations",
       desc: "Discover trending products and high-potential categories based on nationwide buyer search data.",
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
       stats: "Data-driven insights",
     },
     {
       icon: LayoutDashboard,
       title: "Quality Dashboard",
       desc: "Track quality metrics and return rates. Get actionable feedback to improve customer satisfaction.",
-      color: "text-[#F59E0B] bg-[#F59E0B]/10",
+        color: "bg-[#F59E0B]/10 text-[#F59E0B]",
       stats: "Reduce returns by 30%",
     },
     {
       icon: BadgeCheck,
       title: "Seller Badges",
       desc: "Earn trust badges for high performance to unlock priority search placement and buyer confidence.",
-      color: "text-[#0EA5E9] bg-[#0EA5E9]/10",
+        color: "bg-[#0EA5E9]/10 text-[#0EA5E9]",
       stats: "Priority in search",
     },
   ];
@@ -133,7 +133,7 @@ export default function GrowBusinessPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Grow With Us
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -167,7 +167,7 @@ export default function GrowBusinessPage() {
                   <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <item.icon size={24} />
                   </div>
-                  <span className="text-xs md:text-sm sm:text-xs md:text-sm font-bold text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 px-2.5 py-1 rounded-full">{item.stats}</span>
+                  <span className="text-xs md:text-sm sm:text-xs md:text-sm font-bold bg-[#1A6FD4]/10 text-[#1A6FD4] px-2.5 py-1 rounded-full">{item.stats}</span>
                 </div>
                 <h3 className="text-base md:text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>
                 <p className="text-sm md:text-base sm:text-base text-[#4B5563] leading-relaxed">{item.desc}</p>
@@ -196,7 +196,7 @@ export default function GrowBusinessPage() {
               <div className="space-y-4 sm:space-y-6">
                 {b2bFeatures.map((item, idx) => (
                   <div key={idx} className="flex gap-4">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center shrink-0">
                       <item.icon size={22} />
                     </div>
                     <div>

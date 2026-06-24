@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
       title: "Register Your Business",
       desc: "Sign up on ANGA9 with your business details, bank account information, and tax documents. Our streamlined registration takes less than 10 minutes. Once verified, you get instant access to the Seller Dashboard.",
       icon: UserPlus,
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
       highlights: ["Quick 10-minute setup", "Business verification within 24 hours", "Dedicated onboarding support"],
       image: cdnUrl("/seller-step-register.png"),
     },
@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
       title: "List Your Product Catalog",
       desc: "Upload your products with images, descriptions, pricing, and inventory details. Use our bulk upload tool for large catalogs. Set wholesale pricing tiers for B2B buyers and configure minimum order quantities.",
       icon: PackagePlus,
-      color: "text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10",
+        color: "bg-[#1A6FD4]/10 text-[#1A6FD4]",
       highlights: ["Bulk catalog upload via CSV", "Set wholesale pricing tiers", "Configure minimum order quantities"],
       image: cdnUrl("/seller-step-list.png"),
     },
@@ -51,7 +51,7 @@ export default function HowItWorksPage() {
       title: "Receive & Fulfill Orders",
       desc: "Once your catalog is live, orders start flowing in from retailers and bulk buyers across India. You receive instant notifications for every new order. Pack your products securely and hand them to our logistics partner for doorstep pickup.",
       icon: ShoppingCart,
-      color: "text-[#22C55E] bg-[#22C55E]/10",
+        color: "bg-[#22C55E]/10 text-[#22C55E]",
       highlights: ["Real-time order notifications", "Doorstep pickup by logistics partner", "Order management dashboard"],
       image: cdnUrl("/seller-step-orders.png"),
     },
@@ -60,7 +60,7 @@ export default function HowItWorksPage() {
       title: "Get Paid Securely",
       desc: "Payments are deposited directly into your bank account on a reliable 7-day cycle from order delivery, including Cash on Delivery orders. Track your earnings, pending payouts, and transaction history from the Seller Dashboard.",
       icon: Wallet,
-      color: "text-[#F59E0B] bg-[#F59E0B]/10",
+        color: "bg-[#F59E0B]/10 text-[#F59E0B]",
       highlights: ["7-day payment cycle", "COD orders included", "Transparent payout tracking"],
       image: cdnUrl("/seller-step-payment.png"),
     },
@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
                 From registration to your first order, our streamlined process gets your business online fast. Join thousands of suppliers already growing on India&apos;s B2B marketplace.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-lg shadow-[#4338CA]/25 transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+                <Link href="/seller/login" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
                   Register Now
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -175,7 +175,7 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
             {requirements.map((item, idx) => (
               <div key={idx} className="bg-white p-5 sm:p-8 rounded-2xl border border-[#E8EEF4] hover:shadow-xl hover:border-[#1A6FD4]/20 transition-all text-center">
-                <div className="w-14 h-14 rounded-2xl bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-[#1A6FD4]/10 text-[#1A6FD4] flex items-center justify-center mx-auto mb-4 sm:mb-6">
                   <item.icon size={28} />
                 </div>
                 <h3 className="text-base md:text-lg sm:text-lg md:text-xl font-bold text-[#1A1A2E] mb-2 sm:mb-3">{item.title}</h3>

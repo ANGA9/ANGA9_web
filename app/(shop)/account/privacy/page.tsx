@@ -44,94 +44,61 @@ export default function PrivacyPage() {
       setIsDeleting(false);
     }
   };
-
   return (
-    <div className="w-full max-w-3xl mx-auto pb-24 lg:pb-12 pt-4 lg:pt-8 px-4 sm:px-6">
-      <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => router.back()}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors"
-        >
+    <main className="w-full mx-auto max-w-5xl px-0 md:px-8 pt-0 md:py-10 bg-white md:bg-transparent min-h-screen">
+      {/* Mobile header */}
+      <header className="flex items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40 md:hidden">
+        <Link href="/account" className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
-        </button>
-        <h1 className="text-2xl font-black text-gray-900 tracking-tight">
-          Data & Privacy
-        </h1>
-      </div>
+        </Link>
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight">Data & Privacy</h1>
+      </header>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
-        <div className="p-6 border-b border-gray-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">Your Privacy</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              How we protect and manage your personal data.
-            </p>
-          </div>
+      <div className="px-4 sm:px-6 md:px-0 pt-6 md:pt-0 pb-24 lg:pb-12 max-w-3xl mx-auto md:mx-0">
+        {/* Desktop Header */}
+        <div className="hidden md:flex items-center gap-4 mb-8">
+          <Link
+            href="/account"
+            className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6 text-gray-800" />
+          </Link>
+          <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
+            Data & Privacy
+          </h1>
         </div>
-        <div className="p-6 bg-gray-50/50 space-y-4">
-          <p className="text-sm text-gray-700">
+
+        <div className="space-y-6">
+          <p className="text-[15px] text-gray-900 leading-relaxed">
             At ANGA9, we are committed to protecting your privacy and ensuring your data is secure. We only collect the information necessary to provide you with the best B2B wholesale experience.
           </p>
-          <ul className="list-disc pl-4 space-y-1 text-sm text-gray-600">
+          <ul className="list-disc pl-5 space-y-2 text-[14px] text-gray-800">
             <li>Your personal and business data is encrypted and securely stored.</li>
             <li>We do not sell your personal data to third parties.</li>
             <li>You have full control over your communication preferences.</li>
           </ul>
           <div className="pt-2">
-            <Link href="/privacy" target="_blank" className="text-sm font-bold text-blue-600 hover:underline">
+            <Link href="/privacy" target="_blank" className="text-[14px] font-semibold text-gray-900 hover:text-black underline underline-offset-4 decoration-gray-300 hover:decoration-black transition-colors">
               Read our full Privacy Policy &rarr;
             </Link>
           </div>
-        </div>
-      </div>
-
-      {isCustomer && (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                <ShieldAlert className="w-6 h-6 text-red-600" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Delete Account</h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Permanently remove your personal data and access to ANGA9.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 bg-gray-50/50">
-            <div className="space-y-4">
-              <div className="flex gap-3 text-sm text-gray-700 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
-                <div>
-                  <p className="font-bold text-gray-900 mb-1">What happens when you delete your account?</p>
-                  <ul className="list-disc pl-4 space-y-1 mt-2 text-gray-600">
-                    <li>Your profile information (name, email, phone) will be permanently anonymized.</li>
-                    <li>All your saved addresses and payment methods will be deleted.</li>
-                    <li>You will lose access to your order history and loyalty coins.</li>
-                    <li>Any active orders will still be processed and delivered, but you won't be able to track them through the app.</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 border-t border-gray-200 pt-6">
+          
+          {isCustomer && (
+            <div className="pt-8 mt-8 border-t border-gray-200">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all active:scale-[0.98] gap-2"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold text-red-800 bg-white border-2 border-red-800 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
               >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-4 h-4" />
                 Delete My Account
               </button>
+              <p className="text-[13px] text-gray-500 mt-3">
+                This will permanently remove your personal data and access to ANGA9.
+              </p>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Confirmation Modal */}
       {isModalOpen && (
@@ -197,6 +164,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

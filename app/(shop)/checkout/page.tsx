@@ -312,23 +312,24 @@ export default function CheckoutPage() {
   };
 
   // Auto-detect the customer's address via browser geolocation + Ola Maps
-  // reverse geocoding, then prefill the form. We merge onto the existing form
-  // (rather than replace) so a label the user already typed survives, and we
-  // never clobber a field Ola couldn't resolve with an empty string.
+  // reverse geocoding, then prefill the form. The detected street (building,
+  // road, area) goes into "Street Address" (line2); we intentionally leave
+  // "Flat / House No." (line1) blank — GPS can't know the flat number, so the
+  // customer fills only that. We merge onto the existing form so anything the
+  // user already typed survives, and never clobber a field with an empty value.
   const handleDetectLocation = async () => {
     setDetectingLocation(true);
     try {
       const detected = await detectAddress();
       setForm((prev) => ({
         ...prev,
-        line1: detected.line1 || prev.line1,
-        line2: detected.line2 || prev.line2,
+        line2: detected.line1 || prev.line2,
         city: detected.city || prev.city,
         state: detected.state || prev.state,
         pincode: detected.pincode || prev.pincode,
       }));
       if (detected.city || detected.pincode) {
-        toast.success("Location detected — please check your flat/house number");
+        toast.success("Location detected — just add your flat / house number");
       } else {
         toast("Got your area. Please complete the remaining fields.", { icon: "📍" });
       }
@@ -340,8 +341,8 @@ export default function CheckoutPage() {
   };
 
   const handleSaveAddress = async () => {
-    if (!form.line1 || !form.city || !form.state || !form.pincode) {
-      toast.error("Please fill all required fields");
+    if (!form.line1 || !form.line2 || !form.city || !form.state || !form.pincode) {
+      toast.error("Please fill all required fields, including your flat / house number");
       return;
     }
     setSavingAddress(true);
@@ -590,12 +591,12 @@ export default function CheckoutPage() {
             <input className={inputCls} placeholder="110001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
           </div>
           <div className="sm:col-span-2">
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Address Line 1 *</label>
-            <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Flat / House No. *</label>
+            <input className={inputCls} placeholder="e.g. Flat 402, 12-A" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
           </div>
           <div className="sm:col-span-2">
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Address Line 2</label>
-            <input className={inputCls} placeholder="Landmark, Area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">Street Address *</label>
+            <input className={inputCls} placeholder="Building, street, area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
           </div>
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1 block text-gray-500">City *</label>

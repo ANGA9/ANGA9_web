@@ -19,7 +19,7 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const primaryColor = surface === 'seller' ? '#6C47FF' : '#1A6FD4';
-  const bgColor = surface === 'seller' ? 'bg-[#6C47FF]' : 'bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]';
+  const bgColor = surface === 'seller' ? 'bg-[#6C47FF]' : 'bg-[#1A6FD4]';
 
   // Initialize session when opened
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
                     <button 
                       onClick={() => confirmAction(msg.tool_name!, msg.tool_input)}
                       disabled={isTyping}
-                      className="w-full text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+                      className="w-full text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2 bg-gray-900 text-white hover:bg-gray-800"
                     >
                       <Check size={16} /> Confirm Action
                     </button>

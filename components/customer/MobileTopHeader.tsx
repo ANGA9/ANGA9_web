@@ -352,7 +352,7 @@ function MobileTopHeaderContent() {
           <Link href="/wishlist" className="relative">
             <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
                 {wishlistCount > 99 ? "99+" : wishlistCount}
               </span>
             )}
@@ -360,7 +360,7 @@ function MobileTopHeaderContent() {
           <Link href="/cart" className="relative">
             <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}

@@ -617,8 +617,8 @@ export default function ProductDetailPage() {
 
             <button onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
               disabled={adding || stock.status === "out"}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
-              style={{ background: stock.status === "out" ? t.textMuted : "#4338CA", color: "#FFFFFF", border: "2px solid transparent", padding: "14px 0" }}>
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:translate-y-px disabled:opacity-50 hover:bg-indigo-50"
+              style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", border: `2px solid ${stock.status === "out" ? t.textMuted : "#4338CA"}`, padding: "14px 0" }}>
               Buy Now
             </button>
 
@@ -709,8 +709,8 @@ export default function ProductDetailPage() {
           </button>
           <button onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
             disabled={adding || stock.status === "out"}
-            className="flex-1 h-[48px] rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60 shadow-lg shadow-indigo-100"
-            style={{ background: "#4338CA", color: "#FFFFFF" }}>
+            className="flex-1 h-[48px] rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60 hover:bg-indigo-50 border-2"
+            style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", borderColor: stock.status === "out" ? t.textMuted : "#4338CA" }}>
             Buy Now
           </button>
         </div>

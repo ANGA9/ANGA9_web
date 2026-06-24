@@ -66,7 +66,7 @@ export default function AdminHeader({
           >
             <Bell className="h-5 w-5" />
             {totalPending > 0 && (
-              <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold shadow-sm ring-2 ring-white bg-white border-2 border-[#EF4444] text-[#EF4444] hover:bg-gray-50">
+              <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold shadow-sm ring-2 ring-white bg-[#EF4444] text-white">
                 {totalPending > 9 ? "9+" : totalPending}
               </span>
             )}

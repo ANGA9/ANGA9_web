@@ -97,7 +97,7 @@ export default function SupportHeader({
     localStorage.removeItem('anga_active_brand_id');
 
     const supabase = getSupabaseBrowserClient();
-    await supabase.auth.signOut();
+    await supabase.auth.signOut().catch(() => {});
     window.location.href = "/support/login";
   };
 

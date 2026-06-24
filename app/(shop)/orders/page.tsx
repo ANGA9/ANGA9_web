@@ -8,6 +8,8 @@ import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
 import { EmptyOrdersIllustration } from "@/components/shared/EmptyOrdersIllustration";
+import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 
 const tabs = ["All Orders", "Active", "Delivered", "Cancelled"] as const;
 
@@ -39,6 +41,8 @@ function OrdersContent() {
   const searchParams = useSearchParams();
   const justPlaced = searchParams.get("placed") === "1";
   const [showSuccess, setShowSuccess] = useState(justPlaced);
+  const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
 
   useEffect(() => {
     if (showSuccess) {
@@ -224,28 +228,28 @@ function OrdersContent() {
             const emptyConfig = {
               "Delivered": {
                 Icon: CheckCircle2,
-                title: "No delivered orders yet",
-                desc: "Orders you've received will appear here.",
+                title: user ? "No delivered orders yet" : "Please login",
+                desc: user ? "Orders you've received will appear here." : "Login to view your orders and continue shopping.",
               },
               "Cancelled": {
                 Icon: XCircle,
-                title: "No cancelled orders",
-                desc: "You haven't cancelled any orders. That's great!",
+                title: user ? "No cancelled orders" : "Please login",
+                desc: user ? "You haven't cancelled any orders. That's great!" : "Login to view your orders and continue shopping.",
               },
               "Active": {
                 Icon: Package,
-                title: "No active orders",
-                desc: "Orders in progress will show up here.",
+                title: user ? "No active orders" : "Please login",
+                desc: user ? "Orders in progress will show up here." : "Login to view your orders and continue shopping.",
               },
               "All Orders": {
                 Icon: ShoppingBag,
-                title: "No orders yet",
-                desc: "Your orders will appear here after you place your first purchase.",
+                title: user ? "No orders yet" : "Please login",
+                desc: user ? "Your orders will appear here after you place your first purchase." : "Login to view your orders and continue shopping.",
               },
             }[activeTab] ?? {
               Icon: ShoppingBag,
-              title: "No orders found",
-              desc: "You haven't placed any orders matching this filter yet.",
+              title: user ? "No orders found" : "Please login",
+              desc: user ? "You haven't placed any orders matching this filter yet." : "Login to view your orders and continue shopping.",
             };
             const { title, desc } = emptyConfig;
             return (
@@ -253,13 +257,23 @@ function OrdersContent() {
                 <EmptyOrdersIllustration />
                 <h3 className="text-[17px] md:text-[20px] font-semibold mb-2 mt-2" style={{ color: t.textPrimary }}>{title}</h3>
                 <p className="text-[13px] md:text-[15px] mb-5 max-w-[280px]" style={{ color: t.textMuted }}>{desc}</p>
-                <Link
-                  href="/"
-                  className="rounded-full md:rounded-xl px-6 py-2.5 md:px-10 md:py-3.5 text-[13px] md:text-[16px] font-semibold text-white transition-all active:scale-95"
-                  style={{ background: t.primaryCta }}
-                >
-                  Start Shopping
-                </Link>
+                {user ? (
+                  <Link
+                    href="/"
+                    className="rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50 inline-block"
+                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                  >
+                    Start Shopping
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => openLoginSheet()}
+                    className="rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50 inline-block"
+                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                  >
+                    Login
+                  </button>
+                )}
               </div>
             );
           })()}

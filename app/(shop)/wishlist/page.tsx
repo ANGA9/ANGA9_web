@@ -11,12 +11,16 @@ import { useCart } from "@/lib/CartContext";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { EmptyWishlistIllustration } from "@/components/shared/EmptyWishlistIllustration";
+import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 
 export default function CustomerWishlistPage() {
   const { items, loading, removeItem, clearWishlist } = useWishlist();
   const cart = useCart();
   const router = useRouter();
   const [movingAll, setMovingAll] = useState(false);
+  const { user } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
 
   // Transform backend WishlistItem into ProductCard's Product shape
   const products = items.map((item) => ({
@@ -135,10 +139,10 @@ export default function CustomerWishlistPage() {
         {products.length === 0 ? (
           <EmptyState
             illustration={<EmptyWishlistIllustration />}
-            title="Your wishlist is empty"
-            description="Save items you love to view them later."
-            actionLabel="Continue Shopping"
-            onAction={() => router.push("/")}
+            title={user ? "Your wishlist is empty" : "Please login"}
+            description={user ? "Save items you love to view them later." : "Login to view your wishlist and continue shopping."}
+            actionLabel={user ? "Continue Shopping" : "Login"}
+            onAction={user ? () => router.push("/") : () => openLoginSheet()}
             accentColor={t.primaryCta}
           />
         ) : (

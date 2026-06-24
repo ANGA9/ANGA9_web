@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
 
       if (dbErr) {
         console.error("[admin-login] users lookup failed", dbErr);
-        await supabase.auth.signOut();
+        await supabase.auth.signOut().catch(() => {});
         setError(`Lookup failed: ${dbErr.message}. Check that your users row exists and RLS allows self-read.`);
         setStep("email");
         setOtp("");
@@ -115,7 +115,7 @@ export default function AdminLoginPage() {
       const isAdmin = role === "admin";
       if (!dbUser || !isAdmin) {
         console.warn("[admin-login] access denied — role was", role);
-        await supabase.auth.signOut();
+        await supabase.auth.signOut().catch(() => {});
         setError(`Access denied. You do not have an admin role.`);
         setStep("email");
         setOtp("");

@@ -238,7 +238,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // If we navigate first, the browser cancels the request and leaves the auth token
     // in local storage. This causes the next page load to have a hydration mismatch 
     // (server sees no cookies = logged out, client sees local storage = logged in).
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error && !error.message.includes("Refresh Token")) {
+        console.warn("Sign out:", error.message);
+      }
+    } catch (e) {
+      // Ignore thrown errors during sign out
+    }
     
     // Now redirect securely
     window.location.href = "/";

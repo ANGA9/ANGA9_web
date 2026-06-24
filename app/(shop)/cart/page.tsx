@@ -194,10 +194,10 @@ export default function CustomerCartPage() {
         {items.length === 0 ? (
           <EmptyState
             illustration={<EmptyCartIllustration />}
-            title="Your bag is empty"
-            description="There is nothing in your bag. Let's add some items."
-            actionLabel="Shop Now"
-            onAction={() => router.push("/")}
+            title={user ? "Your bag is empty" : "Please login"}
+            description={user ? "There is nothing in your bag. Let's add some items." : "Login to view your bag and continue shopping."}
+            actionLabel={user ? "Shop Now" : "Login"}
+            onAction={user ? () => router.push("/") : () => openLoginSheet()}
             accentColor={t.primaryCta}
           />
         ) : (
@@ -434,10 +434,10 @@ export default function CustomerCartPage() {
           <div className="hidden md:flex flex-col items-center justify-center min-h-[50vh] animate-in fade-in slide-in-from-bottom-8 duration-700">
             <EmptyState
               illustration={<EmptyCartIllustration />}
-              title="Your bag is empty"
-              description="Time to start shopping and fill it with wonderful things!"
-              actionLabel="Start Shopping"
-              onAction={() => router.push("/")}
+              title={user ? "Your bag is empty" : "Please login"}
+              description={user ? "Time to start shopping and fill it with wonderful things!" : "Login to view your bag and continue shopping."}
+              actionLabel={user ? "Start Shopping" : "Login"}
+              onAction={user ? () => router.push("/") : () => openLoginSheet()}
               accentColor={t.primaryCta}
             />
           </div>

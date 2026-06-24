@@ -78,7 +78,7 @@ export default function SupportLoginPage() {
 
       // 3. Capability check post-reconciliation
       if (!user.is_support) {
-        await supabase.auth.signOut();
+        await supabase.auth.signOut().catch(() => {});
         throw new Error("Access denied. Your email is not authorized for support access.");
       }
 

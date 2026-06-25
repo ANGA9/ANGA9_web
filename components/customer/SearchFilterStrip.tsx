@@ -39,8 +39,11 @@ export default function SearchFilterStrip({
   const [isClosing, setIsClosing] = useState(false);
   
   const { tabs: categoriesTree, loading } = useCategories();
-  const TOP_LEVEL_CATEGORIES = categoriesTree.map(t => t.name);
-  const FILTER_TABS = TOP_LEVEL_CATEGORIES;
+  // Carry both name (for display) and slug (the value we filter by — the backend
+  // resolves a category SLUG hierarchically). FILTER_TABS stays name-only for the
+  // tab strip UI which keys off the active tab's name.
+  const TOP_LEVEL_CATEGORIES = categoriesTree.map(t => ({ name: t.name, slug: t.slug }));
+  const FILTER_TABS = categoriesTree.map(t => t.name);
 
   const [activeFilterTab, setActiveFilterTab] = useState<string>("");
   const [filterSearch, setFilterSearch] = useState("");
@@ -211,21 +214,21 @@ export default function SearchFilterStrip({
             </div>
             <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-4">
               {TOP_LEVEL_CATEGORIES.map((cat) => (
-                <label key={cat} className="flex items-center gap-3 py-2 cursor-pointer group">
+                <label key={cat.slug} className="flex items-center gap-3 py-2 cursor-pointer group">
                   <div className="relative flex items-center justify-center">
                     <input
                       type="checkbox"
-                      checked={categoryParam === cat}
+                      checked={categoryParam === cat.slug}
                       onChange={() => {
-                        updateUrl({ category: categoryParam === cat ? "" : cat });
+                        updateUrl({ category: categoryParam === cat.slug ? "" : cat.slug });
                       }}
                       className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
                       style={{
-                        borderColor: categoryParam === cat ? APPLY_INDIGO : t.border,
-                        background: categoryParam === cat ? APPLY_INDIGO : "transparent",
+                        borderColor: categoryParam === cat.slug ? APPLY_INDIGO : t.border,
+                        background: categoryParam === cat.slug ? APPLY_INDIGO : "transparent",
                       }}
                     />
-                    {categoryParam === cat && (
+                    {categoryParam === cat.slug && (
                       <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />
                     )}
                   </div>
@@ -233,7 +236,7 @@ export default function SearchFilterStrip({
                     className="text-sm md:text-base group-hover:text-black transition-colors"
                     style={{ color: t.textSecondary }}
                   >
-                    {cat}
+                    {cat.name}
                   </span>
                 </label>
               ))}
@@ -320,9 +323,9 @@ export default function SearchFilterStrip({
                   {(() => {
                     const tab = categoriesTree.find(t => t.name === activeFilterTab);
                     if (!tab) return null;
-                    const items = tab.children.map(c => c.name);
+                    const items = tab.children.map(c => ({ name: c.name, slug: c.slug }));
                     const visibleItems = filterSearch.trim()
-                      ? items.filter((i) => i.toLowerCase().includes(filterSearch.toLowerCase()))
+                      ? items.filter((i) => i.name.toLowerCase().includes(filterSearch.toLowerCase()))
                       : items;
                     if (visibleItems.length === 0) return null;
                     return (
@@ -335,21 +338,21 @@ export default function SearchFilterStrip({
                         </p>
                         <div className="space-y-2">
                           {visibleItems.map((item) => (
-                            <label key={item} className="flex items-center gap-3 py-1 cursor-pointer group">
+                            <label key={item.slug} className="flex items-center gap-3 py-1 cursor-pointer group">
                               <div className="relative flex items-center justify-center">
                                 <input
                                   type="checkbox"
-                                  checked={categoryParam === item}
+                                  checked={categoryParam === item.slug}
                                   onChange={() => {
-                                    updateUrl({ category: categoryParam === item ? "" : item });
+                                    updateUrl({ category: categoryParam === item.slug ? "" : item.slug });
                                   }}
                                   className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
                                   style={{
-                                    borderColor: categoryParam === item ? APPLY_INDIGO : t.border,
-                                    background: categoryParam === item ? APPLY_INDIGO : "transparent",
+                                    borderColor: categoryParam === item.slug ? APPLY_INDIGO : t.border,
+                                    background: categoryParam === item.slug ? APPLY_INDIGO : "transparent",
                                   }}
                                 />
-                                {categoryParam === item && (
+                                {categoryParam === item.slug && (
                                   <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />
                                 )}
                               </div>
@@ -357,7 +360,7 @@ export default function SearchFilterStrip({
                                 className="text-sm md:text-base group-hover:text-black transition-colors"
                                 style={{ color: t.textSecondary }}
                               >
-                                {item}
+                                {item.name}
                               </span>
                             </label>
                           ))}

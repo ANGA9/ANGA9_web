@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, ImagePlus, Video, X, PackageOpen, LayoutList, IndianRupee, Truck, FileText } from "lucide-react";
 import Link from "next/link";
 import { useBrand } from "@/lib/BrandContext";
-import CategoryMultiSelect from "@/components/seller/CategoryMultiSelect";
+import { api } from "@/lib/api";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -48,7 +48,13 @@ export default function AddProductPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // categories fetched within CategoryMultiSelect now
+  const [allCategories, setAllCategories] = useState<{id: string; name: string; parent_id: string | null}[]>([]);
+
+  useEffect(() => {
+    api.get<{categories: any[]}>("/api/categories")
+      .then(res => setAllCategories(res?.categories ?? []))
+      .catch(() => {});
+  }, []);
 
   function set(k: string, v: string) {
     setForm(prev => ({ ...prev, [k]: v }));
@@ -144,8 +150,7 @@ export default function AddProductPage() {
     else if (salePrice > price) errs.push("Wholesale price cannot exceed MRP");
     const qty = parseInt(form.min_order_qty);
     if (!qty || qty < 1) errs.push("Min order quantity must be at least 1");
-    if (form.category_ids.length === 0) errs.push("At least one category is required");
-    if (form.category_ids.length > 5) errs.push("Maximum 5 categories allowed");
+    if (form.category_ids.length !== 2) errs.push("Please select both a Category and a Subcategory");
     if (form.hsn_code && !/^\d{4,8}$/.test(form.hsn_code)) errs.push("HSN code must be 4-8 digits");
     const stock = parseInt(form.initial_stock);
     if (Number.isNaN(stock) || stock < 0) errs.push("Initial stock is required (0 or more)");
@@ -353,11 +358,36 @@ export default function AddProductPage() {
               <textarea className={inputCls + " h-32 py-4 resize-y"} value={form.description} onChange={e => set("description", e.target.value)} placeholder="Describe your product's features, benefits, and specifications in detail..." maxLength={2000} />
             </div>
             <div>
-              <label className={labelCls}>Categories <span className="text-red-500">*</span></label>
-              <CategoryMultiSelect
-                value={form.category_ids}
-                onChange={(ids) => { setForm(prev => ({ ...prev, category_ids: ids })); setErrors([]); }}
-              />
+              <label className={labelCls}>Category <span className="text-red-500">*</span></label>
+              <div className="relative mb-4">
+                <select 
+                  className={inputCls + " appearance-none cursor-pointer pr-10"} 
+                  value={form.category_ids[0] || ""} 
+                  onChange={e => setForm(prev => ({ ...prev, category_ids: [e.target.value] }))}
+                >
+                  <option value="" disabled>Select Category</option>
+                  {allCategories.filter(c => !c.parent_id).map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+
+              <label className={labelCls}>Subcategory <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <select 
+                  className={inputCls + " appearance-none cursor-pointer pr-10 disabled:opacity-50 disabled:bg-gray-100"} 
+                  value={form.category_ids[1] || ""} 
+                  onChange={e => setForm(prev => ({ ...prev, category_ids: [prev.category_ids[0], e.target.value] }))}
+                  disabled={!form.category_ids[0]}
+                >
+                  <option value="" disabled>Select Subcategory</option>
+                  {allCategories.filter(c => c.parent_id === form.category_ids[0]).map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
             </div>
           </section>
 
@@ -505,7 +535,7 @@ export default function AddProductPage() {
               <ul className="space-y-3">
                 {[
                   { text: `Min ${MIN_IMAGES} photo uploaded`, done: images.filter(i => !i.uploading).length >= MIN_IMAGES },
-                  { text: "Category selected", done: form.category_ids.length > 0 },
+                  { text: "Category & Subcategory selected", done: form.category_ids.length === 2 },
                   { text: "Pricing & Stock added", done: parseFloat(form.base_price) > 0 && parseFloat(form.sale_price) > 0 && parseInt(form.initial_stock) >= 0 }
                 ].map((item, i) => (
                   <li key={i} className={`text-[13px] font-medium flex items-start gap-2 ${item.done ? "text-green-600" : "text-gray-500"}`}>

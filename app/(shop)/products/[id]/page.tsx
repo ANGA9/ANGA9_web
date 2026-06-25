@@ -40,6 +40,7 @@ interface ProductCategory {
   id: string;
   name: string;
   slug: string;
+  parent_id: string | null;
 }
 
 interface SellerInfo {
@@ -68,7 +69,7 @@ interface ProductDetail {
   images: string[];
   videos?: string[];
   tags: string[];
-  categories?: ProductCategory;
+  categories_details?: ProductCategory[];
   product_variants?: ProductVariant[];
   users?: SellerInfo;
   created_at: string;
@@ -335,15 +336,28 @@ export default function ProductDetailPage() {
         </div>
       </header>
 
-      {/* ══════════ DESKTOP BREADCRUMB (md+) ══════════ */}
       <nav className="hidden md:flex items-center gap-1.5 text-sm mb-6 mt-6 flex-wrap px-4" style={{ color: t.textMuted }}>
         <Link href="/" className="hover:underline" style={{ color: t.bluePrimary }}>Home</Link>
-        {product.categories && (
-          <>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <span style={{ color: t.textSecondary }}>{product.categories.name}</span>
-          </>
-        )}
+        {product.categories_details && (() => {
+          const mainCat = product.categories_details.find(c => !c.parent_id);
+          const subCat = product.categories_details.find(c => c.parent_id);
+          return (
+            <>
+              {mainCat && (
+                <>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                  <Link href={`/?category=${mainCat.slug}`} className="hover:underline" style={{ color: t.textSecondary }}>{mainCat.name}</Link>
+                </>
+              )}
+              {subCat && (
+                <>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                  <Link href={`/?category=${subCat.slug}`} className="hover:underline" style={{ color: t.textSecondary }}>{subCat.name}</Link>
+                </>
+              )}
+            </>
+          );
+        })()}
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="truncate max-w-[200px]" style={{ color: t.textPrimary }}>{product.name}</span>
       </nav>
@@ -462,11 +476,24 @@ export default function ProductDetailPage() {
         {/* ══════════ RIGHT: Product Info ══════════ */}
         <div className="px-4 md:px-0 mt-4 md:mt-0">
           {/* Category */}
-          {product.categories && (
-            <span className="inline-block rounded-full px-3 py-0.5 text-xs font-medium mb-3" style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}>
-              {product.categories.name}
-            </span>
-          )}
+          {product.categories_details && (() => {
+            const mainCat = product.categories_details.find(c => !c.parent_id);
+            const subCat = product.categories_details.find(c => c.parent_id);
+            return (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {mainCat && (
+                  <Link href={`/?category=${mainCat.slug}`} className="inline-block rounded-full px-3 py-0.5 text-xs font-medium transition-colors hover:opacity-80" style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}>
+                    {mainCat.name}
+                  </Link>
+                )}
+                {subCat && (
+                  <Link href={`/?category=${subCat.slug}`} className="inline-block rounded-full px-3 py-0.5 text-xs font-medium transition-colors hover:opacity-80" style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}>
+                    {subCat.name}
+                  </Link>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Name */}
           <h1 className="font-medium leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(20px, 3.5vw, 24px)' }}>
@@ -677,20 +704,7 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Tags */}
-          {product.tags && product.tags.length > 0 && (
-            <div className="mt-6 border-t pt-6 border-gray-100">
-              <h2 className="font-semibold text-sm mb-3" style={{ color: t.textPrimary }}>Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {product.tags.map((tag) => (
-                  <span key={tag} className="rounded-full px-3 py-1 text-xs md:text-sm font-medium"
-                    style={{ background: '#F1F5F9', color: '#475569' }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Tags (Removed) */}
         </div>
       </div>
 

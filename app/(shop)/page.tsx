@@ -87,6 +87,15 @@ export default function CustomerHomePage() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const hasActiveFilters = !!categoryParam;
 
+  // Seed the category filter from the URL (?category=<slug>) so links from the
+  // product page / category pills land here pre-filtered. Read once on mount via
+  // window.location to keep this `use client` page out of a useSearchParams
+  // Suspense bail-out. The fetch effect below re-runs when categoryParam changes.
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("category");
+    if (slug) setCategoryParam(slug);
+  }, []);
+
   // Categories don't change between paginated requests — cache the map from
   // the initial fetch and reuse it in loadMore instead of refetching every
   // infinite-scroll page.

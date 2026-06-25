@@ -704,7 +704,34 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Tags (Removed) */}
+          {/* Categories Section */}
+          {product.categories_details && product.categories_details.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <h2 className="font-semibold text-sm mb-3 text-gray-500 uppercase tracking-wider">Categories</h2>
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  const mainCat = product.categories_details.find(c => !c.parent_id);
+                  const subCat = product.categories_details.find(c => c.parent_id);
+                  return (
+                    <>
+                      {mainCat && (
+                        <Link href={`/?category=${mainCat.slug}`} className="rounded-full px-3 py-1.5 text-xs md:text-sm font-medium transition-colors hover:bg-gray-200"
+                          style={{ background: '#F1F5F9', color: '#475569' }}>
+                          {mainCat.name}
+                        </Link>
+                      )}
+                      {subCat && (
+                        <Link href={`/?category=${subCat.slug}`} className="rounded-full px-3 py-1.5 text-xs md:text-sm font-medium transition-colors hover:bg-gray-200"
+                          style={{ background: '#F1F5F9', color: '#475569' }}>
+                          {subCat.name}
+                        </Link>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

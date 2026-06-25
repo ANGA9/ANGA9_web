@@ -24,6 +24,7 @@ export default function CustomerLoginPage() {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const supabase = getSupabaseBrowserClient();
 
@@ -334,7 +335,7 @@ export default function CustomerLoginPage() {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !agreedToTerms}
         className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
       >
         {loading ? (
@@ -344,11 +345,20 @@ export default function CustomerLoginPage() {
         )}
       </button>
 
-      <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
-        By continuing, you agree to ANGA9&apos;s{" "}
-        <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
-        <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
-      </p>
+      <div className="flex items-start gap-2 pt-1">
+        <input 
+          type="checkbox" 
+          id="terms-email" 
+          checked={agreedToTerms} 
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+          className="mt-0.5 shrink-0 rounded border-gray-300 text-[#1A6FD4] focus:ring-[#1A6FD4]"
+        />
+        <label htmlFor="terms-email" className="text-[11.5px] leading-relaxed text-[#9CA3AF] cursor-pointer">
+          I confirm that I am 18 years or older. By continuing, you agree to ANGA9&apos;s{" "}
+          <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+          <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
+        </label>
+      </div>
     </form>
   );
 
@@ -387,7 +397,7 @@ export default function CustomerLoginPage() {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !agreedToTerms}
         className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
       >
         {loading ? (
@@ -397,11 +407,20 @@ export default function CustomerLoginPage() {
         )}
       </button>
 
-      <p className="text-[11.5px] leading-relaxed text-[#9CA3AF] text-center pt-1">
-        By continuing, you agree to ANGA9&apos;s{" "}
-        <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
-        <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
-      </p>
+      <div className="flex items-start gap-2 pt-1">
+        <input 
+          type="checkbox" 
+          id="terms-phone" 
+          checked={agreedToTerms} 
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+          className="mt-0.5 shrink-0 rounded border-gray-300 text-[#1A6FD4] focus:ring-[#1A6FD4]"
+        />
+        <label htmlFor="terms-phone" className="text-[11.5px] leading-relaxed text-[#9CA3AF] cursor-pointer">
+          I confirm that I am 18 years or older. By continuing, you agree to ANGA9&apos;s{" "}
+          <Link href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Terms of Use</Link> and{" "}
+          <Link href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4] hover:underline">Privacy Policy</Link>.
+        </label>
+      </div>
     </form>
   );
 

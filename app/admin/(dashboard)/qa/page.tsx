@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { qaApi } from "@/lib/qaApi";
-import { Loader2, MessageSquare, Check, X as XIcon, EyeOff } from "lucide-react";
+import { Loader2, MessageSquare, Check, X as XIcon, EyeOff, Reply } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 interface QaItem {
@@ -21,6 +21,12 @@ interface QaItem {
 export default function AdminQaPage() {
   const [items, setItems] = useState<QaItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Reply Modal State
+  const [replyModalOpen, setReplyModalOpen] = useState(false);
+  const [replyItem, setReplyItem] = useState<QaItem | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replying, setReplying] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -65,6 +71,25 @@ export default function AdminQaPage() {
     }
   };
 
+  const handleReplySubmit = async () => {
+    if (!replyItem || !replyText.trim()) return;
+    setReplying(true);
+    try {
+      // Admins answer via the same endpoint as customers, but backend identifies role if needed
+      await qaApi.answerQuestion(replyItem.id, replyText);
+      toast.success("Answer posted successfully");
+      setReplyModalOpen(false);
+      setReplyText("");
+      setReplyItem(null);
+      // Refresh to show the new answer in the list
+      fetchItems();
+    } catch {
+      toast.error("Failed to post answer");
+    } finally {
+      setReplying(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
@@ -80,6 +105,7 @@ export default function AdminQaPage() {
   };
 
   return (
+    <>
     <div className="p-4 sm:p-6 lg:p-8">
       {/* ── Header ── */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
@@ -182,6 +208,20 @@ export default function AdminQaPage() {
                             <EyeOff className="w-4 h-4" />
                           </button>
                         )}
+
+                        {item.type === "questions" && (
+                          <button
+                            onClick={() => {
+                              setReplyItem(item);
+                              setReplyText("");
+                              setReplyModalOpen(true);
+                            }}
+                            className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                            title="Reply / Answer"
+                          >
+                            <Reply className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -192,5 +232,58 @@ export default function AdminQaPage() {
         </div>
       )}
     </div>
+
+      {/* Reply Modal */}
+      {replyModalOpen && replyItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+              <h3 className="font-bold text-gray-900 text-lg">Answer Question</h3>
+              <button 
+                onClick={() => setReplyModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="p-4 bg-blue-50 rounded-xl">
+                <p className="text-sm font-medium text-blue-900 mb-1">Question from {replyItem.users?.full_name || "Unknown"}</p>
+                <p className="text-sm text-blue-800 line-clamp-3">{replyItem.text}</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Your Answer</label>
+                <textarea
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/20 outline-none transition-all resize-none text-[15px]"
+                  rows={5}
+                  placeholder="Type your answer here..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
+              <button
+                onClick={() => setReplyModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl font-bold text-gray-600 hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReplySubmit}
+                disabled={!replyText.trim() || replying}
+                className="px-5 py-2.5 rounded-xl font-bold bg-[#1A6FD4] text-white hover:bg-[#155ab0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {replying ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Post Answer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

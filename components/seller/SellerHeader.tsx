@@ -34,7 +34,7 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
         </div>
       </Link>
 
-      <span className="ml-4 text-[11px] font-black text-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]/10 border border-[#1A6FD4]/20 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
+      <span className="ml-4 text-[11px] font-black text-[#1A6FD4] bg-[#F8FBFF] border border-[#1A6FD4]/30 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
         Seller Portal
       </span>
       

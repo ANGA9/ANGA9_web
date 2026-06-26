@@ -412,8 +412,8 @@ export default function LoginSheet() {
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
-                    <a href="#" className="text-[#1A6FD4]">Terms</a> &{" "}
-                    <a href="#" className="text-[#1A6FD4]">Privacy Policy</a>
+                    <a href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Terms</a> &{" "}
+                    <a href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Privacy Policy</a>
                   </p>
                 </form>
               )}
@@ -458,8 +458,8 @@ export default function LoginSheet() {
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
-                    <a href="#" className="text-[#1A6FD4]">Terms</a> &{" "}
-                    <a href="#" className="text-[#1A6FD4]">Privacy Policy</a>
+                    <a href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Terms</a> &{" "}
+                    <a href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Privacy Policy</a>
                   </p>
                 </form>
               )}

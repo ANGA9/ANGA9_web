@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useEffect, useState, useRef, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Home,
@@ -20,6 +20,7 @@ import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import { api } from "@/lib/api";
 import { cdnUrl } from "@/lib/utils";
+import { useCategories } from "@/lib/useCategories";
 import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
@@ -395,55 +396,78 @@ export default function CustomerHomePage() {
   );
 }
 
-const MOBILE_CATEGORIES: Record<string, any[]> = {
-  ALL: [
-    { name: "Bed", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/bed.png") },
-    { name: "Fashion", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/fashion.png") },
-    { name: "Accessories", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/accessories.png") },
-    { name: "Home Living", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/home-living.png") },
-  ],
-  FASHION: [
-    { name: "Men", icon: ShoppingBag, bg: "#bbebecff", color: "white", image: cdnUrl("/categories/men.png") },
-    { name: "Women", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/women.png") },
-    { name: "Kids", icon: ShoppingBag, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/kids.png") },
-  ],
-  ACCESSORIES: [
-    { name: "Watch", icon: Cpu, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/watch.png") },
-    { name: "Headwear", icon: Cpu, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/headwear.png") },
-    { name: "Neckwear", icon: Cpu, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/neckwear.png") },
-    { name: "Bags", icon: ShoppingBag, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/bags.png") },
-  ],
-  "HOME LIVING": [
-    { name: "Lamps", icon: Home, bg: "#FFF4E5", color: "#F59E0B", image: cdnUrl("/categories/lamps.png") },
-    { name: "Curtains", icon: Home, bg: "#EAF2FF", color: "#1A6FD4", image: cdnUrl("/categories/curtains.png") },
-    { name: "Rugs", icon: Home, bg: "#F3F4F6", color: "#4B5563", image: cdnUrl("/categories/rugs.png") },
-    { name: "Decor", icon: Armchair, bg: "#FEF2F2", color: "#EF4444", image: cdnUrl("/categories/decor.png") },
-  ],
+/* Curated subcategory slugs per tab — 4 eye-catching picks each */
+const TAB_SUBCATEGORIES: Record<string, string[]> = {
+  ALL: ["menswear-blazers", "womenswear-sarees", "bedding-duvet-covers", "accessories-scarves"],
+  FASHION: ["womenswear-maxi-dresses", "menswear-leather-jackets", "womenswear-kurtas", "kids-infants-frocks"],
+  ACCESSORIES: ["accessories-scarves", "accessories-caps", "accessories-ties", "accessories-berets"],
+  "HOME LIVING": ["bedding-duvet-covers", "living-decor-throw-pillows", "floor-coverings-persian-rugs", "window-treatments-blackout-curtains"],
+};
+
+/* Tab-specific pastel background colors for subcategory circles */
+const TAB_BG_COLORS: Record<string, string[]> = {
+  ALL: ["#EAF2FF", "#FFF4E5", "#F0FFF4", "#FEF2F2"],
+  FASHION: ["#FFF0F6", "#EDE9FE", "#ECFDF5", "#FEF9C3"],
+  ACCESSORIES: ["#F0F9FF", "#FFF7ED", "#F5F3FF", "#FDF2F8"],
+  "HOME LIVING": ["#ECFDF5", "#FFFBEB", "#FEF2F2", "#EFF6FF"],
 };
 
 function MobileCategoryStrip() {
   const searchParams = useSearchParams();
   const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
-  const activeCategories = MOBILE_CATEGORIES[currentTab] || MOBILE_CATEGORIES.ALL;
+  const { tabs: categoriesTree } = useCategories();
+
+  const slugLookup = useMemo(() => {
+    const map = new Map<string, { name: string; image_url: string | null }>();
+    for (const tab of categoriesTree) {
+      for (const child of tab.children) {
+        map.set(child.slug, { name: child.name, image_url: child.image_url });
+      }
+    }
+    return map;
+  }, [categoriesTree]);
+
+  const subcategorySlugs = TAB_SUBCATEGORIES[currentTab] || TAB_SUBCATEGORIES.ALL;
+  const bgColors = TAB_BG_COLORS[currentTab] || TAB_BG_COLORS.ALL;
+
+  const activeItems = subcategorySlugs
+    .map((slug, i) => {
+      const cat = slugLookup.get(slug);
+      if (!cat) return null;
+      return { slug, name: cat.name, image_url: cat.image_url, bg: bgColors[i % bgColors.length] };
+    })
+    .filter(Boolean) as { slug: string; name: string; image_url: string | null; bg: string }[];
+
+  if (activeItems.length === 0) return null;
 
   return (
     <div className="md:hidden w-full overflow-x-auto scrollbar-hide pt-4 pb-2 bg-white">
-      <div 
+      <div
         key={currentTab}
         className="flex items-start gap-4 px-4 min-w-max animate-in fade-in slide-in-from-right-8 duration-300 ease-out"
       >
-        {activeCategories.map((cat) => (
-          <button key={cat.name} className="flex flex-col items-center gap-2 w-[76px] shrink-0 group">
-            <div 
+        {activeItems.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => {
+              const url = new URL(window.location.href);
+              url.searchParams.set("category", cat.slug);
+              url.searchParams.delete("tab");
+              window.location.href = url.toString();
+            }}
+            className="flex flex-col items-center gap-2 w-[76px] shrink-0 group"
+          >
+            <div
               className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6] overflow-hidden relative"
               style={{ background: cat.bg }}
             >
-              {cat.image ? (
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
-              ) : null}
-              <cat.icon className={`w-8 h-8 ${cat.image ? 'hidden' : ''}`} style={{ color: cat.color }} strokeWidth={1.5} />
+              {cat.image_url ? (
+                <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              ) : (
+                <ShoppingBag className="w-8 h-8 text-gray-400" strokeWidth={1.5} />
+              )}
             </div>
-            <span className="text-[12px] font-bold text-center leading-tight text-[#374151]">
+            <span className="text-[12px] font-bold text-center leading-tight text-[#374151] line-clamp-2">
               {cat.name}
             </span>
           </button>

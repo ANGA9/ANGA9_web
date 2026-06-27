@@ -146,9 +146,21 @@ export default function AdminQaPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {items.map((item) => (
-                  <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/50 transition-colors group">
-                    <td className="px-6 py-4">
+                {(() => {
+                  const qs = items.filter(i => i.type === "questions");
+                  const as = items.filter(i => i.type === "answers");
+                  const groupedItems: QaItem[] = [];
+                  qs.forEach(q => {
+                    groupedItems.push(q);
+                    groupedItems.push(...as.filter(a => a.question_id === q.id));
+                  });
+                  as.filter(a => !qs.some(q => q.id === a.question_id)).forEach(a => groupedItems.push(a));
+                  
+                  return groupedItems.map((item) => {
+                    const isChildAnswer = item.type === "answers" && item.question_id && qs.some(q => q.id === item.question_id);
+                    return (
+                      <tr key={`${item.type}-${item.id}`} className={`transition-colors group ${isChildAnswer ? "bg-gray-50/40 hover:bg-gray-100/50" : "hover:bg-gray-50/50"}`}>
+                        <td className={`px-6 py-4 ${isChildAnswer ? "pl-12 border-l-2 border-l-purple-300" : ""}`}>
                       <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider border ${
                         item.type === "questions" ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-purple-50 text-purple-700 border-purple-100"
                       }`}>
@@ -225,7 +237,9 @@ export default function AdminQaPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>

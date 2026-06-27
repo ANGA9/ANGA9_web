@@ -151,20 +151,51 @@ export default function ActivityDashboardPage() {
             <h2 className="text-lg font-bold text-[#1A1A2E] mb-6">Top Regions (Vercel Edge)</h2>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.regions} layout="vertical" margin={{ left: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E8EEF4" />
-                  <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#6B7280" }} allowDecimals={false} />
-                  <YAxis type="category" dataKey="region" axisLine={false} tickLine={false} tick={{ fill: "#1A1A2E", fontWeight: 500 }} />
-                  <RechartsTooltip 
-                    cursor={{ fill: "#F8FAFC" }}
-                    contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} 
-                  />
-                  <Bar dataKey="count" name="Users" fill="#8B5CF6" radius={[0, 4, 4, 0]} barSize={24}>
-                    {stats.regions.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
+                {(() => {
+                  const REGION_MAP: Record<string, string> = {
+                    DL: "Delhi",
+                    HR: "Haryana",
+                    WB: "West Bengal",
+                    GJ: "Gujarat",
+                    MP: "Madhya Pradesh",
+                    MH: "Maharashtra",
+                    KA: "Karnataka",
+                    TN: "Tamil Nadu",
+                    UP: "Uttar Pradesh",
+                    CA: "California",
+                    VA: "Virginia",
+                    OR: "Oregon",
+                    NY: "New York",
+                    TX: "Texas",
+                  };
+                  
+                  const processedRegions = stats.regions
+                    .filter(r => r.region && r.region !== "Unknown")
+                    .map(r => ({ ...r, region: REGION_MAP[r.region] || r.region }));
+                    
+                  const totalKnownUsers = processedRegions.reduce((sum, r) => sum + r.count, 0);
+
+                  return (
+                    <BarChart data={processedRegions} layout="vertical" margin={{ left: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E8EEF4" />
+                      <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#6B7280" }} allowDecimals={false} />
+                      <YAxis type="category" dataKey="region" axisLine={false} tickLine={false} tick={{ fill: "#1A1A2E", fontWeight: 500 }} />
+                      <RechartsTooltip 
+                        cursor={{ fill: "#F8FAFC" }}
+                        contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} 
+                        formatter={(value: any) => {
+                          const percentage = totalKnownUsers > 0 ? ((Number(value) / totalKnownUsers) * 100).toFixed(1) : "0";
+                          return [`${value} Users (${percentage}%)`, "Traffic"];
+                        }}
+                      />
+                      <Bar dataKey="count" name="Users" fill="#8B5CF6" radius={[0, 4, 4, 0]} barSize={24}>
+                        {processedRegions.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  );
+                })()}
               </ResponsiveContainer>
             </div>
           </div>

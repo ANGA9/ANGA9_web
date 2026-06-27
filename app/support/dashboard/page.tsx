@@ -7,12 +7,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 async function getStats(token: string) {
   try {
-    const res = await fetch(`${API_URL}/api/support/tickets?limit=100`, {
+    const res = await fetch(`${API_URL}/api/admin/support/tickets?limit=100`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return null;
-    const data = await res.json();
-    return data;
+    const json = await res.json();
+    return json;
   } catch (e) {
     return null;
   }

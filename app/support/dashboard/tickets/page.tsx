@@ -41,13 +41,13 @@ export default function TicketQueuePage() {
       if (assignee !== "all") params.append("assignee_id", assignee);
       params.append("limit", "50");
 
-      const res = await fetch(`${API_URL}/api/support/tickets?${params.toString()}`, {
+      const res = await fetch(`${API_URL}/api/admin/support/tickets?${params.toString()}`, {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch tickets");
       
-      const { data } = await res.json();
-      setTickets(data || []);
+      const json = await res.json();
+      setTickets(json.data || []);
     } catch (err) {
       console.error(err);
     } finally {

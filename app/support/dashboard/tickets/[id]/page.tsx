@@ -33,6 +33,7 @@ export default function TicketChatPage() {
   
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [agentTyping, setAgentTyping] = useState<string | null>(null);
+  const [agentProfile, setAgentProfile] = useState<{ id: string; role: string; full_name: string | null } | null>(null);
   
   const wsRef = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -41,12 +42,29 @@ export default function TicketChatPage() {
   useEffect(() => {
     fetchTicket();
     setupWebSocket();
+    fetchAgentProfile();
 
     return () => {
       if (wsRef.current) wsRef.current.close();
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
   }, [id]);
+
+  const fetchAgentProfile = async () => {
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id, role, full_name')
+        .eq('id', session.user.id)
+        .single();
+      if (profile) setAgentProfile(profile);
+    } catch (err) {
+      console.error('Failed to fetch agent profile', err);
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -67,7 +85,7 @@ export default function TicketChatPage() {
       });
       if (!res.ok) throw new Error("Failed to fetch ticket");
       
-      const { data } = await res.json();
+      const data = await res.json();
       setTicket(data.ticket);
       setMessages(data.messages || []);
     } catch (err) {
@@ -92,7 +110,11 @@ export default function TicketChatPage() {
       const data = JSON.parse(event.data);
       
       if (data.type === "message" && data.ticketId === id) {
-        setMessages((prev) => [...prev, data.message]);
+        // Deduplicate: only add if this message ID isn't already in the list
+        setMessages((prev) => {
+          if (data.message?.id && prev.some((m) => m.id === data.message.id)) return prev;
+          return [...prev, data.message];
+        });
         // Clear typing indicator when a message arrives
         setAgentTyping(null);
       } else if (data.type === "typing" && data.ticketId === id) {
@@ -145,10 +167,22 @@ export default function TicketChatPage() {
       });
 
       if (!res.ok) throw new Error("Failed to send message");
-      
+      const returnedMsg = await res.json();
+      // Backend only returns { id }, so construct the full message for optimistic rendering
+      const effectiveRole = agentProfile?.role === 'admin' ? 'admin' : 'support';
+      const optimisticMessage = {
+        id: returnedMsg.id,
+        author_id: agentProfile?.id || null,
+        author_role: effectiveRole,
+        author_name: agentProfile?.role === 'admin' ? 'Executive' : (agentProfile?.full_name || 'Support Agent'),
+        body: newMessage,
+        is_internal: isInternal,
+        created_at: new Date().toISOString(),
+        attachments: [],
+      };
+      setMessages((prev) => [...prev, optimisticMessage]);
       setNewMessage("");
       setIsInternal(false);
-      // Let WS handle adding the message to UI
     } catch (err) {
       console.error(err);
       alert("Failed to send message.");
@@ -248,6 +282,19 @@ export default function TicketChatPage() {
         {messages.map((msg: any, idx: number) => {
           const isAgent = msg.author_role === "support" || msg.author_role === "admin";
           const isSystem = msg.author_role === "system";
+
+          // Determine display name for the message author
+          const getAuthorLabel = () => {
+            if (!isAgent) return "Customer";
+            // If the message has an explicit author_name (optimistic message), use it
+            if (msg.author_name) return msg.author_name;
+            // Otherwise determine from role
+            if (msg.author_role === "admin") return "Executive";
+            // For support role, try to show agent name
+            return agentProfile?.full_name || "Support Agent";
+          };
+          const authorLabel = getAuthorLabel();
+          const authorInitial = authorLabel.charAt(0).toUpperCase();
           
           if (isSystem) {
             return (
@@ -270,7 +317,7 @@ export default function TicketChatPage() {
               
               <div className="flex flex-col gap-1.5 min-w-[200px]">
                 <div className={`flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider ${isAgent ? "justify-end text-teal-600/80" : "text-gray-500"}`}>
-                  {isAgent ? "Support Agent" : "Customer"}
+                  {authorLabel}
                   <span className="text-gray-400 font-medium lowercase tracking-normal">
                     {format(new Date(msg.created_at || new Date()), "h:mm a")}
                   </span>
@@ -293,8 +340,8 @@ export default function TicketChatPage() {
               </div>
 
               {isAgent && (
-                <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ml-3 flex-shrink-0 mt-auto shadow-sm bg-white border-2 border-teal-700 text-teal-700 hover:bg-gray-50">
-                  A
+                <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ml-3 flex-shrink-0 mt-auto shadow-sm bg-white border-2 border-teal-700 text-teal-700">
+                  {authorInitial}
                 </div>
               )}
             </div>

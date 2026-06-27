@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 import {
   LayoutDashboard,
   Inbox,
@@ -33,6 +35,27 @@ export default function SupportSidebar({
   onClose: () => void;
 }) {
   const pathname = usePathname();
+  const [agentName, setAgentName] = useState<string>("Support Agent");
+  const [agentRole, setAgentRole] = useState<string>("Active");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, role')
+          .eq('id', session.user.id)
+          .single();
+        if (profile) {
+          setAgentName(profile.full_name || "Support Agent");
+          setAgentRole(profile.role === 'admin' ? 'Executive' : 'Support Agent');
+        }
+      } catch { /* ignore */ }
+    })();
+  }, []);
 
   const isActive = (href: string) => {
     // Exact match for dashboard
@@ -84,12 +107,12 @@ export default function SupportSidebar({
 
         <div className="p-5 border-t border-teal-100 bg-teal-50/50 mt-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl from-teal-600 to-teal-400 flex items-center justify-center shadow-sm bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center shadow-sm text-white font-black text-sm">
+              {agentName.charAt(0).toUpperCase()}
             </div>
             <div className="flex flex-col">
-              <span className="text-[13px] font-bold text-gray-900">Support Agent</span>
-              <span className="text-[11px] font-medium text-teal-600">Active</span>
+              <span className="text-[13px] font-bold text-gray-900">{agentName}</span>
+              <span className="text-[11px] font-medium text-teal-600">{agentRole}</span>
             </div>
           </div>
         </div>

@@ -328,7 +328,10 @@ export default function ProductDetailPage() {
           <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Open cart">
             <ShoppingCart className="w-5 h-5 text-black" />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center leading-none bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+              <span 
+                className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold flex items-center justify-center leading-none"
+                style={{ background: t.primaryCta, color: t.ctaText }}
+              >
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
@@ -475,25 +478,6 @@ export default function ProductDetailPage() {
 
         {/* ══════════ RIGHT: Product Info ══════════ */}
         <div className="px-4 md:px-0 mt-4 md:mt-0">
-          {/* Category */}
-          {product.categories_details && (() => {
-            const mainCat = product.categories_details.find(c => !c.parent_id);
-            const subCat = product.categories_details.find(c => c.parent_id);
-            return (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {mainCat && (
-                  <Link href={`/?category=${mainCat.slug}`} className="inline-block rounded-full px-3 py-0.5 text-xs font-medium transition-colors hover:opacity-80" style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}>
-                    {mainCat.name}
-                  </Link>
-                )}
-                {subCat && (
-                  <Link href={`/?category=${subCat.slug}`} className="inline-block rounded-full px-3 py-0.5 text-xs font-medium transition-colors hover:opacity-80" style={{ background: `${t.bluePrimary}15`, color: t.bluePrimary }}>
-                    {subCat.name}
-                  </Link>
-                )}
-              </div>
-            );
-          })()}
 
           {/* Name */}
           <h1 className="font-medium leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(20px, 3.5vw, 24px)' }}>

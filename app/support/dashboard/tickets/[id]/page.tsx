@@ -13,6 +13,7 @@ import {
   AlertCircle,
   CheckCircle2,
   EyeOff,
+  Trash2,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -32,6 +33,7 @@ export default function TicketChatPage() {
   const [sending, setSending] = useState(false);
   
   const [statusUpdating, setStatusUpdating] = useState(false);
+  const [deletingTicket, setDeletingTicket] = useState(false);
   const [agentTyping, setAgentTyping] = useState<string | null>(null);
   const [agentProfile, setAgentProfile] = useState<{ id: string; role: string; full_name: string | null } | null>(null);
   
@@ -218,6 +220,33 @@ export default function TicketChatPage() {
     }
   };
 
+  const handleDeleteTicket = async () => {
+    if (!confirm("Are you sure you want to permanently delete this ticket? This action cannot be undone.")) return;
+    
+    setDeletingTicket(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const res = await fetch(`${API_URL}/api/admin/support/tickets/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete ticket");
+      }
+
+      router.push("/support/dashboard/tickets");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete ticket.");
+    } finally {
+      setDeletingTicket(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-teal-600 h-[calc(100vh-72px)]">
@@ -258,6 +287,16 @@ export default function TicketChatPage() {
         </div>
 
         <div className="flex items-center gap-3 pl-12 sm:pl-0">
+          {agentProfile?.role === "admin" && (
+            <button
+              onClick={handleDeleteTicket}
+              disabled={deletingTicket}
+              className="p-2 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors disabled:opacity-50 flex items-center gap-2 text-sm font-bold border border-transparent hover:border-red-200"
+              title="Delete Ticket"
+            >
+              {deletingTicket ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            </button>
+          )}
           <select
             disabled={statusUpdating}
             value={ticket.status}

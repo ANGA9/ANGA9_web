@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, RotateCcw, Star } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RotateCcw, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import {
   supportApi,
@@ -28,11 +28,7 @@ export default function TicketDetailPage() {
   const [detail, setDetail] = useState<TicketDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // CSAT
-  const [score, setScore] = useState<number>(0);
-  const [csatComment, setCsatComment] = useState("");
-  const [csatSubmitting, setCsatSubmitting] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -61,22 +57,15 @@ export default function TicketDetailPage() {
 
   async function handleSend(body: string, _opts?: { isInternal: boolean }) {
     await supportApi.postMessage(id, { body });
-    // WS will push the persisted message; no full reload needed.
   }
 
   async function handleStatusChange(status: TicketStatus) {
-    await supportApi.changeStatus(id, status);
-    await load();
-  }
-
-  async function handleRate() {
-    if (!score) return;
-    setCsatSubmitting(true);
+    setActionLoading(true);
     try {
-      await supportApi.rate(id, score, csatComment || undefined);
+      await supportApi.changeStatus(id, status);
       await load();
     } finally {
-      setCsatSubmitting(false);
+      setActionLoading(false);
     }
   }
 
@@ -97,10 +86,15 @@ export default function TicketDetailPage() {
   }
 
   const { ticket, messages, events } = detail;
-  const canResolve = ticket.status !== "resolved" && ticket.status !== "closed";
-  const canReopen  = ticket.status === "resolved" || ticket.status === "closed";
-  const canClose   = ticket.status === "resolved";
-  const showCsat   = ticket.status === "resolved" && ticket.csat_score == null;
+  const isResolved = ticket.status === "resolved";
+  const isClosed = ticket.status === "closed";
+  const isTerminal = isResolved || isClosed;
+  const isActive = !isTerminal;
+
+  // Check if closed ticket is within the 1-hour reopen window
+  const closedWithinWindow = isClosed && ticket.closed_at
+    ? (Date.now() - new Date(ticket.closed_at).getTime()) < 60 * 60 * 1000
+    : false;
 
   return (
     <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:px-8 md:py-10 bg-white min-h-screen" style={{ color: t.textPrimary }}>
@@ -132,38 +126,64 @@ export default function TicketDetailPage() {
               <TicketPriorityBadge priority={ticket.priority} />
             </div>
             
-            <div className="pt-5 border-t border-gray-100">
-              <SlaCountdown slaDueAt={ticket.sla_due_at} status={ticket.status} />
-            </div>
+            {isActive && (
+              <div className="pt-5 border-t border-gray-100">
+                <SlaCountdown slaDueAt={ticket.sla_due_at} status={ticket.status} />
+              </div>
+            )}
           </header>
 
-          {/* Status actions */}
-          <div className="flex flex-col gap-3 pt-5 border-t border-gray-100">
-            {canResolve && (
-              <button
-                onClick={() => handleStatusChange("resolved")}
-                className="w-full inline-flex justify-center items-center gap-2 rounded-xl border border-[#16A34A] bg-[#DCFCE7] px-4 py-3 text-[14px] font-bold text-[#16A34A] hover:bg-[#BBF7D0] transition-colors shadow-sm"
-              >
-                <CheckCircle2 className="h-4 w-4" /> Mark as resolved
-              </button>
-            )}
-            {canReopen && (
-              <button
-                onClick={() => handleStatusChange("reopened")}
-                className="w-full inline-flex justify-center items-center gap-2 rounded-xl border border-[#EA580C] bg-[#FFEDD5] px-4 py-3 text-[14px] font-bold text-[#EA580C] hover:bg-[#FED7AA] transition-colors shadow-sm"
-              >
-                <RotateCcw className="h-4 w-4" /> Reopen ticket
-              </button>
-            )}
-            {canClose && (
-              <button
-                onClick={() => handleStatusChange("closed")}
-                className="w-full inline-flex justify-center items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-[14px] font-bold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm"
-              >
-                Close ticket
-              </button>
-            )}
-          </div>
+          {/* ══════════ Satisfaction Prompt (when resolved) ══════════ */}
+          {isResolved && (
+            <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-b from-emerald-50 to-white p-6 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-3">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                <span className="text-[15px] font-bold text-gray-900">Issue resolved</span>
+              </div>
+              <p className="text-[13px] text-gray-500 mb-5 leading-relaxed">
+                Our team has marked this ticket as resolved. Was your issue addressed?
+              </p>
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={() => handleStatusChange("closed")}
+                  disabled={actionLoading}
+                  className="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-[14px] font-bold text-white hover:bg-emerald-700 transition-all shadow-sm active:scale-[0.98] disabled:opacity-60"
+                >
+                  <ThumbsUp className="h-4 w-4" /> Yes, I&apos;m satisfied
+                </button>
+                <button
+                  onClick={() => handleStatusChange("reopened")}
+                  disabled={actionLoading}
+                  className="w-full inline-flex justify-center items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-[14px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm active:scale-[0.98] disabled:opacity-60"
+                >
+                  <ThumbsDown className="h-4 w-4" /> No, reopen chat
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ══════════ Closed State ══════════ */}
+          {isClosed && (
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 shadow-sm text-center">
+              <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
+              <p className="text-[14px] font-bold text-gray-800 mb-1">Ticket closed</p>
+              <p className="text-[12px] text-gray-500 mb-3">Thank you for reaching out to us.</p>
+              {closedWithinWindow && (
+                <button
+                  onClick={() => handleStatusChange("reopened")}
+                  disabled={actionLoading}
+                  className="inline-flex items-center gap-1.5 text-[13px] font-bold text-[#EA580C] hover:underline transition-colors disabled:opacity-60"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" /> Changed your mind? Reopen
+                </button>
+              )}
+              {!closedWithinWindow && (
+                <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+                  <Clock className="h-3 w-3" /> Reopen window has expired
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Activity Log (Sidebar) */}
           {events.length > 0 && (
@@ -198,63 +218,8 @@ export default function TicketDetailPage() {
             <TicketThread messages={messages} currentUserId={dbUser?.id} />
           </section>
 
-          {/* CSAT */}
-          {showCsat && (
-            <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
-              <div className="text-[15px] font-bold text-amber-900 mb-1">How was the support you received?</div>
-              <div className="text-[13px] text-amber-700 mb-4">We'd love to hear your feedback on how we resolved this issue.</div>
-              
-              <div className="flex items-center gap-2 mb-4">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => setScore(n)}
-                    className="p-1.5 transition-transform hover:scale-110 active:scale-95"
-                    aria-label={`Rate ${n} stars`}
-                  >
-                    <Star
-                      className="h-8 w-8 transition-colors"
-                      fill={n <= score ? "#F59E0B" : "transparent"}
-                      color={n <= score ? "#F59E0B" : "#D1D5DB"}
-                    />
-                  </button>
-                ))}
-              </div>
-              <textarea
-                rows={2}
-                placeholder="Tell us more (optional)"
-                value={csatComment}
-                onChange={(e) => setCsatComment(e.target.value)}
-                className="w-full resize-none rounded-xl border border-amber-200 bg-white px-4 py-3 text-[14px] font-medium text-gray-900 outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-400/10 transition-all shadow-sm placeholder:text-gray-400"
-              />
-              <button
-                onClick={handleRate}
-                disabled={!score || csatSubmitting}
-                className="mt-4 rounded-xl px-6 py-2.5 text-[14px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-amber-500 text-amber-500 hover:bg-gray-50"
-              >
-                {csatSubmitting ? "Submitting…" : "Submit rating"}
-              </button>
-            </section>
-          )}
-
-          {ticket.csat_score != null && (
-            <section className="rounded-2xl border border-green-200 bg-green-50 p-5 text-[14px] text-green-800 flex items-center justify-between shadow-sm">
-              <div className="font-bold">Thanks for your feedback!</div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <Star
-                    key={n}
-                    className="h-4 w-4"
-                    fill={n <= (ticket.csat_score || 0) ? "#F59E0B" : "transparent"}
-                    color={n <= (ticket.csat_score || 0) ? "#F59E0B" : "#D1D5DB"}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Reply box */}
-          {ticket.status !== "closed" && (
+          {/* Reply box — only shown for active tickets */}
+          {isActive && (
             <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mt-2">
               <TicketReplyBox onSend={handleSend} />
             </section>

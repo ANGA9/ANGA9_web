@@ -272,7 +272,6 @@ export default function TicketChatPage() {
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>
             <option value="resolved">Resolved</option>
-            <option value="closed">Closed</option>
           </select>
         </div>
       </div>
@@ -367,10 +366,10 @@ export default function TicketChatPage() {
       {/* Input Area */}
       <div className="flex-shrink-0 bg-white border-t border-teal-100 p-4 sm:p-6 z-10">
         {isResolved ? (
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center">
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
             <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-            <p className="text-gray-900 font-bold">This ticket is resolved.</p>
-            <p className="text-sm text-gray-500 mt-1">Change status to Open to continue the conversation.</p>
+            <p className="text-green-900 font-bold">Ticket resolved — waiting for customer confirmation</p>
+            <p className="text-sm text-green-700 mt-1">The customer can either confirm and close it, or reopen it.</p>
           </div>
         ) : (
           <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex flex-col gap-3">

@@ -14,8 +14,6 @@ const TABS: { key: TicketStatus | "all"; label: string }[] = [
   { key: "open",         label: "Open" },
   { key: "pending_user", label: "Needs reply" },
   { key: "in_progress",  label: "In progress" },
-  { key: "resolved",     label: "Resolved" },
-  { key: "closed",       label: "Closed" },
 ];
 
 export default function MyTicketsPage() {

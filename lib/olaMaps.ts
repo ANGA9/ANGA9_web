@@ -61,6 +61,11 @@ export function getBrowserPosition(): Promise<{ lat: number; lng: number }> {
   });
 }
 
+/** Escape a string for safe use inside a RegExp (city/state can carry `.`, `(`, etc.). */
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 /** Pull the first component whose `types` includes any of the given type keys. */
 function pick(components: OlaAddressComponent[], ...wanted: string[]): string {
   for (const w of wanted) {
@@ -122,14 +127,29 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Detected
     // without a comma (e.g. "...HSR Layout, Karnataka 560102").
     .map((p) => {
       let s = p;
-      if (pincode) s = s.replace(new RegExp(`\\b${pincode}\\b`), "");
-      for (const t of [state, city]) {
-        if (t) s = s.replace(new RegExp(`\\b${t}\\b`, "i"), "");
+      if (pincode) s = s.replace(new RegExp(`\\b${escapeRegex(pincode)}\\b`), "");
+      // Remove the longest token first: when state is a substring of city
+      // (e.g. city "New Delhi", state "Delhi") stripping "Delhi" first would
+      // leave the orphan "New". Sort by length desc so "New Delhi" goes before
+      // "Delhi" and the whole token is removed cleanly.
+      const tokens = [city, state]
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length);
+      for (const t of tokens) {
+        s = s.replace(new RegExp(`\\b${escapeRegex(t)}\\b`, "i"), "");
       }
       return s.trim();
     })
     .filter(Boolean)
     .filter((p) => !dropTail.has(p.toLowerCase()))
+    // Drop any leftover fragment that is itself a sub-token of the city/state
+    // we removed (guards against partial-match remnants like a stray "New").
+    .filter((p) => {
+      const lp = p.toLowerCase();
+      return ![city, state].some(
+        (t) => t && t.toLowerCase() !== lp && t.toLowerCase().split(/\s+/).includes(lp),
+      );
+    })
     .filter((p) => !/^\d+\s*[a-z]?$/i.test(p)) // drop bare house numbers
     .filter((p) => {
       const key = p.toLowerCase();

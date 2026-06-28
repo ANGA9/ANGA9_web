@@ -123,7 +123,8 @@ export type PaymentMethod =
   | { kind: "card" }
   | { kind: "wallet"; brand?: "phonepe" | "mobikwik" | "airtelmoney" | "olamoney" }
   | { kind: "netbanking" }
-  | { kind: "cod" };
+  | { kind: "cod" }
+  | { kind: "all" };
 
 // ── display.blocks builder ──────────────────────────────────────
 // Razorpay's Standard Checkout doesn't let us skip the modal frame on
@@ -188,6 +189,7 @@ function buildDisplayConfig(method: PaymentMethod): RazorpayDisplayConfig | null
           preferences: { show_default_blocks: false },
         },
       };
+    case "all":
     case "cod":
       return null;
   }

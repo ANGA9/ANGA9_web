@@ -79,7 +79,6 @@ export default function CheckoutPage() {
   // Reading sessionStorage in the initializer would also be a hydration
   // mismatch under SSR.)
   const [restoringCart, setRestoringCart] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Promos
   const [couponCode, setCouponCode] = useState("");
@@ -946,27 +945,7 @@ export default function CheckoutPage() {
               </div>
             )}
             
-            {/* Payment Method Selector Block */}
-            <div 
-              onClick={() => {
-                if (cartBlocked) return;
-                if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                setShowPaymentModal(true);
-              }}
-              className={`rounded-xl border p-4 shadow-sm transition-all flex items-center justify-between mt-4 ${cartBlocked || (!hasAddress && !loadingAddresses) ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'bg-white hover:bg-gray-50 cursor-pointer active:scale-[0.98]'}`}
-              style={{ borderColor: t.border }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                  <CreditCard className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-[15px] font-bold text-gray-900 leading-tight mb-0.5">Select Payment Method</h4>
-                  <p className="text-[12px] font-medium text-gray-500">UPI, Cards, Wallets, Cash</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </div>
+            {/* Payment Method Selector Block Removed */}
             
           </div>
 
@@ -1066,17 +1045,32 @@ export default function CheckoutPage() {
                   Processing payment…
                 </div>
               ) : (
-                <button
-                  onClick={() => {
-                    if (cartBlocked) return;
-                    if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                    setShowPaymentModal(true);
-                  }}
-                  disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                  className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
-                >
-                  Proceed to Payment
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "all" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-white"
+                    style={{ background: t.primaryCta }}
+                  >
+                    Pay Online
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "cod" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
+                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                  >
+                    Cash on Delivery
+                  </button>
+                </div>
               )}
             </div>
 
@@ -1125,7 +1119,7 @@ export default function CheckoutPage() {
           <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
         </div>
 
-        <div className="text-right">
+        <div className="flex gap-2 text-right">
           {placing ? (
             <span className="inline-flex items-center gap-2 text-[14px] font-bold text-gray-600">
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -1133,12 +1127,22 @@ export default function CheckoutPage() {
             </span>
           ) : (
             hasAddress && !cartBlocked ? (
-              <button 
-                onClick={() => setShowPaymentModal(true)}
-                className="h-12 px-6 rounded-xl text-[16px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
-              >
-                Select Payment
-              </button>
+              <>
+                <button 
+                  onClick={() => handlePickerSelect({ kind: "all" })}
+                  className="h-12 px-4 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all text-white whitespace-nowrap"
+                  style={{ background: t.primaryCta }}
+                >
+                  Pay Online
+                </button>
+                <button 
+                  onClick={() => handlePickerSelect({ kind: "cod" })}
+                  className="h-12 px-4 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 hover:bg-gray-50 whitespace-nowrap"
+                  style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                >
+                  COD
+                </button>
+              </>
             ) : (
               <span className="text-[13px] font-semibold text-gray-500">
                 {cartBlocked ? "Fix cart issues" : "Add address to pay"}
@@ -1147,40 +1151,6 @@ export default function CheckoutPage() {
           )}
         </div>
       </div>
-
-      {/* ══════════ PAYMENT MODAL / SHEET ══════════ */}
-      {showPaymentModal && (
-        <div 
-          className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={() => setShowPaymentModal(false)}
-        >
-          <div 
-            className="w-full max-w-md bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] lg:max-h-[85vh] animate-in slide-in-from-bottom-8 lg:zoom-in-95 duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
-              <h2 className="text-[18px] font-black tracking-tight text-gray-900">Payment Options</h2>
-              <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="overflow-y-auto p-4 bg-[#F8FAFC]">
-              <PaymentMethodPicker
-                onSelect={(method) => {
-                  setShowPaymentModal(false);
-                  handlePickerSelect(method);
-                }}
-                disabled={pickerDisabled}
-                total={total}
-                lastFailed={lastFailed}
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );

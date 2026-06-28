@@ -152,7 +152,8 @@ export default function StreetAddressAutocomplete({
     <div ref={containerRef} className="relative">
       <textarea
         ref={textareaRef}
-        className={`${className} resize-none overflow-hidden min-h-[46px] py-3 leading-relaxed`}
+        className={`${(className || "").replace(/\bh-12\b/g, "")} resize-none overflow-hidden min-h-[46px] py-3 leading-relaxed`}
+
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}

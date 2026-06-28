@@ -251,7 +251,7 @@ export async function placeAutocomplete(
         placeId: p.place_id ?? "",
         primary: p.structured_formatting?.main_text ?? p.description ?? "",
         secondary: p.structured_formatting?.secondary_text ?? "",
-        description: p.description ?? "",
+        description: p.description || [p.structured_formatting?.main_text, p.structured_formatting?.secondary_text].filter(Boolean).join(", "),
         lat: p.geometry?.location?.lat,
         lng: p.geometry?.location?.lng,
       }));

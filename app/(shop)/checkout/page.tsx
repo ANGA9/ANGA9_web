@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket, LocateFixed } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket, LocateFixed, Banknote } from "lucide-react";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -553,20 +553,8 @@ export default function CheckoutPage() {
 
   // ── Inline Address Form Component ──
   const addressFormUI = (
-    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden mt-4 shadow-sm p-5 sm:p-6 bg-gray-50/50">
-        <div className="flex items-center justify-between mb-6">
-          <h4 className="text-[16px] font-bold text-gray-900 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-gray-700" />
-            Add New Address
-          </h4>
-          <button
-            onClick={() => setShowAddressForm(false)}
-            className="p-1.5 hover:bg-white rounded-full transition-colors border border-transparent hover:border-gray-200 shadow-sm"
-          >
-            <X className="w-4 h-4 text-gray-500" />
-          </button>
-        </div>
+    <div className="animate-in fade-in slide-in-from-top-2 duration-300 mt-4">
+
         
         {/* Auto-detect */}
         <button
@@ -636,24 +624,40 @@ export default function CheckoutPage() {
             Save Address
           </button>
         </div>
-      </div>
     </div>
   );
 
   // ── Delivery Address Section ──
   const deliveryAddressUI = (
-    <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 bg-white shadow-sm">
+    <div className="rounded-2xl border border-gray-200 p-5 sm:p-6 bg-white shadow-sm transition-all">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-gray-700" /> Delivery Address
+          {showAddressForm ? (
+            <>
+              <Plus className="w-5 h-5 text-gray-700" /> Add New Address
+            </>
+          ) : (
+            <>
+              <MapPin className="w-5 h-5 text-gray-700" /> Delivery Address
+            </>
+          )}
         </h3>
-        {addresses.length > 0 && !showAddressForm && (
+        {showAddressForm ? (
           <button
-            onClick={() => setShowAddressPicker(!showAddressPicker)}
-            className="text-[14px] font-semibold flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors"
+            onClick={() => setShowAddressForm(false)}
+            className="p-1.5 hover:bg-gray-100 rounded-full transition-colors border border-transparent hover:border-gray-200 shadow-sm"
           >
-            {showAddressPicker ? "Hide" : "Change"} <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAddressPicker ? "rotate-180" : ""}`} />
+            <X className="w-4 h-4 text-gray-500" />
           </button>
+        ) : (
+          addresses.length > 0 && (
+            <button
+              onClick={() => setShowAddressPicker(!showAddressPicker)}
+              className="text-[14px] font-semibold flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              {showAddressPicker ? "Hide" : "Change"} <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAddressPicker ? "rotate-180" : ""}`} />
+            </button>
+          )
         )}
       </div>
 
@@ -1047,6 +1051,45 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            {/* Desktop helper — picker is now a modal triggered by the block above */}
+            <div className="hidden lg:block mt-8 mb-4">
+              {placing ? (
+                <div
+                  className="flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[16px] font-bold"
+                  style={{ background: "#F3F4F6", color: t.textSecondary }}
+                >
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing payment…
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "all" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
+                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                  >
+                    Pay Online
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "cod" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
+                  >
+                    <Banknote className="w-5 h-5" />
+                    Cash on Delivery
+                  </button>
+                </div>
+              )}
+            </div>
 
             {!razorpayLoaded && (
               <p className="mt-2 text-center text-sm" style={{ color: t.textMuted }}>
@@ -1077,8 +1120,8 @@ export default function CheckoutPage() {
                 <span className="text-[12px] font-medium text-gray-500">Razorpay</span>
               </div>
             </div>
-            {/* Action buttons (both mobile and desktop) */}
-            <div className="mt-6 mb-2">
+            {/* Mobile Cash on Delivery (At the lowest of the page) */}
+            <div className="lg:hidden mt-6 mb-2">
               {placing ? (
                 <div
                   className="flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[16px] font-bold"
@@ -1088,37 +1131,55 @@ export default function CheckoutPage() {
                   Processing payment…
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
-                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
-                  >
-                    Pay Online
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "cod" });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-black text-white hover:bg-gray-900"
-                  >
-                    Cash on Delivery
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    if (cartBlocked) return;
+                    if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                    handlePickerSelect({ kind: "cod" });
+                  }}
+                  disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                  className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
+                >
+                  <Banknote className="w-5 h-5" />
+                  Cash on Delivery
+                </button>
               )}
             </div>
           </div>
         </div>
       </div>
     </div>
+
+      {/* ══════════ MOBILE STICKY SUMMARY BAR (<lg) ══════════ */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-2xl border-t border-gray-200/60 shadow-[0_-16px_40px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-500 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,16px))] flex gap-4 items-center justify-between">
+        <div className="flex flex-col">
+          <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
+          <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
+        </div>
+
+        <div className="flex gap-2 text-right">
+          {placing ? (
+            <span className="inline-flex items-center gap-2 text-[14px] font-bold text-gray-600">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Processing…
+            </span>
+          ) : (
+            hasAddress && !cartBlocked ? (
+              <button 
+                onClick={() => handlePickerSelect({ kind: "all" })}
+                className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 hover:bg-gray-50 whitespace-nowrap"
+                style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+              >
+                Pay Online
+              </button>
+            ) : (
+              <span className="text-[13px] font-semibold text-gray-500">
+                {cartBlocked ? "Fix cart issues" : "Add address to pay"}
+              </span>
+            )
+          )}
+        </div>
+      </div>
     </div>
   );
 }

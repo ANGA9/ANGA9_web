@@ -403,7 +403,7 @@ export default function NotificationsPage() {
 
         <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: t.border }}>
           {!user ? (
-            <LoggedOutState title="Please login" desc="Login to view your notifications." />
+            <LoggedOutState title="Please login" desc="Login to view your notifications." illustration="notifications" />
           ) : (
             <>
               {/* Filter tabs */}

@@ -51,7 +51,7 @@ export default function HelpCenterPage() {
       </div>
 
       {!user ? (
-        <LoggedOutState title="Please login" desc="Login to view your tickets and get help from our support team." />
+        <LoggedOutState title="Please login" desc="Login to view your tickets and get help from our support team." illustration="help" />
       ) : (
         <>
           {/* ── Search Bar ── */}

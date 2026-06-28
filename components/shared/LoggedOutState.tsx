@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "@/lib/CartContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { EmptyOrdersIllustration } from "./EmptyOrdersIllustration";
 
@@ -13,7 +13,7 @@ export function LoggedOutState({
   desc?: string,
   illustration?: "orders" | "help" | "notifications" | "privacy"
 }) {
-  const { openLoginSheet } = useCart();
+  const { open: openLoginSheet } = useLoginSheet();
   return (
     <div className="flex flex-col items-center justify-center pt-8 pb-16 md:pt-12 md:pb-24 text-center px-4 w-full h-full min-h-[60vh]">
       <EmptyOrdersIllustration type={illustration} />

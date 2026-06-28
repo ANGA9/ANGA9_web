@@ -18,7 +18,8 @@ import {
 } from "@/lib/usePayment";
 import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
 import { loyaltyApi, type LoyaltyProfile } from "@/lib/loyaltyApi";
-import { detectAddress } from "@/lib/olaMaps";
+import { detectAddress, type DetectedAddress } from "@/lib/olaMaps";
+import StreetAddressAutocomplete from "@/components/customer/checkout/StreetAddressAutocomplete";
 import toast from "react-hot-toast";
 
 interface Address {
@@ -320,13 +321,7 @@ export default function CheckoutPage() {
     setDetectingLocation(true);
     try {
       const detected = await detectAddress();
-      setForm((prev) => ({
-        ...prev,
-        line2: detected.line1 || prev.line2,
-        city: detected.city || prev.city,
-        state: detected.state || prev.state,
-        pincode: detected.pincode || prev.pincode,
-      }));
+      applyDetectedAddress(detected);
       if (detected.city || detected.pincode) {
         toast.success("Location detected — just add your flat / house number");
       } else {
@@ -337,6 +332,20 @@ export default function CheckoutPage() {
     } finally {
       setDetectingLocation(false);
     }
+  };
+
+  // Shared fill logic for a resolved address (from the street autocomplete).
+  // Street/building/area → line2; city/state/pincode filled when present.
+  // We never clobber an existing field with an empty value, and we leave
+  // "Flat / House No." (line1) untouched for the customer to provide.
+  const applyDetectedAddress = (detected: DetectedAddress) => {
+    setForm((prev) => ({
+      ...prev,
+      line2: detected.line1 || prev.line2,
+      city: detected.city || prev.city,
+      state: detected.state || prev.state,
+      pincode: detected.pincode || prev.pincode,
+    }));
   };
 
   const handleSaveAddress = async () => {
@@ -595,7 +604,13 @@ export default function CheckoutPage() {
           </div>
           <div className="sm:col-span-2">
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Street Address *</label>
-            <input className={inputCls} placeholder="Building, street, area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
+            <StreetAddressAutocomplete
+              className={inputCls}
+              placeholder="Start typing your building, street or area…"
+              value={form.line2 ?? ""}
+              onChange={(v) => setForm((prev) => ({ ...prev, line2: v }))}
+              onResolved={applyDetectedAddress}
+            />
           </div>
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">City *</label>

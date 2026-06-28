@@ -192,3 +192,106 @@ export async function detectAddress(): Promise<DetectedAddress> {
   const { lat, lng } = await getBrowserPosition();
   return reverseGeocode(lat, lng);
 }
+
+// ── Places Autocomplete ────────────────────────────────────────────
+// Lets the customer type their building/society/road and pick a real Ola
+// place instead of relying on GPS reverse-geocoding alone. Far more reliable
+// for dense urban addresses because the user confirms the exact match.
+
+export interface PlacePrediction {
+  /** Ola place_id — stable handle for the place. */
+  placeId: string;
+  /** Primary label, e.g. "Everest Apartments". */
+  primary: string;
+  /** Secondary context, e.g. "Kalkaji, New Delhi, Delhi". */
+  secondary: string;
+  /** Full human-readable description. */
+  description: string;
+  /** Centroid coords when Ola returns them — used to resolve the full address. */
+  lat?: number;
+  lng?: number;
+}
+
+interface OlaPrediction {
+  place_id?: string;
+  description?: string;
+  structured_formatting?: { main_text?: string; secondary_text?: string };
+  geometry?: { location?: { lat?: number; lng?: number } };
+}
+
+interface OlaAutocompleteResponse {
+  predictions?: OlaPrediction[];
+  status?: string;
+}
+
+/**
+ * Fetch place predictions for a free-text query. Returns [] for short/empty
+ * input. Pass an AbortSignal to cancel superseded keystrokes. Never throws on
+ * a failed/aborted request — autocomplete is best-effort and must not block typing.
+ */
+export async function placeAutocomplete(
+  input: string,
+  signal?: AbortSignal,
+): Promise<PlacePrediction[]> {
+  const q = input.trim();
+  if (q.length < 3) return [];
+
+  try {
+    const res = await fetch(
+      `/ola-proxy/places/v1/autocomplete?input=${encodeURIComponent(q)}`,
+      { headers: { Accept: "application/json" }, signal },
+    );
+    if (!res.ok) return [];
+
+    const data = (await res.json()) as OlaAutocompleteResponse;
+    const preds = data.predictions ?? [];
+    return preds
+      .filter((p) => p.place_id || p.description)
+      .map((p) => ({
+        placeId: p.place_id ?? "",
+        primary: p.structured_formatting?.main_text ?? p.description ?? "",
+        secondary: p.structured_formatting?.secondary_text ?? "",
+        description: p.description ?? "",
+        lat: p.geometry?.location?.lat,
+        lng: p.geometry?.location?.lng,
+      }));
+  } catch {
+    // Aborted (superseded keystroke) or network error — silently yield nothing.
+    return [];
+  }
+}
+
+/**
+ * Resolve a selected prediction into a fully structured address.
+ * When Ola gave us the prediction's coordinates we reverse-geocode them
+ * (reusing the same parser as GPS detection, so city/state/pincode are
+ * extracted identically). Otherwise we fall back to the prediction text as
+ * line1 — the customer still has city/state/pincode fields to complete.
+ */
+export async function resolvePrediction(
+  pred: PlacePrediction,
+): Promise<DetectedAddress> {
+  if (typeof pred.lat === "number" && typeof pred.lng === "number") {
+    try {
+      const detailed = await reverseGeocode(pred.lat, pred.lng);
+      // Prefer the prediction's own primary label for line1 when reverse-geocode
+      // came back sparse — the user picked it for a reason.
+      return {
+        ...detailed,
+        line1: detailed.line1 || pred.primary || pred.description,
+      };
+    } catch {
+      // Fall through to the text-only shape below.
+    }
+  }
+  return {
+    line1: pred.primary || pred.description,
+    line2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    formatted: pred.description,
+    lat: pred.lat ?? 0,
+    lng: pred.lng ?? 0,
+  };
+}

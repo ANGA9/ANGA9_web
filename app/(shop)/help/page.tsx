@@ -7,10 +7,10 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { supportApi, type Article } from "@/lib/supportApi";
 
 const TOP_CATEGORIES = [
-  { label: "Orders",    icon: Package,     bg: "#FEF3C7", fg: "#B45309", category: "Order issue" },
-  { label: "Returns",   icon: RefreshCcw,  bg: "#FFEDD5", fg: "#C2410C", category: "Refund/return" },
-  { label: "Payments",  icon: CreditCard,  bg: "#ECFDF5", fg: "#059669", category: "Payment" },
-  { label: "Account",   icon: UserCircle,  bg: "#EDE9FE", fg: "#7C3AED", category: "Account" },
+  { label: "Orders",    icon: Package,     bg: "#FEF3C780", fg: "#000000", category: "Order issue" },
+  { label: "Returns",   icon: RefreshCcw,  bg: "#FFEDD580", fg: "#000000", category: "Refund/return" },
+  { label: "Payments",  icon: CreditCard,  bg: "#ECFDF599", fg: "#000000", category: "Payment" },
+  { label: "Account",   icon: UserCircle,  bg: "#EDE9FE80", fg: "#000000", category: "Account" },
 ];
 
 export default function HelpCenterPage() {
@@ -140,14 +140,14 @@ export default function HelpCenterPage() {
           </h2>
           <Link
             href="/help/tickets/new"
-            className="flex items-center gap-4 rounded-2xl p-5 md:p-6 transition-all shadow-md hover:shadow-lg active:scale-[0.98] group cursor-pointer bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+            className="flex items-center gap-4 rounded-2xl p-5 md:p-6 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer bg-white border-2 border-indigo-600 text-indigo-700 hover:bg-indigo-50"
           >
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
-              <Plus className="h-6 w-6" />
+            <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
+              <Plus className="h-6 w-6 text-indigo-700" />
             </div>
             <div>
               <div className="text-[16px] md:text-[17px] font-bold tracking-tight mb-0.5">Raise a new ticket</div>
-              <div className="text-[13px] text-blue-100 font-medium leading-tight">Get help directly from our team.</div>
+              <div className="text-[13px] text-indigo-500/80 font-medium leading-tight">Get help directly from our team.</div>
             </div>
           </Link>
           <Link

@@ -90,24 +90,24 @@ function getNotificationStyle(type: string): IconStyle {
     case "order.shipped":
     case "order_shipped":
     case "shipment":
-      return { Icon: Truck,        bg: "#EEF2FF", fg: "#4F46E5" };
+      return { Icon: Truck,        bg: "#EEF2FF80", fg: "#000000" };
 
     // ── Delivery ──────────────────────────────────────────────
     case "order.delivered":
     case "order_delivered":
     case "delivery":
-      return { Icon: PackageCheck, bg: "#ECFDF5", fg: "#059669" };
+      return { Icon: PackageCheck, bg: "#ECFDF580", fg: "#000000" };
 
     // ── Payment success ───────────────────────────────────────
     case "payment.success":
     case "payment_success":
     case "payout":
-      return { Icon: CreditCard,   bg: "#F0FDF4", fg: "#047857" };
+      return { Icon: CreditCard,   bg: "#F0FDF480", fg: "#000000" };
 
     // ── Payment failed ────────────────────────────────────────
     case "payment.failed":
     case "payment_failed":
-      return { Icon: CreditCard,   bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: CreditCard,   bg: "#FEF2F280", fg: "#000000" };
 
     // ── Order placed / confirmed / status ─────────────────────
     case "order.placed":
@@ -115,57 +115,57 @@ function getNotificationStyle(type: string): IconStyle {
     case "order_placed":
     case "order_confirmed":
     case "order_status":
-      return { Icon: Package,      bg: "#FEF3C7", fg: "#B45309" };
+      return { Icon: Package,      bg: "#FEF3C780", fg: "#000000" };
 
     // ── Order cancelled ───────────────────────────────────────
     case "order.cancelled":
     case "order_cancelled":
-      return { Icon: XCircle,      bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: XCircle,      bg: "#FEF2F280", fg: "#000000" };
 
     // ── Order returned ────────────────────────────────────────
     case "order.returned":
     case "order_returned":
-      return { Icon: PackageCheck, bg: "#FFF7ED", fg: "#C2410C" };
+      return { Icon: PackageCheck, bg: "#FFF7ED80", fg: "#000000" };
 
     // ── Inventory low (seller) ────────────────────────────────
     case "inventory.low":
-      return { Icon: AlertCircle,  bg: "#FFFBEB", fg: "#D97706" };
+      return { Icon: AlertCircle,  bg: "#FFFBEB80", fg: "#000000" };
 
     // ── User / seller events ──────────────────────────────────
     case "user.registered":
     case "seller.approved":
-      return { Icon: CheckCheck,   bg: "#ECFDF5", fg: "#059669" };
+      return { Icon: CheckCheck,   bg: "#ECFDF580", fg: "#000000" };
 
     case "user.suspended":
-      return { Icon: AlertCircle,  bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: AlertCircle,  bg: "#FEF2F280", fg: "#000000" };
 
     case "product.approved":
-      return { Icon: PackageCheck, bg: "#ECFDF5", fg: "#059669" };
+      return { Icon: PackageCheck, bg: "#ECFDF580", fg: "#000000" };
 
     case "product.rejected":
-      return { Icon: XCircle,      bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: XCircle,      bg: "#FEF2F280", fg: "#000000" };
 
     // ── Support tickets ───────────────────────────────────────
     case "support.ticket.created":
     case "support.ticket.admin_initiated":
     case "support.ticket.escalated_from_chatbot":
-      return { Icon: LifeBuoy,        bg: "#EAF2FF", fg: "#1A6FD4" };
+      return { Icon: LifeBuoy,        bg: "#EAF2FF80", fg: "#000000" };
 
     case "support.ticket.message_added":
     case "support.ticket.replied":
     case "support.ticket.assigned":
-      return { Icon: MessageSquare,   bg: "#EDE9FE", fg: "#7C3AED" };
+      return { Icon: MessageSquare,   bg: "#EDE9FE80", fg: "#000000" };
 
     case "support.ticket.status_changed":
     case "support.ticket.resolved":
-      return { Icon: CheckCheck,      bg: "#DCFCE7", fg: "#16A34A" };
+      return { Icon: CheckCheck,      bg: "#DCFCE780", fg: "#000000" };
 
     case "support.ticket.sla_breached":
-      return { Icon: AlertTriangle,   bg: "#FEE2E2", fg: "#DC2626" };
+      return { Icon: AlertTriangle,   bg: "#FEE2E280", fg: "#000000" };
 
     // ── Fallback ──────────────────────────────────────────────
     default:
-      return { Icon: AlertCircle,  bg: "#F1F5F9", fg: "#475569" };
+      return { Icon: AlertCircle,  bg: "#F1F5F980", fg: "#000000" };
   }
 }
 

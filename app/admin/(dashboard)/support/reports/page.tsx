@@ -73,10 +73,10 @@ function Card({ icon, label, value, tone }: {
   tone: "blue" | "red" | "green" | "amber";
 }) {
   const map = {
-    blue:  { bg: "#EAF2FF", fg: "#1A6FD4" },
-    red:   { bg: "#FEE2E2", fg: "#DC2626" },
-    green: { bg: "#DCFCE7", fg: "#16A34A" },
-    amber: { bg: "#FEF3C7", fg: "#B45309" },
+    blue:  { bg: "#EAF2FF80", fg: "#000000" },
+    red:   { bg: "#FEE2E280", fg: "#000000" },
+    green: { bg: "#DCFCE780", fg: "#000000" },
+    amber: { bg: "#FEF3C780", fg: "#000000" },
   } as const;
   const c = map[tone];
   return (

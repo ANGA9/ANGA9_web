@@ -74,35 +74,35 @@ function getNotificationStyle(type: string): IconStyle {
   switch (type) {
     case "shipment":
     case "order_shipped":
-      return { Icon: Truck, bg: "#EEF2FF", fg: "#4F46E5" };
+      return { Icon: Truck, bg: "#EEF2FF80", fg: "#000000" };
     case "delivery":
     case "order_delivered":
-      return { Icon: PackageCheck, bg: "#ECFDF5", fg: "#059669" };
+      return { Icon: PackageCheck, bg: "#ECFDF580", fg: "#000000" };
     case "payment_success":
     case "payout":
-      return { Icon: CreditCard, bg: "#ECFDF5", fg: "#047857" };
+      return { Icon: CreditCard, bg: "#ECFDF580", fg: "#000000" };
     case "payment_failed":
-      return { Icon: CreditCard, bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: CreditCard, bg: "#FEF2F280", fg: "#000000" };
     case "order_placed":
     case "order_confirmed":
     case "order_status":
-      return { Icon: Package, bg: "#FEF3C7", fg: "#B45309" };
+      return { Icon: Package, bg: "#FEF3C780", fg: "#000000" };
     case "order_cancelled":
-      return { Icon: AlertCircle, bg: "#FEF2F2", fg: "#DC2626" };
+      return { Icon: AlertCircle, bg: "#FEF2F280", fg: "#000000" };
     case "support.ticket.created":
     case "support.ticket.admin_initiated":
-      return { Icon: LifeBuoy, bg: "#EAF2FF", fg: "#1A6FD4" };
+      return { Icon: LifeBuoy, bg: "#EAF2FF80", fg: "#000000" };
     case "support.ticket.message_added":
     case "support.ticket.replied":
     case "support.ticket.assigned":
-      return { Icon: MessageSquare, bg: "#EDE9FE", fg: "#7C3AED" };
+      return { Icon: MessageSquare, bg: "#EDE9FE80", fg: "#000000" };
     case "support.ticket.status_changed":
     case "support.ticket.resolved":
-      return { Icon: CheckCheck, bg: "#DCFCE7", fg: "#16A34A" };
+      return { Icon: CheckCheck, bg: "#DCFCE780", fg: "#000000" };
     case "support.ticket.sla_breached":
-      return { Icon: AlertCircle, bg: "#FEE2E2", fg: "#DC2626" };
+      return { Icon: AlertCircle, bg: "#FEE2E280", fg: "#000000" };
     default:
-      return { Icon: AlertCircle, bg: "#F3F4F6", fg: "#6B7280" };
+      return { Icon: AlertCircle, bg: "#F3F4F680", fg: "#000000" };
   }
 }
 

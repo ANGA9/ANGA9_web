@@ -458,11 +458,10 @@ function MobileCategoryStrip() {
             className="flex flex-col items-center gap-2 w-[76px] shrink-0 group"
           >
             <div
-              className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-transform group-active:scale-95 border border-[#F3F4F6] overflow-hidden relative"
-              style={{ background: cat.bg }}
+              className="w-[72px] h-[72px] flex items-center justify-center transition-transform group-active:scale-95 relative"
             >
               {cat.image_url ? (
-                <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain mix-blend-multiply contrast-[1.1] brightness-[1.05]" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               ) : (
                 <ShoppingBag className="w-8 h-8 text-gray-400" strokeWidth={1.5} />
               )}

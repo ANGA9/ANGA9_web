@@ -408,8 +408,8 @@ function ApplyFooter({
       <span className="text-sm md:text-base font-medium text-gray-500">{countLabel ?? ""}</span>
       <button
         onClick={onApply}
-        className="px-8 py-2.5 rounded-lg text-white font-bold text-sm md:text-base shadow-sm hover:opacity-90 transition-opacity"
-        style={{ background: APPLY_INDIGO }}
+        className="px-8 py-2.5 rounded-lg font-bold text-sm md:text-base shadow-sm bg-white border-2 hover:bg-gray-50 transition-all active:scale-95"
+        style={{ borderColor: APPLY_INDIGO, color: APPLY_INDIGO }}
       >
         {label}
       </button>

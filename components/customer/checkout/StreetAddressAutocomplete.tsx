@@ -49,6 +49,15 @@ export default function StreetAddressAutocomplete({
   const suppressedRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize the textarea vertically as the user types or when value changes programmatically
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+    }
+  }, [value]);
 
   // Debounced fetch on value change.
   useEffect(() => {
@@ -99,7 +108,8 @@ export default function StreetAddressAutocomplete({
   }, [open]);
 
   const handleSelect = async (pred: PlacePrediction) => {
-    const label = pred.primary || pred.description;
+    // Populate the full address content instead of just the title
+    const label = pred.description || pred.primary || "";
     // Suppress search for both the immediate label write and the resolved
     // street write below, so selecting confirms the place instead of kicking
     // off a fresh round of suggestions.
@@ -140,16 +150,18 @@ export default function StreetAddressAutocomplete({
 
   return (
     <div ref={containerRef} className="relative">
-      <input
-        className={className}
+      <textarea
+        ref={textareaRef}
+        className={`${className} resize-none overflow-hidden min-h-[46px] py-3 leading-relaxed`}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onKeyDown={onKeyDown}
+        onKeyDown={onKeyDown as any}
         onFocus={() => predictions.length > 0 && setOpen(true)}
         autoComplete="off"
         aria-autocomplete="list"
         aria-expanded={open}
+        rows={1}
       />
 
       {(loading || resolving) && (
@@ -172,12 +184,12 @@ export default function StreetAddressAutocomplete({
                 }`}
               >
                 <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
-                <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-gray-900 truncate">
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[14px] font-medium text-gray-900 break-words whitespace-normal leading-tight mb-0.5">
                     {p.primary}
                   </span>
                   {p.secondary && (
-                    <span className="block text-[12px] text-gray-500 truncate">
+                    <span className="block text-[12px] text-gray-500 break-words whitespace-normal leading-tight">
                       {p.secondary}
                     </span>
                   )}

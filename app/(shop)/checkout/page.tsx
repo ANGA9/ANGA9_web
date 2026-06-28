@@ -1047,45 +1047,6 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Desktop helper — picker is now a modal triggered by the block above */}
-            <div className="hidden lg:block mt-8">
-              {placing ? (
-                <div
-                  className="flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[16px] font-bold"
-                  style={{ background: "#F3F4F6", color: t.textSecondary }}
-                >
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Processing payment…
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-white"
-                    style={{ background: t.primaryCta }}
-                  >
-                    Pay Online
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "cod" });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
-                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
-                  >
-                    Cash on Delivery
-                  </button>
-                </div>
-              )}
-            </div>
 
             {!razorpayLoaded && (
               <p className="mt-2 text-center text-sm" style={{ color: t.textMuted }}>
@@ -1116,55 +1077,48 @@ export default function CheckoutPage() {
                 <span className="text-[12px] font-medium text-gray-500">Razorpay</span>
               </div>
             </div>
+            {/* Action buttons (both mobile and desktop) */}
+            <div className="mt-6 mb-2">
+              {placing ? (
+                <div
+                  className="flex w-full items-center justify-center gap-2 rounded-xl h-[52px] text-[16px] font-bold"
+                  style={{ background: "#F3F4F6", color: t.textSecondary }}
+                >
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing payment…
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "all" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
+                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                  >
+                    Pay Online
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "cod" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-black text-white hover:bg-gray-900"
+                  >
+                    Cash on Delivery
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-
-      {/* ══════════ MOBILE STICKY SUMMARY BAR (<lg) ══════════
-          The action surface is now the inline PaymentMethodPicker above the
-          fold of the scroll area. This bar only shows the total + a hint so
-          the user always sees what they're about to pay. */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-2xl border-t border-gray-200/60 shadow-[0_-16px_40px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-500 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,16px))] flex gap-4 items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
-          <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">TOTAL</span>
-        </div>
-
-        <div className="flex gap-2 text-right">
-          {placing ? (
-            <span className="inline-flex items-center gap-2 text-[14px] font-bold text-gray-600">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Processing…
-            </span>
-          ) : (
-            hasAddress && !cartBlocked ? (
-              <>
-                <button 
-                  onClick={() => handlePickerSelect({ kind: "all" })}
-                  className="h-12 px-4 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all text-white whitespace-nowrap"
-                  style={{ background: t.primaryCta }}
-                >
-                  Pay Online
-                </button>
-                <button 
-                  onClick={() => handlePickerSelect({ kind: "cod" })}
-                  className="h-12 px-4 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 hover:bg-gray-50 whitespace-nowrap"
-                  style={{ borderColor: t.primaryCta, color: t.primaryCta }}
-                >
-                  COD
-                </button>
-              </>
-            ) : (
-              <span className="text-[13px] font-semibold text-gray-500">
-                {cartBlocked ? "Fix cart issues" : "Add address to pay"}
-              </span>
-            )
-          )}
-        </div>
-      </div>
-
     </div>
   );
 }

@@ -279,14 +279,14 @@ export async function resolvePrediction(
       // precise reverse-geocode of the place's coordinates.
       return {
         ...detailed,
-        line1: pred.primary || detailed.line1 || pred.description,
+        line1: pred.description || pred.primary || detailed.line1 || "",
       };
     } catch {
       // Fall through to the text-only shape below.
     }
   }
   return {
-    line1: pred.primary || pred.description,
+    line1: pred.description || pred.primary || "",
     line2: "",
     city: "",
     state: "",

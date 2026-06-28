@@ -18,8 +18,10 @@ import {
 } from "@/lib/usePayment";
 import { PaymentMethodPicker } from "@/components/customer/checkout/PaymentMethodPicker";
 import { loyaltyApi, type LoyaltyProfile } from "@/lib/loyaltyApi";
-import { detectAddress, type DetectedAddress } from "@/lib/olaMaps";
+import { getBrowserPosition, reverseGeocode, type DetectedAddress } from "@/lib/olaMaps";
 import StreetAddressAutocomplete from "@/components/customer/checkout/StreetAddressAutocomplete";
+import dynamic from "next/dynamic";
+
 import toast from "react-hot-toast";
 
 interface Address {
@@ -311,16 +313,11 @@ export default function CheckoutPage() {
     setShowAddressPicker(false);
   };
 
-  // Auto-detect the customer's address via browser geolocation + Ola Maps
-  // reverse geocoding, then prefill the form. The detected street (building,
-  // road, area) goes into "Street Address" (line2); we intentionally leave
-  // "Flat / House No." (line1) blank — GPS can't know the flat number, so the
-  // customer fills only that. We merge onto the existing form so anything the
-  // user already typed survives, and never clobber a field with an empty value.
   const handleDetectLocation = async () => {
     setDetectingLocation(true);
     try {
-      const detected = await detectAddress();
+      const pos = await getBrowserPosition();
+      const detected = await reverseGeocode(pos.lat, pos.lng);
       applyDetectedAddress(detected);
       if (detected.city || detected.pincode) {
         toast.success("Location detected — just add your flat / house number");
@@ -328,7 +325,7 @@ export default function CheckoutPage() {
         toast("Got your area. Please complete the remaining fields.", { icon: "📍" });
       }
     } catch (err: any) {
-      toast.error(err?.message || "Couldn't detect your location");
+      toast.error(err?.message || "Couldn't get GPS location. Please enter manually.");
     } finally {
       setDetectingLocation(false);
     }
@@ -557,7 +554,7 @@ export default function CheckoutPage() {
   // ── Inline Address Form Component ──
   const addressFormUI = (
     <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-      <div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-5 sm:p-6 mt-4 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden mt-4 shadow-sm p-5 sm:p-6 bg-gray-50/50">
         <div className="flex items-center justify-between mb-6">
           <h4 className="text-[16px] font-bold text-gray-900 flex items-center gap-2">
             <Plus className="w-4 h-4 text-gray-700" />
@@ -570,6 +567,7 @@ export default function CheckoutPage() {
             <X className="w-4 h-4 text-gray-500" />
           </button>
         </div>
+        
         {/* Auto-detect */}
         <button
           type="button"
@@ -580,7 +578,7 @@ export default function CheckoutPage() {
           {detectingLocation ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
-              Detecting your location…
+              Getting your location…
             </>
           ) : (
             <>

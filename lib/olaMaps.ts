@@ -274,11 +274,12 @@ export async function resolvePrediction(
   if (typeof pred.lat === "number" && typeof pred.lng === "number") {
     try {
       const detailed = await reverseGeocode(pred.lat, pred.lng);
-      // Prefer the prediction's own primary label for line1 when reverse-geocode
-      // came back sparse — the user picked it for a reason.
+      // line1 = the exact label the user clicked (so the field reflects their
+      // choice, not a re-derived street). city/state/pincode come from the
+      // precise reverse-geocode of the place's coordinates.
       return {
         ...detailed,
-        line1: detailed.line1 || pred.primary || pred.description,
+        line1: pred.primary || detailed.line1 || pred.description,
       };
     } catch {
       // Fall through to the text-only shape below.

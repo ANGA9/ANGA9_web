@@ -50,16 +50,28 @@ export async function GET(
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 10_000);
+    // Forward the caller's Accept so binary map assets negotiate correctly;
+    // JSON callers (geocode/autocomplete) send their own application/json.
     const res = await fetch(upstream, {
-      headers: { Accept: "application/json" },
+      headers: { Accept: req.headers.get("accept") ?? "application/json" },
       signal: controller.signal,
     }).finally(() => clearTimeout(timer));
 
-    const body = await res.text();
-    return new Response(body, {
-      status: res.status,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-    });
+    // Pass the upstream body through as raw bytes and preserve its content-type.
+    // This keeps JSON endpoints (geocode/autocomplete) working AND lets binary
+    // map assets (vector tiles .pbf, sprites .png, glyph .pbf, style JSON) flow
+    // through for MapLibre, which a text() round-trip would corrupt.
+    const buf = await res.arrayBuffer();
+    const contentType =
+      res.headers.get("content-type") ?? "application/octet-stream";
+
+    // Cache immutable map assets (tiles/sprites/glyphs/styles); never cache
+    // request-specific geocode/autocomplete JSON.
+    const isJson = contentType.includes("application/json");
+    const headers: Record<string, string> = { "Content-Type": contentType };
+    if (!isJson) headers["Cache-Control"] = "public, max-age=86400";
+
+    return new Response(buf, { status: res.status, headers });
   } catch (err) {
     return Response.json(
       { error: err instanceof Error ? err.message : "upstream error" },

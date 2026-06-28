@@ -41,17 +41,24 @@ export default function StreetAddressAutocomplete({
   const [resolving, setResolving] = useState(false);
   const [highlight, setHighlight] = useState(-1);
 
-  // Guard against the dropdown popping back open right after a selection.
-  const justSelectedRef = useRef(false);
+  // Value-based suppression: after a selection we write the field
+  // programmatically (twice — the label, then the resolved street). While the
+  // field still equals a value WE set, don't re-search or re-open the dropdown.
+  // Only a genuine user edit (typing or clearing a character) makes `value`
+  // differ from `suppressedRef`, which resumes search.
+  const suppressedRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Debounced fetch on value change.
   useEffect(() => {
-    if (justSelectedRef.current) {
-      justSelectedRef.current = false;
+    // Skip while the value matches what we set during/after a selection.
+    if (suppressedRef.current !== null && value === suppressedRef.current) {
       return;
     }
+    // The user changed the field for real — clear suppression and search.
+    suppressedRef.current = null;
+
     const q = value.trim();
     if (q.length < 3) {
       setPredictions([]);
@@ -92,14 +99,23 @@ export default function StreetAddressAutocomplete({
   }, [open]);
 
   const handleSelect = async (pred: PlacePrediction) => {
-    justSelectedRef.current = true;
+    const label = pred.primary || pred.description;
+    // Suppress search for both the immediate label write and the resolved
+    // street write below, so selecting confirms the place instead of kicking
+    // off a fresh round of suggestions.
+    suppressedRef.current = label;
     setOpen(false);
     setPredictions([]);
+    setHighlight(-1);
     setResolving(true);
     // Reflect the chosen label immediately for responsiveness.
-    onChange(pred.primary || pred.description);
+    onChange(label);
     try {
       const address = await resolvePrediction(pred);
+      // resolvePrediction sets line1 = the clicked label, so the street field
+      // ends up showing exactly what the user picked. Keep suppression aligned
+      // with that final value.
+      suppressedRef.current = address.line1 || label;
       onResolved(address);
     } finally {
       setResolving(false);

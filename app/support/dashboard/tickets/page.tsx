@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import Link from "next/link";
-import { Search, Filter, MessageSquare, Clock, ArrowRight, Loader2, User, AlertTriangle } from "lucide-react";
+import { Search, Filter, MessageSquare, Clock, ArrowRight, Loader2, User, AlertTriangle, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useSearchParams } from "next/navigation";
 
@@ -13,16 +13,23 @@ export default function TicketQueuePage() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [agentProfile, setAgentProfile] = useState<{ id: string; role: string } | null>(null);
 
   // Filters state
   const [status, setStatus] = useState(searchParams.get("status") || "all");
   const [assignee, setAssignee] = useState(searchParams.get("filter") === "mine" ? "mine" : "all");
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getUser().then((res: any) => {
-      if (res.data?.user) setCurrentUserId(res.data.user.id);
-    });
+    const fetchUserAndProfile = async () => {
+      const supabase = getSupabaseBrowserClient();
+      const res = await supabase.auth.getSession();
+      if (res.data?.session?.user) {
+        setCurrentUserId(res.data.session.user.id);
+        const { data } = await supabase.from('profiles').select('id, role').eq('id', res.data.session.user.id).single();
+        if (data) setAgentProfile(data);
+      }
+    };
+    fetchUserAndProfile();
   }, []);
 
   useEffect(() => {
@@ -52,6 +59,31 @@ export default function TicketQueuePage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteTicket = async (e: React.MouseEvent, ticketId: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to permanently delete this ticket? This action cannot be undone.")) return;
+    
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const res = await fetch(`${API_URL}/api/admin/support/tickets/${ticketId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete ticket");
+      }
+
+      setTickets((prev) => prev.filter((t) => t.id !== ticketId));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete ticket.");
     }
   };
 
@@ -203,7 +235,16 @@ export default function TicketQueuePage() {
                         {formatDistanceToNow(new Date(t.created_at), { addSuffix: true })}
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-right">
+                    <td className="py-4 px-6 text-right flex items-center justify-end gap-2">
+                      {agentProfile?.role === "admin" && (
+                        <button
+                          onClick={(e) => handleDeleteTicket(e, t.id)}
+                          className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete ticket"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                       <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-colors inline-block group-hover:translate-x-1" />
                     </td>
                   </tr>

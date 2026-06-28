@@ -13,6 +13,7 @@ import {
   BarChart3,
   Filter,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import {
   supportAdminApi,
@@ -50,6 +51,8 @@ export default function AdminSupportInboxPage() {
   const [assignee, setAssignee] = useState<"" | "mine" | "unassigned">("");
   const [q, setQ] = useState("");
 
+  const [ticketToDelete, setTicketToDelete] = useState<string | null>(null);
+
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -76,8 +79,68 @@ export default function AdminSupportInboxPage() {
     return () => { active = false; };
   }, [status, priority, requesterRole, slaBreached, assignee, q]);
 
+  const handleDeleteTicket = (e: React.MouseEvent, ticketId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setTicketToDelete(ticketId);
+  };
+
+  const confirmDelete = async () => {
+    if (!ticketToDelete) return;
+    
+    try {
+      const { getSupabaseBrowserClient } = await import("@/lib/supabase");
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const res = await fetch(`${API_URL}/api/admin/support/tickets/${ticketToDelete}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to delete ticket");
+      
+      setTickets((prev) => prev.filter((t) => t.id !== ticketToDelete));
+      setTicketToDelete(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete ticket.");
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
+      {/* ── Custom Delete Confirmation Modal ── */}
+      {ticketToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-in fade-in zoom-in duration-200">
+            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Ticket</h3>
+            <p className="text-[14px] text-gray-500 mb-6">
+              Are you sure you want to permanently delete this ticket? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setTicketToDelete(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 text-[14px] font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white text-[14px] font-bold hover:bg-red-700 transition-colors shadow-sm"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Header ── */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
         <div>
@@ -272,6 +335,13 @@ export default function AdminSupportInboxPage() {
                     </div>
                     <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 shrink-0">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => handleDeleteTicket(e, tk.id)}
+                          className="p-1.5 text-black hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete ticket"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                         <TicketPriorityBadge priority={tk.priority} />
                         <TicketStatusBadge status={tk.status} />
                       </div>

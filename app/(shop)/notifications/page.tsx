@@ -26,6 +26,7 @@ import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import EmptyState from "@/components/shared/EmptyState";
+import { LoggedOutState } from "@/components/shared/LoggedOutState";
 
 /* ─── Types ─── */
 interface Notification {
@@ -401,7 +402,11 @@ export default function NotificationsPage() {
         </div>
 
         <div className="bg-white rounded-2xl border shadow-sm overflow-hidden" style={{ borderColor: t.border }}>
-          {/* Filter tabs */}
+          {!user ? (
+            <LoggedOutState title="Please login" desc="Login to view your notifications." />
+          ) : (
+            <>
+              {/* Filter tabs */}
           <div className="flex gap-1 px-3 sm:px-4 pt-2 border-b" style={{ borderColor: t.border }}>
             {(["all", "unread"] as const).map((tab) => (
               <button
@@ -578,6 +583,8 @@ export default function NotificationsPage() {
                   </button>
                 </div>
               )}
+            </>
+          )}
             </>
           )}
         </div>

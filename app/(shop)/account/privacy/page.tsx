@@ -16,11 +16,6 @@ export default function PrivacyPage() {
   const [confirmText, setConfirmText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // If not logged in, layout will redirect
-  if (!user) {
-    return null;
-  }
-
   const isCustomer = dbUser?.role === "customer";
 
   const handleDelete = async () => {

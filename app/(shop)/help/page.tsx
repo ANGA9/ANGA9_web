@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Search, LifeBuoy, Package, RefreshCcw, CreditCard, UserCircle, MessageSquare, FileText, Plus, ChevronRight } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { supportApi, type Article } from "@/lib/supportApi";
+import { useAuth } from "@/lib/AuthContext";
+import { LoggedOutState } from "@/components/shared/LoggedOutState";
 
 const TOP_CATEGORIES = [
   { label: "Orders",    icon: Package,     bg: "#FEF3C780", fg: "#000000", category: "Order issue" },
@@ -14,6 +16,7 @@ const TOP_CATEGORIES = [
 ];
 
 export default function HelpCenterPage() {
+  const { user } = useAuth();
   const [q, setQ] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,16 +50,20 @@ export default function HelpCenterPage() {
         </div>
       </div>
 
-      {/* ── Search Bar ── */}
-      <div className="relative mb-8 md:mb-10 group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#1A6FD4] transition-colors" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search for articles, topics, or FAQs..."
-          className="w-full rounded-2xl border border-gray-200 bg-white pl-12 pr-4 py-4 text-[15px] font-medium outline-none focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm"
-        />
-      </div>
+      {!user ? (
+        <LoggedOutState title="Please login" desc="Login to view your tickets and get help from our support team." />
+      ) : (
+        <>
+          {/* ── Search Bar ── */}
+          <div className="relative mb-8 md:mb-10 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#1A6FD4] transition-colors" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search for articles, topics, or FAQs..."
+              className="w-full rounded-2xl border border-gray-200 bg-white pl-12 pr-4 py-4 text-[15px] font-medium outline-none focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm"
+            />
+          </div>
 
       {/* ── Categories ── */}
       <section className="mb-8 md:mb-10">
@@ -164,6 +171,7 @@ export default function HelpCenterPage() {
           </Link>
         </section>
       </div>
+      </>)}
     </main>
   );
 }

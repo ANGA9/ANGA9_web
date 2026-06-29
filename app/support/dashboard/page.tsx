@@ -108,7 +108,7 @@ export default async function SupportDashboardPage() {
               View All Queue &rarr;
             </Link>
           </div>
-          <div className="p-6 flex-1 flex flex-col justify-center">
+          <div className="p-6 flex-1 flex flex-col">
             {tickets.length > 0 ? (
               <div className="space-y-4">
                 {tickets.slice(0, 5).map((t: any) => (
@@ -137,7 +137,7 @@ export default async function SupportDashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center text-gray-500">
+              <div className="text-center text-gray-500 flex-1 flex flex-col items-center justify-center">
                 <CheckCircle2 className="w-12 h-12 text-teal-200 mx-auto mb-4" />
                 <p className="font-bold">Inbox Zero!</p>
                 <p className="text-sm mt-1">No active tickets right now.</p>

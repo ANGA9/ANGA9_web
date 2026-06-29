@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { useAuth } from "@/lib/AuthContext";
 import Link from "next/link";
 import { Search, Filter, MessageSquare, Clock, ArrowRight, Loader2, User, AlertTriangle, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -12,25 +13,13 @@ export default function TicketQueuePage() {
   const searchParams = useSearchParams();
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [agentProfile, setAgentProfile] = useState<{ id: string; role: string } | null>(null);
+  const { dbUser } = useAuth();
+  const currentUserId = dbUser?.id ?? null;
+  const agentProfile = dbUser;
 
   // Filters state
   const [status, setStatus] = useState(searchParams.get("status") || "all");
   const [assignee, setAssignee] = useState(searchParams.get("filter") === "mine" ? "mine" : "all");
-
-  useEffect(() => {
-    const fetchUserAndProfile = async () => {
-      const supabase = getSupabaseBrowserClient();
-      const res = await supabase.auth.getSession();
-      if (res.data?.session?.user) {
-        setCurrentUserId(res.data.session.user.id);
-        const { data } = await supabase.from('profiles').select('id, role').eq('id', res.data.session.user.id).single();
-        if (data) setAgentProfile(data);
-      }
-    };
-    fetchUserAndProfile();
-  }, []);
 
   useEffect(() => {
     fetchTickets();

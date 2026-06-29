@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useTicketSocket } from "@/lib/useTicketSocket";
+import { useAuth } from "@/lib/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -18,7 +20,6 @@ import {
 import { format } from "date-fns";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000";
 
 export default function TicketChatPage() {
   const { id } = useParams();
@@ -34,39 +35,41 @@ export default function TicketChatPage() {
   
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [deletingTicket, setDeletingTicket] = useState(false);
+  const [takingOver, setTakingOver] = useState(false);
   const [agentTyping, setAgentTyping] = useState<string | null>(null);
-  const [agentProfile, setAgentProfile] = useState<{ id: string; role: string; full_name: string | null } | null>(null);
-  
-  const wsRef = useRef<WebSocket | null>(null);
+  const { dbUser } = useAuth();
+  const agentProfile = dbUser;
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchTicket();
-    setupWebSocket();
-    fetchAgentProfile();
 
     return () => {
-      if (wsRef.current) wsRef.current.close();
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
   }, [id]);
 
-  const fetchAgentProfile = async () => {
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, role, full_name')
-        .eq('id', session.user.id)
-        .single();
-      if (profile) setAgentProfile(profile);
-    } catch (err) {
-      console.error('Failed to fetch agent profile', err);
+  useTicketSocket({
+    ticketId: id as string,
+    onMessage: (message) => {
+      setMessages((prev) => {
+        if (message.id && prev.some((m) => m.id === message.id)) return prev;
+        return [...prev, message];
+      });
+      setAgentTyping(null);
+    },
+    onTyping: (userId, isTyping) => {
+      if (isTyping) {
+        setAgentTyping(userId);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setAgentTyping(null), 3000);
+      } else {
+        setAgentTyping(null);
+      }
     }
-  };
+  });
 
   useEffect(() => {
     scrollToBottom();
@@ -97,42 +100,6 @@ export default function TicketChatPage() {
     }
   };
 
-  const setupWebSocket = async () => {
-    const supabase = getSupabaseBrowserClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-
-    const ws = new WebSocket(`${WS_URL}/api/support/ws?token=${session.access_token}`);
-    
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: "subscribe", ticketId: id }));
-    };
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === "message" && data.ticketId === id) {
-        // Deduplicate: only add if this message ID isn't already in the list
-        setMessages((prev) => {
-          if (data.message?.id && prev.some((m) => m.id === data.message.id)) return prev;
-          return [...prev, data.message];
-        });
-        // Clear typing indicator when a message arrives
-        setAgentTyping(null);
-      } else if (data.type === "typing" && data.ticketId === id) {
-        if (data.isTyping) {
-          setAgentTyping(data.userId);
-          // Auto-clear after 3s
-          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-          typingTimeoutRef.current = setTimeout(() => setAgentTyping(null), 3000);
-        } else {
-          setAgentTyping(null);
-        }
-      }
-    };
-
-    wsRef.current = ws;
-  };
 
   const handleTyping = async () => {
     const supabase = getSupabaseBrowserClient();
@@ -244,6 +211,29 @@ export default function TicketChatPage() {
       alert("Failed to delete ticket.");
     } finally {
       setDeletingTicket(false);
+    }
+  };
+
+  const handleTakeOver = async () => {
+    setTakingOver(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const res = await fetch(`${API_URL}/api/admin/support/tickets/${id}/take-over`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to take over ticket");
+      
+      const updatedTicket = await res.json();
+      setTicket(updatedTicket);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to take over ticket.");
+    } finally {
+      setTakingOver(false);
     }
   };
 
@@ -409,6 +399,18 @@ export default function TicketChatPage() {
             <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
             <p className="text-green-900 font-bold">Ticket resolved — waiting for customer confirmation</p>
             <p className="text-sm text-green-700 mt-1">The customer can either confirm and close it, or reopen it.</p>
+          </div>
+        ) : ticket.assignee_id !== agentProfile?.id ? (
+          <div className="bg-purple-50 border border-purple-200 rounded-2xl p-6 text-center flex flex-col items-center">
+            <p className="text-purple-900 font-bold mb-4">You must take over this ticket to reply.</p>
+            <button
+              onClick={handleTakeOver}
+              disabled={takingOver}
+              className="px-6 py-3 bg-[#8B5CF6] text-white font-bold rounded-xl shadow-md hover:bg-purple-500 hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex items-center gap-2"
+            >
+              {takingOver ? <Loader2 className="w-5 h-5 animate-spin" /> : <User className="w-5 h-5" />}
+              Take Over Ticket
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex flex-col gap-3">

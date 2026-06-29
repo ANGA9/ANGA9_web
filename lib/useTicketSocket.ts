@@ -25,12 +25,20 @@ interface IncomingError {
   error: string;
 }
 
-type Incoming = IncomingMessage | IncomingReady | IncomingPong | IncomingError;
+interface IncomingTyping {
+  type: "typing";
+  ticketId: string;
+  userId: string;
+  isTyping: boolean;
+}
+
+type Incoming = IncomingMessage | IncomingReady | IncomingPong | IncomingError | IncomingTyping;
 
 interface Options {
   ticketId: string | undefined;
   enabled?: boolean;
   onMessage: (msg: TicketMessage) => void;
+  onTyping?: (userId: string, isTyping: boolean) => void;
   onReady?: () => void;
   onError?: (err: string) => void;
 }
@@ -50,11 +58,6 @@ function resolveWsBase(): string {
 }
 
 async function resolveToken(): Promise<string | null> {
-  if (typeof window !== "undefined" &&
-      window.location.pathname.startsWith("/admin") &&
-      document.cookie.includes("portal=admin")) {
-    return "ADMIN_BYPASS_TOKEN";
-  }
   try {
     const { data: { session } } = await getSupabaseBrowserClient().auth.getSession();
     return session?.access_token ?? null;
@@ -63,12 +66,14 @@ async function resolveToken(): Promise<string | null> {
   }
 }
 
-export function useTicketSocket({ ticketId, enabled = true, onMessage, onReady, onError }: Options): void {
+export function useTicketSocket({ ticketId, enabled = true, onMessage, onTyping, onReady, onError }: Options): void {
   const onMessageRef = useRef(onMessage);
+  const onTypingRef = useRef(onTyping);
   const onReadyRef = useRef(onReady);
   const onErrorRef = useRef(onError);
 
   useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
+  useEffect(() => { onTypingRef.current = onTyping; }, [onTyping]);
   useEffect(() => { onReadyRef.current = onReady; }, [onReady]);
   useEffect(() => { onErrorRef.current = onError; }, [onError]);
 
@@ -128,6 +133,8 @@ export function useTicketSocket({ ticketId, enabled = true, onMessage, onReady, 
           // Strip ticket_id for parity with REST TicketMessage shape.
           const { ticket_id: _ticketId, ...rest } = parsed.message;
           onMessageRef.current(rest as TicketMessage);
+        } else if (parsed.type === "typing") {
+          onTypingRef.current?.(parsed.userId, parsed.isTyping);
         } else if (parsed.type === "ready") {
           onReadyRef.current?.();
         } else if (parsed.type === "error") {

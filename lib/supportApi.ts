@@ -234,6 +234,10 @@ export const supportAdminApi = {
     return api.post<{ id: string }>(`/api/admin/support/tickets/${id}/internal-note`, { body });
   },
 
+  takeOver(id: string) {
+    return api.post<Ticket>(`/api/admin/support/tickets/${id}/take-over`, {});
+  },
+
   deleteTicket(id: string) {
     return api.delete<{ success: boolean }>(`/api/admin/support/tickets/${id}`);
   },

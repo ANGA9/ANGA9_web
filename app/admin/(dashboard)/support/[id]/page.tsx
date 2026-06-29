@@ -84,7 +84,8 @@ export default function AdminTicketDetailPage() {
 
   async function handleAssignToMe() {
     if (!dbUser?.id) return;
-    await handlePatch({ assignee_id: dbUser.id });
+    await supportAdminApi.takeOver(id);
+    await load();
   }
 
   async function handleDelete() {

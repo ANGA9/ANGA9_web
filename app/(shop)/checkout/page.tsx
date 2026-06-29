@@ -1087,6 +1087,18 @@ export default function CheckoutPage() {
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
                   </button>
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "all" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    Test Payment (Razorpay)
+                  </button>
                 </div>
               )}
             </div>
@@ -1131,18 +1143,32 @@ export default function CheckoutPage() {
                   Processing payment…
                 </div>
               ) : (
-                <button
-                  onClick={() => {
-                    if (cartBlocked) return;
-                    if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                    handlePickerSelect({ kind: "cod" });
-                  }}
-                  disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                  className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
-                >
-                  <Banknote className="w-5 h-5" />
-                  Cash on Delivery
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "cod" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
+                  >
+                    <Banknote className="w-5 h-5" />
+                    Cash on Delivery
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (cartBlocked) return;
+                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                      handlePickerSelect({ kind: "all" });
+                    }}
+                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    Test Payment (Razorpay)
+                  </button>
+                </div>
               )}
             </div>
           </div>

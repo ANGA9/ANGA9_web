@@ -235,6 +235,22 @@ export function PaymentMethodPicker({ onSelect, disabled, total, lastFailed }: P
         onClick={() => handleSelect({ kind: "cod" }, "cod")}
       />
 
+      {/* ── Test Payment ──────────────────────────────────── */}
+      <CategoryHeader hint="For testing purposes only">Test Payment</CategoryHeader>
+      <Row
+        icon={
+          <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-slate-50 shrink-0 ring-1 ring-slate-200">
+            <CreditCard className="w-5 h-5 text-slate-600" />
+          </div>
+        }
+        title="Test Payment (Razorpay)"
+        subtitle="Opens the full Razorpay test suite"
+        disabled={disabled}
+        isLoading={disabled && selectedId === "test"}
+        failedNote={failedNoteFor({ kind: "all" })}
+        onClick={() => handleSelect({ kind: "all" }, "test")}
+      />
+
       {/* ── Trust footer ──────────────────────────────────── */}
       <p className="text-[11px] mt-5 pt-4 border-t text-center" style={{ borderColor: t.border, color: t.textMuted }}>
         Payments are secured by Razorpay. UPI, cards, and wallets use 256-bit encryption.

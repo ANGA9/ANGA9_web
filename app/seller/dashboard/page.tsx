@@ -355,7 +355,7 @@ export default function DashboardHome() {
           
           <div className="flex-1 min-h-[250px]">
             {analytics?.revenueChart && analytics.revenueChart.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart data={analytics.revenueChart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="sellerRevGrad" x1="0" y1="0" x2="0" y2="1">
@@ -390,7 +390,7 @@ export default function DashboardHome() {
             {analytics?.categoryBreakdown && analytics.categoryBreakdown.length > 0 ? (
               <>
                 <div className="h-[180px] w-full mb-4">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <PieChart>
                       <Pie
                         data={analytics.categoryBreakdown}

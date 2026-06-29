@@ -82,7 +82,7 @@ export default function CategoryChart() {
             <p className="text-[14px] font-bold text-gray-900">No category data</p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <BarChart
               data={data}
               layout="vertical"

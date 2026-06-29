@@ -81,7 +81,7 @@ export default function ActivityDashboardPage() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
           <h2 className="text-lg font-bold text-[#1A1A2E] mb-6">30-Day Trend</h2>
           <div className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <LineChart data={stats.timeSeries}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E8EEF4" />
                 <XAxis 
@@ -120,7 +120,7 @@ export default function ActivityDashboardPage() {
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-[#1A1A2E] mb-6">Traffic by Portal</h2>
             <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
                   <Pie
                     data={stats.portals}
@@ -150,7 +150,7 @@ export default function ActivityDashboardPage() {
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-[#1A1A2E] mb-6">Top Regions (Vercel Edge)</h2>
             <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 {(() => {
                   const REGION_MAP: Record<string, string> = {
                     DL: "Delhi",

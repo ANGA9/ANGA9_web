@@ -9,7 +9,6 @@ import {
   CUSTOMER_CATEGORIES,
   SELLER_CATEGORIES,
   type RequesterRole,
-  type TicketPriority,
 } from "@/lib/supportApi";
 
 export default function AdminMessageUserPage() {
@@ -19,7 +18,6 @@ export default function AdminMessageUserPage() {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [category, setCategory] = useState<string>("Account");
-  const [priority, setPriority] = useState<TicketPriority>("normal");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +35,7 @@ export default function AdminMessageUserPage() {
         subject: subject.trim(),
         body: body.trim(),
         category,
-        priority,
+        priority: "high",
       });
       router.push(`/admin/support/${ticket.id}`);
     } catch (err) {
@@ -47,7 +45,7 @@ export default function AdminMessageUserPage() {
   }
 
   return (
-    <main className="w-full mx-auto max-w-3xl px-3 sm:px-4 py-6 md:py-10 min-h-screen text-[#1A1A2E]">
+    <main className="w-full mx-auto max-w-5xl px-3 sm:px-4 py-6 md:py-10 min-h-screen text-[#1A1A2E]">
       <Link href="/admin/support" className="inline-flex items-center gap-1 text-[15px] font-bold text-[#1A6FD4] hover:underline mb-6">
         <ArrowLeft className="h-4 w-4" /> Back to inbox
       </Link>
@@ -60,8 +58,10 @@ export default function AdminMessageUserPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 py-6 sm:px-8 sm:py-8 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="px-5 py-6 sm:px-8 sm:py-8">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+            <div className="flex-1 space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-[15px] font-bold text-gray-900 mb-2">Recipient role</label>
             <div className="relative">
@@ -135,54 +135,59 @@ export default function AdminMessageUserPage() {
           />
         </div>
 
-        <div>
-          <label className="block text-[15px] font-bold text-gray-900 mb-2">Priority</label>
-          <div className="flex flex-wrap gap-2.5">
-            {(["low", "normal", "high", "urgent"] as TicketPriority[]).map((p) => (
+              {error && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-[14px] font-medium text-red-600 flex items-center gap-2">
+                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  {error}
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Buttons */}
+            <div className="hidden md:flex flex-col gap-3 min-w-[260px] border-l border-gray-100 pl-6 md:pl-8">
               <button
-                key={p}
-                type="button"
-                onClick={() => setPriority(p)}
-                className={`rounded-xl border px-4 py-2 text-[14px] font-bold capitalize transition-all active:scale-[0.98] ${
-                  priority === p
-                    ? "border-[#1A6FD4] bg-blue-50 text-[#1A6FD4] shadow-sm"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-                }`}
+                type="submit"
+                disabled={submitting || !recipientId.trim() || !subject.trim() || !body.trim()}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-white bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] disabled:hover:shadow-md hover:bg-gray-50"
               >
-                {p}
+                {submitting ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#1A6FD4] border-t-transparent" />
+                ) : (
+                  <Send className="h-5 w-5" />
+                )}
+                {submitting ? "Sending…" : "Send message"}
               </button>
-            ))}
+              <Link
+                href="/admin/support"
+                className="w-full rounded-xl bg-white px-4 py-3.5 text-center text-[15px] font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                Cancel
+              </Link>
+            </div>
           </div>
-        </div>
 
-        {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-[14px] font-medium text-red-600 flex items-center gap-2">
-            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            {error}
+          {/* Mobile Buttons */}
+          <div className="md:hidden flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
+            <Link
+              href="/admin/support"
+              className="w-full sm:w-auto rounded-xl bg-white px-6 py-3.5 text-center text-[15px] font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              disabled={submitting || !recipientId.trim() || !subject.trim() || !body.trim()}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-white bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] disabled:hover:shadow-md hover:bg-gray-50"
+            >
+              {submitting ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#1A6FD4] border-t-transparent" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+              {submitting ? "Sending…" : "Send message"}
+            </button>
           </div>
-        )}
-
-        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-100 mt-2">
-          <Link
-            href="/admin/support"
-            className="w-full sm:w-auto rounded-xl bg-white px-6 py-3.5 text-center text-[15px] font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            disabled={submitting || !recipientId.trim() || !subject.trim() || !body.trim()}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-white bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] disabled:hover:shadow-md hover:bg-gray-50"
-          >
-            {submitting ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#1A6FD4] border-t-transparent" />
-            ) : (
-              <Send className="h-5 w-5" />
-            )}
-            {submitting ? "Sending…" : "Send message"}
-          </button>
-        </div>
-      </form>
+        </form>
       </div>
     </main>
   );

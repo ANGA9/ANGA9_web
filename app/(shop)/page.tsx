@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Home,
   Cpu,
@@ -414,6 +414,7 @@ const TAB_BG_COLORS: Record<string, string[]> = {
 
 function MobileCategoryStrip() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
   const { tabs: categoriesTree } = useCategories();
 
@@ -450,10 +451,7 @@ function MobileCategoryStrip() {
           <button
             key={cat.slug}
             onClick={() => {
-              const url = new URL(window.location.href);
-              url.searchParams.set("category", cat.slug);
-              url.searchParams.delete("tab");
-              window.location.href = url.toString();
+              router.push(`/search?category=${encodeURIComponent(cat.name)}`);
             }}
             className="flex flex-col items-center gap-2 w-[76px] shrink-0 group"
           >

@@ -298,9 +298,9 @@ function SearchPageContent() {
           <h1
             className="flex-1 min-w-0 truncate uppercase tracking-[0.14em] text-[12px] font-medium"
             style={{ color: t.textSecondary, fontFamily: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto" }}
-            title={query}
+            title={query || categoryParam || "All products"}
           >
-            {query || "All products"}
+            {query || categoryParam || "All products"}
           </h1>
 
           <div className="shrink-0 flex items-center gap-1">
@@ -346,7 +346,7 @@ function SearchPageContent() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
             <div className="flex items-baseline gap-3 flex-wrap">
               <h1 className="hidden md:block font-bold text-[17px] md:text-[22px] tracking-tight" style={{ color: t.textPrimary }}>
-                {query ? `Results for "${query}"` : "All Products"}
+                {query ? `Results for "${query}"` : categoryParam ? categoryParam : "All Products"}
               </h1>
               {!loading && (
                 <span className="text-[12px] md:text-[13px] font-semibold px-3 py-1 rounded-full" style={{ background: "#EEF2FF", color: ACCENT }}>

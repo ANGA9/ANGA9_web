@@ -285,6 +285,7 @@ export function usePayment(args: UsePaymentArgs) {
         }>("/api/payments/create", {
           orderId: orderResponse.id,
           amount: orderResponse.total,
+          isTest: method.kind === "all",
         });
 
         // Step 3: open the modal with brand-and-method-filtered display config.

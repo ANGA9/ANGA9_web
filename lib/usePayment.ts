@@ -224,7 +224,7 @@ export function usePayment(args: UsePaymentArgs) {
   const [error, setError] = useState("");
 
   const pay = useCallback(
-    async (method: PaymentMethod) => {
+    async (method: PaymentMethod, opts?: { isTest?: boolean }) => {
       setPlacing(true);
       setError("");
 
@@ -285,7 +285,7 @@ export function usePayment(args: UsePaymentArgs) {
         }>("/api/payments/create", {
           orderId: orderResponse.id,
           amount: orderResponse.total,
-          isTest: method.kind === "all",
+          isTest: opts?.isTest ?? false,
         });
 
         // Step 3: open the modal with brand-and-method-filtered display config.

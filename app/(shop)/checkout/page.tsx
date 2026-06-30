@@ -424,7 +424,7 @@ export default function CheckoutPage() {
     },
   });
 
-  const handlePickerSelect = (method: PaymentMethod) => {
+  const handlePickerSelect = (method: PaymentMethod, opts?: { isTest?: boolean }) => {
     if (!hasAddress) {
       toast.error("Please add or select a delivery address first");
       return;
@@ -442,7 +442,7 @@ export default function CheckoutPage() {
     // onDismiss/onFailed need this to restore.
     cartSnapshotRef.current = items.map((it) => ({ productId: it.productId, qty: it.qty }));
     setLastFailed(null);
-    pay(method);
+    pay(method, opts);
   };
 
   const pickerDisabled = placing || cartBlocked || validating || !hasAddress;
@@ -1067,7 +1067,7 @@ export default function CheckoutPage() {
                     onClick={() => {
                       if (cartBlocked) return;
                       if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" });
+                      handlePickerSelect({ kind: "all" }, { isTest: false });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
                     className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
@@ -1091,7 +1091,7 @@ export default function CheckoutPage() {
                     onClick={() => {
                       if (cartBlocked) return;
                       if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" });
+                      handlePickerSelect({ kind: "all" }, { isTest: true });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
                     className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
@@ -1160,7 +1160,7 @@ export default function CheckoutPage() {
                     onClick={() => {
                       if (cartBlocked) return;
                       if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" });
+                      handlePickerSelect({ kind: "all" }, { isTest: true });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
                     className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
@@ -1192,7 +1192,7 @@ export default function CheckoutPage() {
           ) : (
             hasAddress && !cartBlocked ? (
               <button 
-                onClick={() => handlePickerSelect({ kind: "all" })}
+                onClick={() => handlePickerSelect({ kind: "all" }, { isTest: false })}
                 className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 hover:bg-gray-50 whitespace-nowrap"
                 style={{ borderColor: t.primaryCta, color: t.primaryCta }}
               >

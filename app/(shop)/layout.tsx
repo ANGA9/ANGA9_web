@@ -52,7 +52,8 @@ export default function CustomerShopLayout({
             {/* ══════════ GLOBAL ANNOUNCEMENT BANNER ══════════ */}
             {showBanner && (
               <>
-                <style dangerouslySetInnerHTML={{ __html: `
+                <style dangerouslySetInnerHTML={{
+                  __html: `
                   @keyframes marquee {
                     0% { transform: translateX(100vw); }
                     100% { transform: translateX(-100%); }
@@ -66,13 +67,13 @@ export default function CustomerShopLayout({
                 `}} />
                 <div className="shrink-0 bg-gradient-to-r from-[#8B5CF6] to-[#1A6FD4] text-white overflow-hidden py-2.5 relative z-[60] shadow-sm flex items-center pr-10">
                   <div className="animate-marquee font-black tracking-wide text-[14px] uppercase flex items-center gap-4 flex-1">
-                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                    <span>🚀 This app will be launched on 15th August! Get ready! 🚀</span>
                     <span className="opacity-50">•</span>
-                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                    <span>🚀 This app will be launched on 15th August! Get ready! 🚀</span>
                     <span className="opacity-50">•</span>
-                    <span>🚀 This app will be launched on 16th July! Get ready! 🚀</span>
+                    <span>🚀 This app will be launched on 15th August! Get ready! 🚀</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setShowBanner(false)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
                     aria-label="Dismiss banner"

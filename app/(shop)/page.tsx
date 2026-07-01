@@ -263,7 +263,14 @@ export default function CustomerHomePage() {
 
       {/* -- Mobile Visual Category Strip (<md) -- */}
       <Suspense fallback={<div className="h-[120px] bg-white w-full md:hidden" />}>
-        <MobileCategoryStrip />
+        <MobileCategoryStrip onSelectCategory={(slug) => {
+          setProducts([]); // Clear to show loading state
+          setPage(1);
+          setHasMore(true);
+          setCategoryParam(slug);
+          const currentTab = new URLSearchParams(window.location.search).get('tab');
+          window.history.pushState({}, '', `/?category=${slug}${currentTab ? `&tab=${currentTab}` : ''}`);
+        }} />
       </Suspense>
 
       {/* Hero */}
@@ -412,7 +419,7 @@ const TAB_BG_COLORS: Record<string, string[]> = {
   "HOME LIVING": ["#ECFDF5", "#FFFBEB", "#FEF2F2", "#EFF6FF"],
 };
 
-function MobileCategoryStrip() {
+function MobileCategoryStrip({ onSelectCategory }: { onSelectCategory?: (slug: string) => void }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentTab = searchParams?.get("tab")?.toUpperCase() || "ALL";
@@ -451,7 +458,11 @@ function MobileCategoryStrip() {
           <button
             key={cat.slug}
             onClick={() => {
-              router.push(`/search?category=${encodeURIComponent(cat.name)}`);
+              if (onSelectCategory) {
+                onSelectCategory(cat.slug);
+              } else {
+                router.push(`/?category=${cat.slug}`);
+              }
             }}
             className="flex flex-col items-center gap-2 w-[76px] shrink-0 group"
           >

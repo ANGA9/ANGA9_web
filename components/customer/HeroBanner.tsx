@@ -14,41 +14,57 @@ const DEFAULT_SLIDES = [
     id: "1",
     image: cdnUrl("/banners/ban1.png"),
     title: "Festive Ethnic Edit - Sarees & Kurtas from ₹999",
+    seller: "vostro",
+    searchQuery: "sarees kurtas",
   },
   {
     id: "2",
     image: cdnUrl("/banners/ban2.png"),
     title: "Elevate Your Style - Menswear from ₹799",
+    seller: "rebecca",
+    searchQuery: "menswear",
   },
   {
     id: "3",
     image: cdnUrl("/banners/ban3.png"),
     title: "Fun Fits for Little Ones - Kids Fashion from ₹299",
+    seller: "vostro",
+    searchQuery: "kids fashion",
   },
   {
     id: "4",
     image: cdnUrl("/banners/ban4.png"),
     title: "Train Harder Look Better - Activewear from ₹599",
+    seller: "sport-flex",
+    searchQuery: "activewear",
   },
   {
     id: "5",
     image: cdnUrl("/banners/ban5.png"),
     title: "Sleep in Pure Luxury - Bed Linen from ₹899",
+    seller: "rebecca",
+    searchQuery: "bed linen",
   },
   {
     id: "6",
     image: cdnUrl("/banners/ban6.png"),
     title: "Spa Comfort at Home - Bath Linen from ₹449",
+    seller: "vostro",
+    searchQuery: "bath linen",
   },
   {
     id: "7",
     image: cdnUrl("/banners/ban7.png"),
     title: "Transform Your Living Space - Rugs & Curtains from ₹1299",
+    seller: "rebecca",
+    searchQuery: "rugs curtains",
   },
   {
     id: "8",
     image: cdnUrl("/banners/ban8.png"),
     title: "Style Every Corner - Living Decor from ₹349",
+    seller: "home-decor-inc",
+    searchQuery: "living decor",
   },
 ];
 
@@ -103,6 +119,10 @@ export default function HeroBanner() {
     if (ads.length > 0) {
       adsApi.recordClick(slide.id).catch(console.error);
       router.push(slide.target_url || `/products/${slide.product_id}`);
+    } else {
+      if (slide.seller && slide.searchQuery) {
+        router.push(`/search?q=${encodeURIComponent(slide.searchQuery)}&seller=${encodeURIComponent(slide.seller)}`);
+      }
     }
   };
 
@@ -128,9 +148,7 @@ export default function HeroBanner() {
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding="async"
                   />
-                  {ads.length > 0 && (
-                    <span className="absolute top-4 right-4 z-20 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold uppercase px-2 py-1 rounded shadow-sm">Ad</span>
-                  )}
+                  <span className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-md text-black border border-black/80 text-[10px] font-bold uppercase px-2 py-1 rounded shadow-sm">AD</span>
                 </div>
               </div>
             ))

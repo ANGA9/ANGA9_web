@@ -107,10 +107,15 @@ export function useTicketSocket({ ticketId, enabled = true, onMessage, onTyping,
       if (cancelled) return;
 
       const base = resolveWsBase();
-      const url = `${base}/ws/support/tickets/${encodeURIComponent(ticketId)}?token=${encodeURIComponent(token)}`;
+      // Pass the JWT via the Sec-WebSocket-Protocol handshake header instead of
+      // the URL query string, so it never lands in proxy/LB access logs. The
+      // browser sends these as subprotocols; the server reads the value after
+      // the "bearer" marker and echoes back only "bearer" as the negotiated
+      // protocol. (No ?token= in the URL anymore.)
+      const url = `${base}/ws/support/tickets/${encodeURIComponent(ticketId)}`;
 
       try {
-        socket = new WebSocket(url);
+        socket = new WebSocket(url, ["bearer", token]);
       } catch (err) {
         scheduleReconnect();
         return;

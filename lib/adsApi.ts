@@ -46,9 +46,9 @@ export const adsApi = {
   listActive: (placement: string) =>
     api.get<{ ads: AdCampaign[] }>(`/api/products/ads/active?placement=${encodeURIComponent(placement)}`),
   recordClick: (adId: string) =>
-    api.post<{ success: boolean }>(`/api/products/ads/${adId}/click`),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/click`, {}),
   recordImpression: (adId: string) =>
-    api.post<{ success: boolean }>(`/api/products/ads/${adId}/impression`),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/impression`, {}),
 
   // Seller
   requestAd: (payload: RequestAdBody) =>

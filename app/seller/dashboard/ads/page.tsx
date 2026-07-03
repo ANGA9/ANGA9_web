@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Loader2, Megaphone, TrendingUp, MousePointerClick, Calendar, ArrowRight } from "lucide-react";
 import { adsApi, AdCampaign } from "@/lib/adsApi";
+import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function SellerAdsPage() {
@@ -152,7 +153,7 @@ export default function SellerAdsPage() {
                       <div className="flex items-center gap-4">
                         <div className="w-20 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={ad.banner_url} alt="Ad Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          <img src={cdnUrl(ad.banner_url)} alt="Ad Banner" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="font-bold text-[15px] text-gray-900 truncate mb-1" title={ad.headline}>

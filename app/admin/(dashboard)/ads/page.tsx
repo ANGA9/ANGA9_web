@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Search, Filter, Megaphone, CheckCircle2, XCircle, X } from "lucide-react";
 import { adsApi, AdCampaign, AdStatus } from "@/lib/adsApi";
+import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function AdminAdsPage() {
@@ -141,7 +142,7 @@ export default function AdminAdsPage() {
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-12 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200 shadow-sm flex items-center justify-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={ad.banner_url} alt="Ad Banner" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('bg-gray-200'); }} />
+                          <img src={cdnUrl(ad.banner_url)} alt="Ad Banner" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('bg-gray-200'); }} />
                         </div>
                         <div className="min-w-0">
                           <p className="font-bold text-[14px] text-gray-900 line-clamp-1">{ad.headline}</p>
@@ -220,7 +221,7 @@ export default function AdminAdsPage() {
               <div className="mb-6 rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                 <div className="h-40 bg-gray-100 w-full relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={selectedAd.banner_url} alt="Banner" className="w-full h-full object-cover" />
+                  <img src={cdnUrl(selectedAd.banner_url)} alt="Banner" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent flex flex-col justify-end p-4">
                      <h3 className="text-white font-bold text-[18px] leading-tight">{selectedAd.headline}</h3>
                   </div>

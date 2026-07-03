@@ -141,7 +141,7 @@ export default function HeroBanner() {
             >
                 <div className="relative w-full aspect-[11/5] md:aspect-[5/2] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
                   <img
-                    src={(slide as AdCampaign).banner_url || (slide as typeof DEFAULT_SLIDES[0]).image}
+                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as typeof DEFAULT_SLIDES[0]).image}
                     alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
                     className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${loading ? 'opacity-50' : 'opacity-100'}`}
                     fetchPriority={index === 0 ? "high" : "auto"}

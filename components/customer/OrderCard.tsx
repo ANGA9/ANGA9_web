@@ -103,7 +103,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
               {order.id}
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 hidden md:block" />
-            <span className="text-[12px] md:text-[13px] font-medium" style={{ color: t.textMuted }}>
+            <span className="text-[12px] md:text-[13px] font-medium text-gray-900">
               {order.date}
             </span>
           </div>
@@ -199,11 +199,11 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
 
         {/* ── Order total + Action bar ── */}
         <div
-          className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-t"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-2 px-4 sm:px-5 py-3 border-t"
           style={{ borderColor: "#F3F4F6" }}
         >
           {/* Total */}
-          <div>
+          <div className="flex items-end justify-between sm:block">
             <span className="text-[11px] md:text-[12px] font-medium uppercase tracking-wide" style={{ color: t.textMuted }}>Total</span>
             <p className="text-[16px] sm:text-[18px] md:text-[20px] font-black" style={{ color: t.textPrimary }}>
               {formatINR(order.amount)}
@@ -211,11 +211,11 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
             {order.status === "Delivered" && (
               <>
                 <button
-                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold transition-all active:scale-95"
+                  className="flex items-center justify-center w-full sm:w-auto gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold transition-all active:scale-95"
                   style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -223,7 +223,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                 </button>
                 <Link
                   href={`/orders/${order.internalId || order.id}`}
-                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold border transition-all active:scale-95 hover:bg-gray-50"
+                  className="flex items-center justify-center w-full sm:w-auto gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold border transition-all active:scale-95 hover:bg-gray-50"
                   style={{ borderColor: t.border, color: t.textSecondary }}
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
@@ -236,7 +236,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             {order.status === "Processing" && (
               <button
                 onClick={() => window.location.href = `/orders/${order.id}/track`}
-                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all active:scale-95"
+                className="flex items-center justify-center w-full sm:w-auto gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all active:scale-95"
                 style={{ background: t.bgBlueTint, color: t.bluePrimary }}
               >
                 <MapPin className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
               <button
                 onClick={handleDownloadInvoice}
                 disabled={downloading}
-                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all hover:bg-gray-50 border active:scale-95 disabled:opacity-50"
+                className="flex items-center justify-center w-full sm:w-auto gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all hover:bg-gray-50 border active:scale-95 disabled:opacity-50"
                 style={{ color: t.textSecondary, borderColor: t.border }}
                 title="Download Invoice"
               >
@@ -260,7 +260,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             {canCancel && (
               <button
                 onClick={() => setShowCancelConfirm(true)}
-                className="flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold rounded-lg transition-colors hover:bg-red-50"
+                className="flex items-center justify-center w-full sm:w-auto gap-1.5 px-3 py-2 text-[13px] font-semibold rounded-lg transition-colors hover:bg-red-50"
                 style={{ color: "#DC2626" }}
               >
                 <XCircle className="w-3.5 h-3.5" />

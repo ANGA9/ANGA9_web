@@ -47,9 +47,9 @@ export default function ProductRail({ title, products, icon: Icon, iconColor = "
   };
 
   return (
-    <section className={`relative ${compact ? "my-4" : "my-8 md:my-12"}`}>
+    <section className={`relative ${compact ? "mt-8 mb-6 md:mt-10 md:mb-8" : "my-8 md:my-12"}`}>
       {/* Header */}
-      <div className={`flex items-center justify-between mb-4 ${compact ? "px-1" : "px-3 sm:px-8"}`}>
+      <div className={`flex items-center justify-between mb-4 ${compact ? "px-4 md:px-0" : "px-3 sm:px-8"}`}>
         <div className="flex items-center gap-2">
           {Icon && <Icon className="w-5 h-5 md:w-6 md:h-6" style={{ color: iconColor }} strokeWidth={2} />}
           <h2 className={`font-bold text-[#1A1A2E] ${compact ? "text-[16px] md:text-[18px]" : "text-[18px] md:text-[22px]"}`}>
@@ -80,14 +80,14 @@ export default function ProductRail({ title, products, icon: Icon, iconColor = "
 
       {/* Scrollable strip */}
       <div 
-        className={`flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory ${compact ? "px-1 pb-4" : "px-3 sm:px-8 pb-6"}`}
+        className={`flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory ${compact ? "px-4 md:px-0 pb-4" : "px-3 sm:px-8 pb-6"}`}
         ref={scrollRef}
         style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
       >
         {products.map((product) => (
           <div 
             key={product.id} 
-            className={`shrink-0 snap-start ${compact ? "w-[140px] md:w-[180px]" : "w-[160px] md:w-[220px]"}`}
+            className={`shrink-0 snap-start ${compact ? "w-[150px] sm:w-[160px] md:w-[180px]" : "w-[160px] md:w-[220px]"}`}
           >
             <ProductCard product={product} />
           </div>

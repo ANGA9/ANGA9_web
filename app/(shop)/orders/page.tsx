@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft, Package, XCircle } from "lucide-react";
+import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft, Package, XCircle, ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -35,10 +35,13 @@ export default function CustomerOrdersPage() {
 }
 
 function OrdersContent() {
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("All Orders");
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabType>(
+    (searchParams.get("tab") as TabType) || "All Orders"
+  );
+  const [sortBy, setSortBy] = useState("newest");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
   const justPlaced = searchParams.get("placed") === "1";
   const [showSuccess, setShowSuccess] = useState(justPlaced);
   const { user } = useAuth();
@@ -64,6 +67,7 @@ function OrdersContent() {
             day: "numeric",
             year: "numeric",
           }),
+          rawDate: o.placed_at,
           product: o.items?.[0]?.product_name ?? "Order",
           seller: "",
           qty: o.items?.reduce((s: number, i: { quantity: number }) => s + i.quantity, 0) ?? 0,
@@ -83,10 +87,24 @@ function OrdersContent() {
     fetchOrders();
   }, []);
 
-  const filtered =
-    activeTab === "All Orders"
+  const filtered = useMemo(() => {
+    let result = activeTab === "All Orders"
       ? orders
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
+
+    return result.sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.rawDate || b.date).getTime() - new Date(a.rawDate || a.date).getTime();
+      } else if (sortBy === "oldest") {
+        return new Date(a.rawDate || a.date).getTime() - new Date(b.rawDate || b.date).getTime();
+      } else if (sortBy === "amount_desc") {
+        return b.amount - a.amount;
+      } else if (sortBy === "amount_asc") {
+        return a.amount - b.amount;
+      }
+      return 0;
+    });
+  }, [orders, activeTab, sortBy]);
 
   const FilterDropdown = () => (
     <div className="relative">
@@ -112,6 +130,25 @@ function OrdersContent() {
     </div>
   );
 
+  const SortDropdown = () => (
+    <div className="relative ml-2">
+      <select
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+        className="appearance-none bg-white border rounded-full px-3 py-1.5 md:px-4 md:py-2 pr-8 text-[12px] md:text-[14px] font-semibold outline-none hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+        style={{ borderColor: t.border, color: t.textPrimary }}
+      >
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="amount_desc">Amount: High to Low</option>
+        <option value="amount_asc">Amount: Low to High</option>
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-500">
+        <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+      </div>
+    </div>
+  );
+
   return (
     <div className="mx-auto max-w-[1400px] py-0 md:py-6 px-0 md:px-12">
       {/* ── Mobile Header ── */}
@@ -122,8 +159,53 @@ function OrdersContent() {
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
           My Orders
         </h1>
-        <FilterDropdown />
       </header>
+
+      {/* ── Mobile Filter Strip (Segmented Control Style) ── */}
+      <div className="md:hidden w-full bg-white border-b sticky top-14 z-30 px-3 py-2" style={{ borderColor: t.border }}>
+        <div className="flex items-center border border-gray-200 bg-white w-full overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.06)] rounded-xl">
+          {/* SORT BUTTON (Using native select) */}
+          <div className="flex-1 relative border-r border-gray-200 hover:bg-gray-50 transition-colors">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="amount_desc">Amount: High to Low</option>
+              <option value="amount_asc">Amount: Low to High</option>
+            </select>
+            <div className="flex items-center justify-center gap-2 py-3 text-[13px] font-semibold text-gray-800 pointer-events-none">
+              <ArrowUpDown className="w-4 h-4 text-gray-500" />
+              Sort
+            </div>
+          </div>
+          
+          {/* STATUS BUTTON (Using native select) */}
+          <div className="flex-1 relative hover:bg-gray-50 transition-colors">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value as any)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            >
+              {tabs.map(tab => {
+                const statusMatch = tab.replace("Active", "Processing");
+                const count = tab === "All Orders" 
+                  ? orders.length 
+                  : orders.filter((o) => o.status === statusMatch).length;
+                return (
+                  <option key={tab} value={tab}>{tab} ({count})</option>
+                );
+              })}
+            </select>
+            <div className="flex items-center justify-center gap-1.5 py-3 text-[13px] font-semibold text-gray-800 pointer-events-none">
+              {activeTab === "All Orders" ? "Status" : activeTab}
+              <span className="text-[10px] text-gray-400">▼</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="px-4 md:px-0 pt-4 md:pt-0">
       {showSuccess && (
@@ -156,8 +238,9 @@ function OrdersContent() {
             </span>
           </div>
         </div>
-        <div>
+        <div className="flex items-center">
           <FilterDropdown />
+          <SortDropdown />
         </div>
       </div>
 

@@ -21,6 +21,7 @@ export interface Order {
   internalId?: string;
   id: string;
   date: string;
+  rawDate?: string;
   product: string;
   seller: string;
   qty: number;

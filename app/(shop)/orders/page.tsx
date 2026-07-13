@@ -107,126 +107,39 @@ function OrdersContent() {
     });
   }, [orders, activeTab, sortBy]);
 
-  // (Outside click logic moved to CustomDropdown)
+  const filterRef = React.useRef<HTMLDivElement>(null);
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
-  const CustomDropdown = ({
-    type,
-    label,
-    options,
-    value,
-    onChange,
-  }: {
-    type: "status" | "sort";
-    label: React.ReactNode;
-    options: { value: string; label: React.ReactNode; count?: number }[];
-    value: string;
-    onChange: (val: string) => void;
-  }) => {
-    const isOpen = openDropdown === type;
-    const ref = React.useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        (filterRef.current && filterRef.current.contains(target)) ||
+        (sortRef.current && sortRef.current.contains(target))
+      ) {
+        return;
+      }
+      setOpenDropdown(null);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    useEffect(() => {
-      if (!isOpen) return;
-      const handleClickOutside = (e: MouseEvent) => {
-        if (ref.current && !ref.current.contains(e.target as Node)) {
-          setOpenDropdown(null);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isOpen]);
+  const statusOptions = tabs.map(tab => {
+    const statusMatch = tab.replace("Active", "Processing");
+    return {
+      value: tab,
+      label: tab,
+      count: tab === "All Orders" ? orders.length : orders.filter((o) => o.status === statusMatch).length
+    };
+  });
 
-    return (
-      <div ref={ref} className="relative">
-        <button
-          onClick={() => setOpenDropdown(isOpen ? null : type)}
-          className={`flex items-center justify-between gap-2 bg-white border rounded-full px-4 py-2 min-w-[150px] text-[13px] md:text-[14px] font-semibold outline-none transition-all shadow-sm ${
-            isOpen ? "ring-2 border-blue-500" : "hover:bg-gray-50 border-gray-200"
-          }`}
-          style={{ 
-            color: t.textPrimary,
-            boxShadow: isOpen ? '0 0 0 2px rgba(37,99,235,0.1)' : undefined
-          }}
-        >
-          {label}
-          <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-        </button>
-
-        {isOpen && (
-          <div className="absolute right-0 top-full mt-2 w-[220px] bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-50 py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-            {options.map((opt) => {
-              const isSelected = value === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onChange(opt.value);
-                    setOpenDropdown(null);
-                  }}
-                  className={`w-full flex items-center justify-between px-4 py-2.5 text-[13.5px] font-medium transition-colors text-left ${
-                    isSelected ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"
-                  }`}
-                >
-                  <span className="flex-1 truncate">{opt.label}</span>
-                  {opt.count !== undefined && (
-                    <span className={`text-[12px] font-bold ml-2 ${isSelected ? "text-blue-600" : "text-gray-400"}`}>
-                      {opt.count}
-                    </span>
-                  )}
-                  {isSelected && (
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-blue-600 ml-2" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const FilterDropdown = () => {
-    const statusOptions = tabs.map(tab => {
-      const statusMatch = tab.replace("Active", "Processing");
-      return {
-        value: tab,
-        label: tab,
-        count: tab === "All Orders" ? orders.length : orders.filter((o) => o.status === statusMatch).length
-      };
-    });
-    
-    return (
-      <CustomDropdown
-        type="status"
-        label={activeTab === "All Orders" ? "All Orders" : activeTab}
-        value={activeTab}
-        options={statusOptions}
-        onChange={(val) => setActiveTab(val as TabType)}
-      />
-    );
-  };
-
-  const SortDropdown = () => {
-    const sortOptions = [
-      { value: "newest", label: "Newest First" },
-      { value: "oldest", label: "Oldest First" },
-      { value: "amount_desc", label: "Amount: High to Low" },
-      { value: "amount_asc", label: "Amount: Low to High" }
-    ];
-    
-    return (
-      <div className="ml-2">
-        <CustomDropdown
-          type="sort"
-          label={sortOptions.find(o => o.value === sortBy)?.label || "Sort"}
-          value={sortBy}
-          options={sortOptions}
-          onChange={setSortBy}
-        />
-      </div>
-    );
-  };
+  const sortOptions = [
+    { value: "newest", label: "Newest First" },
+    { value: "oldest", label: "Oldest First" },
+    { value: "amount_desc", label: "Amount: High to Low" },
+    { value: "amount_asc", label: "Amount: Low to High" }
+  ];
 
   return (
     <div className="mx-auto max-w-[1400px] py-0 md:py-6 px-0 md:px-12">
@@ -305,21 +218,80 @@ function OrdersContent() {
       {/* Heading & Filter (Desktop) */}
       <div className="hidden md:flex items-end justify-between mb-6 md:mb-8 mt-1 md:mt-2 w-full md:px-[26px]">
         <div>
-          <div className="flex items-baseline gap-3">
-            <h1
-              className="text-[24px] md:text-[32px] font-medium tracking-tight mb-1"
-              style={{ color: t.textPrimary }}
-            >
-              My Orders
-            </h1>
-            <span className="text-[18px] font-bold text-gray-400">
-              ({orders.length} {orders.length === 1 ? "Order" : "Orders"})
-            </span>
-          </div>
+          <h1 className="text-[28px] font-black tracking-tight" style={{ color: t.textPrimary }}>
+            My Orders
+          </h1>
+          <p className="text-gray-500 font-medium mt-1">
+            {orders.length} {orders.length === 1 ? 'Order' : 'Orders'}
+          </p>
         </div>
-        <div className="flex items-center">
-          <FilterDropdown />
-          <SortDropdown />
+        <div className="flex items-center gap-3">
+          {/* Filter Dropdown */}
+          <div ref={filterRef} className="relative z-50">
+            <button
+              onMouseDown={() => setOpenDropdown(openDropdown === "status" ? null : "status")}
+              className={`flex items-center justify-between gap-2 bg-white border rounded-full px-4 py-2 min-w-[150px] text-[13px] font-semibold outline-none transition-all shadow-sm ${
+                openDropdown === "status" ? "ring-2 border-blue-500" : "hover:bg-gray-50 border-gray-200"
+              }`}
+              style={{ color: t.textPrimary, boxShadow: openDropdown === "status" ? '0 0 0 2px rgba(37,99,235,0.1)' : undefined }}
+            >
+              {activeTab === "All Orders" ? "All Orders" : activeTab}
+              <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${openDropdown === "status" ? "rotate-180" : ""}`} />
+            </button>
+            {openDropdown === "status" && (
+              <div className="absolute right-0 top-full mt-2 w-[220px] bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                {statusOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onMouseDown={() => {
+                      setActiveTab(opt.value as TabType);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 text-[13.5px] font-medium transition-colors text-left ${
+                      activeTab === opt.value ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"
+                    }`}
+                  >
+                    <span className="flex-1 truncate">{opt.label}</span>
+                    <span className={`text-[12px] font-bold ml-2 ${activeTab === opt.value ? "text-blue-600" : "text-gray-400"}`}>{opt.count}</span>
+                    {activeTab === opt.value && <CheckCircle2 className="w-4 h-4 shrink-0 text-blue-600 ml-2" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sort Dropdown */}
+          <div ref={sortRef} className="relative z-50">
+            <button
+              onMouseDown={() => setOpenDropdown(openDropdown === "sort" ? null : "sort")}
+              className={`flex items-center justify-between gap-2 bg-white border rounded-full px-4 py-2 min-w-[150px] text-[13px] font-semibold outline-none transition-all shadow-sm ${
+                openDropdown === "sort" ? "ring-2 border-blue-500" : "hover:bg-gray-50 border-gray-200"
+              }`}
+              style={{ color: t.textPrimary, boxShadow: openDropdown === "sort" ? '0 0 0 2px rgba(37,99,235,0.1)' : undefined }}
+            >
+              {sortOptions.find(o => o.value === sortBy)?.label || "Sort"}
+              <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${openDropdown === "sort" ? "rotate-180" : ""}`} />
+            </button>
+            {openDropdown === "sort" && (
+              <div className="absolute right-0 top-full mt-2 w-[220px] bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                {sortOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onMouseDown={() => {
+                      setSortBy(opt.value);
+                      setOpenDropdown(null);
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 text-[13.5px] font-medium transition-colors text-left ${
+                      sortBy === opt.value ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"
+                    }`}
+                  >
+                    <span className="flex-1 truncate">{opt.label}</span>
+                    {sortBy === opt.value && <CheckCircle2 className="w-4 h-4 shrink-0 text-blue-600 ml-2" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

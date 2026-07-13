@@ -155,7 +155,7 @@ export default function OrderDisputePage() {
             Back to Orders
           </h1>
         </header>
-        <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 animate-pulse">
+        <div className="mx-auto max-w-4xl py-6 px-4 md:px-[26px] animate-pulse">
         <div className="h-4 w-24 bg-gray-200 rounded mb-6" />
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6 shadow-sm">
           <div className="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-start">
@@ -221,7 +221,7 @@ export default function OrderDisputePage() {
         </h1>
       </header>
 
-      <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 relative">
+      <div className="mx-auto max-w-4xl py-6 px-4 md:px-[26px] relative">
       {/* PDC Modal */}
       {showPdcModal && pdcEligibility && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -266,18 +266,16 @@ export default function OrderDisputePage() {
         </div>
       )}
 
-      <Link href="/orders" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 mb-6">
-        <ArrowLeft className="w-4 h-4" />
-        Back to Orders
-      </Link>
-
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6">
         <div className="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-start">
           <div>
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Order Details</p>
             <h1 className="text-lg font-black text-gray-900">{order.order_number}</h1>
             <p className="text-sm text-gray-500 mt-0.5">
-              Placed on {new Date(order.placed_at).toLocaleDateString()}
+              Placed on {new Date(order.placed_at).toLocaleDateString('en-US', { 
+                day: 'numeric', month: 'short', year: 'numeric', 
+                hour: 'numeric', minute: '2-digit' 
+              })}
             </p>
           </div>
           <div className="text-right">

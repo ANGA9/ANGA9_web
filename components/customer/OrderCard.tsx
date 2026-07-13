@@ -99,10 +99,10 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {/* ── Order header bar ── */}
         <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b" style={{ borderColor: "#F3F4F6", background: "#FAFBFC" }}>
           <div className="flex items-center gap-3 flex-wrap min-w-0">
-            <span className="text-[12px] md:text-[13px] font-semibold tabular-nums" style={{ color: t.textMuted }}>
+            <span className="hidden md:inline text-[12px] md:text-[13px] font-semibold tabular-nums" style={{ color: t.textMuted }}>
               {order.id}
             </span>
-            <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:block" />
+            <span className="w-1 h-1 rounded-full bg-gray-300 hidden md:block" />
             <span className="text-[12px] md:text-[13px] font-medium" style={{ color: t.textMuted }}>
               {order.date}
             </span>

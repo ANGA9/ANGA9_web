@@ -29,14 +29,15 @@ export default function CustomerShopLayout({
   const isCart = pathname === "/cart";
   const isNotifications = pathname === "/notifications";
   const isProductDetail = pathname?.startsWith("/products/");
-  const isOrders = pathname === "/orders" || pathname?.startsWith("/orders/");
+  const isOrders = pathname === "/orders";
+  const isOrderDetail = pathname?.startsWith("/orders/");
   const isAccount = pathname === "/account" || pathname?.startsWith("/account/");
   const isMenu = pathname === "/menu";
   const isSearchExplore = pathname === "/search/explore";
   const isSearch = pathname === "/search";
   const isHomepage = pathname === "/";
   const isHelp = pathname?.startsWith("/help");
-  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isAccount || isMenu || isSearchExplore || isSearch || isHelp;
+  const hasOwnMobileHeader = isCheckout || isWishlist || isCart || isNotifications || isProductDetail || isOrders || isOrderDetail || isAccount || isMenu || isSearchExplore || isSearch || isHelp;
 
   return (
     <LoginSheetProvider>
@@ -93,12 +94,12 @@ export default function CustomerShopLayout({
                 <div className="border-b bg-white" style={{ borderColor: t.border }}>
                   <div className="mx-auto flex h-11 items-center" style={{ maxWidth: 1400, padding: "0 48px" }}>
                     <Link
-                      href="/"
+                      href={isOrderDetail ? "/orders" : "/"}
                       className="inline-flex items-center gap-2 font-medium text-gray-500 hover:text-[#1A6FD4] transition-colors"
                       style={{ fontSize: '16px' }}
                     >
                       <ArrowLeft style={{ width: 18, height: 18 }} />
-                      Back to Home
+                      {isOrderDetail ? "Back to Orders" : "Back to Home"}
                     </Link>
                   </div>
                 </div>

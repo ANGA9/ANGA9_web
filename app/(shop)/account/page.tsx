@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   User,
@@ -167,7 +167,8 @@ export default function CustomerAccountPage() {
   const [coinBalance, setCoinBalance] = useState<number | null>(null);
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // ── Controlled profile-edit form ──
   const [profileName, setProfileName] = useState("");
   const [profileEmail, setProfileEmail] = useState("");
@@ -192,6 +193,36 @@ export default function CustomerAccountPage() {
   }, [user, dbUser]);
 
   const accentBlue = "#2874f0";
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `avatars/${user.id}_${Date.now()}.${ext}`;
+      
+      const { error: uploadError } = await supabase.storage.from("public-assets").upload(fileName, file);
+      if (uploadError) throw uploadError;
+      
+      const { data: pub } = supabase.storage.from("public-assets").getPublicUrl(fileName);
+      
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: pub.publicUrl }
+      });
+      if (updateError) throw updateError;
+      
+      toast.success("Profile picture updated!");
+      await refreshUser();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to upload image");
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
 
   const fetchAddresses = async () => {
     setLoadingAddresses(true);
@@ -537,11 +568,35 @@ export default function CustomerAccountPage() {
   const profileUI = (
     <div className="rounded-xl border p-4 sm:p-6 bg-white" style={{ borderColor: t.border }}>
       <div className="flex items-start gap-5">
-        <div
-          className="flex h-[70px] w-[70px] sm:h-[80px] sm:w-[80px] shrink-0 items-center justify-center rounded-full text-[24px] sm:text-[28px] font-black text-white shadow-inner"
-          style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
-        >
-          {initials}
+        <div className="relative shrink-0">
+          <div
+            className="flex h-[70px] w-[70px] sm:h-[80px] sm:w-[80px] items-center justify-center rounded-full text-[24px] sm:text-[28px] font-black text-white shadow-inner overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
+          >
+            {user?.user_metadata?.avatar_url ? (
+              <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
+          </div>
+          
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            className="hidden" 
+            accept="image/*" 
+            onChange={handleAvatarUpload} 
+          />
+          
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            className="absolute bottom-0 right-0 p-1.5 bg-white rounded-full border shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+            style={{ borderColor: t.border, color: t.textPrimary }}
+            title="Change Profile Picture"
+          >
+            {uploadingAvatar ? <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" /> : <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+          </button>
         </div>
 
         <div className="flex-1 min-w-0">

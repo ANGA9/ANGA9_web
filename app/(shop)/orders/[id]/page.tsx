@@ -145,7 +145,17 @@ export default function OrderDisputePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 animate-pulse">
+      <>
+        {/* ── Mobile Header ── */}
+        <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+          <button onClick={() => window.history.back()} className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
+            Back to Orders
+          </h1>
+        </header>
+        <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 animate-pulse">
         <div className="h-4 w-24 bg-gray-200 rounded mb-6" />
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6 shadow-sm">
           <div className="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-start">
@@ -169,18 +179,30 @@ export default function OrderDisputePage() {
           <div className="h-5 w-48 bg-gray-300 rounded mx-auto mb-2" />
           <div className="h-4 w-64 bg-gray-200 rounded mx-auto" />
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
   if (!order) {
     return (
-      <div className="text-center py-20">
+      <>
+        {/* ── Mobile Header ── */}
+        <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+          <button onClick={() => window.history.back()} className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
+            Back to Orders
+          </h1>
+        </header>
+        <div className="text-center py-20">
         <p className="text-gray-500">Order not found.</p>
         <Link href="/orders" className="text-blue-600 mt-4 inline-block hover:underline">
           Back to Orders
         </Link>
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -188,7 +210,18 @@ export default function OrderDisputePage() {
   const item = order.items?.[0];
 
   return (
-    <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 relative">
+    <>
+      {/* ── Mobile Header ── */}
+      <header className="flex md:hidden items-center px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
+        <button onClick={() => window.history.back()} className="mr-3 p-1 rounded-full hover:bg-gray-100 transition-colors">
+          <ArrowLeft className="w-6 h-6 text-gray-800" />
+        </button>
+        <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
+          Back to Orders
+        </h1>
+      </header>
+
+      <div className="mx-auto max-w-2xl py-6 px-4 md:px-0 relative">
       {/* PDC Modal */}
       {showPdcModal && pdcEligibility && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -500,5 +533,6 @@ export default function OrderDisputePage() {
         </div>
       )}
     </div>
+    </>
   );
 }

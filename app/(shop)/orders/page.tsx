@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, Suspense, useMemo } from "react";
+import React, { useState, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft, Package, XCircle, ArrowUpDown } from "lucide-react";
+import { Loader2, CheckCircle2, ShoppingBag, ArrowLeft, Package, XCircle, ArrowUpDown, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import OrderCard, { type Order } from "@/components/customer/OrderCard";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
@@ -40,6 +40,7 @@ function OrdersContent() {
     (searchParams.get("tab") as TabType) || "All Orders"
   );
   const [sortBy, setSortBy] = useState("newest");
+  const [openDropdown, setOpenDropdown] = useState<"status" | "sort" | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const justPlaced = searchParams.get("placed") === "1";
@@ -75,7 +76,7 @@ function OrdersContent() {
           status: (statusMap[o.status] ?? "Processing") as Order["status"],
           rawStatus: o.status,
           imageUrl: o.items?.[0]?.product_image,
-          items: (o.items ?? []).map(i => ({ name: i.product_name, qty: i.quantity, image: i.product_image, price: i.price })),
+          items: (o.items ?? []).map(i => ({ name: i.product_name, qty: i.quantity, image: i.product_image, price: (i as any).unit_price })),
         }));
         setOrders(mapped);
       } catch {
@@ -106,48 +107,126 @@ function OrdersContent() {
     });
   }, [orders, activeTab, sortBy]);
 
-  const FilterDropdown = () => (
-    <div className="relative">
-      <select
-        value={activeTab}
-        onChange={(e) => setActiveTab(e.target.value as any)}
-        className="appearance-none bg-white border rounded-full px-3 py-1.5 md:px-4 md:py-2 pr-8 text-[12px] md:text-[14px] font-semibold outline-none hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
-        style={{ borderColor: t.border, color: t.textPrimary }}
-      >
-        {tabs.map(tab => {
-          const statusMatch = tab.replace("Active", "Processing");
-          const count = tab === "All Orders" 
-            ? orders.length 
-            : orders.filter((o) => o.status === statusMatch).length;
-          return (
-            <option key={tab} value={tab}>{tab} ({count})</option>
-          );
-        })}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-500">
-        <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-      </div>
-    </div>
-  );
+  // (Outside click logic moved to CustomDropdown)
 
-  const SortDropdown = () => (
-    <div className="relative ml-2">
-      <select
-        value={sortBy}
-        onChange={(e) => setSortBy(e.target.value)}
-        className="appearance-none bg-white border rounded-full px-3 py-1.5 md:px-4 md:py-2 pr-8 text-[12px] md:text-[14px] font-semibold outline-none hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
-        style={{ borderColor: t.border, color: t.textPrimary }}
-      >
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-        <option value="amount_desc">Amount: High to Low</option>
-        <option value="amount_asc">Amount: Low to High</option>
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-500">
-        <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+  const CustomDropdown = ({
+    type,
+    label,
+    options,
+    value,
+    onChange,
+  }: {
+    type: "status" | "sort";
+    label: React.ReactNode;
+    options: { value: string; label: React.ReactNode; count?: number }[];
+    value: string;
+    onChange: (val: string) => void;
+  }) => {
+    const isOpen = openDropdown === type;
+    const ref = React.useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      if (!isOpen) return;
+      const handleClickOutside = (e: MouseEvent) => {
+        if (ref.current && !ref.current.contains(e.target as Node)) {
+          setOpenDropdown(null);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isOpen]);
+
+    return (
+      <div ref={ref} className="relative">
+        <button
+          onClick={() => setOpenDropdown(isOpen ? null : type)}
+          className={`flex items-center justify-between gap-2 bg-white border rounded-full px-4 py-2 min-w-[150px] text-[13px] md:text-[14px] font-semibold outline-none transition-all shadow-sm ${
+            isOpen ? "ring-2 border-blue-500" : "hover:bg-gray-50 border-gray-200"
+          }`}
+          style={{ 
+            color: t.textPrimary,
+            boxShadow: isOpen ? '0 0 0 2px rgba(37,99,235,0.1)' : undefined
+          }}
+        >
+          {label}
+          <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        </button>
+
+        {isOpen && (
+          <div className="absolute right-0 top-full mt-2 w-[220px] bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-50 py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+            {options.map((opt) => {
+              const isSelected = value === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(opt.value);
+                    setOpenDropdown(null);
+                  }}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 text-[13.5px] font-medium transition-colors text-left ${
+                    isSelected ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  <span className="flex-1 truncate">{opt.label}</span>
+                  {opt.count !== undefined && (
+                    <span className={`text-[12px] font-bold ml-2 ${isSelected ? "text-blue-600" : "text-gray-400"}`}>
+                      {opt.count}
+                    </span>
+                  )}
+                  {isSelected && (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-blue-600 ml-2" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
+
+  const FilterDropdown = () => {
+    const statusOptions = tabs.map(tab => {
+      const statusMatch = tab.replace("Active", "Processing");
+      return {
+        value: tab,
+        label: tab,
+        count: tab === "All Orders" ? orders.length : orders.filter((o) => o.status === statusMatch).length
+      };
+    });
+    
+    return (
+      <CustomDropdown
+        type="status"
+        label={activeTab === "All Orders" ? "All Orders" : activeTab}
+        value={activeTab}
+        options={statusOptions}
+        onChange={(val) => setActiveTab(val as TabType)}
+      />
+    );
+  };
+
+  const SortDropdown = () => {
+    const sortOptions = [
+      { value: "newest", label: "Newest First" },
+      { value: "oldest", label: "Oldest First" },
+      { value: "amount_desc", label: "Amount: High to Low" },
+      { value: "amount_asc", label: "Amount: Low to High" }
+    ];
+    
+    return (
+      <div className="ml-2">
+        <CustomDropdown
+          type="sort"
+          label={sortOptions.find(o => o.value === sortBy)?.label || "Sort"}
+          value={sortBy}
+          options={sortOptions}
+          onChange={setSortBy}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="mx-auto max-w-[1400px] py-0 md:py-6 px-0 md:px-12">
@@ -224,7 +303,7 @@ function OrdersContent() {
       )}
 
       {/* Heading & Filter (Desktop) */}
-      <div className="hidden md:flex items-end justify-between mb-6 md:mb-8 mt-1 md:mt-2 max-w-4xl mx-auto w-full">
+      <div className="hidden md:flex items-end justify-between mb-6 md:mb-8 mt-1 md:mt-2 w-full md:px-[26px]">
         <div>
           <div className="flex items-baseline gap-3">
             <h1
@@ -244,7 +323,7 @@ function OrdersContent() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto w-full">
+      <div className="w-full md:px-[26px]">
 
       {loading ? (
         <div className="space-y-3">

@@ -29,7 +29,7 @@ export default function CustomerShopLayout({
   const isCart = pathname === "/cart";
   const isNotifications = pathname === "/notifications";
   const isProductDetail = pathname?.startsWith("/products/");
-  const isOrders = pathname === "/orders";
+  const isOrders = pathname === "/orders" || pathname?.startsWith("/orders/");
   const isAccount = pathname === "/account" || pathname?.startsWith("/account/");
   const isMenu = pathname === "/menu";
   const isSearchExplore = pathname === "/search/explore";

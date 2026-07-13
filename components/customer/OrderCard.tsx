@@ -89,8 +89,6 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     : { bg: "#F3F4F6", text: "#111827", dot: "#2563EB" };
 
   const displayItems = order.items && order.items.length > 0 ? order.items : [{ name: order.product, qty: order.qty, image: order.imageUrl }];
-  const visibleItems = displayItems.slice(0, 3);
-  const remainingCount = displayItems.length - 3;
 
   return (
     <>
@@ -101,16 +99,16 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {/* ── Order header bar ── */}
         <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b" style={{ borderColor: "#F3F4F6", background: "#FAFBFC" }}>
           <div className="flex items-center gap-3 flex-wrap min-w-0">
-            <span className="text-[12px] font-semibold tabular-nums" style={{ color: t.textMuted }}>
+            <span className="text-[12px] md:text-[13px] font-semibold tabular-nums" style={{ color: t.textMuted }}>
               {order.id}
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:block" />
-            <span className="text-[12px] font-medium" style={{ color: t.textMuted }}>
+            <span className="text-[12px] md:text-[13px] font-medium" style={{ color: t.textMuted }}>
               {order.date}
             </span>
           </div>
           <span
-            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shrink-0"
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] md:text-[11px] font-bold uppercase tracking-wider shrink-0"
             style={{ background: statusColor.bg, color: statusColor.text }}
           >
             <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: statusColor.dot }} />
@@ -120,9 +118,9 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
 
         {/* ── Product items ── */}
         <Link href={`/orders/${order.internalId || order.id}`} className="block">
-          <div className="px-4 sm:px-5 py-4 space-y-3">
-            {visibleItems.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-4">
+          <div className="px-4 sm:px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+            {displayItems.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-4 p-2 -m-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
                 {/* Product image */}
                 <div
                   className="w-[72px] h-[72px] sm:w-[88px] sm:h-[88px] shrink-0 rounded-xl overflow-hidden border"
@@ -145,7 +143,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                 {/* Product details */}
                 <div className="flex-1 min-w-0">
                   <h3
-                    className="text-[14px] sm:text-[15px] font-semibold leading-snug mb-1"
+                    className="text-[14px] sm:text-[15px] md:text-[16px] font-semibold leading-snug mb-1"
                     style={{
                       color: t.textPrimary,
                       display: "-webkit-box",
@@ -156,28 +154,28 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                   >
                     {item.name}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-2 text-[12px] sm:text-[13px]">
-                    <span style={{ color: t.textMuted }}>Qty: {item.qty}</span>
-                    {item.price != null && (
-                      <>
-                        <span className="w-1 h-1 rounded-full bg-gray-300" />
-                        <span className="font-bold" style={{ color: t.textPrimary }}>
-                          {formatINR(item.price * item.qty)}
-                        </span>
-                      </>
-                    )}
+                  <div className="flex flex-wrap items-center gap-2 text-[13px] md:text-[14px] mt-1">
+                    <span className="text-gray-900 font-bold">Qty: {item.qty}</span>
                   </div>
                 </div>
 
-                <ChevronRight className="w-5 h-5 shrink-0 text-gray-300 hidden sm:block" />
+                {order.status === "Delivered" ? (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = `/orders/${order.internalId || order.id}?report=true`;
+                    }}
+                    className="shrink-0 p-2 text-gray-400 hover:text-gray-800 transition-colors flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 md:opacity-100"
+                    title="Report Issue with this item"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-gray-500">Issue</span>
+                  </button>
+                ) : (
+                  <ChevronRight className="w-5 h-5 shrink-0 text-gray-300 sm:block md:hidden hidden" />
+                )}
               </div>
             ))}
-
-            {remainingCount > 0 && (
-              <p className="text-[13px] font-medium pl-[88px] sm:pl-[104px]" style={{ color: t.bluePrimary }}>
-                +{remainingCount} more item{remainingCount > 1 ? "s" : ""}
-              </p>
-            )}
           </div>
         </Link>
 
@@ -185,7 +183,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {order.status === "Processing" && (
           <div className="mx-4 sm:mx-5 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "#EFF6FF" }}>
             <Truck className="w-4 h-4 shrink-0" style={{ color: t.bluePrimary }} />
-            <p className="text-[12px] font-semibold" style={{ color: t.bluePrimary }}>
+            <p className="text-[12px] md:text-[13px] font-semibold" style={{ color: t.bluePrimary }}>
               Estimated delivery by {estDeliveryStr}
             </p>
           </div>
@@ -193,7 +191,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         {order.status === "Delivered" && (
           <div className="mx-4 sm:mx-5 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "#F0FDF4" }}>
             <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} />
-            <p className="text-[12px] font-semibold" style={{ color: "#16A34A" }}>
+            <p className="text-[12px] md:text-[13px] font-semibold" style={{ color: "#16A34A" }}>
               Delivered on {order.date}
             </p>
           </div>
@@ -206,8 +204,8 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
         >
           {/* Total */}
           <div>
-            <span className="text-[11px] font-medium uppercase tracking-wide" style={{ color: t.textMuted }}>Total</span>
-            <p className="text-[16px] sm:text-[18px] font-black" style={{ color: t.textPrimary }}>
+            <span className="text-[11px] md:text-[12px] font-medium uppercase tracking-wide" style={{ color: t.textMuted }}>Total</span>
+            <p className="text-[16px] sm:text-[18px] md:text-[20px] font-black" style={{ color: t.textPrimary }}>
               {formatINR(order.amount)}
             </p>
           </div>
@@ -217,7 +215,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             {order.status === "Delivered" && (
               <>
                 <button
-                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-95"
+                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold transition-all active:scale-95"
                   style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -225,7 +223,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                 </button>
                 <Link
                   href={`/orders/${order.internalId || order.id}`}
-                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold border transition-all active:scale-95 hover:bg-gray-50"
+                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] md:text-[14px] font-semibold border transition-all active:scale-95 hover:bg-gray-50"
                   style={{ borderColor: t.border, color: t.textSecondary }}
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
@@ -238,7 +236,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             {order.status === "Processing" && (
               <button
                 onClick={() => window.location.href = `/orders/${order.id}/track`}
-                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all active:scale-95"
                 style={{ background: t.bgBlueTint, color: t.bluePrimary }}
               >
                 <MapPin className="w-3.5 h-3.5" />
@@ -250,8 +248,8 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
               <button
                 onClick={handleDownloadInvoice}
                 disabled={downloading}
-                className="flex items-center gap-1.5 px-2.5 py-2 text-[12px] sm:text-[13px] font-semibold rounded-lg transition-colors hover:bg-gray-100 disabled:opacity-50"
-                style={{ color: t.textSecondary }}
+                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[13px] sm:text-[14px] md:text-[15px] font-semibold transition-all hover:bg-gray-50 border active:scale-95 disabled:opacity-50"
+                style={{ color: t.textSecondary, borderColor: t.border }}
                 title="Download Invoice"
               >
                 {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
@@ -262,7 +260,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             {canCancel && (
               <button
                 onClick={() => setShowCancelConfirm(true)}
-                className="flex items-center gap-1.5 px-2.5 py-2 text-[12px] font-semibold rounded-lg transition-colors hover:bg-red-50"
+                className="flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold rounded-lg transition-colors hover:bg-red-50"
                 style={{ color: "#DC2626" }}
               >
                 <XCircle className="w-3.5 h-3.5" />

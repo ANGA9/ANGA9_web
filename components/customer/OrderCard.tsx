@@ -3,11 +3,19 @@ import Link from "next/link";
 import {
   PackageOpen, Download, Loader2, XCircle,
   RotateCcw, MapPin, FileText, Package,
-  ShoppingBag, CheckCircle2, AlertTriangle
+  ShoppingBag, CheckCircle2, AlertTriangle,
+  ChevronRight, Truck
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+
+export interface OrderItem {
+  name: string;
+  qty: number;
+  image?: string;
+  price?: number;
+}
 
 export interface Order {
   internalId?: string;
@@ -20,6 +28,7 @@ export interface Order {
   status: "Delivered" | "Processing" | "Cancelled";
   rawStatus?: string;
   imageUrl?: string;
+  items?: OrderItem[];
 }
 
 function formatINR(value: number) {
@@ -27,7 +36,6 @@ function formatINR(value: number) {
 }
 
 export default function OrderCard({ order, onCancelled }: { order: Order; onCancelled?: (id: string) => void }) {
-  const [imgError, setImgError] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -35,8 +43,6 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
 
   const canCancel = order.status === "Processing" &&
     ["placed", "confirmed", "processing"].includes(order.rawStatus || "");
-
-  const showImage = order.imageUrl && !imgError;
 
   // Est delivery: +5 days from order date for ALL active orders
   const orderDateMs = Date.parse(order.date);
@@ -75,148 +81,194 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     }
   };
 
+  const statusColor = order.status === "Delivered"
+    ? { bg: "#DCFCE7", text: "#16A34A", dot: "#16A34A" }
+    : order.status === "Cancelled"
+    ? { bg: "#FEF2F2", text: "#DC2626", dot: "#DC2626" }
+    : { bg: "#EFF6FF", text: "#2563EB", dot: "#2563EB" };
+
+  const displayItems = order.items && order.items.length > 0 ? order.items : [{ name: order.product, qty: order.qty, image: order.imageUrl }];
+  const visibleItems = displayItems.slice(0, 3);
+  const remainingCount = displayItems.length - 3;
+
   return (
     <>
       <div
-        className="flex flex-col rounded-2xl border overflow-hidden"
-        style={{ background: t.bgCard, borderColor: t.border }}
+        className="rounded-2xl border overflow-hidden bg-white hover:shadow-md transition-shadow"
+        style={{ borderColor: t.border }}
       >
-        {/* ── Top row: image + details + status ── */}
-        <div className="flex items-start gap-3 p-4 sm:p-5">
-          {/* Product thumbnail */}
-          <div
-            className="flex h-[68px] w-[68px] sm:h-[80px] sm:w-[80px] shrink-0 items-center justify-center rounded-xl overflow-hidden border border-gray-100"
-            style={{ background: t.bgBlueTint }}
-          >
-            {showImage ? (
-              <img
-                src={order.imageUrl}
-                alt={order.product}
-                onError={() => setImgError(true)}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <PackageOpen className="h-7 w-7 sm:h-8 sm:w-8" style={{ color: t.bluePrimary, opacity: 0.4 }} />
-            )}
-          </div>
-
-          {/* Details */}
-          <div className="flex-1 min-w-0">
-            {/* Order ID — metadata weight: 11px muted */}
-            <p className="text-[11px] font-medium mb-1 tabular-nums" style={{ color: t.textMuted }}>
-              {order.id} · {order.date}
-            </p>
-
-            {/* Product name — headline weight */}
-            <h3
-              className="text-[14px] sm:text-[15px] font-bold leading-snug mb-1.5"
-              style={{ color: t.textPrimary, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
-            >
-              {order.product}
-            </h3>
-
-            <div className="flex flex-wrap items-center gap-1.5 text-[12px]" style={{ color: t.textSecondary }}>
-              <span>Qty: {order.qty}</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300" />
-              <span className="font-black text-[13px]" style={{ color: t.textPrimary }}>
-                {formatINR(order.amount)}
-              </span>
-            </div>
-
-            {/* Est. Delivery — persistent for ALL active orders */}
-            {order.status === "Processing" && (
-              <div className="flex items-center gap-1 mt-1.5">
-                <Package className="w-3 h-3" style={{ color: t.bluePrimary }} />
-                <p className="text-[11.5px] font-semibold" style={{ color: t.bluePrimary }}>
-                  Est. delivery: {estDeliveryStr}
-                </p>
-              </div>
-            )}
-            {order.status === "Delivered" && (
-              <div className="flex items-center gap-1 mt-1.5">
-                <CheckCircle2 className="w-3 h-3" style={{ color: t.bluePrimary }} />
-                <p className="text-[11.5px] font-semibold" style={{ color: t.bluePrimary }}>Delivered on {order.date}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Status badge */}
-          <div className="shrink-0 self-start mt-0.5">
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
-              style={{
-                background: order.status === "Cancelled" ? "#F3F4F6" : t.bgBlueTint,
-                color: order.status === "Cancelled" ? t.textMuted : t.bluePrimary,
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: order.status === "Cancelled" ? t.textMuted : t.bluePrimary }} />
-              {order.status}
+        {/* ── Order header bar ── */}
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b" style={{ borderColor: "#F3F4F6", background: "#FAFBFC" }}>
+          <div className="flex items-center gap-3 flex-wrap min-w-0">
+            <span className="text-[12px] font-semibold tabular-nums" style={{ color: t.textMuted }}>
+              {order.id}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:block" />
+            <span className="text-[12px] font-medium" style={{ color: t.textMuted }}>
+              {order.date}
             </span>
           </div>
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shrink-0"
+            style={{ background: statusColor.bg, color: statusColor.text }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: statusColor.dot }} />
+            {order.status}
+          </span>
         </div>
 
-        {/* ── Action bar ── */}
+        {/* ── Product items ── */}
+        <Link href={`/orders/${order.internalId || order.id}`} className="block">
+          <div className="px-4 sm:px-5 py-4 space-y-3">
+            {visibleItems.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-4">
+                {/* Product image */}
+                <div
+                  className="w-[72px] h-[72px] sm:w-[88px] sm:h-[88px] shrink-0 rounded-xl overflow-hidden border"
+                  style={{ borderColor: "#F3F4F6", background: "#F8FBFF" }}
+                >
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Package className="w-7 h-7 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Product details */}
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className="text-[14px] sm:text-[15px] font-semibold leading-snug mb-1"
+                    style={{
+                      color: t.textPrimary,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {item.name}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-2 text-[12px] sm:text-[13px]">
+                    <span style={{ color: t.textMuted }}>Qty: {item.qty}</span>
+                    {item.price != null && (
+                      <>
+                        <span className="w-1 h-1 rounded-full bg-gray-300" />
+                        <span className="font-bold" style={{ color: t.textPrimary }}>
+                          {formatINR(item.price * item.qty)}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <ChevronRight className="w-5 h-5 shrink-0 text-gray-300 hidden sm:block" />
+              </div>
+            ))}
+
+            {remainingCount > 0 && (
+              <p className="text-[13px] font-medium pl-[88px] sm:pl-[104px]" style={{ color: t.bluePrimary }}>
+                +{remainingCount} more item{remainingCount > 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
+        </Link>
+
+        {/* ── Delivery status bar ── */}
+        {order.status === "Processing" && (
+          <div className="mx-4 sm:mx-5 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "#EFF6FF" }}>
+            <Truck className="w-4 h-4 shrink-0" style={{ color: t.bluePrimary }} />
+            <p className="text-[12px] font-semibold" style={{ color: t.bluePrimary }}>
+              Estimated delivery by {estDeliveryStr}
+            </p>
+          </div>
+        )}
+        {order.status === "Delivered" && (
+          <div className="mx-4 sm:mx-5 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "#F0FDF4" }}>
+            <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} />
+            <p className="text-[12px] font-semibold" style={{ color: "#16A34A" }}>
+              Delivered on {order.date}
+            </p>
+          </div>
+        )}
+
+        {/* ── Order total + Action bar ── */}
         <div
-          className="flex items-center gap-2 px-4 sm:px-5 py-3 border-t"
-          style={{ borderColor: t.border, background: t.bgCard }}
+          className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-t"
+          style={{ borderColor: "#F3F4F6" }}
         >
-          {/* PRIMARY: Reorder (Delivered) or Track (Processing) */}
-          {order.status === "Delivered" && (
-            <>
+          {/* Total */}
+          <div>
+            <span className="text-[11px] font-medium uppercase tracking-wide" style={{ color: t.textMuted }}>Total</span>
+            <p className="text-[16px] sm:text-[18px] font-black" style={{ color: t.textPrimary }}>
+              {formatINR(order.amount)}
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            {order.status === "Delivered" && (
+              <>
+                <button
+                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-95"
+                  style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Reorder
+                </button>
+                <Link
+                  href={`/orders/${order.internalId || order.id}`}
+                  className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold border transition-all active:scale-95 hover:bg-gray-50"
+                  style={{ borderColor: t.border, color: t.textSecondary }}
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Report Issue</span>
+                  <span className="sm:hidden">Issue</span>
+                </Link>
+              </>
+            )}
+
+            {order.status === "Processing" && (
               <button
-                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-all active:scale-95 text-white"
-                style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
+                onClick={() => window.location.href = `/orders/${order.id}/track`}
+                className="flex items-center gap-1.5 rounded-lg px-3 sm:px-4 py-2 text-[12px] sm:text-[13px] font-semibold transition-all active:scale-95"
+                style={{ background: t.bgBlueTint, color: t.bluePrimary }}
               >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Reorder
+                <MapPin className="w-3.5 h-3.5" />
+                Track
               </button>
-              <Link
-                href={`/orders/${order.internalId || order.id}`}
-                className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-bold border transition-all active:scale-95 hover:bg-gray-50"
-                style={{ borderColor: t.border, color: t.textSecondary }}
+            )}
+
+            {order.internalId && (
+              <button
+                onClick={handleDownloadInvoice}
+                disabled={downloading}
+                className="flex items-center gap-1.5 px-2.5 py-2 text-[12px] sm:text-[13px] font-semibold rounded-lg transition-colors hover:bg-gray-100 disabled:opacity-50"
+                style={{ color: t.textSecondary }}
+                title="Download Invoice"
               >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                Report Issue
-              </Link>
-            </>
-          )}
+                {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">Invoice</span>
+              </button>
+            )}
 
-          {order.status === "Processing" && (
-            <button
-              onClick={() => window.location.href = `/orders/${order.id}/track`}
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-all active:scale-95"
-              style={{ background: t.bgBlueTint, color: t.bluePrimary }}
-            >
-              <MapPin className="w-3.5 h-3.5" />
-              Track
-            </button>
-          )}
-
-          {/* TERTIARY: Invoice — text link style */}
-          {order.internalId && (
-            <button
-              onClick={handleDownloadInvoice}
-              disabled={downloading}
-              className="flex items-center gap-1.5 px-3 py-2 text-[12.5px] sm:text-[13px] font-semibold rounded-lg transition-colors hover:bg-gray-100 disabled:opacity-50"
-              style={{ color: t.textSecondary }}
-              title="Download Invoice"
-            >
-              {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
-              Invoice
-            </button>
-          )}
-
-          {/* Cancel — far right, dangerous/muted */}
-          {canCancel && (
-            <button
-              onClick={() => setShowCancelConfirm(true)}
-              className="ml-auto flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold rounded-lg transition-colors hover:bg-gray-100"
-              style={{ color: t.textSecondary }}
-            >
-              <XCircle className="w-3.5 h-3.5" />
-              Cancel
-            </button>
-          )}
+            {canCancel && (
+              <button
+                onClick={() => setShowCancelConfirm(true)}
+                className="flex items-center gap-1.5 px-2.5 py-2 text-[12px] font-semibold rounded-lg transition-colors hover:bg-red-50"
+                style={{ color: "#DC2626" }}
+              >
+                <XCircle className="w-3.5 h-3.5" />
+                Cancel
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -237,15 +289,15 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
               <div className="w-full text-left mb-6">
                 <label className="block text-[13px] font-bold text-gray-700 mb-2">How would you like your refund?</label>
                 <div className="space-y-2">
-                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'bank' ? 'border-[#8B5CF6] bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <input type="radio" name="refundMode" value="bank" checked={refundMode === 'bank'} onChange={() => setRefundMode('bank')} className="w-4 h-4 text-[#8B5CF6] focus:ring-[#8B5CF6]" />
+                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'bank' ? 'border-[#2563EB] bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input type="radio" name="refundMode" value="bank" checked={refundMode === 'bank'} onChange={() => setRefundMode('bank')} className="w-4 h-4 text-[#2563EB] focus:ring-[#2563EB]" />
                     <div className="flex flex-col">
                       <span className="text-[14px] font-bold text-gray-900">Original Payment Method</span>
                       <span className="text-[12px] text-gray-500">Refund to your bank account (3-5 days)</span>
                     </div>
                   </label>
-                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'coins' ? 'border-[#8B5CF6] bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <input type="radio" name="refundMode" value="coins" checked={refundMode === 'coins'} onChange={() => setRefundMode('coins')} className="w-4 h-4 text-[#8B5CF6] focus:ring-[#8B5CF6]" />
+                  <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${refundMode === 'coins' ? 'border-[#2563EB] bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input type="radio" name="refundMode" value="coins" checked={refundMode === 'coins'} onChange={() => setRefundMode('coins')} className="w-4 h-4 text-[#2563EB] focus:ring-[#2563EB]" />
                     <div className="flex flex-col">
                       <span className="text-[14px] font-bold text-gray-900">ANGA Coins (Instant)</span>
                       <span className="text-[12px] text-gray-500">Get 100% value as coins instantly</span>

@@ -71,6 +71,7 @@ function OrdersContent() {
           status: (statusMap[o.status] ?? "Processing") as Order["status"],
           rawStatus: o.status,
           imageUrl: o.items?.[0]?.product_image,
+          items: (o.items ?? []).map(i => ({ name: i.product_name, qty: i.quantity, image: i.product_image, price: i.price })),
         }));
         setOrders(mapped);
       } catch {
@@ -116,13 +117,13 @@ function OrdersContent() {
       )}
 
       {/* Desktop-only heading & tabs */}
-      <div className="hidden md:flex items-center justify-center relative mb-6 lg:mb-8 mt-1 md:mt-2">
-        <h1 className="absolute left-[26px] text-[24px] md:text-[32px] font-medium tracking-tight whitespace-nowrap" style={{ color: t.textPrimary }}>
+      <div className="hidden md:block mb-6 lg:mb-8 mt-1 md:mt-2">
+        <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight mb-5" style={{ color: t.textPrimary }}>
           My Orders
         </h1>
         
         {/* ── Flipkart-style underline tabs ── */}
-        <div className="flex w-full max-w-2xl border-b" style={{ borderColor: t.border }}>
+        <div className="flex max-w-2xl border-b" style={{ borderColor: t.border }}>
           {tabs.map((tab) => {
             const isActive = activeTab === tab;
             const statusMatch = tab.replace("Active", "Processing");
@@ -144,7 +145,7 @@ function OrdersContent() {
                 {isActive && (
                   <span
                     className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                    style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
+                    style={{ background: t.bluePrimary }}
                   />
                 )}
               </button>
@@ -176,7 +177,7 @@ function OrdersContent() {
               {isActive && (
                 <span
                   className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                  style={{ background: '#FFFFFF', border: '2px solid ' + t.bluePrimary, color: t.bluePrimary }}
+                  style={{ background: t.bluePrimary }}
                 />
               )}
             </button>
@@ -291,5 +292,5 @@ interface ApiOrder {
   status: string;
   total: number;
   placed_at: string;
-  items?: { product_name: string; quantity: number; product_image?: string }[];
+  items?: { product_name: string; quantity: number; product_image?: string; price?: number }[];
 }

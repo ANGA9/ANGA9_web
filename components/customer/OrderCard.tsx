@@ -82,10 +82,10 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
   };
 
   const statusColor = order.status === "Delivered"
-    ? { bg: "#DCFCE7", text: "#16A34A", dot: "#16A34A" }
+    ? { bg: "#F3F4F6", text: "#111827", dot: "#16A34A" }
     : order.status === "Cancelled"
-    ? { bg: "#FEF2F2", text: "#DC2626", dot: "#DC2626" }
-    : { bg: "#EFF6FF", text: "#2563EB", dot: "#2563EB" };
+    ? { bg: "#F3F4F6", text: "#6B7280", dot: "#6B7280" }
+    : { bg: "#F3F4F6", text: "#111827", dot: "#2563EB" };
 
   const displayItems = order.items && order.items.length > 0 ? order.items : [{ name: order.product, qty: order.qty, image: order.imageUrl }];
   const visibleItems = displayItems.slice(0, 3);

@@ -88,6 +88,30 @@ function OrdersContent() {
       ? orders
       : orders.filter((o) => o.status === activeTab.replace("Active", "Processing"));
 
+  const FilterDropdown = () => (
+    <div className="relative">
+      <select
+        value={activeTab}
+        onChange={(e) => setActiveTab(e.target.value as any)}
+        className="appearance-none bg-white border rounded-full px-3 py-1.5 md:px-4 md:py-2 pr-8 text-[12px] md:text-[14px] font-semibold outline-none hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+        style={{ borderColor: t.border, color: t.textPrimary }}
+      >
+        {tabs.map(tab => {
+          const statusMatch = tab.replace("Active", "Processing");
+          const count = tab === "All Orders" 
+            ? orders.length 
+            : orders.filter((o) => o.status === statusMatch).length;
+          return (
+            <option key={tab} value={tab}>{tab} ({count})</option>
+          );
+        })}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-500">
+        <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+      </div>
+    </div>
+  );
+
   return (
     <div className="mx-auto max-w-[1400px] py-0 md:py-6 px-0 md:px-12">
       {/* ── Mobile Header ── */}
@@ -98,6 +122,7 @@ function OrdersContent() {
         <h1 className="text-[17px] font-medium text-gray-900 leading-tight flex-1">
           My Orders
         </h1>
+        <FilterDropdown />
       </header>
 
       <div className="px-4 md:px-0 pt-4 md:pt-0">
@@ -116,73 +141,24 @@ function OrdersContent() {
         </div>
       )}
 
-      {/* Desktop-only heading & tabs */}
-      <div className="hidden md:block mb-6 lg:mb-8 mt-1 md:mt-2">
-        <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight mb-5" style={{ color: t.textPrimary }}>
-          My Orders
-        </h1>
-        
-        {/* ── Flipkart-style underline tabs ── */}
-        <div className="flex max-w-2xl border-b" style={{ borderColor: t.border }}>
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab;
-            const statusMatch = tab.replace("Active", "Processing");
-            const count = tab === "All Orders" 
-              ? orders.length 
-              : orders.filter((o) => o.status === statusMatch).length;
-
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="relative flex-1 py-3 md:py-3.5 text-center transition-colors"
-                style={{ color: isActive ? t.bluePrimary : t.textMuted }}
-              >
-                <span className={`text-[13px] md:text-[14px] leading-tight ${isActive ? "font-semibold" : "font-medium"}`}>
-                  {tab}
-                </span>
-                <span className={`ml-1.5 text-[11px] md:text-[12px] ${isActive ? "font-semibold" : "font-normal"}`} style={{ opacity: isActive ? 0.8 : 0.5 }}>{count}</span>
-                {isActive && (
-                  <span
-                    className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                    style={{ background: t.bluePrimary }}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Mobile tabs */}
-      <div className="md:hidden flex border-b mb-4" style={{ borderColor: t.border }}>
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab;
-          const statusMatch = tab.replace("Active", "Processing");
-          const count = tab === "All Orders" 
-            ? orders.length 
-            : orders.filter((o) => o.status === statusMatch).length;
-
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className="relative flex-1 py-3 md:py-3.5 text-center transition-colors"
-              style={{ color: isActive ? t.bluePrimary : t.textMuted }}
+      {/* Heading & Filter (Desktop) */}
+      <div className="hidden md:flex items-end justify-between mb-6 md:mb-8 mt-1 md:mt-2 max-w-4xl mx-auto w-full">
+        <div>
+          <div className="flex items-baseline gap-3">
+            <h1
+              className="text-[24px] md:text-[32px] font-medium tracking-tight mb-1"
+              style={{ color: t.textPrimary }}
             >
-              <span className={`text-[13px] md:text-[14px] leading-tight ${isActive ? "font-semibold" : "font-medium"}`}>
-                {tab}
-              </span>
-              <span className={`ml-1.5 text-[11px] md:text-[12px] ${isActive ? "font-semibold" : "font-normal"}`} style={{ opacity: isActive ? 0.8 : 0.5 }}>{count}</span>
-              {isActive && (
-                <span
-                  className="absolute bottom-0 left-[15%] right-[15%] h-[2.5px] rounded-full"
-                  style={{ background: t.bluePrimary }}
-                />
-              )}
-            </button>
-          );
-        })}
+              My Orders
+            </h1>
+            <span className="text-[18px] font-bold text-gray-400">
+              ({orders.length} {orders.length === 1 ? "Order" : "Orders"})
+            </span>
+          </div>
+        </div>
+        <div>
+          <FilterDropdown />
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto w-full">

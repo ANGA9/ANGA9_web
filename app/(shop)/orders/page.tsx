@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 
 const tabs = ["All Orders", "Active", "Delivered", "Cancelled"] as const;
+type TabType = typeof tabs[number];
 
 const statusMap: Record<string, string> = {
   confirmed: "Processing",

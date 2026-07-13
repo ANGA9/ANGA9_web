@@ -253,7 +253,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                 title="Download Invoice"
               >
                 {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">Invoice</span>
+                <span>Download Invoice</span>
               </button>
             )}
 

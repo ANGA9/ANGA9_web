@@ -36,7 +36,7 @@ interface Address {
 }
 
 const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
-  label: "",
+  label: "Shop",
   line1: "",
   line2: "",
   city: "",
@@ -575,20 +575,39 @@ export default function CheckoutPage() {
             </>
           )}
         </button>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Label</label>
-            <input className={inputCls} placeholder="Home, Office..." value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+            <div className="relative">
+              <select 
+                className={`${inputCls} appearance-none pr-10 cursor-pointer bg-white`} 
+                value={form.label || "Shop"} 
+                onChange={(e) => setForm({ ...form, label: e.target.value })}
+              >
+                <option value="Shop">Shop</option>
+                <option value="Home">Home</option>
+                <option value="Office">Office</option>
+              </select>
+              <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+          </div>
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">State *</label>
+            <input className={inputCls} placeholder="Delhi" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
           </div>
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Pincode *</label>
             <input className={inputCls} placeholder="110001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
           </div>
-          <div className="sm:col-span-2">
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">City *</label>
+            <input className={inputCls} placeholder="New Delhi" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+          </div>
+          <div className="col-span-2">
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Flat / House No. *</label>
             <input className={inputCls} placeholder="e.g. Flat 402, 12-A" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
           </div>
-          <div className="sm:col-span-2">
+          <div className="col-span-2">
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Street Address *</label>
             <StreetAddressAutocomplete
               className={inputCls}
@@ -597,14 +616,6 @@ export default function CheckoutPage() {
               onChange={(v) => setForm((prev) => ({ ...prev, line2: v }))}
               onResolved={applyDetectedAddress}
             />
-          </div>
-          <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">City *</label>
-            <input className={inputCls} placeholder="New Delhi" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-          </div>
-          <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">State *</label>
-            <input className={inputCls} placeholder="Delhi" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
           </div>
         </div>
         <div className="flex gap-3 mt-6">

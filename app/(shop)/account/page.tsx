@@ -30,8 +30,12 @@ import {
   Truck,
   RotateCcw,
   XCircle,
+  ChevronDown,
+  LocateFixed,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getBrowserPosition, reverseGeocode, type DetectedAddress } from "@/lib/olaMaps";
+import StreetAddressAutocomplete from "@/components/customer/checkout/StreetAddressAutocomplete";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
@@ -53,7 +57,7 @@ interface Address {
 }
 
 const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
-  label: "",
+  label: "Shop",
   line1: "",
   line2: "",
   city: "",
@@ -231,6 +235,36 @@ export default function CustomerAccountPage() {
       setAddresses(res?.addresses || res?.data || []);
     } catch { /* ignore */ }
     setLoadingAddresses(false);
+  };
+
+  const [detectingLocation, setDetectingLocation] = useState(false);
+
+  const handleDetectLocation = async () => {
+    setDetectingLocation(true);
+    try {
+      const pos = await getBrowserPosition();
+      const detected = await reverseGeocode(pos.lat, pos.lng);
+      applyDetectedAddress(detected);
+      if (detected.city || detected.pincode) {
+        toast.success("Location detected — just add your flat / house number");
+      } else {
+        toast("Got your area. Please complete the remaining fields.", { icon: "📍" });
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Couldn't get GPS location. Please enter manually.");
+    } finally {
+      setDetectingLocation(false);
+    }
+  };
+
+  const applyDetectedAddress = (detected: DetectedAddress) => {
+    setForm((prev) => ({
+      ...prev,
+      line2: detected.line1 || prev.line2,
+      city: detected.city || prev.city,
+      state: detected.state || prev.state,
+      pincode: detected.pincode || prev.pincode,
+    }));
   };
 
   useEffect(() => {
@@ -417,9 +451,9 @@ export default function CustomerAccountPage() {
 
   // Common UI components used in both Mobile and Desktop views
   const addressFormUI = (
-    <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+    <div className="md:rounded-2xl md:border border-gray-200 bg-white overflow-hidden md:shadow-sm">
       {/* Form Header */}
-      <div className="flex items-center justify-between px-5 sm:px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50/50 border-b border-gray-100">
+      <div className="hidden md:flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white border border-blue-100 flex items-center justify-center shadow-sm">
             <MapPin className="w-5 h-5 text-[#1A6FD4]" />
@@ -437,47 +471,66 @@ export default function CustomerAccountPage() {
       </div>
 
       <div className="px-5 sm:px-6 py-5 sm:py-6 space-y-5">
-        {/* Label & Pincode row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          type="button"
+          onClick={handleDetectLocation}
+          disabled={detectingLocation}
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3 text-[14px] font-semibold text-gray-800 hover:bg-gray-50 hover:border-gray-400 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm"
+        >
+          {detectingLocation ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
+              Getting your location…
+            </>
+          ) : (
+            <>
+              <LocateFixed className="w-4 h-4 text-gray-700" />
+              Use my current location
+            </>
+          )}
+        </button>
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Label</label>
-            <input className={inputCls} placeholder="Home, Office..." value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+            <div className="relative">
+              <select 
+                className={`${inputCls} appearance-none pr-10 cursor-pointer bg-white`} 
+                value={form.label || "Shop"} 
+                onChange={(e) => setForm({ ...form, label: e.target.value })}
+              >
+                <option value="Shop">Shop</option>
+                <option value="Home">Home</option>
+                <option value="Office">Office</option>
+              </select>
+              <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
           </div>
           <div>
-            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
-              Pincode <span className="text-red-400">*</span>
-            </label>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">State *</label>
+            <input className={inputCls} placeholder="Karnataka" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Pincode *</label>
             <input className={inputCls} placeholder="560001" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
           </div>
-        </div>
-
-        {/* Address Lines — grouped in a tinted section */}
-        <div className="bg-gray-50/80 rounded-xl p-4 space-y-4 border border-gray-100">
           <div>
-            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
-              Address Line 1 <span className="text-red-400">*</span>
-            </label>
-            <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
-          </div>
-          <div>
-            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Address Line 2</label>
-            <input className={inputCls} placeholder="Landmark, Area" value={form.line2} onChange={(e) => setForm({ ...form, line2: e.target.value })} />
-          </div>
-        </div>
-
-        {/* City & State row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
-              City <span className="text-red-400">*</span>
-            </label>
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">City *</label>
             <input className={inputCls} placeholder="Bangalore" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
           </div>
-          <div>
-            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">
-              State <span className="text-red-400">*</span>
-            </label>
-            <input className={inputCls} placeholder="Karnataka" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
+          <div className="col-span-2">
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Flat / House No. *</label>
+            <input className={inputCls} placeholder="House/Flat No, Street" value={form.line1} onChange={(e) => setForm({ ...form, line1: e.target.value })} />
+          </div>
+          <div className="col-span-2">
+            <label className="text-[12px] font-bold uppercase tracking-wider mb-2 block text-gray-400">Street Address *</label>
+            <StreetAddressAutocomplete
+              className={inputCls}
+              placeholder="Landmark, Area, Start typing your building…"
+              value={form.line2 ?? ""}
+              onChange={(v) => setForm((prev) => ({ ...prev, line2: v }))}
+              onResolved={applyDetectedAddress}
+            />
           </div>
         </div>
       </div>
@@ -525,7 +578,7 @@ export default function CustomerAccountPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {addresses.map((addr) => (
-           <div key={addr.id} className="group rounded-xl border p-5 relative transition-all hover:shadow-md bg-white flex flex-col" style={{ borderColor: addr.is_default ? t.bluePrimary : t.border }}>
+           <div key={addr.id} className={`group rounded-xl border p-5 relative transition-all hover:border-gray-300 hover:shadow-sm bg-white flex flex-col ${addr.is_default ? "border-blue-200 bg-blue-50/10" : "border-gray-200"}`}>
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-[16px] font-black text-gray-900">
                   {addr.label || "Address"}
@@ -900,13 +953,13 @@ export default function CustomerAccountPage() {
             <header className="flex items-center justify-between px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">
               <div className="flex items-center">
                 <button 
-                  onClick={() => setMobileMenuOpen(true)} 
+                  onClick={() => showForm ? setShowForm(false) : setMobileMenuOpen(true)} 
                   className="mr-3 p-1.5 -ml-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors shrink-0"
                 >
                   <ArrowLeft className="w-6 h-6 text-gray-800" />
                 </button>
                 <h1 className="text-[17px] font-medium text-gray-900 leading-tight truncate">
-                  {activeNav}
+                  {showForm ? (editingId ? "Edit Address" : "Add New Address") : activeNav}
                 </h1>
               </div>
               {activeNav === "Addresses" && !showForm && (
@@ -917,7 +970,7 @@ export default function CustomerAccountPage() {
             </header>
             {activeNav === "Addresses" ? (
               showForm ? (
-                <div className="p-4">
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300 bg-white min-h-[calc(100vh-56px)]">
                   {addressFormUI}
                 </div>
               ) : (
@@ -938,11 +991,11 @@ export default function CustomerAccountPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="px-3 pt-3 pb-6 flex flex-col gap-3">
+                    <div className="flex flex-col bg-white border-t border-gray-100">
                       {addresses.map((addr) => (
-                        <div key={addr.id} className="rounded-2xl bg-gray-50 border border-gray-100 p-4 transition-all active:scale-[0.99]">
+                        <div key={addr.id} className="p-5 border-b border-gray-100 last:border-0 bg-white">
                           <div className="flex items-start gap-3">
-                            <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${addr.is_default ? 'bg-blue-100' : 'bg-gray-200/70'}`}>
+                            <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${addr.is_default ? 'bg-blue-50' : 'bg-gray-100'}`}>
                               <MapPin className={`w-4 h-4 ${addr.is_default ? 'text-[#1A6FD4]' : 'text-gray-500'}`} />
                             </div>
                             <div className="flex-1 min-w-0">

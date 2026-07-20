@@ -140,13 +140,13 @@ export default function HeroBanner() {
               className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
             >
                 <div className="relative w-full aspect-[11/5] md:aspect-[5/2] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
-                  <img
+                  <Image
                     src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as typeof DEFAULT_SLIDES[0]).image}
                     alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
-                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out ${loading ? 'opacity-50' : 'opacity-100'}`}
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
+                    fill
+                    className={`object-cover transition-transform duration-700 ease-out`}
+                    priority={index === 0}
+                    unoptimized={true}
                   />
                   <span className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-md text-black border border-black/80 text-[10px] font-bold uppercase px-2 py-1 rounded shadow-sm">AD</span>
                 </div>

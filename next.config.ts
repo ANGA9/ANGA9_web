@@ -5,22 +5,13 @@ const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : undefined;
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: supabaseHost
-      ? [
-          {
-            protocol: "https",
-            hostname: supabaseHost,
-            pathname: "/storage/v1/object/public/public-assets/**",
-            search: "",
-          },
-          {
-            protocol: "https",
-            hostname: supabaseHost,
-            pathname: "/storage/v1/object/public/product-images/**",
-            search: "",
-          },
-        ]
-      : [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: supabaseHost || "plfaugkadavxenpqawzw.supabase.co",
+        pathname: "/**",
+      }
+    ],
   },
   async rewrites() {
     // Dev only: proxy /api/* to the local backend so the browser can hit it

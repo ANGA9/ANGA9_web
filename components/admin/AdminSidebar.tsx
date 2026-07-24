@@ -26,6 +26,7 @@ import {
   MessageSquare,
   Crown,
   Activity,
+  Send,
 } from "lucide-react";
 
 type AdminLevel = "super_admin" | "admin";
@@ -63,6 +64,7 @@ const NAV: NavItem[] = [
   { label: "Loyalty", href: "/admin/loyalty", icon: Crown, superOnly: true },
   { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Risk & Fraud", href: "/admin/risk", icon: ShieldAlert, superOnly: true },
+  { label: "Marketing", href: "/admin/marketing", icon: Send, superOnly: true },
   { label: "Settings", href: "/admin/settings", icon: Settings, superOnly: true },
 ];
 

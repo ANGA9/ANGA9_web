@@ -5,6 +5,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck, CheckCircle2 } from "lucide-react"
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
 import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
@@ -398,17 +399,19 @@ export default function LoginSheet() {
                     </div>
                   )}
 
-                  <button
+                  <Button
                     type="submit"
+                    variant="cta"
+                    size="lg"
                     disabled={loading}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                    className="w-full"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
                     ) : (
                       "Request OTP"
                     )}
-                  </button>
+                  </Button>
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
@@ -444,17 +447,19 @@ export default function LoginSheet() {
                     </div>
                   )}
 
-                  <button
+                  <Button
                     type="submit"
+                    variant="cta"
+                    size="lg"
                     disabled={loading}
-                    className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                    className="w-full"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
                     ) : (
                       "Request OTP"
                     )}
-                  </button>
+                  </Button>
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
@@ -516,10 +521,12 @@ export default function LoginSheet() {
                   </div>
                 )}
 
-                <button
+                <Button
                   type="submit"
+                  variant="cta"
+                  size="lg"
                   disabled={loading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                  className="w-full"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">{spinner} Verifying...</span>
@@ -529,7 +536,7 @@ export default function LoginSheet() {
                       Verify & Login
                     </>
                   )}
-                </button>
+                </Button>
 
                 <div className="mt-3 text-center">
                   <p className="text-xs text-[#4B5563]">

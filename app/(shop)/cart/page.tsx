@@ -23,6 +23,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import CartSummary from "@/components/customer/CartSummary";
 import EmptyState from "@/components/shared/EmptyState";
+import { Button } from "@/components/ui/button";
 import { EmptyCartIllustration } from "@/components/shared/EmptyCartIllustration";
 import toast from "react-hot-toast";
 import { recommendationsApi } from "@/lib/recommendationsApi";
@@ -394,10 +395,12 @@ export default function CustomerCartPage() {
                   <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">VIEW DETAILS</span>
                 </div>
                 
-                <button
+                <Button
+                  variant="cta"
+                  size="lg"
                   disabled={isPlacingOrder}
                   onClick={handleProceedToCheckout}
-                  className="flex-1 h-[52px] rounded-xl text-[18px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-70 bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
+                  className="flex-1 h-[52px] text-[18px] font-black gap-3 w-full"
                 >
                   {isPlacingOrder ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
@@ -407,7 +410,7 @@ export default function CustomerCartPage() {
                       <ChevronRight className="w-5 h-5" />
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
           </>

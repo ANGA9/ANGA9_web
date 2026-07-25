@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
 import toast from "react-hot-toast";
 
+import { Button } from "@/components/ui/button";
+
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
 }
@@ -83,13 +85,14 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
         </div>
       </div>
 
-      <button
+      <Button
+        variant="cta"
+        size="lg"
         onClick={handleCheckout}
-        className="mt-8 flex w-full items-center justify-center rounded-xl h-[52px] text-[18px] font-black transition-all active:scale-[0.98]"
-        style={{ background: '#FFFFFF', border: '2px solid ' + t.primaryCta, color: t.primaryCta }}
+        className="mt-8 flex w-full h-[52px] text-[18px] font-black"
       >
         Proceed to Checkout
-      </button>
+      </Button>
 
       <Link
         href="/"

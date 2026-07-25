@@ -24,6 +24,7 @@ import type { Product } from "@/components/customer/ProductCard";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
 import DealTimer from "@/components/customer/DealTimer";
 import DealAlerts from "@/components/customer/DealAlerts";
+import { Button } from "@/components/ui/button";
 
 
 // Mirrors VARIANT_FIELDS in product-service (no name/is_active columns in DB)
@@ -614,34 +615,41 @@ export default function ProductDetailPage() {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex gap-3">
-            <button onClick={handleAddToCart} disabled={adding || stock.status === "out"}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-opacity hover:opacity-90 active:translate-y-px disabled:opacity-50"
-              style={{
-                background: added ? t.inStock : stock.status === "out" ? t.textMuted : "#FFFFFF",
-                color: added ? "#FFFFFF" : t.textPrimary,
-                border: `2px solid ${added ? t.inStock : stock.status === "out" ? t.textMuted : t.border}`,
-                padding: "14px 0",
-              }}>
+            <Button
+              variant="secondary-cta"
+              size="lg"
+              className="flex-1 w-full"
+              onClick={handleAddToCart}
+              disabled={adding || stock.status === "out"}
+            >
               {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : added ? <Check className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
               {adding ? "Adding..." : added ? "Added!" : stock.status === "out" ? "Out of Stock" : "Add to Cart"}
-            </button>
+            </Button>
 
-            <button onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
+            <Button
+              variant="cta"
+              size="lg"
+              className="flex-1 w-full"
+              onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
               disabled={adding || stock.status === "out"}
-              className="flex-1 flex items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:translate-y-px disabled:opacity-50 hover:bg-indigo-50"
-              style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", border: `2px solid ${stock.status === "out" ? t.textMuted : "#4338CA"}`, padding: "14px 0" }}>
+            >
               <Zap className="w-5 h-5" /> Buy Now
-            </button>
+            </Button>
 
-            <button onClick={handleWishlistToggle} disabled={togglingWishlist}
-              className="flex items-center justify-center w-14 rounded-xl border-2 transition-colors hover:bg-gray-50 disabled:opacity-70"
-              style={{ borderColor: isSaved ? "#DC2626" : t.border }} aria-label="Toggle wishlist">
+            <Button
+              variant="outline"
+              size="icon-lg"
+              className="w-14 shrink-0 rounded-[10px]"
+              onClick={handleWishlistToggle}
+              disabled={togglingWishlist}
+              aria-label="Toggle wishlist"
+            >
               {togglingWishlist ? (
                 <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
               ) : (
                 <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
               )}
-            </button>
+            </Button>
 
             <button onClick={handleShare}
               className="flex items-center justify-center w-14 rounded-xl border-2 transition-colors hover:bg-gray-50"
@@ -722,22 +730,26 @@ export default function ProductDetailPage() {
       {/* ══════════ MOBILE STICKY CTA BAR (<md) ══════════ */}
       <div className="md:hidden fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.10)]">
         <div className="px-4 py-3 flex gap-3 items-center">
-          <button onClick={handleAddToCart} disabled={adding || stock.status === "out"}
-            className="flex-1 h-[48px] rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60 border-2"
-            style={{
-              background: added ? t.inStock : "#FFFFFF",
-              color: added ? "#FFFFFF" : t.textPrimary,
-              borderColor: added ? t.inStock : t.border,
-            }}>
+          <Button
+            variant="secondary-cta"
+            size="lg"
+            className="flex-1 w-full h-[48px]"
+            onClick={handleAddToCart}
+            disabled={adding || stock.status === "out"}
+          >
             {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
             {adding ? "Adding" : added ? "Added!" : "Add to Cart"}
-          </button>
-          <button onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
+          </Button>
+
+          <Button
+            variant="cta"
+            size="lg"
+            className="flex-1 w-full h-[48px]"
+            onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
             disabled={adding || stock.status === "out"}
-            className="flex-1 h-[48px] rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-60 hover:bg-indigo-50 border-2"
-            style={{ background: "#FFFFFF", color: stock.status === "out" ? t.textMuted : "#4338CA", borderColor: stock.status === "out" ? t.textMuted : "#4338CA" }}>
+          >
             <Zap className="w-4 h-4" /> Buy Now
-          </button>
+          </Button>
         </div>
       </div>
 

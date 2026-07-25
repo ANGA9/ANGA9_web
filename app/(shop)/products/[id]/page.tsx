@@ -639,7 +639,7 @@ export default function ProductDetailPage() {
             <Button
               variant="outline"
               size="icon-lg"
-              className="w-14 shrink-0 rounded-[10px]"
+              className="w-14 shrink-0 rounded-[10px] border-2 border-gray-200"
               onClick={handleWishlistToggle}
               disabled={togglingWishlist}
               aria-label="Toggle wishlist"
@@ -647,15 +647,19 @@ export default function ProductDetailPage() {
               {togglingWishlist ? (
                 <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
               ) : (
-                <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }} fill={isSaved ? "#DC2626" : "transparent"} />
+                <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#4B5563" }} fill={isSaved ? "#DC2626" : "transparent"} />
               )}
             </Button>
 
-            <button onClick={handleShare}
-              className="flex items-center justify-center w-14 rounded-xl border-2 transition-colors hover:bg-gray-50"
-              style={{ borderColor: t.border }} aria-label="Share product">
-              <Share2 className="w-5 h-5" style={{ color: t.textSecondary }} />
-            </button>
+            <Button
+              variant="outline"
+              size="icon-lg"
+              onClick={handleShare}
+              className="w-14 shrink-0 rounded-[10px] border-2 border-gray-200"
+              aria-label="Share product"
+            >
+              <Share2 className="w-5 h-5 text-gray-600" />
+            </Button>
           </div>
 
           {/* Description */}

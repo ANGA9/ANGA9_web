@@ -622,7 +622,7 @@ export default function ProductDetailPage() {
               onClick={handleAddToCart}
               disabled={adding || stock.status === "out"}
             >
-              {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : added ? <Check className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
+              {adding ? <Loader2 className="size-6 animate-spin" /> : added ? <Check className="size-6" /> : <ShoppingCart className="size-6" />}
               {adding ? "Adding..." : added ? "Added!" : stock.status === "out" ? "Out of Stock" : "Add to Cart"}
             </Button>
 
@@ -633,21 +633,21 @@ export default function ProductDetailPage() {
               onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
               disabled={adding || stock.status === "out"}
             >
-              <Zap className="w-5 h-5" /> Buy Now
+              <Zap className="size-6" /> Buy Now
             </Button>
 
             <Button
               variant="outline"
               size="icon-lg"
-              className="w-14 shrink-0 rounded-[10px] border-2 border-gray-200"
+              className="w-14 shrink-0 rounded-[10px] border border-gray-800"
               onClick={handleWishlistToggle}
               disabled={togglingWishlist}
               aria-label="Toggle wishlist"
             >
               {togglingWishlist ? (
-                <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                <Loader2 className="size-6 animate-spin text-gray-400" />
               ) : (
-                <Heart className="w-5 h-5" style={{ color: isSaved ? "#DC2626" : "#4B5563" }} fill={isSaved ? "#DC2626" : "transparent"} />
+                <Heart className="size-6" strokeWidth={1.5} style={{ color: isSaved ? "#DC2626" : "#000000" }} fill={isSaved ? "#DC2626" : "transparent"} />
               )}
             </Button>
 
@@ -655,10 +655,10 @@ export default function ProductDetailPage() {
               variant="outline"
               size="icon-lg"
               onClick={handleShare}
-              className="w-14 shrink-0 rounded-[10px] border-2 border-gray-200"
+              className="w-14 shrink-0 rounded-[10px] border border-gray-800"
               aria-label="Share product"
             >
-              <Share2 className="w-5 h-5 text-gray-600" />
+              <Share2 className="size-6 text-black" strokeWidth={1.5} />
             </Button>
           </div>
 

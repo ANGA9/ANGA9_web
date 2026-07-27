@@ -399,19 +399,17 @@ export default function LoginSheet() {
                     </div>
                   )}
 
-                  <Button
+                  <button
                     type="submit"
-                    variant="cta"
-                    size="lg"
                     disabled={loading}
-                    className="w-full"
+                    className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
                     ) : (
                       "Request OTP"
                     )}
-                  </Button>
+                  </button>
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
@@ -447,19 +445,17 @@ export default function LoginSheet() {
                     </div>
                   )}
 
-                  <Button
+                  <button
                     type="submit"
-                    variant="cta"
-                    size="lg"
                     disabled={loading}
-                    className="w-full"
+                    className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">{spinner} Sending...</span>
                     ) : (
                       "Request OTP"
                     )}
-                  </Button>
+                  </button>
 
                   <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
                     By continuing, you agree to ANGA9&apos;s{" "}
@@ -497,7 +493,7 @@ export default function LoginSheet() {
               </div>
 
               <form onSubmit={handleVerify} className="space-y-3">
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-1.5 sm:gap-2">
                   {otp.map((d, i) => (
                     <input
                       key={i}
@@ -510,7 +506,7 @@ export default function LoginSheet() {
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
-                      className="h-10 w-10 rounded-lg border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-lg font-bold text-[#1A1A2E] outline-none transition-all"
+                      className="flex-1 h-12 max-w-[48px] rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all shadow-sm"
                     />
                   ))}
                 </div>
@@ -521,22 +517,20 @@ export default function LoginSheet() {
                   </div>
                 )}
 
-                <Button
+                <button
                   type="submit"
-                  variant="cta"
-                  size="lg"
                   disabled={loading}
-                  className="w-full"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">{spinner} Verifying...</span>
                   ) : (
                     <>
-                      <ShieldCheck className="w-4 h-4" />
+                      <ShieldCheck className="w-4.5 h-4.5" />
                       Verify & Login
                     </>
                   )}
-                </Button>
+                </button>
 
                 <div className="mt-3 text-center">
                   <p className="text-xs text-[#4B5563]">

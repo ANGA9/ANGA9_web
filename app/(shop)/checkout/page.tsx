@@ -684,7 +684,7 @@ export default function CheckoutPage() {
           <p className="text-[14px] text-gray-500 mb-5">Add a delivery address to proceed with payment</p>
           <button
             onClick={openAddForm}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[14px] font-bold transition-all active:scale-95 shadow-sm bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[14px] font-bold transition-all active:scale-95 shadow-sm bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-blue-50"
           >
             <Plus className="w-4 h-4" />
             Add an Address
@@ -696,8 +696,8 @@ export default function CheckoutPage() {
           {selectedAddress && !showAddressPicker && !showAddressForm && (
             <div className="rounded-xl border border-gray-200 bg-white p-4 transition-all">
               <div className="flex items-start gap-3.5">
-                <div className="mt-1 shrink-0 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
+                <div className="mt-1 shrink-0 w-5 h-5 rounded-full border-2 border-[#1A6FD4] flex items-center justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#1A6FD4]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
@@ -730,11 +730,11 @@ export default function CheckoutPage() {
                   <button
                     key={addr.id}
                     onClick={() => { setSelectedAddressId(addr.id); setShowAddressPicker(false); }}
-                    className={`w-full text-left rounded-xl border p-4 transition-all hover:border-gray-300 group ${isSelected ? 'border-gray-900 bg-gray-50/50' : 'border-gray-200 bg-white'}`}
+                    className={`w-full text-left rounded-xl border p-4 transition-all hover:border-gray-300 group ${isSelected ? 'border-[#1A6FD4] bg-blue-50/50' : 'border-gray-200 bg-white'}`}
                   >
                     <div className="flex items-start gap-3.5">
-                      <div className={`mt-1 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? 'border-gray-900' : 'border-gray-300 group-hover:border-gray-400'}`}>
-                        {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />}
+                      <div className={`mt-1 shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? 'border-[#1A6FD4]' : 'border-gray-300 group-hover:border-gray-400'}`}>
+                        {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#1A6FD4]" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -888,18 +888,18 @@ export default function CheckoutPage() {
             {/* Coupon Card */}
             <div className="rounded-xl border p-5 bg-white shadow-sm transition-all" style={{ borderColor: t.border }}>
               <div className="flex items-center gap-2 mb-4">
-                <Ticket className="w-5 h-5 text-emerald-500" />
+                <Ticket className="w-5 h-5 text-[#1A6FD4]" />
                 <h4 className="text-[16px] font-bold" style={{ color: t.textPrimary }}>Offers & Coupons</h4>
               </div>
               
               {appliedCoupon ? (
-                <div className="flex items-center justify-between p-3.5 rounded-xl border bg-emerald-50/50 border-emerald-100">
+                <div className="flex items-center justify-between p-3.5 rounded-xl border bg-blue-50/50 border-blue-100">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-wider">{appliedCoupon.code}</span>
-                      <span className="text-[13px] font-bold text-emerald-700">Applied</span>
+                      <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[11px] font-black uppercase tracking-wider">{appliedCoupon.code}</span>
+                      <span className="text-[13px] font-bold text-blue-700">Applied</span>
                     </div>
-                    <p className="text-[14px] text-emerald-600 font-medium">You saved {formatINR(couponDiscount)} on this order!</p>
+                    <p className="text-[14px] text-[#1A6FD4] font-medium">You saved {formatINR(couponDiscount)} on this order!</p>
                   </div>
                   <button onClick={() => { setAppliedCoupon(null); setCouponCode(""); }} className="p-2 text-red-400 hover:text-red-600 transition-colors bg-red-50 hover:bg-red-100 rounded-lg" title="Remove coupon">
                     <X className="w-4 h-4" />
@@ -913,13 +913,13 @@ export default function CheckoutPage() {
                         value={couponCode} 
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter coupon code" 
-                        className="h-11 w-full rounded-xl border border-gray-200 px-4 text-[14px] font-bold uppercase tracking-wide placeholder:normal-case placeholder:font-normal placeholder:tracking-normal focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all bg-gray-50/50"
+                        className="h-11 w-full rounded-xl border border-gray-200 px-4 text-[14px] font-bold uppercase tracking-wide placeholder:normal-case placeholder:font-normal placeholder:tracking-normal focus:border-[#1A6FD4] focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all bg-gray-50/50"
                       />
                     </div>
                     <button 
                       onClick={handleApplyCoupon}
                       disabled={validatingCoupon || !couponCode}
-                      className="h-11 px-5 rounded-xl font-bold text-[14px] transition-all disabled:opacity-50 active:scale-95 bg-white border-2 border-emerald-500 text-emerald-500 hover:bg-gray-50"
+                      className="h-11 px-5 rounded-xl font-bold text-[14px] transition-all disabled:opacity-50 active:scale-95 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-blue-50"
                     >
                       {validatingCoupon ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Apply"}
                     </button>
@@ -1081,8 +1081,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "all" }, { isTest: false });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white border-2 hover:bg-gray-50"
-                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 border-2 border-transparent text-white"
                   >
                     Pay Online
                   </button>
@@ -1204,8 +1203,7 @@ export default function CheckoutPage() {
             hasAddress && !cartBlocked ? (
               <button 
                 onClick={() => handlePickerSelect({ kind: "all" }, { isTest: false })}
-                className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-white border-2 hover:bg-gray-50 whitespace-nowrap"
-                style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-indigo-600 hover:bg-indigo-700 text-white whitespace-nowrap"
               >
                 Pay Online
               </button>

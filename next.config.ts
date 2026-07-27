@@ -5,7 +5,6 @@ const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : undefined;
 
 const nextConfig: NextConfig = {
   images: {
-    unoptimized: process.env.NODE_ENV !== "production",
     remotePatterns: [
       {
         protocol: "https",

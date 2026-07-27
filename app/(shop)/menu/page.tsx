@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -81,8 +82,14 @@ const POPULAR_CATEGORIES: { label: string; icon: React.ElementType; href: string
 
 export default function MobileMenuPage() {
   const router = useRouter();
-  const [activeCategory, setActiveCategory] = useState("POPULAR");
+  const [activeCategory, setActiveCategory] = useState("");
   const { tabs: categoriesTree } = useCategories();
+
+  useEffect(() => {
+    if (!activeCategory && categoriesTree.length > 0) {
+      setActiveCategory(categoriesTree[0].slug);
+    }
+  }, [categoriesTree, activeCategory]);
 
   // Redirect desktop visitors to home — this page is mobile-only
   useEffect(() => {
@@ -147,21 +154,6 @@ export default function MobileMenuPage() {
             .menu-aside::-webkit-scrollbar { display: none; }
           `}</style>
           <div className="flex flex-col menu-aside">
-            {/* Hardcoded Popular Tab */}
-            <button
-              onClick={() => setActiveCategory("POPULAR")}
-              className="relative flex flex-col items-center gap-1.5 py-3.5 px-2 transition-all"
-              style={{ background: activeCategory === "POPULAR" ? BRAND.bgCard : "transparent" }}
-            >
-              {activeCategory === "POPULAR" && <div className="absolute left-0 top-2 bottom-2 rounded-r-full" style={{ width: 3, background: BRAND.primary }} />}
-              <div className="relative flex items-center justify-center transition-all" style={{ width: 44, height: 44, background: "transparent" }}>
-                <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782232167452-popular_star_1782232042372.png" alt="Popular" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.1)" }} />
-              </div>
-              <span className="relative text-center leading-tight transition-colors" style={{ fontSize: "11.5px", fontWeight: activeCategory === "POPULAR" ? 700 : 500, color: activeCategory === "POPULAR" ? BRAND.primary : BRAND.textSecondary, letterSpacing: "0.01em", maxWidth: 76 }}>
-                Popular
-              </span>
-            </button>
-
             {categoriesTree.map((cat) => {
               const isActive = activeCategory === cat.slug;
               return (
@@ -194,7 +186,7 @@ export default function MobileMenuPage() {
                     }}
                   >
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt="" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.1)" }} />
+                      <Image src={cat.image_url} alt="" fill sizes="44px" className="object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.1)" }} />
                     ) : (
                       <span className="text-[14px] font-bold uppercase" style={{ color: isActive ? BRAND.primary : BRAND.iconDefault }}>
                         {cat.name.substring(0, 2)}
@@ -246,115 +238,6 @@ export default function MobileMenuPage() {
               animation: "subcatSlideIn 200ms ease",
             }}
           >
-            {activeCategory === "POPULAR" ? (
-              /* ── Popular Tab Content ── */
-              <>
-                {/* Featured Section */}
-                <div className="mb-5">
-                  <h3
-                    className="text-[10px] font-black uppercase tracking-widest mb-3 px-0.5"
-                    style={{ color: BRAND.textMuted }}
-                  >
-                    Featured
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {FEATURED_ITEMS.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          className="relative flex flex-col justify-end overflow-hidden rounded-2xl active:scale-[0.97] transition-all"
-                          style={{
-                            height: 110,
-                            background: BRAND.primaryLight,
-                            border: `1px solid ${BRAND.border}`,
-                          }}
-                        >
-                          {/* Large decorative icon — top-right */}
-                          <Icon
-                            className="absolute top-3 right-3 opacity-[0.08]"
-                            style={{ width: 52, height: 52, color: BRAND.primary }}
-                          />
-                          {/* Foreground icon — top-left */}
-                          <div
-                            className="absolute top-3 left-3 flex items-center justify-center rounded-xl"
-                            style={{
-                              width: 36,
-                              height: 36,
-                              background: BRAND.primaryMid,
-                            }}
-                          >
-                            <Icon style={{ width: 18, height: 18, color: BRAND.primary }} />
-                          </div>
-                          {/* Label at bottom */}
-                          <div className="px-3 pb-3 pt-2">
-                            <span
-                              className="text-[12px] font-bold leading-tight block"
-                              style={{ color: BRAND.text }}
-                            >
-                              {item.label}
-                            </span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Popular Categories — icons instead of emojis */}
-                <div>
-                  <h3
-                    className="text-[10px] font-black uppercase tracking-widest mb-3 px-0.5"
-                    style={{ color: BRAND.textMuted }}
-                  >
-                    Popular Categories
-                  </h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {POPULAR_CATEGORIES.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border hover:shadow-sm active:scale-[0.97] transition-all text-center"
-                          style={{
-                            borderColor: BRAND.borderLight,
-                            background: BRAND.bgCard,
-                          }}
-                        >
-                          <div
-                            className="flex items-center justify-center rounded-lg"
-                            style={{
-                              width: 32,
-                              height: 32,
-                              background: BRAND.bg,
-                            }}
-                          >
-                            <Icon
-                              style={{
-                                width: 16,
-                                height: 16,
-                                color: BRAND.textSecondary,
-                                strokeWidth: 1.8,
-                              }}
-                            />
-                          </div>
-                          <span
-                            className="text-[10.5px] font-semibold leading-tight"
-                            style={{ color: BRAND.text }}
-                          >
-                            {item.label}
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
-            ) : (
-              /* ── Category Subcategories ── */
-              <>
                 {/* Subcategory Group */}
                 <div className="grid grid-cols-3 gap-y-6 gap-x-2 pt-2">
                   {activeMeta?.children.map((item) => (
@@ -364,7 +247,7 @@ export default function MobileMenuPage() {
                       className="flex flex-col items-center text-center gap-2 group active:scale-95 transition-transform"
                     >
                       <div
-                        className="flex items-center justify-center transition-shadow group-hover:shadow-sm"
+                        className="relative flex items-center justify-center transition-shadow group-hover:shadow-sm"
                         style={{
                           width: 68,
                           height: 68,
@@ -372,9 +255,9 @@ export default function MobileMenuPage() {
                         }}
                       >
                         {item.image_url ? (
-                          <img src={item.image_url} alt="" className="w-full h-full object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.15)" }} />
+                          <Image src={item.image_url} alt="" fill sizes="68px" className="object-contain" style={{ mixBlendMode: "multiply", filter: "contrast(1.05) brightness(1.05)", transform: "scale(1.15)" }} />
                         ) : (
-                          <img src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" className="w-full h-full object-contain opacity-60" style={{ mixBlendMode: "multiply", transform: "scale(1.1)" }} />
+                          <Image src="https://plfaugkadavxenpqawzw.supabase.co/storage/v1/object/public/category-icons/admin/1782233292873-placeholder_icon_1782233271674.png" alt="Placeholder" fill sizes="68px" className="object-contain opacity-60" style={{ mixBlendMode: "multiply", transform: "scale(1.1)" }} />
                         )}
                       </div>
                       <span
@@ -386,8 +269,6 @@ export default function MobileMenuPage() {
                     </Link>
                   ))}
                 </div>
-              </>
-            )}
           </div>
         </div>
       </div>

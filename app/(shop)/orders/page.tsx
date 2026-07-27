@@ -219,11 +219,16 @@ function OrdersContent() {
       {/* Heading & Filter (Desktop) */}
       <div className="hidden md:flex items-end justify-between mb-6 md:mb-8 mt-1 md:mt-2 w-full md:px-[26px]">
         <div>
-          <h1 className="text-[28px] font-black tracking-tight" style={{ color: t.textPrimary }}>
-            My Orders
-          </h1>
-          <p className="text-gray-500 font-medium mt-1">
-            {orders.length} {orders.length === 1 ? 'Order' : 'Orders'}
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-[24px] md:text-[32px] font-medium tracking-tight mb-1" style={{ color: t.textPrimary }}>
+              My Orders
+            </h1>
+            <span className="text-[18px] font-bold text-gray-400">
+              ({orders.length} {orders.length === 1 ? 'Order' : 'Orders'})
+            </span>
+          </div>
+          <p className="text-[13px] md:text-[15px] mt-1" style={{ color: t.textSecondary }}>
+            {orders.length} {orders.length === 1 ? 'order' : 'orders'} placed
           </p>
         </div>
         <div className="flex items-center gap-3">

@@ -108,7 +108,7 @@ export default function CustomerShopLayout({
 
             {/* ══════════ MOBILE NAV (<md) ══════════ */}
             {!hasOwnMobileHeader && (
-              <div className="block md:hidden z-40 relative">
+              <div className="block md:hidden sticky top-0 z-40">
                 <MobileTopHeader />
               </div>
             )}

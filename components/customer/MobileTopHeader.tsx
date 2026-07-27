@@ -43,6 +43,13 @@ function MobileTopHeaderContent() {
 
   const [isPending, startTransition] = useTransition();
   const [loadingDots, setLoadingDots] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isPending) {
@@ -378,13 +385,7 @@ function MobileTopHeaderContent() {
       </div>
 
       {/* ── Row 3: Elevated Search Bar (taps open /search/explore) ── */}
-      <div
-        className="px-4 py-2 pb-4 sticky top-0 z-50 backdrop-blur-md"
-        style={{
-          background: `linear-gradient(to bottom, ${activeTabConfig.gradientVia}E6, #ffffffE6)`,
-          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
-        }}
-      >
+      <div className="px-4 py-2 pb-4">
         <style>{`
           @keyframes searchHintIn {
             0% { transform: translateY(100%); opacity: 0; }
@@ -454,7 +455,7 @@ function MobileTopHeaderContent() {
 
       {/* ── Row 4: Folder Tabs (hidden on search results) ── */}
       {pathname !== "/search" && (
-      <div className="w-full pt-1 bg-transparent">
+      <div className={`w-full bg-transparent transition-all duration-300 overflow-hidden ${isScrolled ? "max-h-0 opacity-0" : "max-h-[60px] opacity-100 pt-1"}`}>
         <div className="flex items-center justify-around px-2 sm:px-3 border-b border-[#E5E7EB]">
           {MOBILE_TABS.map((tab) => {
             const isActive = currentTab === tab.key;

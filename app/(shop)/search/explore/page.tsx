@@ -90,6 +90,11 @@ function ExploreContent() {
     setListening(false);
   }, []);
 
+  const latestCallbacks = useRef({
+    handleQueryChange: (v: string) => {},
+    submitSearch: (v: string) => {}
+  });
+
   // Auto-start if ?voice=1
   const voiceParam = searchParams?.get("voice");
   const voiceStarted = useRef(false);
@@ -116,11 +121,11 @@ function ExploreContent() {
       const current = final || interim;
       if (current) {
         setVoiceTranscript(current);
-        handleQueryChange(current);
+        latestCallbacks.current.handleQueryChange(current);
       }
       // Auto-submit on final result
       if (final.trim()) {
-        setTimeout(() => submitSearch(final.trim()), 400);
+        setTimeout(() => latestCallbacks.current.submitSearch(final.trim()), 400);
       }
     };
   }, []);
@@ -278,6 +283,10 @@ function ExploreContent() {
     saveRecentSearch(term);
     router.push(`/search?q=${encodeURIComponent(term)}`);
   };
+
+  useEffect(() => {
+    latestCallbacks.current = { handleQueryChange, submitSearch };
+  }, [handleQueryChange, submitSearch]);
 
   // ── Trending fetch ──
   const fetchTrending = useCallback(

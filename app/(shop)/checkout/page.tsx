@@ -44,7 +44,7 @@ const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
   pincode: "",
 };
 
-const inputCls = "h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-[14px] placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all shadow-sm";
+const inputCls = "h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-[14px] placeholder:text-gray-400 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all shadow-sm";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -561,16 +561,16 @@ export default function CheckoutPage() {
           type="button"
           onClick={handleDetectLocation}
           disabled={detectingLocation}
-          className="w-full mb-6 flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3 text-[14px] font-semibold text-gray-800 hover:bg-gray-50 hover:border-gray-400 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm"
+          className="w-full mb-6 flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-600 bg-white px-4 py-3 text-[14px] font-bold text-indigo-600 hover:bg-indigo-50 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm"
         >
           {detectingLocation ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               Getting your location…
             </>
           ) : (
             <>
-              <LocateFixed className="w-4 h-4 text-gray-700" />
+              <LocateFixed className="w-4 h-4" />
               Use my current location
             </>
           )}
@@ -628,7 +628,7 @@ export default function CheckoutPage() {
           <button
             onClick={handleSaveAddress}
             disabled={savingAddress}
-            className="px-8 py-3 rounded-xl text-[14px] font-bold disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 shadow-md bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+            className="px-8 py-3 rounded-xl text-[14px] font-bold disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white border-2 border-transparent"
           >
             {savingAddress && <Loader2 className="w-4 h-4 animate-spin" />}
             <Save className="w-4 h-4" />
@@ -1092,7 +1092,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "cod" });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50"
                   >
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
@@ -1161,7 +1161,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "cod" });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-black border border-gray-200 hover:bg-gray-50"
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50"
                   >
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery

@@ -97,6 +97,8 @@ export default function CheckoutPage() {
   // Inline address form state
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [receiverName, setReceiverName] = useState("");
+  const [receiverPhone, setReceiverPhone] = useState("");
   const [savingAddress, setSavingAddress] = useState(false);
   const [detectingLocation, setDetectingLocation] = useState(false);
 
@@ -309,6 +311,8 @@ export default function CheckoutPage() {
   // ── Inline address form handlers ──
   const openAddForm = () => {
     setForm(EMPTY_FORM);
+    setReceiverName(dbUser?.full_name || "");
+    setReceiverPhone(dbUser?.phone || "");
     setShowAddressForm(true);
     setShowAddressPicker(false);
   };
@@ -353,6 +357,9 @@ export default function CheckoutPage() {
     setSavingAddress(true);
     try {
       await api.post("/api/users/addresses", form);
+      if (receiverName !== dbUser?.full_name || receiverPhone !== dbUser?.phone) {
+        api.patch("/api/users/profile", { full_name: receiverName, phone: receiverPhone }).catch(console.error);
+      }
       toast.success("Address added successfully!");
       setShowAddressForm(false);
       setForm(EMPTY_FORM);
@@ -557,24 +564,38 @@ export default function CheckoutPage() {
 
         
         {/* Auto-detect */}
-        <button
-          type="button"
-          onClick={handleDetectLocation}
-          disabled={detectingLocation}
-          className="w-full mb-6 flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-600 bg-white px-4 py-3 text-[14px] font-bold text-indigo-600 hover:bg-indigo-50 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm"
-        >
-          {detectingLocation ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Getting your location…
-            </>
-          ) : (
-            <>
-              <LocateFixed className="w-4 h-4" />
-              Use my current location
-            </>
-          )}
-        </button>
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex-1 grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Receiver Name</label>
+              <input className={inputCls} placeholder="Name" value={receiverName} onChange={(e) => setReceiverName(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Phone Number</label>
+              <input className={inputCls} placeholder="Phone" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} />
+            </div>
+          </div>
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={handleDetectLocation}
+              disabled={detectingLocation}
+              className="h-12 w-full md:w-auto px-6 flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-600 bg-white text-[14px] font-bold text-indigo-600 hover:bg-indigo-50 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm whitespace-nowrap"
+            >
+              {detectingLocation ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Getting location…
+                </>
+              ) : (
+                <>
+                  <LocateFixed className="w-4 h-4" />
+                  Use current location
+                </>
+              )}
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block text-gray-500">Label</label>

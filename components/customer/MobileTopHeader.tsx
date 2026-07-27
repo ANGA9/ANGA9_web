@@ -378,7 +378,13 @@ function MobileTopHeaderContent() {
       </div>
 
       {/* ── Row 3: Elevated Search Bar (taps open /search/explore) ── */}
-      <div className="px-4 py-2 pb-4">
+      <div
+        className="px-4 py-2 pb-4 sticky top-0 z-50 backdrop-blur-md"
+        style={{
+          background: `linear-gradient(to bottom, ${activeTabConfig.gradientVia}E6, #ffffffE6)`,
+          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
+        }}
+      >
         <style>{`
           @keyframes searchHintIn {
             0% { transform: translateY(100%); opacity: 0; }

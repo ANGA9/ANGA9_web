@@ -1,8 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { Send, Image as ImageIcon, Smartphone, Loader2, CheckCircle2 } from "lucide-react";
+import { Send, Image as ImageIcon, Smartphone, Loader2, CheckCircle2, Copy, History } from "lucide-react";
+
+interface BroadcastHistory {
+  id: string;
+  title: string;
+  body: string;
+  imageUrl: string;
+  successCount: number;
+  failureCount: number;
+  timestamp: string;
+}
 
 export default function MarketingPage() {
   const [title, setTitle] = useState("");
@@ -14,6 +24,14 @@ export default function MarketingPage() {
   const [error, setError] = useState("");
 
   const [result, setResult] = useState<{ successCount: number; failureCount: number } | null>(null);
+  const [history, setHistory] = useState<BroadcastHistory[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('broadcast_history');
+      if (saved) setHistory(JSON.parse(saved));
+    } catch (err) {}
+  }, []);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +53,23 @@ export default function MarketingPage() {
       });
       setResult(res);
       setSuccess(true);
+      
+      const newHistory: BroadcastHistory = {
+        id: Date.now().toString(),
+        title,
+        body,
+        imageUrl,
+        successCount: res.successCount,
+        failureCount: res.failureCount,
+        timestamp: new Date().toISOString(),
+      };
+      
+      setHistory((prev) => {
+        const updated = [newHistory, ...prev];
+        try { localStorage.setItem('broadcast_history', JSON.stringify(updated)); } catch (e) {}
+        return updated;
+      });
+
       setTitle("");
       setBody("");
       setImageUrl("");
@@ -186,6 +221,76 @@ export default function MarketingPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Broadcast History ── */}
+      <div className="mt-12">
+        <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2 mb-6">
+          <History className="w-5 h-5 text-gray-500" /> Past Broadcasts
+        </h2>
+        
+        {history.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-gray-200 p-8 text-center text-gray-500 font-medium">
+            No past broadcasts found.
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-6 py-4 text-[12px] font-bold text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-4 text-[12px] font-bold text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-4 text-[12px] font-bold text-gray-500 uppercase tracking-wider">Content</th>
+                    <th className="px-6 py-4 text-[12px] font-bold text-gray-500 uppercase tracking-wider text-right">Reach</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {history.map((h) => (
+                    <tr key={h.id} className="hover:bg-gray-50/50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-[13px] text-gray-500 font-medium">
+                        {new Date(h.timestamp).toLocaleString(undefined, {
+                          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                        })}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-start gap-2">
+                          <p className="text-[14px] font-bold text-gray-900">{h.title}</p>
+                          <button 
+                            onClick={() => navigator.clipboard.writeText(h.title)}
+                            className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-700 transition-colors shrink-0 mt-0.5"
+                            title="Copy Title"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-start gap-2">
+                          <p className="text-[13px] text-gray-600 font-medium line-clamp-2 max-w-md">{h.body || "-"}</p>
+                          {h.body && (
+                            <button 
+                              onClick={() => navigator.clipboard.writeText(h.body)}
+                              className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-700 transition-colors shrink-0"
+                              title="Copy Content"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-bold bg-green-50 text-green-700 border border-green-200">
+                          {h.successCount} users
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

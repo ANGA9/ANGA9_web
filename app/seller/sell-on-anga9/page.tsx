@@ -84,7 +84,7 @@ export default function SellerLandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50">
+                <Link href="/seller/register" className="h-12 sm:h-14 px-8 sm:px-10 font-bold rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center bg-[#4338CA] border-2 border-[#4338CA] text-white hover:bg-[#4338CA]/90">
                   Start Selling
                 </Link>
                 <button onClick={(e) => { e.preventDefault(); document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }); }} className="h-12 sm:h-14 px-8 sm:px-10 border-2 border-[#E8EEF4] text-[#1A1A2E] font-bold rounded-xl hover:border-[#1A6FD4] transition-all flex items-center justify-center gap-2 cursor-pointer">
@@ -426,7 +426,7 @@ export default function SellerLandingPage() {
               </p>
               <Link
                 href="/seller/register"
-                className="inline-flex h-[52px] items-center justify-center rounded-[8px] px-8 text-base md:text-lg font-bold shadow-sm transition-all hover:scale-[1.02] bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
+                className="inline-flex h-[52px] items-center justify-center rounded-[8px] px-8 text-base md:text-lg font-bold shadow-sm transition-all hover:scale-[1.02] bg-[#4338CA] border-2 border-[#4338CA] text-white hover:bg-[#4338CA]/90"
               >
                 Start Selling
               </Link>

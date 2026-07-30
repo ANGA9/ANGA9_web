@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { PackageOpen, Heart, ShoppingCart, Loader2, X, Zap } from "lucide-react";
+import { PackageOpen, Heart, ShoppingCart, Loader2, X, Zap, Plus, Check } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/WishlistContext";
@@ -46,6 +46,7 @@ export default function ProductCard({
   const [imgError, setImgError] = useState(false);
 
   const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
+  const isAddedToCart = cart.items.some((item) => item.productId === product.id);
 
   const discount =
     product.originalPrice > product.price && product.originalPrice > 0
@@ -82,6 +83,10 @@ export default function ProductCard({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isAddedToCart) {
+      router.push("/cart");
+      return;
+    }
     if (adding) return;
     setAdding(true);
     try {
@@ -244,22 +249,48 @@ export default function ProductCard({
 
 
           {/* Price + savings */}
-          <div className="mt-auto">
-            <div className="flex items-baseline gap-1.5 flex-wrap">
-              <span className="font-bold tracking-tight" style={{ color: t.textPrimary, fontSize: "19px" }}>
-                {formatINR(product.price)}
-              </span>
-              {product.originalPrice > product.price && (
-                <span className="line-through" style={{ color: t.textSecondary, fontSize: "13px" }}>
-                  {formatINR(product.originalPrice)}
+          <div className="mt-auto flex items-end justify-between gap-2">
+            <div>
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <span className="font-bold tracking-tight" style={{ color: t.textPrimary, fontSize: "19px" }}>
+                  {formatINR(product.price)}
                 </span>
+                {product.originalPrice > product.price && (
+                  <span className="line-through" style={{ color: t.textSecondary, fontSize: "13px" }}>
+                    {formatINR(product.originalPrice)}
+                  </span>
+                )}
+              </div>
+              {/* Absolute savings indicator */}
+              {absoluteSaving > 0 && (
+                <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
+                  Save {formatINR(absoluteSaving)}
+                </p>
               )}
             </div>
-            {/* Absolute savings indicator */}
-            {absoluteSaving > 0 && (
-              <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
-                Save {formatINR(absoluteSaving)}
-              </p>
+            
+            {/* Quick Add to Cart Button */}
+            {!isWishlistContext && (
+              <button
+                onClick={handleAddToCart}
+                disabled={adding}
+                className="shrink-0 flex items-center justify-center gap-0.5 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md transition-all border border-indigo-600 text-indigo-600 bg-white hover:bg-indigo-50 active:scale-95"
+                aria-label={isAddedToCart ? "View cart" : "Add to cart"}
+              >
+                {adding ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : isAddedToCart ? (
+                  <>
+                    <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider leading-none mt-[1px]">Added</span>
+                    <Check className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider leading-none mt-[1px]">Add</span>
+                    <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
+                  </>
+                )}
+              </button>
             )}
           </div>
         </div>

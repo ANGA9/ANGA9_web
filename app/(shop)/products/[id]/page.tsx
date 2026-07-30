@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check, CheckCircle2,
-  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock, Zap,
+  PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock, Zap, ArrowDown,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -481,36 +481,42 @@ export default function ProductDetailPage() {
         <div className="px-4 md:px-0 mt-4 md:mt-0">
 
           {/* Seller Name (Plain Text Link) */}
-          <div className="mb-1.5">
+          <div className="mb-1">
             {storePublished ? (
-              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-1.5 group cursor-pointer w-fit">
-                <span className="text-[15px] font-bold text-[#4338CA] group-hover:underline">{displaySellerName}</span>
-                <CheckCircle2 className="w-4 h-4 text-[#4338CA]" />
+              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2 group cursor-pointer w-fit">
+                <span className="font-bold leading-tight group-hover:underline text-lg md:text-xl" style={{ color: t.textPrimary }}>{displaySellerName}</span>
               </Link>
             ) : (
-              <div className="inline-flex items-center gap-1.5 w-fit">
-                <span className="text-[15px] font-bold text-[#4338CA]">{displaySellerName}</span>
+              <div className="inline-flex items-center gap-2 w-fit">
+                <span className="font-bold leading-tight text-lg md:text-xl" style={{ color: t.textPrimary }}>{displaySellerName}</span>
               </div>
             )}
           </div>
 
           {/* Name */}
-          <h1 className="font-medium leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(20px, 3.5vw, 24px)' }}>
+          <h1 className="font-normal leading-tight mb-3 text-lg md:text-xl" style={{ color: t.textPrimary }}>
             {product.name}
           </h1>
 
           {/* Price */}
-          <div className="flex items-baseline gap-3 mb-4">
-            <span className="font-bold" style={{ color: t.textPrimary, fontSize: 'clamp(28px, 5vw, 36px)' }}>
-              {formatINR(currentPrice)}
-            </span>
-            {discount > 0 && (
+          <div className="flex items-center gap-2 md:gap-3 mb-1">
+            {discount > 0 ? (
               <>
-                <span className="line-through text-sm md:text-base" style={{ color: t.textMuted }}>
-                  MRP {formatINR(product.base_price)}
+                <span className="font-bold text-[#059669] flex items-center text-xl md:text-2xl">
+                  <ArrowDown className="w-5 h-5 md:w-6 md:h-6 -ml-1 md:-ml-1.5" strokeWidth={3.5} />
+                  {discount}%
                 </span>
-                <span className="text-sm font-semibold" style={{ color: '#4338CA' }}>{discount}% below MRP</span>
+                <span className="line-through font-medium text-lg md:text-xl" style={{ color: '#737373' }}>
+                  {product.base_price.toLocaleString('en-IN')}
+                </span>
+                <span className="font-extrabold ml-1 text-2xl md:text-3xl" style={{ color: '#262626' }}>
+                  {formatINR(currentPrice)}
+                </span>
               </>
+            ) : (
+              <span className="font-extrabold text-2xl md:text-3xl" style={{ color: '#262626' }}>
+                {formatINR(currentPrice)}
+              </span>
             )}
             {activeDeal && activeDeal.type === 'quantity' && activeDeal.quantity_threshold && quantity < activeDeal.quantity_threshold && (
               <span className="text-sm font-semibold ml-2 px-2 py-1 rounded bg-white border-2 border-[#EA580C] text-[#EA580C] hover:bg-gray-50">
@@ -518,6 +524,9 @@ export default function ProductDetailPage() {
               </span>
             )}
           </div>
+          <p className="text-[#009e7f] font-semibold text-sm md:text-[15px] mb-4">
+            inclusive of all taxes
+          </p>
 
           {/* Deal Timer */}
           {activeDeal && activeDeal.ends_at && (
@@ -526,25 +535,21 @@ export default function ProductDetailPage() {
 
           {/* Stock Status & Notify Me */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit" style={{
-              background: stock.status === "in" ? `${t.inStock}15` : stock.status === "low" ? `${t.lowStock}15` : stock.status === "out" ? `${t.outOfStock}15` : '#f3f4f6',
-              border: `1px solid ${stock.status === "in" ? `${t.inStock}30` : stock.status === "low" ? `${t.lowStock}30` : stock.status === "out" ? `${t.outOfStock}30` : '#e5e7eb'}`
-            }}>
-              <div className="w-1.5 h-1.5 rounded-full" style={{
-                  background: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : t.outOfStock,
-              }} />
-              <span className="text-xs font-bold uppercase tracking-wider" style={{
-                color: stock.status === "in" ? t.inStock : stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
+            {stock.status !== "in" ? (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit" style={{
+                background: stock.status === "low" ? `${t.lowStock}15` : stock.status === "out" ? `${t.outOfStock}15` : '#f3f4f6',
+                border: `1px solid ${stock.status === "low" ? `${t.lowStock}30` : stock.status === "out" ? `${t.outOfStock}30` : '#e5e7eb'}`
               }}>
-                {stock.status === "in" ? "In Stock" : stock.status === "low" ? `Low Stock • ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Unavailable"}
-              </span>
-            </div>
-            
-            <DealAlerts 
-              productId={product.id} 
-              isOutOfStock={stock.status === "out"} 
-              targetPrice={currentPrice * 0.95} 
-            />
+                <div className="w-1.5 h-1.5 rounded-full" style={{
+                    background: stock.status === "low" ? t.lowStock : t.outOfStock,
+                }} />
+                <span className="text-xs font-bold uppercase tracking-wider" style={{
+                  color: stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
+                }}>
+                  {stock.status === "low" ? `Low Stock • ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Unavailable"}
+                </span>
+              </div>
+            ) : <div />}
           </div>
 
           {/* Min order */}
@@ -696,13 +701,9 @@ export default function ProductDetailPage() {
               </button>
             )}
             
-          </div>
-
-          {/* Categories Section */}
-          {product.categories_details && product.categories_details.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <h2 className="font-semibold text-sm mb-3 text-gray-500 uppercase tracking-wider">Categories</h2>
-              <div className="flex flex-wrap gap-2">
+            {/* Inline Categories */}
+            {product.categories_details && product.categories_details.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-5">
                 {(() => {
                   const mainCat = product.categories_details.find(c => !c.parent_id);
                   const subCat = product.categories_details.find(c => c.parent_id);
@@ -724,13 +725,13 @@ export default function ProductDetailPage() {
                   );
                 })()}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
       {/* ══════════ MOBILE STICKY CTA BAR (<md) ══════════ */}
-      <div className="md:hidden fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.10)]">
+      <div className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white rounded-t-2xl border-t border-x border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
         <div className="px-4 py-2.5 flex gap-1.5 items-center w-full">
           <Button
             variant="secondary-cta"

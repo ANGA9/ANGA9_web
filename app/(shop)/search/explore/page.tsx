@@ -105,7 +105,14 @@ function ExploreContent() {
     
     rec.onstart = () => setListening(true);
     rec.onend = () => setListening(false);
-    rec.onerror = () => setListening(false);
+    rec.onerror = (e: any) => {
+      setListening(false);
+      if (e.error === 'not-allowed') {
+        alert("Microphone blocked. Please grant permissions or ensure you are on HTTPS.");
+      } else if (e.error !== 'no-speech') {
+        alert(`Voice search error: ${e.error}`);
+      }
+    };
 
     rec.onresult = (event: any) => {
       let interim = "";
@@ -146,8 +153,9 @@ function ExploreContent() {
 
     try {
       rec.start();
-    } catch {
+    } catch (err) {
       setListening(false);
+      alert("Microphone failed to start. Voice search requires HTTPS or localhost.");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attachToRecognition]);

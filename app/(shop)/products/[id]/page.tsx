@@ -480,6 +480,20 @@ export default function ProductDetailPage() {
         {/* ══════════ RIGHT: Product Info ══════════ */}
         <div className="px-4 md:px-0 mt-4 md:mt-0">
 
+          {/* Seller Name (Plain Text Link) */}
+          <div className="mb-1.5">
+            {storePublished ? (
+              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-1.5 group cursor-pointer w-fit">
+                <span className="text-[15px] font-bold text-[#4338CA] group-hover:underline">{displaySellerName}</span>
+                <CheckCircle2 className="w-4 h-4 text-[#4338CA]" />
+              </Link>
+            ) : (
+              <div className="inline-flex items-center gap-1.5 w-fit">
+                <span className="text-[15px] font-bold text-[#4338CA]">{displaySellerName}</span>
+              </div>
+            )}
+          </div>
+
           {/* Name */}
           <h1 className="font-medium leading-tight mb-2.5" style={{ color: t.textPrimary, fontSize: 'clamp(20px, 3.5vw, 24px)' }}>
             {product.name}
@@ -682,22 +696,6 @@ export default function ProductDetailPage() {
               </button>
             )}
             
-            {/* Seller Info */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <h2 className="font-semibold text-sm mb-3 text-gray-500 uppercase tracking-wider">Sold By</h2>
-              {storePublished ? (
-                <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100 hover:bg-gray-100/80 hover:border-gray-200 transition-all group cursor-pointer">
-                  <Store className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                  <span className="text-[15px] font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{displaySellerName}</span>
-                  <CheckCircle2 className="w-5 h-5 text-[#2563EB] bg-white rounded-full shadow-sm" />
-                </Link>
-              ) : (
-                <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gray-50/80 border border-gray-100">
-                  <Store className="w-5 h-5 text-gray-400" />
-                  <span className="text-[15px] font-semibold text-gray-700">{displaySellerName}</span>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Categories Section */}
@@ -733,26 +731,24 @@ export default function ProductDetailPage() {
 
       {/* ══════════ MOBILE STICKY CTA BAR (<md) ══════════ */}
       <div className="md:hidden fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.10)]">
-        <div className="px-4 py-3 flex gap-3 items-center">
+        <div className="px-4 py-2.5 flex gap-1.5 items-center w-full">
           <Button
             variant="secondary-cta"
-            size="lg"
-            className="flex-1 w-full h-[48px]"
+            className="w-1/2 h-[42px] text-[14px]"
             onClick={handleAddToCart}
             disabled={adding || stock.status === "out"}
           >
-            {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
-            {adding ? "Adding" : added ? "Added!" : "Add to Cart"}
+            {adding ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : added ? <Check className="w-[18px] h-[18px]" /> : <ShoppingCart className="w-[18px] h-[18px]" />}
+            {adding ? "Adding" : added ? "Added" : "Add to Cart"}
           </Button>
 
           <Button
             variant="cta"
-            size="lg"
-            className="flex-1 w-full h-[48px]"
+            className="w-1/2 h-[42px] text-[14px]"
             onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
             disabled={adding || stock.status === "out"}
           >
-            <Zap className="w-4 h-4" /> Buy Now
+            <Zap className="w-[18px] h-[18px]" /> Buy Now
           </Button>
         </div>
       </div>

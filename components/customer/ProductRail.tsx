@@ -80,7 +80,7 @@ export default function ProductRail({ title, products, icon: Icon, iconColor = "
 
       {/* Scrollable strip */}
       <div 
-        className={`flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory ${compact ? "px-4 md:px-0 pb-4" : "px-3 sm:px-8 pb-6"}`}
+        className={`flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory ${compact ? "px-4 md:px-0 scroll-pl-4 md:scroll-pl-0 pb-4" : "px-3 sm:px-8 scroll-pl-3 sm:scroll-pl-8 pb-6"}`}
         ref={scrollRef}
         style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
       >

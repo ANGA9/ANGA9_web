@@ -754,22 +754,27 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* ══════════ Q&A ══════════ */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6 mt-16">
-        <ProductQA productId={product.id} />
+      {/* ══════════ BOTTOM SECTIONS ══════════ */}
+      <div className="max-w-7xl mx-auto w-full">
+        {/* ══════════ REVIEWS ══════════ */}
+        <div className="px-4 md:px-8 pb-6 mt-16">
+          <ProductReviews productId={product.id} />
+        </div>
+
+        {/* ══════════ RECOMMENDATIONS ══════════ */}
+        <ProductRail title="Similar Products" products={similarProducts} />
+
+        {/* ══════════ RECENTLY VIEWED ══════════ */}
+        <RecentlyViewed excludeId={product.id} />
+
+        {/* ══════════ Q&A ══════════ */}
+        <div className="px-4 md:px-8 pb-6">
+          <ProductQA productId={product.id} />
+        </div>
+
+        {/* ══════════ CUSTOMERS ALSO BOUGHT ══════════ */}
+        <ProductRail title="Customers Also Bought" products={alsoBoughtProducts} />
       </div>
-
-      {/* ══════════ REVIEWS ══════════ */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-6">
-        <ProductReviews productId={product.id} />
-      </div>
-
-      {/* ══════════ RECOMMENDATIONS ══════════ */}
-      <ProductRail title="Similar Products" products={similarProducts} />
-      <ProductRail title="Customers Also Bought" products={alsoBoughtProducts} />
-
-      {/* ══════════ RECENTLY VIEWED ══════════ */}
-      <RecentlyViewed excludeId={product.id} />
     </div>
   );
 }

@@ -2,12 +2,14 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { Clock, ChevronLeft, ChevronRight, PackageOpen, X } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, PackageOpen, X, Check, Loader2 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import {
   useRecentlyViewed,
   type RecentlyViewedItem,
 } from "@/hooks/useRecentlyViewed";
+import { useCart } from "@/lib/CartContext";
+import { useRouter } from "next/navigation";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -190,9 +192,10 @@ export default function RecentlyViewed({ excludeId }: Props) {
           width: 140px;
           scroll-snap-align: start;
           border-radius: 12px;
-          border: 1px solid ${t.border};
+          border: 1px solid #E5E7EB;
           background: #FFF;
-          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           display: flex;
           flex-direction: column;
           position: relative;
@@ -208,22 +211,12 @@ export default function RecentlyViewed({ excludeId }: Props) {
         @media (min-width: 640px) {
           .rv-card { 
             width: 180px; 
-            border-radius: 16px; 
-            border: 1px solid #E5E7EB; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
+            border-radius: 12px; 
           }
-          .rv-card-link { border-radius: 16px; }
         }
         .rv-card:hover {
-          border-color: rgba(26,111,212,0.2);
-          box-shadow: 0 4px 14px rgba(0,0,0,0.07);
-        }
-        @media (min-width: 640px) {
-          .rv-card:hover {
-            border-color: ${t.bluePrimary};
-            box-shadow: 0 8px 24px rgba(26,111,212,0.12);
-            transform: translateY(-4px);
-          }
+          transform: translateY(-4px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.10);
         }
 
         /* Remove Button */
@@ -250,19 +243,17 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
         @media (min-width: 640px) {
           .rv-remove-btn {
-            opacity: 0;
-            transform: scale(0.9);
+            transform: scale(1);
           }
         }
         .rv-card:hover .rv-remove-btn {
-          opacity: 1;
-          transform: scale(1);
+          transform: scale(1.05);
         }
         .rv-remove-btn:hover {
           background: #FFF;
           color: #EF4444;
           border-color: #EF4444;
-          transform: scale(1.1) !important;
+          transform: scale(1.15) !important;
         }
 
         .rv-card-img {
@@ -281,7 +272,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .rv-card:hover .rv-card-img img {
-          transform: scale(1.08);
+          transform: scale(1.05);
         }
         .rv-card-img-placeholder {
           color: ${t.bluePrimary};
@@ -365,12 +356,34 @@ export default function RecentlyViewed({ excludeId }: Props) {
 }
 
 function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (id: string) => void }) {
+  const cart = useCart();
+  const router = useRouter();
+  const [adding, setAdding] = useState(false);
+  const isAdded = cart.items.some((i) => i.productId === item.id);
+
   const discount =
     item.originalPrice > item.price
       ? Math.round(
           ((item.originalPrice - item.price) / item.originalPrice) * 100
         )
       : 0;
+
+  const handleAdd = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isAdded) {
+      router.push("/cart");
+      return;
+    }
+    if (adding) return;
+    setAdding(true);
+    try {
+      await cart.addItem(item.id);
+    } catch {
+      // handled in context
+    }
+    setAdding(false);
+  };
 
   return (
     <div className="rv-card group">
@@ -395,7 +408,7 @@ function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (i
         </div>
         <div className="rv-card-body">
           <p className="rv-card-name">{item.name}</p>
-          <div className="rv-card-price-row">
+          <div className="rv-card-price-row flex-1">
             <span className="rv-card-price">{formatINR(item.price)}</span>
             {discount > 0 && (
               <>
@@ -406,6 +419,22 @@ function RecentCard({ item, onRemove }: { item: RecentlyViewedItem, onRemove: (i
               </>
             )}
           </div>
+          
+          <button
+            onClick={handleAdd}
+            disabled={adding}
+            className="w-full mt-3 py-1.5 flex items-center justify-center gap-1.5 rounded border border-black text-black bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
+          >
+            {adding ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : isAdded ? (
+              <>
+                Added <Check className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
+              </>
+            ) : (
+              "Add to Bag"
+            )}
+          </button>
         </div>
       </Link>
     </div>

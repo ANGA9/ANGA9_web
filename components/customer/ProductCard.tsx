@@ -269,51 +269,29 @@ export default function ProductCard({
               )}
             </div>
             
-            {/* Quick Add to Cart Button */}
-            {!isWishlistContext && (
-              <button
-                onClick={handleAddToCart}
-                disabled={adding}
-                className="shrink-0 flex items-center justify-center gap-0.5 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md transition-all border border-indigo-600 text-indigo-600 bg-white hover:bg-indigo-50 active:scale-95"
-                aria-label={isAddedToCart ? "View cart" : "Add to cart"}
-              >
-                {adding ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : isAddedToCart ? (
-                  <>
-                    <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider leading-none mt-[1px]">Added</span>
-                    <Check className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
-                  </>
-                ) : (
-                  <>
-                    <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider leading-none mt-[1px]">Add</span>
-                    <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
-                  </>
-                )}
-              </button>
-            )}
+
           </div>
         </div>
       </Link>
 
-      {/* Per-item "Add to Bag" — only in wishlist context */}
-      {isWishlistContext && (
-        <div className="px-3 md:px-4 pb-3 md:pb-4 pt-0">
-          <button
-            onClick={handleAddToCart}
-            disabled={adding}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-[12px] md:text-[13px] font-semibold transition-all active:scale-95 border border-gray-200 hover:border-[#1A6FD4] hover:text-[#1A6FD4] hover:bg-[#EAF2FF] disabled:opacity-60"
-            style={{ color: t.textPrimary }}
-          >
-            {adding ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <ShoppingCart className="w-3.5 h-3.5" />
-            )}
-            Add to Bag
-          </button>
-        </div>
-      )}
+      {/* Universal "Add to Bag" button */}
+      <div className="px-3 md:px-4 pb-3 md:pb-4 pt-3 mt-auto bg-white border-t border-transparent">
+        <button
+          onClick={handleAddToCart}
+          disabled={adding}
+          className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded border border-black text-black bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
+        >
+          {adding ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : isAddedToCart ? (
+            <>
+              Added <Check className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
+            </>
+          ) : (
+            "Add to Bag"
+          )}
+        </button>
+      </div>
     </div>
   );
 }

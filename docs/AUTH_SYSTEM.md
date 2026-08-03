@@ -49,20 +49,45 @@ All portals share the **same Supabase project** and **same localStorage** on `*.
 
 ## Test Customer Account
 
-A dummy test account exists for QA without consuming SMS credits:
+A test account exists for QA and Play Store review without consuming SMS credits.
 
 | Field | Value |
 |-------|-------|
-| Phone | `9876543210` |
+| Phone (as typed by user) | `9876543210` |
 | OTP | `123456` |
-| Internal password | `testpassword123` |
 
-The bypass is implemented in:
-- `LoginSheet.tsx` (customer bottom sheet)
-- `app/login/page.tsx` (customer full page)
-- `app/seller/login/page.tsx` (seller login)
+**How it works (since 2026-08-03):** the test number is registered **server-side** in
+Supabase → Authentication → Providers → Phone → **Test Phone Numbers and OTPs**:
 
-**How it works:** The frontend skips the real `signInWithOtp()` call and instead uses `signInWithPassword()` with the hidden password. This produces a fully valid Supabase session.
+```
+919876543210=123456
+```
+
+> ⚠️ **Format:** no `+`, no spaces, no dashes. GoTrue stores phone numbers without the
+> leading `+` (verified: users are stored as `919876543210`), and the settings field
+> validates against that form. Entering `+919876543210=123456` is rejected with
+> *"Phone numbers should be in international format, without spaces, dashes or the + prefix."*
+> The app still sends `+919876543210` on the wire — Supabase normalises before matching.
+>
+> There is also a **"Test OTPs Valid Until"** expiry date next to the field. When that
+> date passes, the test number silently stops working. Note the date and renew it.
+
+Supabase intercepts this number: **no SMS is sent**, no MSG91 credit is consumed, and
+`/auth/v1/verify` accepts `123456` through the completely normal code path.
+
+**There is no longer any client-side bypass.** The previous implementation short-circuited
+`signInWithOtp()` and called `signInWithPassword()` with a hidden password instead. That was
+removed from all five call sites (`LoginSheet.tsx`, `app/login/page.tsx`,
+`app/seller/login/page.tsx`, and the Android `AuthBottomSheetFragment` /
+`OtpBottomSheetFragment`) because:
+
+1. It exercised a **different auth path** than real users, so the test account proved nothing
+   about whether OTP actually worked.
+2. The credentials shipped as readable strings in the release APK
+   (`-keep class com.anga9.customer.** { *; }` prevents obfuscation), letting anyone log in
+   as a real, phone-confirmed production user.
+
+The account is now **OTP-only** — its password has been cleared. Do not re-add one.
 
 ---
 

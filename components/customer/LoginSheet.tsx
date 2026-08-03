@@ -135,13 +135,8 @@ export default function LoginSheet() {
 
     setLoading(true);
     try {
-      if (normalized === '+919876543210') {
-        setStep("otp");
-        startResendTimer(30);
-        toast.success("OTP sent to your phone!", { icon: <Phone size={18} color="#1A6FD4" /> });
-        return;
-      }
-
+      // Test numbers are registered server-side in Supabase (Auth → Providers →
+      // Phone → "Test Phone Numbers and OTPs") and flow through this same call.
       const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
       if (otpErr) throw otpErr;
       setStep("otp");
@@ -179,12 +174,6 @@ export default function LoginSheet() {
     setError("");
     setLoading(true);
     try {
-      if (tab === "phone" && normalizeIndianPhone(phone) === '+919876543210') {
-        startResendTimer(30);
-        toast.success("OTP resent successfully!");
-        return;
-      }
-
       const { error: otpErr } = tab === "email"
         ? await supabase.auth.signInWithOtp({ email: email.trim() })
         : await supabase.auth.signInWithOtp({ phone: normalizeIndianPhone(phone)! });
@@ -224,20 +213,12 @@ export default function LoginSheet() {
           return;
         }
 
-        if (normalized === '+919876543210' && code === '123456') {
-          const { error: verifyErr } = await supabase.auth.signInWithPassword({
-            phone: normalized,
-            password: 'testpassword123',
-          });
-          if (verifyErr) throw verifyErr;
-        } else {
-          const { error: verifyErr } = await supabase.auth.verifyOtp({
-            phone: normalized,
-            token: code,
-            type: "sms",
-          });
-          if (verifyErr) throw verifyErr;
-        }
+        const { error: verifyErr } = await supabase.auth.verifyOtp({
+          phone: normalized,
+          token: code,
+          type: "sms",
+        });
+        if (verifyErr) throw verifyErr;
       }
       // Auth state change will trigger the success effect above
     } catch (err: any) {

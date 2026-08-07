@@ -547,7 +547,9 @@ export default function CustomerLoginPage() {
               Sell on ANGA9
             </Link>
             <Link
-              href="#"
+              href="https://play.google.com/store/apps/details?id=com.anga9.customer"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 font-medium text-[#4B5563] hover:text-[#1A6FD4] transition-colors"
               style={{ fontSize: '16px' }}
             >

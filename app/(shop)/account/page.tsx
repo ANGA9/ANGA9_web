@@ -932,7 +932,7 @@ export default function CustomerAccountPage() {
               </div>
               <div className="flex flex-col">
                 <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
-                <MenuItem icon={Smartphone} label="Download App" />
+                <MenuItem icon={Smartphone} label="Download App" href="https://play.google.com/store/apps/details?id=com.anga9.customer" external />
               </div>
             </div>
 

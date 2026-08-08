@@ -460,7 +460,9 @@ export default function CustomerTopNav() {
                 <div className="w-20 h-6 bg-gray-200 animate-pulse rounded"></div>
               ) : isLoggedIn ? (
                 <Link
-                  href="#"
+                  href="https://play.google.com/store/apps/details?id=com.anga9.customer"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:opacity-80"
                   style={{ color: t.bluePrimary, fontSize: '16px' }}
                 >
@@ -775,7 +777,7 @@ export default function CustomerTopNav() {
                     { icon: Package, label: "My Orders", href: "/orders" },
                     { icon: Store, label: "Sell on ANGA9", href: "https://seller.anga9.com/sell-on-anga9", external: true },
                     { icon: Megaphone, label: "Advertise on ANGA9" },
-                    { icon: Download, label: "Download the App" },
+                    { icon: Download, label: "Download the App", href: "https://play.google.com/store/apps/details?id=com.anga9.customer", external: true },
                   ].map((item) => {
                     const inner = (
                       <>

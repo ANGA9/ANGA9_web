@@ -62,11 +62,11 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
                 onClick={onClose}
                 className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-[14px] font-bold transition-all ${
                   active
-                    ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shadow-md shadow-[#1A6FD4]/20"
+                    ? "bg-[#1A6FD4] text-white shadow-md shadow-[#1A6FD4]/30"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] transition-transform group-hover:scale-110 ${active ? "text-[#1A6FD4]" : "text-gray-400 group-hover:text-[#1A6FD4]"}`} />
+                <item.icon className={`w-[18px] h-[18px] transition-transform group-hover:scale-110 ${active ? "text-white" : "text-gray-400 group-hover:text-[#1A6FD4]"}`} />
                 {item.label}
               </SellerLink>
             );

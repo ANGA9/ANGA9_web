@@ -43,7 +43,7 @@ export function ActivityTracker() {
 
       // Call tracking endpoint
       try {
-        const res = await fetch('/track', {
+        const res = await fetch('/api/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ session_id: sessionId, portal, user_id: userId })

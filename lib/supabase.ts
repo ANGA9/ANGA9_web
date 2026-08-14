@@ -1,10 +1,19 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-let client: ReturnType<typeof createBrowserClient> | null = null;
+function getPortalContext(): "seller" | "admin" | "support" | "customer" {
+  if (typeof window === "undefined") return "customer";
+  const host = window.location.hostname;
+  const path = window.location.pathname;
+
+  if (path.startsWith("/admin")) return "admin";
+  if (path.startsWith("/support")) return "support";
+  if (host.startsWith("seller.") || path.startsWith("/seller")) return "seller";
+  return "customer";
+}
+
+const clients: Record<string, ReturnType<typeof createBrowserClient>> = {};
 
 export function getSupabaseBrowserClient() {
-  if (client) return client;
-
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -22,6 +31,16 @@ export function getSupabaseBrowserClient() {
     );
   }
 
-  client = createBrowserClient(url, key);
+  const portal = getPortalContext();
+  if (clients[portal]) return clients[portal];
+
+  const client = createBrowserClient(url, key, {
+    auth: {
+      storageKey: `anga9_${portal}_auth`,
+    },
+  });
+
+  clients[portal] = client;
   return client;
 }
+

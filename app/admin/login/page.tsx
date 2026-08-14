@@ -125,10 +125,8 @@ export default function AdminLoginPage() {
 
       const level = dbUser.admin_level || (role === "super_admin" ? "super_admin" : "admin");
       
-      const hostname = window.location.hostname;
-      const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
       const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
-      const baseAttrs = `; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+      const baseAttrs = `; path=/; max-age=86400; samesite=lax${secureAttr}`;
 
       document.cookie = `portal=admin${baseAttrs}`;
       document.cookie = `admin_level=${level}${baseAttrs}`;

@@ -71,31 +71,11 @@ function getPortalCookie(): string | null {
 /**
  * Check if a Supabase session should be suppressed for the current portal.
  *
- * When a user logs into the seller portal, a Supabase session is stored in
- * localStorage (shared across all subdomains). If they then visit the customer
- * portal, we must NOT expose that session — otherwise customer components fire
- * API calls with the seller's token, causing 401 errors.
- *
- * Returns true if the session should be HIDDEN from the current portal context.
+ * Sessions are now isolated per portal using portal-specific Supabase storage keys
+ * (`anga9_customer_auth`, `anga9_seller_auth`, `anga9_admin_auth`) and host-only cookies.
+ * Cross-portal session suppression is no longer necessary.
  */
 export function shouldSuppressSession(): boolean {
-  if (typeof window === "undefined") return false;
-  const portalContext = getCurrentPortalContext();
-  const portalCookie = getPortalCookie();
-
-  // No cookie = no previous login, don't suppress (let login flows work)
-  if (!portalCookie) return false;
-
-  // If we're on the customer portal but logged in as seller/admin → suppress
-  if (portalContext === "customer" && (portalCookie === "seller" || portalCookie === "admin")) {
-    return true;
-  }
-
-  // If we're on the seller portal but logged in as admin → suppress
-  if (portalContext === "seller" && portalCookie === "admin") {
-    return true;
-  }
-
   return false;
 }
 
@@ -132,31 +112,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setCookies = useCallback((authUser: SupabaseUser | null) => {
     if (typeof window === "undefined") return;
 
-    const isAdminPage = window.location.pathname.startsWith("/admin");
-    const portalCookie = getPortalCookie();
-
-    const isSellerHost = window.location.hostname.startsWith("seller.");
-    const isSellerPath = window.location.pathname.startsWith("/seller");
-
-    if (authUser) {
-      if (isAdminPage || portalCookie === "admin") return;
-      if (portalCookie === "seller" || isSellerHost || isSellerPath) return;
-    }
-
-    const hostname = window.location.hostname;
-    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
+    const portalContext = getCurrentPortalContext();
     const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
-    const baseAttrs = `; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
-    const expireAttrs = `; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT${domainAttr}`;
+    const baseAttrs = `; path=/; max-age=86400; samesite=lax${secureAttr}`;
+    const expireAttrs = `; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT${secureAttr}`;
+    const legacyDomainExpire = `; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.anga9.com`;
+
+    // Clean up legacy wildcard domain cookie if it exists
+    document.cookie = `portal=${legacyDomainExpire}`;
 
     if (authUser) {
-      document.cookie = `portal=customer${baseAttrs}`;
-      if (authUser.phone) {
-        const purePhone = authUser.phone.replace(/[^\d]/g, "").slice(-10);
-        document.cookie = `customer_phone=${purePhone}${baseAttrs}`;
-      }
-      if (authUser.email) {
-        document.cookie = `customer_email=${encodeURIComponent(authUser.email)}${baseAttrs}`;
+      document.cookie = `portal=${portalContext}${baseAttrs}`;
+      if (portalContext === "customer") {
+        if (authUser.phone) {
+          const purePhone = authUser.phone.replace(/[^\d]/g, "").slice(-10);
+          document.cookie = `customer_phone=${purePhone}${baseAttrs}`;
+        }
+        if (authUser.email) {
+          document.cookie = `customer_email=${encodeURIComponent(authUser.email)}${baseAttrs}`;
+        }
       }
     } else {
       document.cookie = `portal=${expireAttrs}`;
@@ -168,15 +142,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Restore session on mount
     supabase.auth.getSession().then(({ data: { session: s } }: { data: { session: Session | null } }) => {
-      // P0 FIX: If session exists but belongs to a different portal context,
-      // suppress it so customer components don't fire 401 API calls.
-      if (s?.user && shouldSuppressSession()) {
-        setSession(null);
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
@@ -190,14 +155,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, s: Session | null) => {
-      // P0 FIX: Suppress cross-portal sessions
-      if (s?.user && shouldSuppressSession()) {
-        setSession(null);
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
       setSession(s);
       setUser(s?.user ?? null);
 
@@ -223,8 +180,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchDbUser, setCookies]);
 
   const getToken = useCallback(async (): Promise<string | null> => {
-    // P0 FIX: Don't return tokens for cross-portal sessions
-    if (shouldSuppressSession()) return null;
     const { data } = await supabase.auth.getSession();
     return data.session?.access_token ?? null;
   }, [supabase]);

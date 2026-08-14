@@ -88,10 +88,9 @@ export default function SupportHeader({
     api.patch("/api/support/agents/status", { status: "offline" }, { silent: true }).catch(() => {});
     
     // Clear all portal cookies and localStorage (matching AuthContext.logout cleanup)
-    const hostname = window.location.hostname;
-    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
-    const expireAttrs = `; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT${domainAttr}`;
+    const expireAttrs = "; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = `portal=${expireAttrs}`;
+    document.cookie = `portal=${expireAttrs}; domain=.anga9.com`;
     document.cookie = `customer_phone=${expireAttrs}`;
     document.cookie = `customer_email=${expireAttrs}`;
     localStorage.removeItem('anga_active_brand_id');

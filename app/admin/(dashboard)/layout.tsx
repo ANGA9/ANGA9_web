@@ -92,10 +92,10 @@ export default function AdminDashboardLayout({
   if (!authed) return null;
 
   function handleLogout() {
-    const hostname = window.location.hostname;
-    const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
-    document.cookie = `portal=; path=/; max-age=0${domainAttr}`;
-    document.cookie = `admin_level=; path=/; max-age=0${domainAttr}`;
+    document.cookie = "portal=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "portal=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.anga9.com";
+    document.cookie = "admin_level=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "admin_level=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.anga9.com";
     router.push("/admin/login");
   }
 

@@ -3,12 +3,18 @@
 import { Fragment, type ReactNode } from "react";
 import LegalLayout from "@/components/legal/LegalLayout";
 import { useLang } from "@/lib/i18n";
+import { useLegalAudience } from "@/lib/legalAudience";
 import {
   getReturnsBody,
   getReturnsMeta,
   RETURNS_SECTION_KEYS,
   type ReturnsBlock,
 } from "@/lib/legalTranslations/returnsBody";
+import {
+  getSellerReturnsBody,
+  getSellerReturnsMeta,
+  SELLER_RETURNS_SECTION_KEYS,
+} from "@/lib/legalTranslations/sellerReturnsBody";
 
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const BOLD_RE = /\*\*([^*]+)\*\*/g;
@@ -23,7 +29,7 @@ function renderInline(text: string): ReactNode {
       out.push(...renderBold(text.slice(lastIndex, m.index)));
     }
     out.push(
-      <a key={`a-${m.index}`} href={m[2]}>
+      <a key={`a-${m.index}`} href={m[2]} className="text-[#1A6FD4] underline font-medium hover:text-[#1557AB]">
         {m[1]}
       </a>,
     );
@@ -72,20 +78,41 @@ function renderBlock(block: ReturnsBlock, idx: number): ReactNode {
 
 export default function ReturnsContent() {
   const { lang } = useLang();
-  const meta = getReturnsMeta(lang);
+  const { audience } = useLegalAudience();
   const dir = lang === "ur" ? "rtl" : "ltr";
 
-  return (
-    <LegalLayout title={meta.title} lastUpdated="May 5, 2026">
-      <div dir={dir}>
-        {getReturnsBody(lang, "intro").map(renderBlock)}
+  const customerMeta = getReturnsMeta(lang);
+  const sellerMeta = getSellerReturnsMeta(lang);
 
-        {RETURNS_SECTION_KEYS.map((key) => (
-          <Fragment key={key}>
-            <h2>{meta.headings[key]}</h2>
-            {getReturnsBody(lang, key).map(renderBlock)}
-          </Fragment>
-        ))}
+  const isSeller = audience === "seller";
+  const activeTitle = isSeller ? sellerMeta.title : customerMeta.title;
+
+  return (
+    <LegalLayout title={activeTitle} lastUpdated={isSeller ? "August 15, 2026" : "May 5, 2026"}>
+      <div dir={dir}>
+        {isSeller ? (
+          <>
+            {getSellerReturnsBody(lang, "intro").map(renderBlock)}
+
+            {SELLER_RETURNS_SECTION_KEYS.map((key) => (
+              <Fragment key={key}>
+                <h2>{sellerMeta.headings[key]}</h2>
+                {getSellerReturnsBody(lang, key).map(renderBlock)}
+              </Fragment>
+            ))}
+          </>
+        ) : (
+          <>
+            {getReturnsBody(lang, "intro").map(renderBlock)}
+
+            {RETURNS_SECTION_KEYS.map((key) => (
+              <Fragment key={key}>
+                <h2>{customerMeta.headings[key]}</h2>
+                {getReturnsBody(lang, key).map(renderBlock)}
+              </Fragment>
+            ))}
+          </>
+        )}
       </div>
     </LegalLayout>
   );

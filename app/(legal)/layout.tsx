@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { type LangCode, DEFAULT_LANG, STORAGE_KEY, LangContext } from "@/lib/i18n";
+import { LegalAudienceProvider } from "@/lib/legalAudience";
 
 export default function LegalGroupLayout({
   children,
@@ -22,7 +23,9 @@ export default function LegalGroupLayout({
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>
-      {children}
+      <LegalAudienceProvider>
+        {children}
+      </LegalAudienceProvider>
     </LangContext.Provider>
   );
 }

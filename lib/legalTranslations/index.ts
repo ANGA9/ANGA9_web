@@ -7,4 +7,10 @@ export function getChrome(lang: LangCode): LegalChromeStrings {
 }
 
 export { CHROME } from "./chrome";
-export type { LegalChromeStrings, LegalSection, LegalPageStrings, LegalSeeAlso, LegalPageSlug } from "./types";
+export * from "./types";
+export * from "./sellerPrivacyBody";
+export * from "./sellerTermsBody";
+export * from "./sellerShippingBody";
+export * from "./sellerReturnsBody";
+export * from "./sellerCancellationBody";
+export * from "./sellerFaqBody";

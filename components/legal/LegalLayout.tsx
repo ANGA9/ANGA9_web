@@ -17,9 +17,12 @@ import {
   Calendar,
   Menu,
   X,
+  User,
+  Store,
 } from "lucide-react";
 import LanguageSelector from "./LanguageSelector";
 import { useLang, LANGUAGES } from "@/lib/i18n";
+import { useLegalAudience } from "@/lib/legalAudience";
 import { getChrome } from "@/lib/legalTranslations";
 
 const NAV = [
@@ -56,8 +59,13 @@ export default function LegalLayout({
   const chrome = getChrome(lang);
   const isRtl = LANGUAGES.find((lo) => lo.code === lang)?.rtl;
 
-  // Auto-resolve translated page title from chrome dictionary
-  const resolvedTitle = chrome.pageTitles[pathname] || title;
+  const { audience, setAudience } = useLegalAudience();
+
+  // Auto-resolve translated page title from chrome dictionary based on audience
+  const resolvedTitle =
+    audience === "seller" && chrome.sellerPageTitles?.[pathname]
+      ? chrome.sellerPageTitles[pathname]
+      : chrome.pageTitles[pathname] || title;
 
   const currentNav = NAV.find((n) => n.href === pathname);
   const CurrentIcon = currentNav?.icon || FileText;
@@ -213,6 +221,32 @@ export default function LegalLayout({
 
             {/* ── Main content ── */}
             <main className="legal-main">
+              {/* ── Audience Segmented Toggle ── */}
+              <div className="legal-audience-toggle-container">
+                <div className="legal-audience-toggle" role="tablist" aria-label={chrome.viewingPolicyFor}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={audience === "customer"}
+                    onClick={() => setAudience("customer")}
+                    className={`legal-audience-btn ${audience === "customer" ? "legal-audience-btn--active" : ""}`}
+                  >
+                    <User className="legal-audience-icon" size={17} strokeWidth={2.2} />
+                    <span>{chrome.customerPolicy || "Customer Policy"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={audience === "seller"}
+                    onClick={() => setAudience("seller")}
+                    className={`legal-audience-btn ${audience === "seller" ? "legal-audience-btn--active" : ""}`}
+                  >
+                    <Store className="legal-audience-icon" size={17} strokeWidth={2.2} />
+                    <span>{chrome.sellerPolicy || "Seller Policy"}</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="legal-content-card">
                 {/* MT disclaimer banner */}
                 {lang !== "en" && (
@@ -970,6 +1004,64 @@ export default function LegalLayout({
           width: 20px;
           height: 20px;
           flex-shrink: 0;
+        }
+
+        /* ── Audience Segmented Switch ── */
+        .legal-audience-toggle-container {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          margin-bottom: 20px;
+        }
+        .legal-audience-toggle {
+          display: inline-flex;
+          background: #EEF2F6;
+          padding: 4px;
+          border-radius: 14px;
+          border: 1px solid #E2E8F0;
+          gap: 4px;
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        .legal-audience-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 18px;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 600;
+          color: #64748B;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          white-space: nowrap;
+        }
+        .legal-audience-btn:hover:not(.legal-audience-btn--active) {
+          color: #1E293B;
+          background: rgba(255, 255, 255, 0.6);
+        }
+        .legal-audience-btn--active {
+          background: #FFFFFF;
+          color: #1A6FD4;
+          box-shadow: 0 2px 8px rgba(26, 111, 212, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .legal-audience-icon {
+          flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .legal-audience-toggle-container {
+            width: 100%;
+          }
+          .legal-audience-toggle {
+            width: 100%;
+          }
+          .legal-audience-btn {
+            flex: 1;
+            justify-content: center;
+            padding: 10px 10px;
+            font-size: 13px;
+          }
         }
 
         /* ── FAQ item overrides ── */

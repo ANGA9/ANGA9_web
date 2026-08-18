@@ -1,4 +1,7 @@
 import type { LangCode } from "@/lib/i18n";
+import type { LegalAudience } from "@/lib/legalAudience";
+
+export type { LegalAudience };
 
 export interface LegalChromeStrings {
   home: string;
@@ -9,8 +12,12 @@ export interface LegalChromeStrings {
   tagline: string;
   copyright: string;
   mtDisclaimer: string;
+  customerPolicy: string;
+  sellerPolicy: string;
+  viewingPolicyFor: string;
   navLabels: Record<string, string>;
   pageTitles: Record<string, string>;
+  sellerPageTitles?: Record<string, string>;
 }
 
 export type LegalChromeDict = Record<LangCode, LegalChromeStrings>;

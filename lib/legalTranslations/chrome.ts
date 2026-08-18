@@ -21,6 +21,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "All rights reserved.",
     mtDisclaimer:
       "This page has been auto-translated. The English version is the authoritative legal text.",
+    customerPolicy: "Customer Policy",
+    sellerPolicy: "Seller Policy",
+    viewingPolicyFor: "Viewing policies for",
     navLabels: {
       "/terms": "Terms of Use",
       "/privacy": "Privacy Policy",
@@ -39,6 +42,15 @@ export const CHROME: LegalChromeDict = {
       "/faq": "Frequently Asked Questions",
       "/contact": "Contact Us",
     },
+    sellerPageTitles: {
+      "/terms": "Seller Terms of Service & Merchant Agreement",
+      "/privacy": "Seller & Merchant Privacy Policy",
+      "/shipping-policy": "Seller Dispatch & Logistics Policy",
+      "/returns": "Seller Return & Inspection Policy",
+      "/cancellation": "Seller Order Acceptance & SLA Policy",
+      "/faq": "Seller & Merchant FAQ",
+      "/contact": "Seller Support & Grievance Contact",
+    },
   },
   hi: {
     home: "होम",
@@ -50,6 +62,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "सर्वाधिकार सुरक्षित।",
     mtDisclaimer:
       "यह पृष्ठ स्वतः अनुवादित है। अंग्रेज़ी संस्करण ही आधिकारिक कानूनी पाठ है।",
+    customerPolicy: "ग्राहक नीति",
+    sellerPolicy: "विक्रेता नीति",
+    viewingPolicyFor: "के लिए नीतियां देख रहे हैं",
     navLabels: {
       "/terms": "उपयोग की शर्तें",
       "/privacy": "गोपनीयता नीति",
@@ -67,6 +82,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "रद्दीकरण नीति",
       "/faq": "अक्सर पूछे जाने वाले प्रश्न",
       "/contact": "संपर्क करें",
+    },
+    sellerPageTitles: {
+      "/terms": "विक्रेता सेवा शर्तें एवं मर्चेंट अनुबंध",
+      "/privacy": "विक्रेता एवं मर्चेंट गोपनीयता नीति",
+      "/shipping-policy": "विक्रेता प्रेषण एवं लॉजिस्टिक्स नीति",
+      "/returns": "विक्रेता वापसी एवं निरीक्षण नीति",
+      "/cancellation": "विक्रेता ऑर्डर स्वीकृति एवं SLA नीति",
+      "/faq": "विक्रेता एवं मर्चेंट अक्सर पूछे जाने वाले प्रश्न",
+      "/contact": "विक्रेता सहायता एवं शिकायत संपर्क",
     },
   },
   bn: {
@@ -79,6 +103,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "সর্বস্বত্ব সংরক্ষিত।",
     mtDisclaimer:
       "এই পৃষ্ঠাটি স্বয়ংক্রিয়ভাবে অনুবাদিত। ইংরেজি সংস্করণটিই আইনত প্রামাণিক।",
+    customerPolicy: "গ্রাহক নীতি",
+    sellerPolicy: "বিক্রেতা নীতি",
+    viewingPolicyFor: "এর জন্য নীতি দেখছেন",
     navLabels: {
       "/terms": "ব্যবহারের শর্তাবলী",
       "/privacy": "গোপনীয়তা নীতি",
@@ -96,6 +123,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "বাতিলকরণ নীতি",
       "/faq": "প্রায়শই জিজ্ঞাসিত প্রশ্ন",
       "/contact": "যোগাযোগ",
+    },
+    sellerPageTitles: {
+      "/terms": "বিক্রেতা পরিষেবার শর্তাবলী ও মার্চেন্ট চুক্তি",
+      "/privacy": "বিক্রেতা ও মার্চেন্ট গোপনীয়তা নীতি",
+      "/shipping-policy": "বিক্রেতা প্রেরণ ও লজিস্টিক নীতি",
+      "/returns": "বিক্রেতা ফেরত ও পরিদর্শন নীতি",
+      "/cancellation": "বিক্রেতা অর্ডার গ্রহণ ও SLA নীতি",
+      "/faq": "বিক্রেতা ও মার্চেন্ট প্রায়শই জিজ্ঞাসিত প্রশ্ন",
+      "/contact": "বিক্রেতা সহায়তা ও অভিযোগ যোগাযোগ",
     },
   },
   ta: {
@@ -108,6 +144,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
     mtDisclaimer:
       "இந்தப் பக்கம் தானியங்கி மொழிபெயர்ப்பு. ஆங்கிலப் பதிப்பே சட்டப்பூர்வ அதிகாரப்பூர்வப் பதிப்பு.",
+    customerPolicy: "வாடிக்கையாளர் கொள்கை",
+    sellerPolicy: "விற்பனையாளர் கொள்கை",
+    viewingPolicyFor: "கொள்கைகளைக் காண்கிறீர்கள்",
     navLabels: {
       "/terms": "பயன்பாட்டு விதிமுறைகள்",
       "/privacy": "தனியுரிமைக் கொள்கை",
@@ -125,6 +164,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "ரத்துக் கொள்கை",
       "/faq": "அடிக்கடி கேட்கப்படும் கேள்விகள்",
       "/contact": "தொடர்பு கொள்ளவும்",
+    },
+    sellerPageTitles: {
+      "/terms": "விற்பனையாளர் சேவை விதிமுறைகள் & வணிகர் ஒப்பந்தம்",
+      "/privacy": "விற்பனையாளர் மற்றும் வணிகர் தனியுரிமைக் கொள்கை",
+      "/shipping-policy": "விற்பனையாளர் அனுப்புதல் மற்றும் தளவாடக் கொள்கை",
+      "/returns": "விற்பனையாளர் திரும்புதல் மற்றும் ஆய்வு கொள்கை",
+      "/cancellation": "விற்பனையாளர் ஆர்டர் ஏற்பு & SLA கொள்கை",
+      "/faq": "விற்பனையாளர் அடிக்கடி கேட்கப்படும் கேள்விகள்",
+      "/contact": "விற்பனையாளர் ஆதரவு & குறைகேட்பு தொடர்பு",
     },
   },
   te: {
@@ -137,6 +185,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.",
     mtDisclaimer:
       "ఈ పేజీ స్వయంచాలకంగా అనువదించబడింది. ఆంగ్ల వెర్షన్ మాత్రమే అధికారిక చట్టపరమైన పాఠ్యం.",
+    customerPolicy: "కస్టమర్ విధానం",
+    sellerPolicy: "విక్రేత విధానం",
+    viewingPolicyFor: "కొరకు విధానాలు చూస్తున్నారు",
     navLabels: {
       "/terms": "ఉపయోగ నిబంధనలు",
       "/privacy": "గోప్యతా విధానం",
@@ -154,6 +205,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "రద్దు విధానం",
       "/faq": "తరచుగా అడిగే ప్రశ్నలు",
       "/contact": "సంప్రదించండి",
+    },
+    sellerPageTitles: {
+      "/terms": "విక్రేత సేవా నిబంధనలు & మర్చంట్ ఒప్పందం",
+      "/privacy": "విక్రేత మరియు మర్చంట్ గోప్యతా విధానం",
+      "/shipping-policy": "విక్రేత రవాణా & లాజిస్టిక్స్ విధానం",
+      "/returns": "విక్రేత రిటర్న్ & తనిఖీ విధానం",
+      "/cancellation": "విక్రేత ఆర్డర్ ఆమోదం & SLA విధానం",
+      "/faq": "విక్రేత తరచుగా అడిగే ప్రశ్నలు",
+      "/contact": "విక్రేత మద్దతు & ఫిర్యాదుల సంప్రదింపు",
     },
   },
   mr: {
@@ -166,6 +226,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "सर्व हक्क राखीव.",
     mtDisclaimer:
       "हे पृष्ठ स्वयंचलितपणे अनुवादित आहे. इंग्रजी आवृत्तीच कायदेशीरदृष्ट्या अधिकृत आहे.",
+    customerPolicy: "ग्राहक धोरण",
+    sellerPolicy: "विक्रेता धोरण",
+    viewingPolicyFor: "साठी धोरणे पाहत आहात",
     navLabels: {
       "/terms": "वापराच्या अटी",
       "/privacy": "गोपनीयता धोरण",
@@ -183,6 +246,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "रद्द करण्याचे धोरण",
       "/faq": "वारंवार विचारले जाणारे प्रश्न",
       "/contact": "संपर्क",
+    },
+    sellerPageTitles: {
+      "/terms": "विक्रेता सेवा अटी आणि व्यापारी करार",
+      "/privacy": "विक्रेता आणि व्यापारी गोपनीयता धोरण",
+      "/shipping-policy": "विक्रेता डिस्पॅच आणि लॉजिस्टिक्स धोरण",
+      "/returns": "विक्रेता परतावा आणि तपासणी धोरण",
+      "/cancellation": "विक्रेता ऑर्डर स्वीकृती आणि SLA धोरण",
+      "/faq": "विक्रेता वारंवार विचारले जाणारे प्रश्न",
+      "/contact": "विक्रेता समर्थन आणि तक्रार निवारण संपर्क",
     },
   },
   kn: {
@@ -195,6 +267,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
     mtDisclaimer:
       "ಈ ಪುಟವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅನುವಾದಿಸಲಾಗಿದೆ. ಇಂಗ್ಲಿಷ್ ಆವೃತ್ತಿಯೇ ಅಧಿಕೃತ ಕಾನೂನು ಪಠ್ಯವಾಗಿದೆ.",
+    customerPolicy: "ಗ್ರಾಹಕ ನೀತಿ",
+    sellerPolicy: "ಮಾರಾಟಗಾರರ ನೀತಿ",
+    viewingPolicyFor: "ಗಾಗಿ ನೀತಿಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
     navLabels: {
       "/terms": "ಬಳಕೆಯ ನಿಯಮಗಳು",
       "/privacy": "ಗೌಪ್ಯತಾ ನೀತಿ",
@@ -212,6 +287,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "ರದ್ದತಿ ನೀತಿ",
       "/faq": "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು",
       "/contact": "ಸಂಪರ್ಕಿಸಿ",
+    },
+    sellerPageTitles: {
+      "/terms": "ಮಾರಾಟಗಾರರ ಸೇವಾ ನಿಯಮಗಳು & ವ್ಯಾಪಾರಿ ಒಪ್ಪಂದ",
+      "/privacy": "ಮಾರಾಟಗಾರರ ಗೌಪ್ಯತಾ ನೀತಿ",
+      "/shipping-policy": "ಮಾರಾಟಗಾರರ ರವಾನೆ ಮತ್ತು ಲಾಜಿಸ್ಟಿಕ್ಸ್ ನೀತಿ",
+      "/returns": "ಮಾರಾಟಗಾರರ ಮರುಪಾವತಿ & ಪರಿಶೀಲನಾ ನೀತಿ",
+      "/cancellation": "ಮಾರಾಟಗಾರರ ಆರ್ಡರ್ ಸ್ವೀಕಾರ & SLA ನೀತಿ",
+      "/faq": "ಮಾರಾಟಗಾರರ ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳು",
+      "/contact": "ಮಾರಾಟಗಾರರ ಬೆಂಬಲ ಮತ್ತು ಕುಂದುಕೊರತೆ ಸಂಪರ್ಕ",
     },
   },
   pa: {
@@ -224,6 +308,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।",
     mtDisclaimer:
       "ਇਹ ਪੰਨਾ ਆਪਣੇ-ਆਪ ਅਨੁਵਾਦ ਕੀਤਾ ਗਿਆ ਹੈ। ਅੰਗਰੇਜ਼ੀ ਸੰਸਕਰਣ ਹੀ ਅਧਿਕਾਰਤ ਕਾਨੂੰਨੀ ਪਾਠ ਹੈ।",
+    customerPolicy: "ਗਾਹਕ ਨੀਤੀ",
+    sellerPolicy: "ਵਿਕਰੇਤਾ ਨੀਤੀ",
+    viewingPolicyFor: "ਲਈ ਨੀਤੀਆਂ ਦੇਖ ਰਹੇ ਹੋ",
     navLabels: {
       "/terms": "ਵਰਤੋਂ ਦੀਆਂ ਸ਼ਰਤਾਂ",
       "/privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
@@ -241,6 +328,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "ਰੱਦ ਕਰਨ ਦੀ ਨੀਤੀ",
       "/faq": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ",
       "/contact": "ਸੰਪਰਕ ਕਰੋ",
+    },
+    sellerPageTitles: {
+      "/terms": "ਵਿਕਰੇਤਾ ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ ਅਤੇ ਵਪਾਰੀ ਸਮਝੌਤਾ",
+      "/privacy": "ਵਿਕਰੇਤਾ ਅਤੇ ਵਪਾਰੀ ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
+      "/shipping-policy": "ਵਿਕਰੇਤਾ ਡਿਸਪੈਚ ਅਤੇ ਲੌਜਿਸਟਿਕਸ ਨੀਤੀ",
+      "/returns": "ਵਿਕਰੇਤਾ ਵਾਪਸੀ ਅਤੇ ਨਿਰੀਖਣ ਨੀਤੀ",
+      "/cancellation": "ਵਿਕਰੇਤਾ ਆਰਡਰ ਸਵੀਕ੍ਰਿਤੀ ਅਤੇ SLA ਨੀਤੀ",
+      "/faq": "ਵਿਕਰੇਤਾ ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ",
+      "/contact": "ਵਿਕਰੇਤਾ ਸਹਾਇਤਾ ਅਤੇ ਸ਼ਿਕਾਇਤ ਨਿਵਾਰਨ ਸੰਪਰਕ",
     },
   },
   gu: {
@@ -253,6 +349,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "બધા હક્કો અનામત છે.",
     mtDisclaimer:
       "આ પેજ આપમેળે અનુવાદિત છે. અંગ્રેજી આવૃત્તિ જ સત્તાવાર કાનૂની લખાણ છે.",
+    customerPolicy: "ગ્રાહક નીતિ",
+    sellerPolicy: "વિક્રેતા નીતિ",
+    viewingPolicyFor: "માટેની નીતિઓ જોઈ રહ્યા છો",
     navLabels: {
       "/terms": "ઉપયોગની શરતો",
       "/privacy": "ગોપનીયતા નીતિ",
@@ -270,6 +369,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "રદ કરવાની નીતિ",
       "/faq": "વારંવાર પૂછાતા પ્રશ્નો",
       "/contact": "સંપર્ક કરો",
+    },
+    sellerPageTitles: {
+      "/terms": "વિક્રેતા સેવા શરતો અને વેપારી કરાર",
+      "/privacy": "વિક્રેતા અને વેપારી ગોપનીયતા નીતિ",
+      "/shipping-policy": "વિક્રેતા ડિસ્પેચ અને લોજિસ્ટિક્સ નીતિ",
+      "/returns": "વિક્રેતા રિટર્ન અને નિરીક્ષણ નીતિ",
+      "/cancellation": "વિક્રેતા ઓર્ડર સ્વીકૃતિ અને SLA નીતિ",
+      "/faq": "વિક્રેતા વારંવાર પૂછાતા પ્રશ્નો",
+      "/contact": "વિક્રેતા સહાય અને ફરિયાદ સંપર્ક",
     },
   },
   ml: {
@@ -282,6 +390,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം.",
     mtDisclaimer:
       "ഈ പേജ് സ്വയം വിവർത്തനം ചെയ്തതാണ്. ഇംഗ്ലീഷ് പതിപ്പാണ് ഔദ്യോഗിക നിയമ പാഠം.",
+    customerPolicy: "ഉപഭോക്തൃ നയം",
+    sellerPolicy: "വിൽപ്പനക്കാരന്റെ നയം",
+    viewingPolicyFor: "നയങ്ങൾ കാണുന്നു",
     navLabels: {
       "/terms": "ഉപയോഗ നിബന്ധനകൾ",
       "/privacy": "സ്വകാര്യതാ നയം",
@@ -292,13 +403,22 @@ export const CHROME: LegalChromeDict = {
       "/contact": "ബന്ധപ്പെടുക",
     },
     pageTitles: {
-      "/terms": "ഉപയോഗ നിബന്ധനകൾ",
+      "/terms": "ഉപયોગ നിബന്ധനകൾ",
       "/privacy": "സ്വകാര്യതാ നയം",
       "/shipping-policy": "ഷിപ്പിംഗ് നയം",
       "/returns": "റിട്ടേണുകൾ & റീഫണ്ടുകൾ",
       "/cancellation": "റദ്ദാക്കൽ നയം",
       "/faq": "പതിവുചോദ്യങ്ങൾ",
       "/contact": "ബന്ധപ്പെടുക",
+    },
+    sellerPageTitles: {
+      "/terms": "വിൽപ്പനക്കാരന്റെ സേവന നിബന്ധനകളും വ്യാപാരി കരാറും",
+      "/privacy": "വിൽപ്പനക്കാരന്റെ സ്വകാര്യതാ നയം",
+      "/shipping-policy": "വിൽപ്പനക്കാരന്റെ അയയ്ക്കലും ലോജിസ്റ്റിക്സ് നയവും",
+      "/returns": "വിൽപ്പനക്കാരന്റെ റിട്ടേൺ & പരിശോധനാ നയം",
+      "/cancellation": "വിൽപ്പനക്കാരന്റെ ഓർഡർ സ്വീകാര്യത & SLA നയം",
+      "/faq": "വിൽപ്പനക്കാരന്റെ പതിവുചോദ്യങ്ങൾ",
+      "/contact": "വിൽപ്പനക്കാരന്റെ പിന്തുണയും പരാതി പരിഹാരവും",
     },
   },
   ur: {
@@ -311,6 +431,9 @@ export const CHROME: LegalChromeDict = {
     copyright: "جملہ حقوق محفوظ ہیں۔",
     mtDisclaimer:
       "یہ صفحہ خودکار طور پر ترجمہ کیا گیا ہے۔ انگریزی نسخہ ہی مستند قانونی متن ہے۔",
+    customerPolicy: "کسٹمر پالیسی",
+    sellerPolicy: "سیلر پالیسی",
+    viewingPolicyFor: "کے لیے پالیسیاں دیکھ رہے ہیں",
     navLabels: {
       "/terms": "استعمال کی شرائط",
       "/privacy": "رازداری کی پالیسی",
@@ -328,6 +451,15 @@ export const CHROME: LegalChromeDict = {
       "/cancellation": "منسوخی کی پالیسی",
       "/faq": "اکثر پوچھے گئے سوالات",
       "/contact": "رابطہ کریں",
+    },
+    sellerPageTitles: {
+      "/terms": "سیلر سروس کی شرائط اور مرچنٹ معاہدہ",
+      "/privacy": "سیلر اور مرچنٹ رازداری کی پالیسی",
+      "/shipping-policy": "سیلر ڈسپیچ اور لاجسٹکس پالیسی",
+      "/returns": "سیلر واپسی اور معائنہ کی پالیسی",
+      "/cancellation": "سیلر آرڈر کی قبولیت اور SLA پالیسی",
+      "/faq": "سیلر کے اکثر پوچھے گئے سوالات",
+      "/contact": "سیلر سپورٹ اور شکایات کا رابطہ",
     },
   },
 };

@@ -3,12 +3,18 @@
 import { Fragment, type ReactNode } from "react";
 import LegalLayout from "@/components/legal/LegalLayout";
 import { useLang } from "@/lib/i18n";
+import { useLegalAudience } from "@/lib/legalAudience";
 import {
   getShippingBody,
   getShippingMeta,
   SHIPPING_SECTION_KEYS,
   type ShippingBlock,
 } from "@/lib/legalTranslations/shippingBody";
+import {
+  getSellerShippingBody,
+  getSellerShippingMeta,
+  SELLER_SHIPPING_SECTION_KEYS,
+} from "@/lib/legalTranslations/sellerShippingBody";
 
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const BOLD_RE = /\*\*([^*]+)\*\*/g;
@@ -23,7 +29,7 @@ function renderInline(text: string): ReactNode {
       out.push(...renderBold(text.slice(lastIndex, m.index)));
     }
     out.push(
-      <a key={`a-${m.index}`} href={m[2]}>
+      <a key={`a-${m.index}`} href={m[2]} className="text-[#1A6FD4] underline font-medium hover:text-[#1557AB]">
         {m[1]}
       </a>,
     );
@@ -72,20 +78,41 @@ function renderBlock(block: ShippingBlock, idx: number): ReactNode {
 
 export default function ShippingContent() {
   const { lang } = useLang();
-  const meta = getShippingMeta(lang);
+  const { audience } = useLegalAudience();
   const dir = lang === "ur" ? "rtl" : "ltr";
 
-  return (
-    <LegalLayout title={meta.title} lastUpdated="May 5, 2026">
-      <div dir={dir}>
-        {getShippingBody(lang, "intro").map(renderBlock)}
+  const customerMeta = getShippingMeta(lang);
+  const sellerMeta = getSellerShippingMeta(lang);
 
-        {SHIPPING_SECTION_KEYS.map((key) => (
-          <Fragment key={key}>
-            <h2>{meta.headings[key]}</h2>
-            {getShippingBody(lang, key).map(renderBlock)}
-          </Fragment>
-        ))}
+  const isSeller = audience === "seller";
+  const activeTitle = isSeller ? sellerMeta.title : customerMeta.title;
+
+  return (
+    <LegalLayout title={activeTitle} lastUpdated={isSeller ? "August 15, 2026" : "May 5, 2026"}>
+      <div dir={dir}>
+        {isSeller ? (
+          <>
+            {getSellerShippingBody(lang, "intro").map(renderBlock)}
+
+            {SELLER_SHIPPING_SECTION_KEYS.map((key) => (
+              <Fragment key={key}>
+                <h2>{sellerMeta.headings[key]}</h2>
+                {getSellerShippingBody(lang, key).map(renderBlock)}
+              </Fragment>
+            ))}
+          </>
+        ) : (
+          <>
+            {getShippingBody(lang, "intro").map(renderBlock)}
+
+            {SHIPPING_SECTION_KEYS.map((key) => (
+              <Fragment key={key}>
+                <h2>{customerMeta.headings[key]}</h2>
+                {getShippingBody(lang, key).map(renderBlock)}
+              </Fragment>
+            ))}
+          </>
+        )}
       </div>
     </LegalLayout>
   );

@@ -170,11 +170,10 @@ export default function SellerRegisterPage() {
 
       const { user, sellerProfile } = await res.json();
 
-      const hostname = window.location.hostname;
-      const domainAttr = hostname.endsWith("anga9.com") ? "; domain=.anga9.com" : "";
       const secureAttr = window.location.protocol === "https:" ? "; secure" : "";
-      document.cookie = `portal=seller; path=/; max-age=86400; samesite=lax${domainAttr}${secureAttr}`;
+      document.cookie = `portal=seller; path=/; max-age=86400; samesite=lax${secureAttr}`;
 
+      const hostname = window.location.hostname;
       const sellerHost = hostname.endsWith("anga9.com") ? "https://seller.anga9.com" : "";
 
       if (user.role === "seller" && sellerProfile?.onboarding_complete) {

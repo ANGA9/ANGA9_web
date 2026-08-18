@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3, LifeBuoy, AlertTriangle, Megaphone, Store, Star, Tag } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, UserCircle, Settings, Bell, X, IndianRupee, Wallet, BarChart3, LifeBuoy, AlertTriangle, Megaphone, Store, Star, Tag, ShieldCheck } from "lucide-react";
 import SellerLink from "@/components/seller/SellerLink";
 import { useSellerSubdomain, sellerHref } from "@/lib/sellerHref";
 
@@ -21,6 +21,7 @@ const NAV = [
   { label: "Profile", href: "/seller/dashboard/profile", icon: UserCircle },
   { label: "Storefront", href: "/seller/dashboard/storefront", icon: Store },
   { label: "Settings & Password", href: "/seller/dashboard/settings", icon: Settings },
+  { label: "Data & Privacy", href: "/seller/dashboard/privacy", icon: ShieldCheck },
 ];
 
 export default function SellerSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {

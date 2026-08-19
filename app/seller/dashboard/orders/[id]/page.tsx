@@ -2,6 +2,8 @@
 import { useState, useEffect, use } from "react";
 import { ArrowLeft, Loader2, Package, Truck, CheckCircle2, Clock, MapPin, Receipt, History } from "lucide-react";
 import { api } from "@/lib/api";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -63,6 +65,44 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
   async function fetchOrder() {
     try {
       const res = await api.get<OrderDetail>(`/api/orders/seller/${id}`, { silent: true });
+      if (res) {
+        // Check for missing product images
+        const missingProductIds = [
+          ...new Set(
+            (res.items || [])
+              .filter((i) => !i.product_image && i.product_id)
+              .map((i) => i.product_id)
+          ),
+        ];
+
+        if (missingProductIds.length > 0) {
+          try {
+            const supabase = getSupabaseBrowserClient();
+            const { data: prods } = await supabase
+              .from("products")
+              .select("id, images")
+              .in("id", missingProductIds);
+
+            const imgMap = new Map<string, string>();
+            for (const p of prods || []) {
+              const imgs = (p.images || (p as any).image_urls) as string[] | null;
+              if (imgs && imgs.length > 0) {
+                imgMap.set(p.id, imgs[0]);
+              }
+            }
+
+            if (imgMap.size > 0) {
+              (res.items || []).forEach((item) => {
+                if (!item.product_image && item.product_id && imgMap.has(item.product_id)) {
+                  item.product_image = imgMap.get(item.product_id);
+                }
+              });
+            }
+          } catch {
+            // Ignore fallback error
+          }
+        }
+      }
       setOrder(res || null);
     } catch {
       setOrder(null);
@@ -168,7 +208,11 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                   <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
                     {item.product_image ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.product_image} alt={item.product_name} className="w-full h-full object-cover" />
+                      <img 
+                        src={cdnUrl(item.product_image)} 
+                        alt={item.product_name} 
+                        className="w-full h-full object-cover" 
+                      />
                     ) : (
                       <Package className="w-6 h-6 text-gray-300" />
                     )}

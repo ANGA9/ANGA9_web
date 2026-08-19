@@ -10,8 +10,16 @@ const CDN_BASE = SUPABASE_URL
   ? `${SUPABASE_URL}/storage/v1/object/public/public-assets`
   : "";
 
-export function cdnUrl(path: string): string {
+export function cdnUrl(path: string | null | undefined): string {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+    return path;
+  }
+  if (!SUPABASE_URL) return path;
+  if (path.startsWith("product-images/") || path.startsWith("/product-images/")) {
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+    return `${SUPABASE_URL}/storage/v1/object/public/${cleanPath}`;
+  }
   if (!CDN_BASE) return path;
-  if (!path.startsWith("/")) return path;
-  return `${CDN_BASE}${path}`;
+  return `${CDN_BASE}${path.startsWith("/") ? path : "/" + path}`;
 }

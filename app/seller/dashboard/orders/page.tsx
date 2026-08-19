@@ -2,12 +2,15 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart, Loader2, Package, Truck, CheckCircle2, Eye, Search, ChevronLeft, ChevronRight, Inbox } from "lucide-react";
 import { api } from "@/lib/api";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
 interface OrderItem {
   id: string;
   order_id: string;
+  product_id?: string;
   product_name: string;
   quantity: number;
   unit_price: number;
@@ -64,7 +67,49 @@ export default function OrdersPage() {
     try {
       setLoading(true);
       const res = await api.get<{ orders: SellerOrder[] }>("/api/orders/seller");
-      setAllOrders(res.orders || []);
+      const orders = res.orders || [];
+
+      // Collect product IDs that don't have images attached yet
+      const missingProductIds = [
+        ...new Set(
+          orders
+            .flatMap((o) => o.items || [])
+            .filter((i) => !i.product_image && i.product_id)
+            .map((i) => i.product_id as string)
+        ),
+      ];
+
+      if (missingProductIds.length > 0) {
+        try {
+          const supabase = getSupabaseBrowserClient();
+          const { data: prods } = await supabase
+            .from("products")
+            .select("id, images")
+            .in("id", missingProductIds);
+
+          const imgMap = new Map<string, string>();
+          for (const p of prods || []) {
+            const imgs = (p.images || (p as any).image_urls) as string[] | null;
+            if (imgs && imgs.length > 0) {
+              imgMap.set(p.id, imgs[0]);
+            }
+          }
+
+          if (imgMap.size > 0) {
+            orders.forEach((o) => {
+              (o.items || []).forEach((item) => {
+                if (!item.product_image && item.product_id && imgMap.has(item.product_id)) {
+                  item.product_image = imgMap.get(item.product_id);
+                }
+              });
+            });
+          }
+        } catch {
+          // Graceful fallback to default placeholder
+        }
+      }
+
+      setAllOrders(orders);
     } catch {
       toast.error("Failed to load orders");
     } finally {
@@ -240,7 +285,11 @@ export default function OrdersPage() {
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 overflow-hidden">
                             {primaryItem?.product_image ? (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img src={primaryItem.product_image} alt="" className="w-full h-full object-cover" />
+                              <img 
+                                src={cdnUrl(primaryItem.product_image)} 
+                                alt="" 
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <Package className="w-5 h-5 text-gray-400" />
                             )}

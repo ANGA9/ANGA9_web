@@ -134,14 +134,14 @@ export default function DashboardHome() {
                 .select("id")
                 .or(`id.eq.${targetSellerId},parent_user_id.eq.${targetSellerId}`);
 
-              const sellerIds = childUsers && childUsers.length > 0 ? childUsers.map(u => u.id) : [targetSellerId];
+              const sellerIds = childUsers && childUsers.length > 0 ? (childUsers as any[]).map((u: any) => u.id) : [targetSellerId];
 
               const { data: sellerItems } = await supabase
                 .from("order_items")
                 .select("order_id")
                 .in("seller_id", sellerIds);
 
-              const orderIds = [...new Set((sellerItems || []).map(i => i.order_id).filter(Boolean))];
+              const orderIds = [...new Set(((sellerItems as any[]) || []).map((i: any) => i.order_id).filter(Boolean))];
 
               if (orderIds.length > 0) {
                 totalCount = orderIds.length;
@@ -156,16 +156,16 @@ export default function DashboardHome() {
                   const { data: directItems } = await supabase
                     .from("order_items")
                     .select("*")
-                    .in("order_id", directOrders.map(o => o.id))
+                    .in("order_id", (directOrders as any[]).map((o: any) => o.id))
                     .in("seller_id", sellerIds);
 
                   const itemsByOrder = new Map<string, any[]>();
-                  (directItems || []).forEach((item: any) => {
+                  ((directItems as any[]) || []).forEach((item: any) => {
                     if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);
                     itemsByOrder.get(item.order_id)!.push(item);
                   });
 
-                  orders = directOrders.map(o => ({
+                  orders = (directOrders as any[]).map((o: any) => ({
                     id: o.id,
                     order_number: o.order_number,
                     status: o.status,
@@ -199,7 +199,7 @@ export default function DashboardHome() {
                 .in("id", missingProductIds);
 
               const imgMap = new Map<string, string>();
-              for (const p of prods || []) {
+              for (const p of (prods as any[]) || []) {
                 const imgs = (p.images || (p as any).image_urls) as string[] | null;
                 if (imgs && imgs.length > 0) imgMap.set(p.id, imgs[0]);
               }

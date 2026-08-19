@@ -84,7 +84,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
               .in("id", missingProductIds);
 
             const imgMap = new Map<string, string>();
-            for (const p of prods || []) {
+            for (const p of (prods as any[]) || []) {
               const imgs = (p.images || (p as any).image_urls) as string[] | null;
               if (imgs && imgs.length > 0) {
                 imgMap.set(p.id, imgs[0]);

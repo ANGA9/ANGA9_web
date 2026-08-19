@@ -62,23 +62,23 @@ export default function CategoryMultiSelect({ value, onChange, max = 5 }: Catego
   return (
     <div className="relative w-full" ref={containerRef}>
       <div 
-        className="min-h-[48px] w-full px-3 py-2 bg-white border border-gray-200 rounded-xl cursor-text flex flex-wrap gap-2 items-center focus-within:ring-2 focus-within:ring-[#8B5CF6]/20 focus-within:border-[#8B5CF6] transition-all"
+        className="min-h-[48px] w-full px-3 py-2 bg-white border border-gray-200 rounded-xl cursor-text flex flex-wrap gap-2 items-center focus-within:ring-2 focus-within:ring-[#1A6FD4]/20 focus-within:border-[#1A6FD4] transition-all"
         onClick={() => setOpen(true)}
       >
         {value.length === 0 && (
           <span className="text-gray-400 text-[14px] px-1 font-medium">Select up to {max} categories</span>
         )}
         {value.map((id, idx) => (
-          <div key={id} className="flex items-center gap-1.5 bg-[#8B5CF6]/10 text-[#8B5CF6] px-2.5 py-1 rounded-lg text-[13px] font-bold">
-            {idx === 0 && <span className="text-[10px] uppercase px-1.5 py-0.5 rounded mr-1 leading-none tracking-wider font-black bg-white border-2 border-[#8B5CF6] text-[#8B5CF6] hover:bg-gray-50">Primary</span>}
+          <div key={id} className="flex items-center gap-1.5 bg-blue-50 text-[#1A6FD4] border border-blue-200 px-2.5 py-1 rounded-lg text-[14px] font-bold">
+            {idx === 0 && <span className="text-[11px] uppercase px-1.5 py-0.5 rounded mr-1 leading-none tracking-wider font-bold bg-[#1A6FD4] text-white">Primary</span>}
             {getCatName(id)}
-            <button onClick={(e) => handleRemove(id, e)} className="hover:bg-[#8B5CF6]/20 p-0.5 rounded-full text-[#8B5CF6]">
+            <button onClick={(e) => handleRemove(id, e)} className="hover:bg-blue-200/50 p-0.5 rounded-full text-[#1A6FD4]">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-[12px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded-lg">{value.length}/{max}</span>
+          <span className="text-[14px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-lg">{value.length}/{max}</span>
           <ChevronDown className="w-4 h-4 text-gray-400" />
         </div>
       </div>
@@ -126,7 +126,7 @@ function CategoryOption({ category, selected, disabled, onToggle, level = 0 }: {
         if (!disabled) onToggle();
       }}
     >
-      <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${selected ? "bg-[#8B5CF6] border-[#8B5CF6] text-white" : "border-gray-300 bg-white"}`}>
+      <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${selected ? "bg-[#1A6FD4] border-[#1A6FD4] text-white" : "border-gray-300 bg-white"}`}>
         {selected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
       </div>
       <span className={`text-[14px] font-medium ${level === 0 ? "text-gray-900 font-bold" : "text-gray-600"}`}>{category.name}</span>

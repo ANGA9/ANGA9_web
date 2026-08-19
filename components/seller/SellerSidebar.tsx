@@ -76,7 +76,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
         
         <div className="p-5 border-t border-gray-100 bg-gray-50/50 mt-auto">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl from-[#1A1A2E] to-[#4B5563] flex items-center justify-center shadow-sm bg-white border-2 border-gradient-to-br text-gradient-to-br hover:bg-gray-50">
+            <div className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-sm">
               <Store className="w-5 h-5" />
             </div>
             <div className="flex flex-col">

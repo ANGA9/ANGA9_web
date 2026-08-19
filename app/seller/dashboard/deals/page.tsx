@@ -403,7 +403,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
               <label className="block text-[14px] font-bold text-gray-700 mb-2">Deal Type</label>
               <select
@@ -431,7 +431,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
               <label className="block text-[14px] font-bold text-gray-700 mb-2 text-left">Starts At</label>
               <input

@@ -143,10 +143,10 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
       <div className="md:hidden flex flex-col gap-2 mb-6">
         <h1 className="text-[24px] font-bold tracking-tight text-gray-900">#{order.order_number}</h1>
         <div className="flex items-center gap-3">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[12px] font-bold border uppercase tracking-wide ${STATUS_COLORS[orderStatus] || "bg-gray-100 text-gray-800 border-gray-200"}`}>
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[14px] font-bold border uppercase tracking-wide ${STATUS_COLORS[orderStatus] || "bg-gray-100 text-gray-800 border-gray-200"}`}>
             {orderStatus}
           </span>
-          <p className="text-[13px] text-gray-500 font-medium flex items-center gap-1">
+          <p className="text-[14px] text-gray-500 font-medium flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" /> {new Date(order.placed_at).toLocaleDateString()}
           </p>
         </div>
@@ -180,7 +180,7 @@ export default function SellerOrderDetailPage({ params }: { params: Promise<{ id
                     </p>
                   </div>
                   <div className="sm:text-right w-full sm:w-auto mt-2 sm:mt-0 flex justify-between sm:block border-t border-gray-100 sm:border-0 pt-3 sm:pt-0">
-                    <span className="text-[13px] font-bold text-gray-400 sm:hidden uppercase">Item Total</span>
+                    <span className="text-[14px] font-bold text-gray-400 sm:hidden uppercase">Item Total</span>
                     <p className="text-[18px] font-bold text-gray-900">{formatINR(item.total_price)}</p>
                   </div>
                 </div>

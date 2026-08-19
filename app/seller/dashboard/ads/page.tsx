@@ -133,10 +133,10 @@ export default function SellerAdsPage() {
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr className="bg-gray-50/80 border-b border-gray-200">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Campaign Details</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Placement & Dates</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%] text-center">Performance</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[20%]">Budget & Status</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Campaign Details</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Placement & Dates</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%] text-center">Performance</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right w-[20%]">Budget & Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -152,7 +152,7 @@ export default function SellerAdsPage() {
                           <span className="font-bold text-[15px] text-gray-900 truncate mb-1" title={ad.headline}>
                             {ad.headline}
                           </span>
-                          <span className="text-[13px] font-medium text-gray-500 truncate">
+                          <span className="text-[14px] font-medium text-gray-500 truncate">
                             Product: <span className="text-gray-900 font-bold">{ad.products?.name || ad.product_id.split('-')[0]}</span>
                           </span>
                         </div>
@@ -162,11 +162,11 @@ export default function SellerAdsPage() {
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           <Megaphone className="w-4 h-4 text-blue-500" />
-                          <span className="font-bold text-[13px] text-gray-900 capitalize bg-gray-100 px-2 py-0.5 rounded-md">
+                          <span className="font-bold text-[14px] text-gray-900 capitalize bg-gray-100 px-2 py-0.5 rounded-md">
                             {ad.placement.replace('_', ' ')}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-[13px] font-medium text-gray-500">
+                        <div className="flex items-center gap-2 text-[14px] font-medium text-gray-500">
                           <Calendar className="w-4 h-4 text-gray-400" />
                           {new Date(ad.starts_at).toLocaleDateString()} - {new Date(ad.ends_at).toLocaleDateString()}
                         </div>

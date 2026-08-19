@@ -53,28 +53,28 @@ export default function BrandManagementPage() {
                 return (
                   <div 
                     key={brand.id}
-                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
+                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border transition-all ${
                       isActive 
                         ? "border-[#1A6FD4] bg-[#F8FBFF] shadow-sm shadow-[#1A6FD4]/10" 
                         : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm shrink-0 ${
                         isActive ? "bg-[#1A6FD4] text-white" : "bg-gray-100 text-gray-500"
                       }`}>
                         <Store className="w-6 h-6" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-[16px] font-bold text-gray-900">{getBrandName(brand)}</h3>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-[16px] font-bold text-gray-900 truncate">{getBrandName(brand)}</h3>
                           {isActive && (
                             <span className="flex items-center gap-1 text-[14px] font-bold text-[#1A6FD4] bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Active
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
                           <span className={`text-[14px] font-bold px-2.5 py-0.5 rounded-md border ${
                             isParent 
                               ? "bg-blue-50 text-[#1A6FD4] border-blue-200" 
@@ -82,7 +82,7 @@ export default function BrandManagementPage() {
                           }`}>
                             {isParent ? "Parent Account" : "Child Brand"}
                           </span>
-                          <span className="text-[14px] text-gray-500 font-medium">ID: {brand.id.slice(0, 8)}...</span>
+                          <span className="text-[14px] text-gray-500 font-medium font-mono">ID: {brand.id.slice(0, 8)}...</span>
                         </div>
                       </div>
                     </div>
@@ -90,7 +90,7 @@ export default function BrandManagementPage() {
                     {!isActive && (
                       <button
                         onClick={() => setActiveBrandId(brand.id)}
-                        className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-[14px] font-bold text-gray-700 hover:bg-gray-50 hover:text-[#1A6FD4] hover:border-[#1A6FD4]/30 transition-all shadow-sm"
+                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-[14px] font-bold text-gray-700 hover:bg-gray-50 hover:text-[#1A6FD4] hover:border-[#1A6FD4]/30 transition-all shadow-sm shrink-0 text-center"
                       >
                         Switch to Brand
                       </button>

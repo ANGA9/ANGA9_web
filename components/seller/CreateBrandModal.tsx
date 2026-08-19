@@ -162,7 +162,7 @@ export default function CreateBrandModal({ open, onClose, onCreated }: Props) {
               placeholder="aurelia-kids"
               className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50/50 text-[15px] font-medium text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10 transition-colors placeholder:text-gray-400"
             />
-            <p className="text-[12px] text-gray-400 font-medium mt-1.5">
+            <p className="text-[14px] text-gray-400 font-medium mt-1.5">
               Used in your storefront URL. Lowercase letters, numbers and dashes only. Must be unique.
             </p>
           </div>
@@ -189,7 +189,7 @@ export default function CreateBrandModal({ open, onClose, onCreated }: Props) {
           <button
             type="submit"
             disabled={loading || storeName.trim().length < 2 || !slug}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
           >
             {loading ? (
               <span className="flex items-center gap-2">

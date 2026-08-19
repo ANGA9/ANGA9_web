@@ -349,7 +349,7 @@ export default function SellerRegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#1559B3] shadow-sm"
       >
         {loading ? (
           <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
@@ -411,7 +411,7 @@ export default function SellerRegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#1559B3] shadow-sm"
       >
         {loading ? (
           <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
@@ -491,7 +491,7 @@ export default function SellerRegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-bold transition-all active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#1559B3] shadow-sm"
       >
         {loading ? (
           <span className="flex items-center gap-2">{spinner} Verifying...</span>

@@ -59,7 +59,7 @@ export default function SellerHelpPage() {
 
       {/* ── Categories ── */}
       <section className="mb-8 md:mb-10">
-        <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">Browse by topic</h2>
+        <h2 className="text-[14px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">Browse by topic</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {TOP_CATEGORIES.map((c) => (
             <Link
@@ -79,7 +79,7 @@ export default function SellerHelpPage() {
       <div className="flex flex-col-reverse md:flex-row gap-8 md:gap-10 mb-10 md:mb-12">
         {/* ── Articles (Left Column on Desktop, Bottom on Mobile) ── */}
         <section className="flex-1 min-w-0">
-          <h2 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">
+          <h2 className="text-[14px] font-bold uppercase tracking-wider text-gray-400 mb-3 md:mb-4">
             {q ? "Search results" : "Popular articles"}
           </h2>
           {loading ? (
@@ -116,7 +116,7 @@ export default function SellerHelpPage() {
                           {a.title}
                         </div>
                         {a.category && (
-                          <div className="text-[13px] font-medium text-gray-500 mt-1">
+                          <div className="text-[14px] font-medium text-gray-500 mt-1">
                             {a.category}
                           </div>
                         )}
@@ -134,7 +134,7 @@ export default function SellerHelpPage() {
 
         {/* ── CTAs (Right Sidebar on Desktop, Top on Mobile) ── */}
         <section className="md:w-[340px] shrink-0 flex flex-col gap-3 md:gap-4">
-          <h2 className="hidden md:block text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-0">
+          <h2 className="hidden md:block text-[14px] font-bold uppercase tracking-wider text-gray-400 mb-0">
             Need more help?
           </h2>
           <Link
@@ -158,7 +158,7 @@ export default function SellerHelpPage() {
             </div>
             <div>
               <div className="text-[16px] md:text-[17px] font-bold text-gray-900 tracking-tight mb-0.5 group-hover:text-[#1A6FD4] transition-colors">My tickets</div>
-              <div className="text-[13px] text-gray-500 font-medium leading-tight">View ongoing conversations & messages.</div>
+              <div className="text-[14px] text-gray-500 font-medium leading-tight">View ongoing conversations & messages.</div>
             </div>
           </Link>
         </section>

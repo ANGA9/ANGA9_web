@@ -244,7 +244,7 @@ export default function OnboardingPage() {
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors ${
-                i < step ? "bg-[#22C55E]" : i === step ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4]" : "bg-[#F1F5F9]"
+                i < step ? "bg-[#22C55E]" : i === step ? "bg-[#1A6FD4]" : "bg-[#F1F5F9]"
               }`}
             />
           ))}
@@ -258,7 +258,7 @@ export default function OnboardingPage() {
               className={`flex flex-col items-center gap-1.5 group ${i <= step ? "cursor-pointer" : "cursor-default"}`}
             >
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
-                i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#F1F5F9] text-[#94A3B8]"
+                i < step ? "bg-[#22C55E] text-white" : i === step ? "bg-[#1A6FD4] text-white ring-4 ring-[#1A6FD4]/20" : "bg-[#F1F5F9] text-[#94A3B8]"
               }`}>
                   {i < step ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
                 </div>
@@ -316,7 +316,7 @@ export default function OnboardingPage() {
         {step < 7 ? (
             <button
               onClick={handleNext}
-              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg text-sm md:text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg text-sm md:text-base font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
             Next <ChevronRight className="w-4 h-4" />
           </button>
@@ -324,7 +324,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg text-sm md:text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 bg-white border-2 border-[#4338CA] text-[#4338CA] hover:bg-gray-50"
+              className="w-full md:w-auto flex items-center justify-center gap-1.5 h-12 md:h-11 px-6 rounded-lg text-sm md:text-base font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Verification

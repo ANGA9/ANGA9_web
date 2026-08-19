@@ -170,35 +170,29 @@ export default function InventoryPage() {
       </div>
 
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 mb-4 text-[#1A6FD4]">
-            <Package className="w-6 h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <Package className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Products</span>
           </div>
-          <div>
-            <p className="text-[32px] font-bold text-gray-900 leading-none mb-1">{allRows.length}</p>
-            <p className="text-[14px] font-medium text-gray-500">Total Products</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{allRows.length}</p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-yellow-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-yellow-50 mb-4 text-yellow-500">
-            <AlertTriangle className="w-6 h-6" />
+        <div className="bg-white rounded-2xl border-l-4 border-l-amber-400 border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Low Stock Alerts</span>
           </div>
-          <div>
-            <p className="text-[32px] font-bold text-gray-900 leading-none mb-1">{lowStockCount}</p>
-            <p className="text-[14px] font-medium text-gray-500">Low Stock Alerts</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{lowStockCount}</p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-red-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-red-50 mb-4 text-red-500">
-            <XCircle className="w-6 h-6" />
+        <div className="bg-white rounded-2xl border-l-4 border-l-red-500 border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <XCircle className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Out of Stock</span>
           </div>
-          <div>
-            <p className="text-[32px] font-bold text-gray-900 leading-none mb-1">{outOfStockCount}</p>
-            <p className="text-[14px] font-medium text-gray-500">Out of Stock</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{outOfStockCount}</p>
         </div>
       </div>
 
@@ -246,12 +240,12 @@ export default function InventoryPage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50/80 border-b border-gray-200">
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">Price</th>
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Available Stock</th>
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Low Alert At</th>
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Reserved</th>
-                      <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">Price</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Available Stock</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Low Alert At</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Reserved</th>
+                      <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -287,7 +281,7 @@ export default function InventoryPage() {
                                 <p className="font-bold text-[15px] text-gray-900 truncate max-w-[200px] lg:max-w-[300px] mb-1.5">
                                   {row.product.name}
                                 </p>
-                                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide ${statusClasses}`}>
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[14px] font-bold border uppercase tracking-wide ${statusClasses}`}>
                                   {statusLabel}
                                 </span>
                               </div>

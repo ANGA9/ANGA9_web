@@ -146,7 +146,7 @@ export default function SellerPrivacyPage() {
                   <p.icon className="w-4 h-4 text-[#1A6FD4]" />
                   <span className="text-[14px] font-bold text-gray-900">{p.name}</span>
                 </div>
-                <p className="text-[13px] text-gray-500 leading-normal">{p.desc}</p>
+                <p className="text-[14px] text-gray-500 leading-normal">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -168,7 +168,7 @@ export default function SellerPrivacyPage() {
             <p>
               Deleting your seller account will permanently remove your product listings, store profile, and merchant login access. Outstanding delivered orders and payouts must be settled prior to account closure.
             </p>
-            <p className="text-[13px] text-gray-500">
+            <p className="text-[14px] text-gray-500">
               Tax invoices and statutory financial transaction records are retained for 8 years as required by Indian GST and commercial regulations.
             </p>
 
@@ -197,7 +197,7 @@ export default function SellerPrivacyPage() {
                 </div>
                 <div>
                   <h3 className="text-[18px] font-bold text-gray-900">Are you absolutely sure?</h3>
-                  <p className="text-[13px] text-red-600 font-medium mt-0.5">This action cannot be undone.</p>
+                  <p className="text-[14px] text-red-600 font-medium mt-0.5">This action cannot be undone.</p>
                 </div>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function SellerPrivacyPage() {
               </p>
 
               <div className="space-y-2 pt-2">
-                <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500">
+                <label className="text-[14px] font-bold uppercase tracking-wider text-gray-500">
                   Please type <strong className="text-red-600 select-all">DELETE</strong> to confirm
                 </label>
                 <input
@@ -240,7 +240,7 @@ export default function SellerPrivacyPage() {
                 type="button"
                 onClick={handleDeleteAccount}
                 disabled={confirmText !== "DELETE" || isDeleting}
-                className="flex-1 px-4 py-2.5 rounded-xl font-bold text-[14px] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-50"
+                className="flex-1 px-4 py-2.5 rounded-xl font-bold text-[14px] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700"
               >
                 {isDeleting ? (
                   <>

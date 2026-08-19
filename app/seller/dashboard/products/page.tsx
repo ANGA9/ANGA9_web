@@ -137,7 +137,7 @@ export default function ProductsPage() {
           </Link>
           <Link
             href="/seller/dashboard/products/new"
-            className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[14px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+            className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-[14px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
           >
             <Plus className="w-5 h-5" /> Add New
           </Link>
@@ -153,25 +153,25 @@ export default function ProductsPage() {
         <div className="grid grid-cols-2 gap-2 mt-2">
           <Link
             href="/seller/dashboard/products/quality"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[14px] font-bold text-gray-700 shadow-sm w-full"
           >
             <Award className="w-4 h-4 text-amber-500" /> Quality
           </Link>
           <Link
             href="/seller/dashboard/products/bulk-edit"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[14px] font-bold text-gray-700 shadow-sm w-full"
           >
             <Edit3 className="w-4 h-4" /> Edit
           </Link>
           <Link
             href="/seller/dashboard/products/bulk-upload"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[13px] font-bold text-gray-700 shadow-sm w-full"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 px-4 py-2.5 text-[14px] font-bold text-gray-700 shadow-sm w-full"
           >
             <Upload className="w-4 h-4" /> Upload
           </Link>
           <Link
             href="/seller/dashboard/products/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold shadow-sm w-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[14px] font-bold shadow-sm w-full bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
           >
             <Plus className="w-4 h-4" /> Add
           </Link>
@@ -246,7 +246,7 @@ export default function ProductsPage() {
           {!search && (
             <Link
               href="/seller/dashboard/products/new"
-              className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-[14px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               <Plus className="w-5 h-5" /> Add Your First Product
             </Link>
@@ -258,11 +258,11 @@ export default function ProductsPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/80">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Wholesale / MRP</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">Date Added</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Wholesale / MRP</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">Date Added</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -284,7 +284,7 @@ export default function ProductsPage() {
                           <p className="font-bold text-[15px] text-gray-900 truncate max-w-[200px] lg:max-w-[300px]">
                             {p.name}
                           </p>
-                          <p className="text-[13px] font-medium text-gray-500 mt-0.5">
+                          <p className="text-[14px] font-medium text-gray-500 mt-0.5">
                             Min Qty: {p.min_order_qty || 1} {p.unit || "pc"}
                           </p>
                         </div>
@@ -293,8 +293,8 @@ export default function ProductsPage() {
                     <td className="px-6 py-4">
                       {p.sale_price ? (
                         <div className="flex flex-col">
-                          <span className="font-bold text-[15px] text-red-600">₹{p.sale_price}</span>
-                          <span className="text-[13px] font-medium text-gray-400 line-through">₹{p.base_price}</span>
+                          <span className="font-bold text-[15px] text-gray-900">₹{p.sale_price}</span>
+                          <span className="text-[14px] font-medium text-gray-400 line-through">₹{p.base_price}</span>
                         </div>
                       ) : (
                         <span className="font-bold text-[15px] text-gray-900">₹{p.base_price}</span>
@@ -303,7 +303,7 @@ export default function ProductsPage() {
                     <td className="px-6 py-4">
                       <div className="relative inline-block">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-bold border cursor-default transition-transform hover:scale-105 ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[14px] font-bold border cursor-default transition-transform hover:scale-105 ${
                             STATUS_BADGE[p.status] || STATUS_BADGE.draft
                           }`}
                           onMouseEnter={() => p.status === "rejected" && setHoveredRejected(p.id)}

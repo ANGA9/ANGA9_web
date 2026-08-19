@@ -113,12 +113,12 @@ export default function SellerReviewsPage() {
                       <Star key={star} className={`w-4 h-4 ${star <= r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}`} />
                     ))}
                   </div>
-                  <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">
+                  <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">
                     {new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </span>
                 </div>
                 {r.helpful_count > 0 && (
-                  <span className="bg-blue-50 text-blue-600 border border-blue-100 text-[11px] font-bold px-2 py-1 rounded-md">
+                  <span className="bg-blue-50 text-[#1A6FD4] border border-blue-200 text-[14px] font-bold px-2 py-1 rounded-md">
                     {r.helpful_count} Helpful
                   </span>
                 )}
@@ -143,8 +143,8 @@ export default function SellerReviewsPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Product</p>
-                  <Link href={`/seller/dashboard/products/${r.product_id}`} className="text-[13px] font-bold text-gray-900 truncate hover:text-[#1A6FD4] transition-colors">
+                  <p className="text-[14px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Product</p>
+                  <Link href={`/seller/dashboard/products/${r.product_id}`} className="text-[14px] font-bold text-gray-900 truncate hover:text-[#1A6FD4] transition-colors">
                     {r.products?.name || "Unknown Product"}
                   </Link>
                 </div>

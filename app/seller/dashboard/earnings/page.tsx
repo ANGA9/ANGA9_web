@@ -28,8 +28,8 @@ function formatINR(v: number) {
 const statusCfg: Record<string, { bg: string; text: string; label: string; border: string }> = {
   pending: { bg: "bg-yellow-50", text: "text-yellow-700", border: "border-yellow-200", label: "Pending" },
   available: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200", label: "Available" },
-  requested: { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200", label: "Payout Requested" },
-  paid: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", label: "Paid" },
+  requested: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", label: "Payout Requested" },
+  paid: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200", label: "Paid" },
 };
 
 export default function EarningsPage() {
@@ -55,11 +55,11 @@ export default function EarningsPage() {
   }, [page]);
 
   const cards = [
-    { label: "Total Earnings", value: summary?.total || 0, icon: <TrendingUp className="w-6 h-6" />, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
-    { label: "Pending Clearance", value: summary?.pending || 0, icon: <Clock className="w-6 h-6" />, color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-100" },
-    { label: "Available to Withdraw", value: summary?.available || 0, icon: <Wallet className="w-6 h-6" />, color: "text-green-600", bg: "bg-green-50", border: "border-green-100" },
-    { label: "Payout Requested", value: summary?.requested || 0, icon: <FileText className="w-6 h-6" />, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100" },
-    { label: "Successfully Paid", value: summary?.paid || 0, icon: <CheckCircle2 className="w-6 h-6" />, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-100" },
+    { label: "Total Earnings", value: summary?.total || 0, borderColor: "border-l-[#1A6FD4]", icon: <TrendingUp className="w-5 h-5 text-gray-400" /> },
+    { label: "Pending Clearance", value: summary?.pending || 0, borderColor: "border-l-amber-400", icon: <Clock className="w-5 h-5 text-gray-400" /> },
+    { label: "Available to Withdraw", value: summary?.available || 0, borderColor: "border-l-green-500", icon: <Wallet className="w-5 h-5 text-gray-400" /> },
+    { label: "Payout Requested", value: summary?.requested || 0, borderColor: "border-l-[#1A6FD4]", icon: <FileText className="w-5 h-5 text-gray-400" /> },
+    { label: "Successfully Paid", value: summary?.paid || 0, borderColor: "border-l-green-500", icon: <CheckCircle2 className="w-5 h-5 text-gray-400" /> },
   ];
 
   return (
@@ -101,18 +101,14 @@ export default function EarningsPage() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {cards.map((c) => (
-            <div key={c.label} className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-              <div className={`absolute top-0 right-0 w-24 h-24 ${c.bg} rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110`} />
-              
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 relative z-10 ${c.bg} ${c.color} border ${c.border}`}>
+            <div key={c.label} className={`bg-white rounded-2xl border-l-4 ${c.borderColor} border border-gray-200 p-5 flex flex-col gap-3`}>
+              <div className="flex items-center gap-3">
                 {c.icon}
+                <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">{c.label}</span>
               </div>
-              <div className="relative z-10">
-                <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(c.value)}</p>
-                <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">{c.label}</p>
-              </div>
+              <p className="text-[24px] font-bold text-gray-900 tracking-tight leading-none">{formatINR(c.value)}</p>
             </div>
           ))}
         </div>
@@ -144,11 +140,11 @@ export default function EarningsPage() {
               <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                   <tr className="bg-gray-50/80 border-b border-gray-200">
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[40%]">Product / Source</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Qty</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Date</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[40%]">Product / Source</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Qty</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -171,7 +167,7 @@ export default function EarningsPage() {
                                 {e.order_items?.product_name || "Order earning"}
                               </span>
                               {e.order_items?.order_id && (
-                                <span className="text-[12px] font-medium text-gray-400 mt-0.5 font-mono">
+                                <span className="text-[14px] font-medium text-gray-400 mt-0.5 font-mono">
                                   Ord: {e.order_items.order_id.split('-')[0]}...
                                 </span>
                               )}
@@ -189,12 +185,12 @@ export default function EarningsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-5">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide ${sc.bg} ${sc.text} ${sc.border}`}>
+                          <span className={`inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide ${sc.bg} ${sc.text} ${sc.border}`}>
                             {sc.label}
                           </span>
                         </td>
                         <td className="px-6 py-5 text-right">
-                          <span className="text-[13px] font-medium text-gray-500">
+                          <span className="text-[14px] font-medium text-gray-500">
                             {new Date(e.created_at).toLocaleDateString("en-IN", {
                               day: "numeric", month: "short", year: "numeric",
                             })}

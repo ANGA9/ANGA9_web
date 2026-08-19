@@ -152,7 +152,7 @@ export default function ProfilePage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className={labelCls + " mb-0"}>Store Description</label>
-                <span className={`text-[13px] font-medium ${descLen > 900 ? "text-yellow-600" : "text-gray-400"}`}>{descLen}/1000</span>
+                <span className={`text-[14px] font-medium ${descLen > 900 ? "text-yellow-600" : "text-gray-400"}`}>{descLen}/1000</span>
               </div>
               <textarea
                 className={inputCls + " h-28 py-3 resize-y"}
@@ -183,7 +183,7 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
-                <p className="text-[13px] text-gray-500 mt-3 font-medium">To update your KYC documents, please contact seller support.</p>
+                <p className="text-[14px] text-gray-500 mt-3 font-medium">To update your KYC documents, please contact seller support.</p>
               </div>
             )}
           </section>
@@ -234,7 +234,7 @@ export default function ProfilePage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[16px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[16px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               {saving ? "Saving..." : "Save changes"}
@@ -248,13 +248,13 @@ export default function ProfilePage() {
           <div className="sticky top-[104px] flex flex-col gap-4">
             <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
               <h3 className="text-[16px] font-bold text-gray-900 mb-2">Save Profile</h3>
-              <p className="text-[13px] text-gray-500 font-medium mb-6 leading-relaxed">
+              <p className="text-[14px] text-gray-500 font-medium mb-6 leading-relaxed">
                 Ensure your business and banking details match your KYC documents to avoid payout delays.
               </p>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
               >
                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                 {saving ? "Saving..." : "Save changes"}
@@ -262,7 +262,7 @@ export default function ProfilePage() {
               {saved && (
                 <div className="mt-4 rounded-xl bg-green-50 border border-green-200 p-3 flex items-center justify-center gap-2 text-green-700">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span className="text-[13px] font-bold">Saved successfully!</span>
+                  <span className="text-[14px] font-bold">Saved successfully!</span>
                 </div>
               )}
             </div>
@@ -270,7 +270,7 @@ export default function ProfilePage() {
             {verificationStatus !== "verified" && (
               <div className="bg-[#FFFBEB] rounded-3xl border border-[#FDE68A] p-6 text-yellow-800">
                 <h3 className="text-[14px] font-bold mb-1">Verification Required</h3>
-                <p className="text-[13px] font-medium leading-relaxed">
+                <p className="text-[14px] font-medium leading-relaxed">
                   Your account is not fully verified. Some features like payouts may be restricted until KYC is completed.
                 </p>
               </div>

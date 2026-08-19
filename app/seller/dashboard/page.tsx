@@ -29,7 +29,7 @@ interface AnalyticsData {
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  confirmed: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  confirmed: "bg-blue-50 text-blue-700 border-blue-200",
   processing: "bg-yellow-50 text-yellow-700 border-yellow-200",
   shipped: "bg-blue-50 text-blue-700 border-blue-200",
   delivered: "bg-green-50 text-green-700 border-green-200",
@@ -58,7 +58,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Tooltip
   if (active && payload && payload.length) {
     return (
       <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
-        <p className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1">{payload[0].payload.date}</p>
+        <p className="text-[14px] font-bold text-gray-500 uppercase tracking-wider mb-1">{payload[0].payload.date}</p>
         <p className="text-[18px] font-bold text-gray-900">{formatINR(payload[0].value)}</p>
       </div>
     );
@@ -174,13 +174,13 @@ export default function DashboardHome() {
       <div className="hidden md:flex items-center justify-between mb-8">
         <div className="flex flex-col gap-1">
           <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">
-            Welcome back{bizName ? `, ${bizName}` : ""}!
+            Dashboard{bizName ? ` — ${bizName}` : ""}
           </h1>
-          <p className="text-[15px] text-gray-500 font-medium">Here&apos;s what&apos;s happening with your store today.</p>
+          <p className="text-[15px] text-gray-500 font-medium">Your store overview at a glance.</p>
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="w-5 h-5" /> Add New Product
         </Link>
@@ -190,13 +190,13 @@ export default function DashboardHome() {
       <div className="md:hidden flex flex-col gap-4 mb-8">
         <div>
           <h1 className="text-[24px] font-bold tracking-tight text-gray-900">
-            Welcome{bizName ? `, ${bizName}` : ""}!
+            Dashboard{bizName ? ` — ${bizName}` : ""}
           </h1>
-          <p className="text-[14px] text-gray-500 font-medium mt-1">Here&apos;s your store overview.</p>
+          <p className="text-[14px] text-gray-500 font-medium mt-1">Your store overview.</p>
         </div>
         <Link
           href="/seller/dashboard/products/new"
-          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="w-5 h-5" /> Add New Product
         </Link>
@@ -244,89 +244,69 @@ export default function DashboardHome() {
 
       {/* ── Quick Links ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-        <Link href="/seller/dashboard/products" className="group flex items-center gap-4 p-5 rounded-3xl border border-gray-200 bg-white hover:border-blue-200 hover:bg-blue-50/30 transition-all shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform">
-            <Package className="w-6 h-6" />
+        <Link href="/seller/dashboard/products" className="group flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white hover:border-[#1A6FD4]/30 hover:bg-blue-50/20 transition-all">
+          <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#1A6FD4] flex items-center justify-center">
+            <Package className="w-5 h-5" />
           </div>
           <div className="flex-1">
-            <p className="text-[15px] font-bold text-gray-900">Manage Products</p>
-            <p className="text-[13px] font-medium text-gray-500">Add or edit listings</p>
+            <p className="text-[15px] font-bold text-gray-900">Products</p>
+            <p className="text-[14px] font-medium text-gray-500">{stats.products} active</p>
           </div>
-          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
+          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#1A6FD4] transition-colors" />
         </Link>
-        <Link href="/seller/dashboard/orders" className="group flex items-center gap-4 p-5 rounded-3xl border border-gray-200 bg-white hover:border-green-200 hover:bg-green-50/30 transition-all shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center border border-green-100 group-hover:scale-110 transition-transform">
-            <ShoppingCart className="w-6 h-6" />
+        <Link href="/seller/dashboard/orders" className="group flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white hover:border-[#1A6FD4]/30 hover:bg-blue-50/20 transition-all">
+          <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#1A6FD4] flex items-center justify-center">
+            <ShoppingCart className="w-5 h-5" />
           </div>
           <div className="flex-1">
-            <p className="text-[15px] font-bold text-gray-900">Fulfill Orders</p>
-            <p className="text-[13px] font-medium text-gray-500">Process shipments</p>
+            <p className="text-[15px] font-bold text-gray-900">Orders</p>
+            <p className="text-[14px] font-medium text-gray-500">{stats.pendingOrders} to fulfill</p>
           </div>
-          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-green-500 transition-colors" />
+          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#1A6FD4] transition-colors" />
         </Link>
-        <Link href="/seller/dashboard/inventory" className="group flex items-center gap-4 p-5 rounded-3xl border border-gray-200 bg-white hover:border-orange-200 hover:bg-orange-50/30 transition-all shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 group-hover:scale-110 transition-transform">
-            <RefreshCw className="w-6 h-6" />
+        <Link href="/seller/dashboard/inventory" className="group flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white hover:border-[#1A6FD4]/30 hover:bg-blue-50/20 transition-all">
+          <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#1A6FD4] flex items-center justify-center">
+            <RefreshCw className="w-5 h-5" />
           </div>
           <div className="flex-1">
-            <p className="text-[15px] font-bold text-gray-900">Manage Inventory</p>
-            <p className="text-[13px] font-medium text-gray-500">Update stock levels</p>
+            <p className="text-[15px] font-bold text-gray-900">Inventory</p>
+            <p className="text-[14px] font-medium text-gray-500">Stock levels</p>
           </div>
-          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-orange-500 transition-colors" />
+          <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#1A6FD4] transition-colors" />
         </Link>
       </div>
       {/* ── Metric Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <div className="bg-white rounded-3xl border border-blue-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
-          <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100">
-              <IndianRupee className="w-6 h-6" />
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <IndianRupee className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Revenue</span>
           </div>
-          <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(analytics?.totalRevenue || 0)}</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Revenue</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{formatINR(analytics?.totalRevenue || 0)}</p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
-          <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 border border-indigo-100">
-              <ShoppingCart className="w-6 h-6" />
-            </div>
+        <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <ShoppingCart className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Orders</span>
           </div>
-          <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.totalOrders || 0}</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Orders</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{stats.totalOrders || 0}</p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
-          <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-50 text-purple-600 border border-purple-100">
-              <Package className="w-6 h-6" />
-            </div>
+        <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <Package className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Active Products</span>
           </div>
-          <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.products || 0}</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Active Products</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{stats.products || 0}</p>
         </div>
 
-        <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
-          <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-yellow-50 text-yellow-600 border border-yellow-100">
-              <Clock className="w-6 h-6" />
-            </div>
+        <div className="bg-white rounded-2xl border-l-4 border-l-amber-400 border border-gray-200 p-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <Clock className="w-5 h-5 text-gray-400" />
+            <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">To Fulfill</span>
           </div>
-          <div className="relative z-10">
-            <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{stats.pendingOrders || 0}</p>
-            <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Orders to Fulfill</p>
-          </div>
+          <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{stats.pendingOrders || 0}</p>
         </div>
       </div>
 
@@ -371,11 +351,9 @@ export default function DashboardHome() {
               </ResponsiveContainer>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center py-10">
-                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
-                  <TrendingUp className="w-6 h-6 text-gray-300" />
-                </div>
-                <p className="text-[15px] font-bold text-gray-900">Not enough data</p>
-                <p className="text-[13px] font-medium text-gray-500">Revenue charts will appear once you complete sales.</p>
+                <TrendingUp className="w-10 h-10 text-gray-200 mb-3" />
+                <p className="text-[15px] font-bold text-gray-900">No revenue data yet</p>
+                <p className="text-[14px] font-medium text-gray-500">Charts appear once you complete sales.</p>
               </div>
             )}
           </div>
@@ -414,16 +392,16 @@ export default function DashboardHome() {
                     <div key={cat.category} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-[13px] font-bold text-gray-700">{cat.category}</span>
+                        <span className="text-[14px] font-bold text-gray-700">{cat.category}</span>
                       </div>
-                      <span className="text-[13px] font-bold text-gray-900">{formatINRShort(cat.revenue)}</span>
+                      <span className="text-[14px] font-bold text-gray-900">{formatINRShort(cat.revenue)}</span>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
               <div className="text-center py-10">
-                <p className="text-[13px] font-medium text-gray-500">No category data yet.</p>
+                <p className="text-[14px] font-medium text-gray-500">No category data yet.</p>
               </div>
             )}
           </div>
@@ -446,11 +424,11 @@ export default function DashboardHome() {
               <table className="w-full text-left border-collapse min-w-[700px]">
                 <thead>
                   <tr className="bg-white border-b border-gray-100">
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Order ID</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Primary Item</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
-                    <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[10%]">Date</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Order ID</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Primary Item</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Amount</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
+                    <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right w-[10%]">Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -479,7 +457,7 @@ export default function DashboardHome() {
                                 {o.items[0]?.product_name || "Unknown Item"}
                               </span>
                               {o.items.length > 1 && (
-                                <span className="text-[12px] font-medium text-gray-400">
+                                <span className="text-[14px] font-medium text-gray-400">
                                   +{o.items.length - 1} more item{o.items.length - 1 > 1 ? "s" : ""}
                                 </span>
                               )}
@@ -490,11 +468,11 @@ export default function DashboardHome() {
                           {formatINR(total)}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wide ${STATUS_BADGE[orderStatus] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
+                          <span className={`inline-flex px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide ${STATUS_BADGE[orderStatus] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
                             {orderStatus}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right text-[13px] font-medium text-gray-500">
+                        <td className="px-6 py-4 text-right text-[14px] font-medium text-gray-500">
                           {new Date(o.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                         </td>
                       </tr>
@@ -511,18 +489,18 @@ export default function DashboardHome() {
           <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2">
-                <Store className="w-5 h-5 text-indigo-500" /> Top Products
+                <Store className="w-5 h-5 text-[#1A6FD4]" /> Top Products
               </h2>
             </div>
             <div className="p-2">
               {analytics.topProducts.slice(0, 5).map((p, i) => (
                 <div key={p.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 rounded-2xl transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-[14px]">
+                  <div className="w-8 h-8 rounded-full bg-blue-50 text-[#1A6FD4] flex items-center justify-center font-bold text-[14px]">
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-bold text-gray-900 truncate">{p.name}</p>
-                    <p className="text-[12px] font-medium text-gray-500">{p.unitsSold} units sold</p>
+                    <p className="text-[14px] font-medium text-gray-500">{p.unitsSold} units sold</p>
                   </div>
                   <div className="font-bold text-[14px] text-gray-900">
                     {formatINRShort(p.revenue)}

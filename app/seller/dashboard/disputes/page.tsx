@@ -70,17 +70,17 @@ export default function SellerDisputesPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "open":
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide bg-red-50 text-red-700 border-red-200">Action Required</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-red-50 text-red-700 border-red-200">Action Required</span>;
       case "seller_responded":
       case "admin_review":
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide bg-yellow-50 text-yellow-700 border-yellow-200">In Review</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-yellow-50 text-yellow-700 border-yellow-200">In Review</span>;
       case "resolved_refund":
       case "resolved_replace":
       case "resolved_rejected":
       case "closed":
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide bg-green-50 text-green-700 border-green-200">Resolved</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-green-50 text-green-700 border-green-200">Resolved</span>;
       default:
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">{status}</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">{status}</span>;
     }
   };
 
@@ -97,7 +97,7 @@ export default function SellerDisputesPage() {
           <ShieldAlert className="w-5 h-5 text-gray-400" />
           <div className="flex flex-col">
             <span className="text-[18px] font-bold text-gray-900 leading-none">{disputes.length}</span>
-            <span className="text-[12px] font-medium text-gray-500">Active Issues</span>
+            <span className="text-[14px] font-medium text-gray-500">Active Issues</span>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function SellerDisputesPage() {
       <div className="md:hidden flex flex-col gap-1 mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-[24px] font-bold tracking-tight text-gray-900">Disputes</h1>
-          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-[13px] font-bold">{disputes.length}</span>
+          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-[14px] font-bold">{disputes.length}</span>
         </div>
         <p className="text-[14px] text-gray-500 font-medium">Manage customer issues.</p>
       </div>
@@ -150,7 +150,7 @@ export default function SellerDisputesPage() {
           </div>
           <h3 className="text-[18px] font-bold text-gray-900 mb-2">No active disputes</h3>
           <p className="max-w-md text-[14px] font-medium text-gray-500 leading-relaxed">
-            You're all caught up! Great job maintaining excellent customer satisfaction.
+            All customer disputes and return requests are currently resolved.
           </p>
         </div>
       ) : (
@@ -159,11 +159,11 @@ export default function SellerDisputesPage() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/80">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Order ID</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Issue Type</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Date Created</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Status</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Actions</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Order ID</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Issue Type</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Date Created</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Status</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -184,7 +184,7 @@ export default function SellerDisputesPage() {
                             {d.type.replace('_', ' ')}
                           </span>
                           {d.requested_qty && (
-                            <span className="text-[12px] font-medium text-gray-500 mt-0.5">Qty: {d.requested_qty}</span>
+                            <span className="text-[14px] font-medium text-gray-500 mt-0.5">Qty: {d.requested_qty}</span>
                           )}
                         </div>
                       </div>
@@ -206,7 +206,7 @@ export default function SellerDisputesPage() {
                           setResponse("");
                           setQcStatus(d.qc_status || 'pending');
                         }}
-                        className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-white border border-gray-200 text-gray-700 hover:text-[#1A6FD4] hover:border-[#1A6FD4] hover:shadow-sm transition-all active:scale-95 font-bold text-[13px]"
+                        className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-white border border-gray-200 text-gray-700 hover:text-[#1A6FD4] hover:border-[#1A6FD4] hover:shadow-sm transition-all active:scale-95 font-bold text-[14px]"
                       >
                         <MessageSquare className="w-4 h-4" /> Resolve
                       </button>
@@ -231,7 +231,7 @@ export default function SellerDisputesPage() {
                 </div>
                 <div>
                   <h2 className="text-[18px] font-bold text-gray-900">Dispute Details</h2>
-                  <p className="text-[13px] font-medium text-gray-500">Order #{selectedDispute.order_id.split('-')[0]}</p>
+                  <p className="text-[14px] font-medium text-gray-500">Order #{selectedDispute.order_id.split('-')[0]}</p>
                 </div>
               </div>
               <button 
@@ -247,9 +247,9 @@ export default function SellerDisputesPage() {
               {/* Customer Bubble */}
               <div className="flex flex-col gap-2 max-w-[85%]">
                 <div className="flex items-center gap-2 px-1">
-                  <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Customer Issue</span>
-                  {selectedDispute.requested_qty && <span className="text-[11px] font-bold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200 shadow-sm">Qty: {selectedDispute.requested_qty}</span>}
-                  {selectedDispute.refund_amount != null && selectedDispute.refund_amount > 0 && <span className="text-[11px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-200 shadow-sm">Refund: ₹{selectedDispute.refund_amount}</span>}
+                  <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wider">Customer Issue</span>
+                  {selectedDispute.requested_qty && <span className="text-[14px] font-bold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md border border-amber-200 shadow-sm">Qty: {selectedDispute.requested_qty}</span>}
+                  {selectedDispute.refund_amount != null && selectedDispute.refund_amount > 0 && <span className="text-[14px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-md border border-green-200 shadow-sm">Refund: ₹{selectedDispute.refund_amount}</span>}
                 </div>
                 <div className="bg-gray-100 rounded-2xl rounded-tl-sm p-4 text-[14px] text-gray-800 font-medium leading-relaxed border border-gray-200">
                   {selectedDispute.reason}
@@ -259,7 +259,7 @@ export default function SellerDisputesPage() {
               {/* Seller Bubble */}
               {selectedDispute.seller_response && (
                 <div className="flex flex-col gap-2 max-w-[85%] ml-auto items-end">
-                  <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider px-1">Your Response</span>
+                  <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wider px-1">Your Response</span>
                   <div className="rounded-2xl rounded-tr-sm p-4 text-[14px] font-medium leading-relaxed shadow-sm bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
                     {selectedDispute.seller_response}
                   </div>
@@ -270,7 +270,7 @@ export default function SellerDisputesPage() {
               {/* Admin Bubble */}
               {selectedDispute.admin_resolution && (
                 <div className="flex flex-col gap-2 w-full items-center mt-8">
-                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider bg-white px-2 z-10">Admin Resolution</span>
+                  <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wider bg-white px-2 z-10">Admin Resolution</span>
                   <div className="w-full bg-green-50 rounded-2xl p-4 text-[14px] text-green-800 font-medium leading-relaxed border border-green-200 text-center -mt-3">
                     {selectedDispute.admin_resolution}
                   </div>
@@ -285,14 +285,14 @@ export default function SellerDisputesPage() {
                   </h3>
                   
                   <div className="mb-4">
-                    <label className="block text-[13px] font-bold text-gray-700 mb-2">Quality Check Status</label>
+                    <label className="block text-[14px] font-bold text-gray-700 mb-2">Quality Check Status</label>
                     <div className="grid grid-cols-3 gap-2">
                       {[
                         { id: 'pending', label: 'Pending' },
                         { id: 'passed', label: 'Passed QC' },
                         { id: 'failed', label: 'Failed QC' }
                       ].map(qc => (
-                        <label key={qc.id} className={`flex items-center justify-center p-2.5 text-[13px] border rounded-xl cursor-pointer transition-colors ${qcStatus === qc.id ? 'bg-[#e8f1fb] border-[#1A6FD4] text-[#1A6FD4] font-bold' : 'border-gray-200 text-gray-600 hover:bg-gray-50 font-medium'}`}>
+                        <label key={qc.id} className={`flex items-center justify-center p-2.5 text-[14px] border rounded-xl cursor-pointer transition-colors ${qcStatus === qc.id ? 'bg-blue-50 border-[#1A6FD4] text-[#1A6FD4] font-bold' : 'border-gray-200 text-gray-600 hover:bg-gray-50 font-medium'}`}>
                           <input type="radio" className="hidden" name="qc_status" value={qc.id} checked={qcStatus === qc.id} onChange={(e) => setQcStatus(e.target.value as any)} />
                           <span>{qc.label}</span>
                         </label>
@@ -319,7 +319,7 @@ export default function SellerDisputesPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex-[2] py-3.5 rounded-2xl font-bold transition-all active:scale-[0.98] shadow-md flex justify-center items-center gap-2 text-[15px] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                      className="flex-[2] py-3.5 rounded-2xl font-bold transition-all active:scale-[0.98] shadow-md flex justify-center items-center gap-2 text-[15px] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
                     >
                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageSquare className="w-5 h-5" />}
                       Send Resolution

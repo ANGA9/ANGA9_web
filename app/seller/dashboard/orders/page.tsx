@@ -34,7 +34,7 @@ const STATUS_TABS = [
 ];
 
 const STATUS_BADGE: Record<string, string> = {
-  confirmed: "bg-indigo-50 text-indigo-600 border-indigo-200",
+  confirmed: "bg-blue-50 text-blue-600 border-blue-200",
   processing: "bg-yellow-50 text-yellow-600 border-yellow-200",
   shipped: "bg-blue-50 text-blue-600 border-blue-200",
   delivered: "bg-green-50 text-green-600 border-green-200",
@@ -122,7 +122,7 @@ export default function OrdersPage() {
           <ShoppingCart className="w-5 h-5 text-gray-400" />
           <div className="flex flex-col">
             <span className="text-[18px] font-bold text-gray-900 leading-none">{allOrders.length}</span>
-            <span className="text-[12px] font-medium text-gray-500">Total Orders</span>
+            <span className="text-[14px] font-medium text-gray-500">Total Orders</span>
           </div>
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function OrdersPage() {
       <div className="md:hidden flex flex-col gap-1 mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-[24px] font-bold tracking-tight text-gray-900">Orders</h1>
-          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-[13px] font-bold">{allOrders.length}</span>
+          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-[14px] font-bold">{allOrders.length}</span>
         </div>
         <p className="text-[14px] text-gray-500 font-medium">Manage your fulfillment.</p>
       </div>
@@ -208,11 +208,11 @@ export default function OrdersPage() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/80">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Order ID</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Products</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Total</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Actions</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Order ID</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[35%]">Products</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Total</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[15%]">Status</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right w-[15%]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -228,7 +228,7 @@ export default function OrdersPage() {
                           <Link href={`/seller/dashboard/orders/${order.id}`} className="text-[15px] font-bold text-[#1A6FD4] hover:underline mb-1">
                             #{order.order_number}
                           </Link>
-                          <span className="text-[13px] font-medium text-gray-400">
+                          <span className="text-[14px] font-medium text-gray-400">
                             {new Date(order.placed_at).toLocaleDateString("en-IN", {
                               day: "numeric", month: "short", year: "numeric",
                             })}
@@ -249,7 +249,7 @@ export default function OrdersPage() {
                             <p className="text-[14px] font-bold text-gray-900 truncate max-w-[200px]">
                               {primaryItem?.product_name || "Unknown Product"}
                             </p>
-                            <p className="text-[13px] font-medium text-gray-500 mt-0.5">
+                            <p className="text-[14px] font-medium text-gray-500 mt-0.5">
                               Qty: {primaryItem?.quantity}
                               {order.items.length > 1 && (
                                 <span className="text-[#1A6FD4] font-bold ml-2">
@@ -266,7 +266,7 @@ export default function OrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-5">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide ${
+                        <span className={`inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide ${
                           STATUS_BADGE[orderStatus] || "bg-gray-100 text-gray-600 border-gray-200"
                         }`}>
                           {orderStatus}
@@ -287,7 +287,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "processing")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-yellow-500 text-yellow-500 hover:bg-gray-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[14px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-amber-500 text-white hover:bg-amber-600"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Package className="w-4 h-4" />}
                               Process
@@ -297,7 +297,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "shipped")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[14px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
                               Ship
@@ -307,7 +307,7 @@ export default function OrdersPage() {
                             <button
                               disabled={updating === order.id}
                               onClick={() => updateStatus(order.id, "delivered")}
-                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[13px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-white border-2 border-green-500 text-green-500 hover:bg-green-50"
+                              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-bold text-[14px] transition-all shadow-sm active:scale-95 disabled:opacity-50 bg-green-600 text-white hover:bg-green-700"
                             >
                               {updating === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                               Deliver

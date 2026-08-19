@@ -261,28 +261,28 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
                   <input className={inputCls + " pl-8"} type="number" step="0.01" min="0" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder="0.00" />
                 </div>
-                <p className="text-[12px] text-gray-400 mt-1.5">Per-unit price B2B buyers pay. Cannot exceed MRP.</p>
+                <p className="text-[14px] text-gray-400 mt-1.5">Per-unit price B2B buyers pay. Cannot exceed MRP.</p>
               </div>
             </div>
             
             <div className="pt-2">
-              <div className="flex items-center justify-between p-4 bg-purple-50/50 border border-purple-100 rounded-2xl">
+              <div className="flex items-center justify-between p-4 bg-blue-50/50 border border-blue-100 rounded-2xl">
                 <div>
-                  <h3 className="text-[14px] font-bold text-purple-900 mb-0.5">Platform Commission</h3>
-                  <p className="text-[13px] font-medium text-purple-700/80">
+                  <h3 className="text-[14px] font-bold text-gray-900 mb-0.5">Platform Commission</h3>
+                  <p className="text-[14px] font-medium text-gray-600">
                     The fee deducted from your wholesale price when this product is sold.
                   </p>
                 </div>
                 <div className="text-right">
                   {productCommission !== null ? (
                     <div className="flex flex-col items-end">
-                      <span className="text-[18px] font-black text-purple-700">{productCommission * 100}%</span>
-                      <span className="text-[11px] font-bold text-purple-600/80 uppercase tracking-wide px-2 bg-purple-100 rounded-full mt-1">Custom Rate</span>
+                      <span className="text-[18px] font-black text-[#1A6FD4]">{productCommission * 100}%</span>
+                      <span className="text-[14px] font-bold text-[#1A6FD4]/80 uppercase tracking-wide px-2 bg-blue-100 rounded-full mt-1">Custom Rate</span>
                     </div>
                   ) : (
                     <div className="flex flex-col items-end">
-                      <span className="text-[18px] font-black text-purple-700">{sellerCommission * 100}%</span>
-                      <span className="text-[11px] font-bold text-purple-600/80 uppercase tracking-wide px-2 bg-purple-100 rounded-full mt-1">Tier Default</span>
+                      <span className="text-[18px] font-black text-[#1A6FD4]">{sellerCommission * 100}%</span>
+                      <span className="text-[14px] font-bold text-[#1A6FD4]/80 uppercase tracking-wide px-2 bg-blue-100 rounded-full mt-1">Tier Default</span>
                     </div>
                   )}
                 </div>

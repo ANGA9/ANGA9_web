@@ -27,12 +27,12 @@ export default function SellerAdsPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "pending": return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-amber-50 text-amber-700 border-amber-200">Pending Review</span>;
-      case "approved": return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-blue-50 text-blue-700 border-blue-200">Approved</span>;
-      case "active": return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-green-50 text-green-700 border-green-200 animate-pulse">Active</span>;
-      case "completed": return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">Completed</span>;
-      case "rejected": return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-red-50 text-red-700 border-red-200">Rejected</span>;
-      default: return <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">{status}</span>;
+      case "pending": return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-amber-50 text-amber-700 border-amber-200">Pending Review</span>;
+      case "approved": return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-blue-50 text-blue-700 border-blue-200">Approved</span>;
+      case "active": return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-green-50 text-green-700 border-green-200">Active</span>;
+      case "completed": return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">Completed</span>;
+      case "rejected": return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-red-50 text-red-700 border-red-200">Rejected</span>;
+      default: return <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide bg-gray-100 text-gray-700 border-gray-200">{status}</span>;
     }
   };
 
@@ -69,40 +69,33 @@ export default function SellerAdsPage() {
 
       {/* ── Metric Cards (Optional/Future) ── */}
       {!loading && ads.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-          <div className="bg-white rounded-3xl border border-blue-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 opacity-50 transition-transform group-hover:scale-110" />
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 mb-4">
-                <Megaphone className="w-6 h-6" />
-              </div>
-              <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{ads.filter(a => a.status === 'active').length}</p>
-              <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Active Campaigns</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <Megaphone className="w-5 h-5 text-gray-400" />
+              <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Active Campaigns</span>
             </div>
+            <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">{ads.filter(a => a.status === 'active').length}</p>
           </div>
           
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-50 text-green-600 border border-green-100 mb-4">
-                <MousePointerClick className="w-6 h-6" />
-              </div>
-              <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">
-                {ads.reduce((acc, curr) => acc + curr.clicks, 0).toLocaleString()}
-              </p>
-              <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Clicks</p>
+          <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <MousePointerClick className="w-5 h-5 text-gray-400" />
+              <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Clicks</span>
             </div>
+            <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">
+              {ads.reduce((acc, curr) => acc + curr.clicks, 0).toLocaleString()}
+            </p>
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">
-                {ads.reduce((acc, curr) => acc + curr.impressions, 0).toLocaleString()}
-              </p>
-              <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wide">Total Impressions</p>
+          <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 text-gray-400" />
+              <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Impressions</span>
             </div>
+            <p className="text-[28px] font-bold text-gray-900 tracking-tight leading-none">
+              {ads.reduce((acc, curr) => acc + curr.impressions, 0).toLocaleString()}
+            </p>
           </div>
         </div>
       )}
@@ -181,13 +174,13 @@ export default function SellerAdsPage() {
                     </td>
                     <td className="px-6 py-5">
                       <div className="flex flex-col items-center justify-center gap-2">
-                        <div className="w-full max-w-[120px] flex items-center justify-between text-indigo-600 font-bold bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100">
+                        <div className="w-full max-w-[120px] flex items-center justify-between text-[#1A6FD4] font-bold bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
                           <TrendingUp className="w-4 h-4" />
-                          <span className="text-[13px]">{ad.impressions.toLocaleString()} <span className="text-indigo-400 text-[11px] uppercase">vws</span></span>
+                          <span className="text-[14px]">{ad.impressions.toLocaleString()} <span className="text-[#1A6FD4]/60 text-[14px] uppercase">vws</span></span>
                         </div>
                         <div className="w-full max-w-[120px] flex items-center justify-between text-green-600 font-bold bg-green-50 px-3 py-1.5 rounded-lg border border-green-100">
                           <MousePointerClick className="w-4 h-4" />
-                          <span className="text-[13px]">{ad.clicks.toLocaleString()} <span className="text-green-400 text-[11px] uppercase">clks</span></span>
+                          <span className="text-[14px]">{ad.clicks.toLocaleString()} <span className="text-green-400 text-[14px] uppercase">clks</span></span>
                         </div>
                       </div>
                     </td>
@@ -198,12 +191,12 @@ export default function SellerAdsPage() {
                         </div>
                         {getStatusBadge(ad.status)}
                         {ad.status === 'rejected' && ad.reject_reason && (
-                           <div className="text-[11px] font-medium text-red-600 mt-1 max-w-[150px] truncate" title={ad.reject_reason}>
+                           <div className="text-[14px] font-medium text-red-600 mt-1 max-w-[150px] truncate" title={ad.reject_reason}>
                              {ad.reject_reason}
                            </div>
                         )}
                         {ad.status === 'approved' && ad.approved_fee_inr && (
-                           <div className="text-[11px] font-bold text-blue-600 mt-1 bg-blue-50 px-2 py-0.5 rounded-md">
+                           <div className="text-[14px] font-bold text-blue-600 mt-1 bg-blue-50 px-2 py-0.5 rounded-md">
                              Fee: ₹{ad.approved_fee_inr}
                            </div>
                         )}

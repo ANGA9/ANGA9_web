@@ -53,7 +53,7 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
         </button>
 
         <nav className="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1.5">
-          <div className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 px-3">Main Menu</div>
+          <div className="text-[14px] font-black text-gray-400 uppercase tracking-widest mb-3 px-3">Menu</div>
           {NAV.map((item) => {
             const active = isActive(item.href);
             return (
@@ -80,8 +80,8 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
               <Store className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[13px] font-bold text-gray-900">ANGA9 Hub</span>
-              <span className="text-[11px] font-medium text-gray-500">v2.1.0 Beta</span>
+              <span className="text-[14px] font-bold text-gray-900">ANGA9 Hub</span>
+              <span className="text-[14px] font-medium text-gray-500">v2.1.0 Beta</span>
             </div>
           </div>
         </div>

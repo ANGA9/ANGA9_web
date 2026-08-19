@@ -36,15 +36,19 @@ const NOTIF_ITEMS: { key: keyof NotifPref; label: string; desc: string; icon: ty
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#1A6FD4]/20 ${checked ? "bg-[#059669]" : "bg-gray-200 hover:bg-gray-300"}`}
-    >
-      <span className={`pointer-events-none inline-block h-6 w-6 rounded-full bg-white shadow-md ring-0 transition-transform duration-200 ease-in-out ${checked ? "translate-x-5" : "translate-x-0"}`} />
-    </button>
+    <div className="flex items-center gap-2">
+      <span className={`text-[14px] font-bold ${checked ? "text-gray-400" : "text-gray-600"}`}>Off</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        onClick={() => onChange(!checked)}
+        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#1A6FD4]/20 ${checked ? "bg-[#059669]" : "bg-gray-200 hover:bg-gray-300"}`}
+      >
+        <span className={`pointer-events-none inline-block h-6 w-6 rounded-full bg-white shadow-md ring-0 transition-transform duration-200 ease-in-out ${checked ? "translate-x-5" : "translate-x-0"}`} />
+      </button>
+      <span className={`text-[14px] font-bold ${checked ? "text-green-700" : "text-gray-400"}`}>On</span>
+    </div>
   );
 }
 

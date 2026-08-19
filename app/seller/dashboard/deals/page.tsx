@@ -84,7 +84,7 @@ export default function SellerDealsPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 rounded-2xl px-6 py-3 text-[14px] font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="flex items-center gap-2 rounded-2xl px-6 py-3 text-[14px] font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="w-5 h-5" />
           Create Deal
@@ -138,7 +138,7 @@ export default function SellerDealsPage() {
             {!searchQuery && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="mt-8 font-bold text-[#1A6FD4] bg-blue-50 px-6 py-3 rounded-xl hover:bg-blue-100 transition-colors"
+                className="mt-8 font-bold text-white bg-[#1A6FD4] px-6 py-3 rounded-xl hover:bg-[#1559B3] transition-colors"
               >
                 Create your first deal
               </button>
@@ -149,12 +149,12 @@ export default function SellerDealsPage() {
             <table className="w-full text-left text-sm border-collapse min-w-[800px]">
               <thead className="bg-gray-50/80 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-4/12">Product</th>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Deal Price</th>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider">Timeline</th>
-                  <th className="px-6 py-5 text-[13px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-4/12">Product</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Deal Price</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider">Timeline</th>
+                  <th className="px-6 py-5 text-[14px] font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -185,7 +185,7 @@ export default function SellerDealsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[12px] font-bold">
+                        <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[14px] font-bold border border-blue-200">
                           {
                             deal.type === 'flash' ? 'Flash Sale' : 
                             deal.type === 'deal_of_day' ? 'Deal of the Day' : 
@@ -197,17 +197,17 @@ export default function SellerDealsPage() {
                         <div className="flex items-center gap-2">
                           <span className="font-black text-[16px] text-gray-900">₹{deal.deal_price}</span>
                           {deal.quantity_threshold && (
-                            <span className="text-[12px] text-gray-500 font-medium">(Min {deal.quantity_threshold})</span>
+                            <span className="text-[14px] text-gray-500 font-medium">(Min {deal.quantity_threshold})</span>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-lg text-[12px] font-bold border ${statusBadge}`}>
+                        <span className={`px-3 py-1 rounded-md text-[14px] font-bold border ${statusBadge}`}>
                           {status}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex flex-col gap-1.5 text-[13px] font-medium text-gray-600">
+                        <div className="flex flex-col gap-1.5 text-[14px] font-medium text-gray-600">
                           <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-gray-400" /> {start.toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</span>
                           <span className="flex items-center gap-2"><Clock className="w-4 h-4 text-gray-400" /> {end.toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</span>
                         </div>
@@ -215,7 +215,7 @@ export default function SellerDealsPage() {
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => handleDelete(deal.id)}
-                          className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 font-bold text-[13px] transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                          className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 font-bold text-[14px] transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                         >
                           Delete
                         </button>

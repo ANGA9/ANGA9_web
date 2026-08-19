@@ -129,21 +129,21 @@ export default function PayoutsPage() {
           {[1, 2, 3].map(i => <div key={i} className="h-40 rounded-3xl bg-white border border-gray-100 animate-pulse" />)}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
           {/* Primary Action Card */}
-          <div className="bg-white rounded-3xl border border-blue-200 p-6 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-8 -mt-8 opacity-50 transition-transform group-hover:scale-110" />
-            <div className="relative z-10 flex items-start justify-between mb-6">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100">
-                <Wallet className="w-6 h-6" />
+          <div className="bg-white rounded-2xl border-l-4 border-l-[#1A6FD4] border border-gray-200 p-5 flex flex-col justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Wallet className="w-5 h-5 text-gray-400" />
+                <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Available Balance</span>
               </div>
-              <span className="text-[12px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wide border border-blue-100">
-                Available
+              <span className="text-[14px] font-bold text-[#1A6FD4] bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-200">
+                Ready
               </span>
             </div>
-            <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
               <div>
-                <p className="text-[36px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(available)}</p>
+                <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(available)}</p>
                 <p className="text-[14px] font-medium text-gray-500">Ready to withdraw</p>
               </div>
               <button
@@ -152,7 +152,7 @@ export default function PayoutsPage() {
                   setShowModal(true);
                 }}
                 disabled={available <= 0}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                className="inline-flex items-center justify-center gap-2 h-11 px-5 text-[14px] font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
               >
                 Withdraw
               </button>
@@ -160,24 +160,26 @@ export default function PayoutsPage() {
           </div>
 
           {/* Requested Card */}
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col shadow-sm">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-yellow-50 text-yellow-600 border border-yellow-100 mb-6">
-              <AlertCircle className="w-6 h-6" />
+          <div className="bg-white rounded-2xl border-l-4 border-l-amber-400 border border-gray-200 p-5 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-gray-400" />
+              <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Payouts Processing</span>
             </div>
             <div>
               <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(summary?.requested || 0)}</p>
-              <p className="text-[14px] font-medium text-gray-500">Payouts Processing</p>
+              <p className="text-[14px] font-medium text-gray-500">Pending transfer</p>
             </div>
           </div>
 
           {/* Paid Out Card */}
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col shadow-sm">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-50 text-green-600 border border-green-100 mb-6">
-              <CheckCircle2 className="w-6 h-6" />
+          <div className="bg-white rounded-2xl border-l-4 border-l-green-500 border border-gray-200 p-5 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-gray-400" />
+              <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wide">Total Transferred</span>
             </div>
             <div>
               <p className="text-[32px] font-bold text-gray-900 tracking-tight leading-none mb-1">{formatINR(summary?.paid || 0)}</p>
-              <p className="text-[14px] font-medium text-gray-500">Total Transferred</p>
+              <p className="text-[14px] font-medium text-gray-500">Lifetime payouts</p>
             </div>
           </div>
         </div>
@@ -210,12 +212,12 @@ export default function PayoutsPage() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-gray-50/80 border-b border-gray-200">
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Amount</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Status</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Requested</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Processed</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[10%]">Bank Ref No.</th>
-                  <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[10%] text-right">Actions</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Amount</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Status</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Requested</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[20%]">Processed</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[10%]">Bank Ref No.</th>
+                  <th className="px-6 py-4 text-[14px] font-bold text-gray-500 uppercase tracking-wider w-[10%] text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -227,7 +229,7 @@ export default function PayoutsPage() {
                         <span className="font-bold text-[16px] text-gray-900">{formatINR(Number(p.amount))}</span>
                       </td>
                       <td className="px-6 py-5">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold border uppercase tracking-wide ${sc.bg} ${sc.text} ${sc.border}`}>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-md text-[14px] font-bold border uppercase tracking-wide ${sc.bg} ${sc.text} ${sc.border}`}>
                           {sc.label}
                         </span>
                       </td>
@@ -242,7 +244,7 @@ export default function PayoutsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-5">
-                        <span className="text-[13px] font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
+                        <span className="text-[14px] font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
                           {p.transaction_ref || "—"}
                         </span>
                       </td>
@@ -251,7 +253,7 @@ export default function PayoutsPage() {
                           <button
                             onClick={() => handleCancelPayout(p.id)}
                             disabled={cancellingId === p.id}
-                            className="text-[13px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-1"
+                            className="text-[14px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-1"
                           >
                             {cancellingId === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Cancel
                           </button>
@@ -283,8 +285,8 @@ export default function PayoutsPage() {
             <form onSubmit={handleRequestPayout} className="p-6">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-[13px] font-bold text-gray-700">Amount to Withdraw (₹)</label>
-                  <span className="text-[13px] font-medium text-gray-500">
+                  <label className="text-[14px] font-bold text-gray-700">Amount to Withdraw (₹)</label>
+                  <span className="text-[14px] font-medium text-gray-500">
                     Max: <button type="button" onClick={() => setCustomAmount(available.toString())} className="font-bold text-[#1A6FD4] hover:underline">{formatINR(available)}</button>
                   </span>
                 </div>
@@ -315,7 +317,7 @@ export default function PayoutsPage() {
                 <button
                   type="submit"
                   disabled={requesting || !customAmount || parseFloat(customAmount) <= 0 || parseFloat(customAmount) > available}
-                  className="flex-1 h-12 rounded-xl text-[15px] font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                  className="flex-1 h-12 rounded-xl text-[15px] font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
                 >
                   {requesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Withdraw"}
                 </button>

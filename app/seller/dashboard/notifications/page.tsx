@@ -242,12 +242,12 @@ export default function SellerNotificationsPage() {
           </div>
           <p className="text-[14px] mt-1 text-gray-500 leading-relaxed">{n.body}</p>
           <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-3">
-            <span className="text-[13px] font-medium text-gray-400">{timeAgo(n.sent_at)}</span>
+            <span className="text-[14px] font-medium text-gray-400">{timeAgo(n.sent_at)}</span>
             {opts.showLink && orderHref && (
               <Link
                 href={orderHref}
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1 text-[13px] font-bold text-[#1A6FD4] hover:text-[#155bb5] transition-colors"
+                className="flex items-center gap-1 text-[14px] font-bold text-[#1A6FD4] hover:text-[#155bb5] transition-colors"
               >
                 View Details
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -256,14 +256,14 @@ export default function SellerNotificationsPage() {
             {!n.read && (
               <button
                 onClick={(e) => { e.stopPropagation(); markAsRead(n.id); }}
-                className="flex items-center gap-1 text-[13px] font-bold text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#155bb5]"
+                className="flex items-center gap-1 text-[14px] font-bold text-[#1A6FD4] opacity-0 group-hover:opacity-100 transition-opacity hover:text-[#155bb5]"
               >
                 <Check className="w-4 h-4" /> Mark read
               </button>
             )}
             <button
               onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }}
-              className="flex items-center gap-1 text-[13px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+              className="flex items-center gap-1 text-[14px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
             >
               <Trash2 className="w-3.5 h-3.5" /> Delete
             </button>
@@ -306,7 +306,7 @@ export default function SellerNotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="inline-flex self-start items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-[13px] font-bold text-[#1A6FD4] shadow-sm"
+            className="inline-flex self-start items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-[14px] font-bold text-[#1A6FD4] shadow-sm"
           >
             <CheckCheck className="w-4 h-4" /> Mark all read
           </button>
@@ -349,11 +349,11 @@ export default function SellerNotificationsPage() {
             <Bell className="h-10 w-10 text-gray-300" />
           </div>
           <h3 className="text-[18px] font-bold text-gray-900 mb-2">
-            {filter === "unread" ? "All caught up!" : "No notifications yet"}
+            {filter === "unread" ? "No unread notifications" : "No notifications yet"}
           </h3>
           <p className="max-w-md text-[14px] font-medium text-gray-500 leading-relaxed">
             {filter === "unread"
-              ? "You have no unread notifications. Great job staying on top of things."
+              ? "You have no unread notifications."
               : "Notifications about your orders, payouts, and account updates will appear here."}
           </p>
         </div>
@@ -378,11 +378,11 @@ export default function SellerNotificationsPage() {
                         style={{ transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)" }}
                       />
                       <span className="text-[14px] font-bold text-gray-900 truncate uppercase tracking-wider">Group: Order {label}</span>
-                      <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-600 shrink-0">
+                      <span className="text-[14px] font-bold px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-600 shrink-0">
                         {g.items.length} updates
                       </span>
                       {groupUnread > 0 && (
-                        <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[#1A6FD4] shrink-0">
+                        <span className="text-[14px] font-bold px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[#1A6FD4] shrink-0">
                           {groupUnread} new
                         </span>
                       )}
@@ -391,7 +391,7 @@ export default function SellerNotificationsPage() {
                       <Link
                         href={`/seller/dashboard/orders/${g.orderId}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="hidden sm:flex items-center gap-1 text-[13px] font-bold text-gray-500 hover:text-[#1A6FD4] transition-colors shrink-0"
+                        className="hidden sm:flex items-center gap-1 text-[14px] font-bold text-gray-500 hover:text-[#1A6FD4] transition-colors shrink-0"
                       >
                         View Order
                         <ArrowRight className="w-3.5 h-3.5" />

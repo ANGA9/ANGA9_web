@@ -232,7 +232,7 @@ export default function SellerStorefrontEditor() {
                 ) : (
                   <div className="mt-4 h-32 md:h-48 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center text-gray-400 relative">
                     <Store className="w-8 h-8 mb-2 opacity-50" />
-                    <span className="text-[13px] font-medium">No banner image set</span>
+                    <span className="text-[14px] font-medium">No banner image set</span>
                     <div className="absolute bottom-4 left-6 flex items-center gap-4 opacity-50">
                       <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-white shadow-sm" />
                       <div className="h-6 w-32 bg-gray-200 rounded-lg" />
@@ -252,7 +252,7 @@ export default function SellerStorefrontEditor() {
                   className="w-full rounded-2xl border border-gray-200 bg-gray-50/50 px-4 py-3.5 text-[15px] font-medium text-gray-900 outline-none focus:bg-white focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all shadow-sm placeholder:text-gray-400 resize-y"
                 />
                 <div className="flex justify-end mt-2">
-                  <span className="text-[13px] font-medium text-gray-400">{aboutMd.length} / 10000</span>
+                  <span className="text-[14px] font-medium text-gray-400">{aboutMd.length} / 10000</span>
                 </div>
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function SellerStorefrontEditor() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[16px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[16px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
               {saving ? "Saving..." : "Save changes"}
@@ -297,13 +297,13 @@ export default function SellerStorefrontEditor() {
           <div className="sticky top-[104px] flex flex-col gap-4">
             <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
               <h3 className="text-[16px] font-bold text-gray-900 mb-2">Save your work</h3>
-              <p className="text-[13px] text-gray-500 font-medium mb-6 leading-relaxed">
+              <p className="text-[14px] text-gray-500 font-medium mb-6 leading-relaxed">
                 Changes will be visible on your public storefront immediately if published.
               </p>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
               >
                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                 {saving ? "Saving..." : "Save changes"}
@@ -315,7 +315,7 @@ export default function SellerStorefrontEditor() {
                 <AlertCircle className="w-5 h-5 text-[#1A6FD4] shrink-0 mt-0.5" />
                 <div>
                   <h3 className="text-[14px] font-bold text-gray-900 mb-1">Preview carefully</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">
+                  <p className="text-[14px] text-gray-500 font-medium leading-relaxed">
                     Make sure your banner image is high-resolution and your about text is clear and professional.
                   </p>
                 </div>

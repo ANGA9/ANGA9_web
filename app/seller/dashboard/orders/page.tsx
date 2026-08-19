@@ -168,7 +168,7 @@ export default function OrdersPage() {
           </div>
           <button
             onClick={handleSearch}
-            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
           >
             Search
           </button>

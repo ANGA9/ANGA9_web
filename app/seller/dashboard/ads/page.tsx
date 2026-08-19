@@ -47,7 +47,7 @@ export default function SellerAdsPage() {
         </div>
         <Link
           href="/seller/dashboard/ads/new"
-          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="w-5 h-5" /> Create Campaign
         </Link>
@@ -61,7 +61,7 @@ export default function SellerAdsPage() {
         </div>
         <Link
           href="/seller/dashboard/ads/new"
-          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="w-5 h-5" /> Create Campaign
         </Link>
@@ -123,9 +123,9 @@ export default function SellerAdsPage() {
             </p>
             <Link
               href="/seller/dashboard/ads/new"
-              className="inline-flex items-center gap-2 px-8 py-3.5 font-bold text-[15px] rounded-2xl transition-all shadow-md active:scale-[0.98] bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+              className="inline-flex items-center gap-2 px-8 py-3.5 font-bold text-[15px] rounded-2xl transition-all shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
-              <Plus className="w-5 h-5" /> Start Advertising
+              <Plus className="w-5 h-5" /> Create Your First Campaign
             </Link>
           </div>
         ) : (

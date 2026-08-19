@@ -210,7 +210,7 @@ export default function ProductsPage() {
           </div>
           <button
             onClick={handleSearch}
-            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+            className="rounded-2xl px-5 py-3 text-[14px] font-bold transition-all active:scale-[0.98] shrink-0 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
           >
             Search
           </button>
@@ -313,7 +313,7 @@ export default function ProductsPage() {
                           {STATUS_LABEL[p.status] || p.status}
                         </span>
                         {p.status === "rejected" && hoveredRejected === p.id && p.review_notes && (
-                          <div className="absolute top-full left-0 mt-2 w-72 rounded-2xl p-4 shadow-xl z-50 pointer-events-none bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50">
+                          <div className="absolute top-full left-0 mt-2 w-72 rounded-2xl p-4 shadow-xl z-50 pointer-events-none bg-gray-900 text-white border border-gray-800">
                             <p className="font-bold text-[13px] mb-2 text-red-400 flex items-center gap-1.5">
                               <AlertCircle className="w-4 h-4" /> Rejection Reason
                             </p>

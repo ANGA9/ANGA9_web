@@ -200,7 +200,7 @@ function NewSellerTicketInner() {
                     onClick={() => setPriority(p)}
                     className={`rounded-xl border px-5 py-2.5 text-[13px] font-black uppercase tracking-wider transition-all ${
                       priority === p
-                        ? "border-[#1A6FD4] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white shadow-md shadow-blue-500/20"
+                        ? "border-[#1A6FD4] bg-[#1A6FD4] text-white shadow-sm"
                         : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:bg-gray-50"
                     }`}
                   >
@@ -228,7 +228,7 @@ function NewSellerTicketInner() {
               <button
                 type="submit"
                 disabled={submitting || !subject.trim() || !body.trim()}
-                className="h-14 w-full rounded-2xl text-[15px] font-black transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+                className="h-14 w-full rounded-2xl text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
               >
                 {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                 {submitting ? (uploading ? "UPLOADING..." : "SUBMITTING...") : "SUBMIT TICKET"}
@@ -250,7 +250,7 @@ function NewSellerTicketInner() {
               type="submit"
               form="new-seller-ticket-form"
               disabled={submitting || !subject.trim() || !body.trim()}
-              className="h-14 w-full rounded-2xl text-[15px] font-black transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="h-14 w-full rounded-2xl text-[15px] font-bold transition-all shadow-md active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               {submitting ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />

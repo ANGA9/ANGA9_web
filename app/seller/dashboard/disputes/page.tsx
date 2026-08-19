@@ -260,7 +260,7 @@ export default function SellerDisputesPage() {
               {selectedDispute.seller_response && (
                 <div className="flex flex-col gap-2 max-w-[85%] ml-auto items-end">
                   <span className="text-[14px] font-bold text-gray-500 uppercase tracking-wider px-1">Your Response</span>
-                  <div className="rounded-2xl rounded-tr-sm p-4 text-[14px] font-medium leading-relaxed shadow-sm bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50">
+                  <div className="rounded-2xl rounded-tr-sm p-4 text-[14px] font-medium leading-relaxed shadow-sm bg-blue-50 text-blue-950 border border-blue-200">
                     {selectedDispute.seller_response}
                   </div>
                 </div>

@@ -50,7 +50,7 @@ export default function SellerMyTicketsPage() {
         </div>
         <Link
           href="/seller/dashboard/help/tickets/new"
-          className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-[14px] font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-[14px] font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           <Plus className="h-4 w-4" /> New ticket
         </Link>

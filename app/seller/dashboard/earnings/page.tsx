@@ -73,7 +73,7 @@ export default function EarningsPage() {
         </div>
         <Link
           href="/seller/dashboard/payouts"
-          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="flex items-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl transition-all shadow-md active:scale-[0.98] bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           Manage Payouts <ArrowRight className="w-4 h-4" />
         </Link>
@@ -87,7 +87,7 @@ export default function EarningsPage() {
         </div>
         <Link
           href="/seller/dashboard/payouts"
-          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 h-12 px-6 text-[15px] font-bold rounded-2xl shadow-md bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
         >
           Manage Payouts <ArrowRight className="w-4 h-4" />
         </Link>

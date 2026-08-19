@@ -465,7 +465,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             <button
               type="submit"
               disabled={saving || !formData.product_id}
-              className="flex-1 h-12 rounded-2xl font-bold text-[14px] shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:active:scale-100 active:scale-[0.98] flex items-center justify-center gap-2 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="flex-1 h-12 rounded-2xl font-bold text-[14px] shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:active:scale-100 active:scale-[0.98] flex items-center justify-center gap-2 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Publish Deal"}
             </button>

@@ -187,7 +187,7 @@ export default function SellerTicketDetailPage() {
           <button
             onClick={handleRate}
             disabled={!score || csatSubmitting}
-            className="mt-2 rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+            className="mt-2 rounded-xl px-5 py-2.5 text-[14px] font-bold disabled:opacity-50 bg-[#1A6FD4] text-white hover:bg-[#1559B3] shadow-sm transition-all"
           >
             {csatSubmitting ? "Submitting…" : "Submit rating"}
           </button>

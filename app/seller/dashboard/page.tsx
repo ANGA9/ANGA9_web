@@ -234,7 +234,7 @@ export default function DashboardHome() {
           {(status === "unverified" || status === "rejected") && (
             <Link 
               href="/seller/onboarding" 
-              className="inline-flex items-center justify-center h-12 px-6 text-[14px] font-bold rounded-2xl transition-all shadow-md active:scale-95 shrink-0 bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-gray-50"
+              className="inline-flex items-center justify-center h-12 px-6 text-[14px] font-bold rounded-2xl transition-all shadow-md active:scale-95 shrink-0 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
             >
               {status === "rejected" ? "Update Application" : "Complete Setup"} <ArrowRight className="w-4 h-4 ml-2" />
             </Link>

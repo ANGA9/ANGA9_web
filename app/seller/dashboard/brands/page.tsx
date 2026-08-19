@@ -61,7 +61,7 @@ export default function BrandManagementPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm ${
-                        isActive ? "bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] text-white" : "bg-gray-100 text-gray-500"
+                        isActive ? "bg-[#1A6FD4] text-white" : "bg-gray-100 text-gray-500"
                       }`}>
                         <Store className="w-6 h-6" />
                       </div>
@@ -117,19 +117,19 @@ export default function BrandManagementPage() {
             
             <ul className="space-y-4 text-[14px] text-gray-600 font-medium leading-relaxed">
               <li className="flex gap-3">
-                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shrink-0" />
+                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-[#1A6FD4] shrink-0" />
                 <p><strong className="text-gray-900">Isolated Data:</strong> Each brand acts as an entirely separate store. Products, orders, and payouts are completely isolated.</p>
               </li>
               <li className="flex gap-3">
-                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shrink-0" />
+                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-[#1A6FD4] shrink-0" />
                 <p><strong className="text-gray-900">Seamless Switching:</strong> Use the dropdown in the header or the list on this page to instantly switch contexts without logging out.</p>
               </li>
               <li className="flex gap-3">
-                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shrink-0" />
+                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-[#1A6FD4] shrink-0" />
                 <p><strong className="text-gray-900">Centralized Login:</strong> You only ever need one email and password. All your child brands inherit the authentication of your parent account.</p>
               </li>
               <li className="flex gap-3">
-                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] shrink-0" />
+                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-[#1A6FD4] shrink-0" />
                 <p><strong className="text-gray-900">Notifications:</strong> All email and SMS alerts for your child brands will be automatically routed to your parent account's contact details.</p>
               </li>
             </ul>

@@ -176,7 +176,7 @@ export default function SellerPrivacyPage() {
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-red-600 bg-white border-2 border-red-600 hover:bg-red-50 active:scale-95 transition-all flex items-center justify-center gap-2 text-[14px]"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-red-600 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 active:scale-95 transition-all flex items-center justify-center gap-2 text-[14px]"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete Seller Account

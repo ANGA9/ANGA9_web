@@ -28,15 +28,14 @@ export default function SellerHeader({ onMenuToggle }: { onMenuToggle: () => voi
         <Menu className="w-5 h-5" />
       </button>
       
-      <Link href="/" className="shrink-0 flex items-center gap-3 group">
-        <div className="relative h-7 w-[100px] sm:h-8 sm:w-[120px] transition-transform group-hover:scale-105">
+      <Link href="/" className="shrink-0 flex items-center gap-1.5 sm:gap-2 group transition-opacity hover:opacity-90">
+        <div className="relative h-7 w-[90px] sm:h-8 sm:w-[105px] transition-transform group-hover:scale-105">
           <Image src={cdnUrl("/anga9-logo.png")} alt="ANGA9" fill priority style={{ objectFit: "contain", objectPosition: "left" }} />
         </div>
+        <span className="inline-block border-l-2 border-[#E8EEF4] pl-2 sm:pl-3 ml-0.5 sm:ml-1 text-[12px] sm:text-[14px] font-bold text-[#4B5563] tracking-wide uppercase whitespace-nowrap">
+          SELLER HUB
+        </span>
       </Link>
-
-      <span className="ml-4 text-[14px] font-black text-[#1A6FD4] bg-[#F8FBFF] border border-[#1A6FD4]/30 px-2.5 py-1 rounded-full uppercase tracking-widest hidden md:inline-flex shadow-sm">
-        Seller Portal
-      </span>
       
       <div className="flex-1" />
       

@@ -20,17 +20,21 @@ function isSellerPublicPath(pathname: string): boolean {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Bypass middleware for API routes so Next.js or next.config.ts rewrites can handle them
+  // 1. Bypass middleware for API routes so Next.js or next.config.ts rewrites can handle them
   if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
+  // 2. If this request was already rewritten internally, pass through directly to page handler
+  if (request.headers.get("x-seller-internal-rewrite") === "1") {
     return NextResponse.next();
   }
 
   const host = (request.headers.get("host") || "").toLowerCase();
   const isSellerSubdomain = host === SELLER_HOST || host.startsWith("seller.");
-  const url = request.nextUrl.clone();
 
   // ──────────────────────────────────────────────────
-  // Subdomain routing: seller.anga9.com → /seller/*
+  // Subdomain routing: seller.anga9.com / seller.localhost → /seller/*
   // ──────────────────────────────────────────────────
   const LEGAL_PATHS = [
     "/terms",
@@ -43,53 +47,61 @@ export default function proxy(request: NextRequest) {
   ];
 
   let effectivePath = pathname;
-  let rewroteForSubdomain = false;
+  let shouldRewrite = false;
+
   if (isSellerSubdomain) {
+    // If user directly browsed to /seller/* on the subdomain, 301 redirect to clean URL
     if (pathname === "/seller" || pathname.startsWith("/seller/")) {
-      // 301 ugly /seller/* paths on the subdomain to clean URLs
       const subPath = pathname.replace(/^\/seller/, "") || "/";
       const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
       const protocol = isLocalhost ? "http" : "https";
       const targetHost = isLocalhost ? host : SELLER_HOST;
       return NextResponse.redirect(
-        `${protocol}://${targetHost}${subPath}${url.search}`,
+        `${protocol}://${targetHost}${subPath}${request.nextUrl.search}`,
         301
       );
     }
-    // Legal/policy pages live on main domain only — 301 to anga9.com
+
+    // Legal/policy pages live on main domain only — 301 redirect to main domain
     if (LEGAL_PATHS.includes(pathname)) {
       const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
       const protocol = isLocalhost ? "http" : "https";
       const targetHost = isLocalhost ? host.replace(/^seller\./, "") : "anga9.com";
       return NextResponse.redirect(
-        `${protocol}://${targetHost}${pathname}${url.search}`,
+        `${protocol}://${targetHost}${pathname}${request.nextUrl.search}`,
         301
       );
     }
-    // Clean path → rewrite to internal /seller/* without changing URL bar
+
+    // Map clean path to internal /seller/* route
     effectivePath = pathname === "/" ? "/seller/sell-on-anga9" : `/seller${pathname}`;
-    url.pathname = effectivePath;
-    rewroteForSubdomain = true;
+    shouldRewrite = true;
   } else {
-    // On main host (anga9.com) — redirect /seller/* to subdomain for SEO consolidation
-    // Bypass this redirect on localhost for local development testing
+    // On main host (anga9.com), redirect /seller/* to subdomain for SEO (except on localhost)
     const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
     if (!isLocalhost && (pathname === "/seller" || pathname.startsWith("/seller/"))) {
       const subPath = pathname.replace(/^\/seller/, "") || "/";
       return NextResponse.redirect(
-        `https://${SELLER_HOST}${subPath}${url.search}`,
+        `https://${SELLER_HOST}${subPath}${request.nextUrl.search}`,
         301
       );
     }
   }
 
   // ──────────────────────────────────────────────────
-  // Seller portal
+  // Seller Portal Guard & Rewrite
   // ──────────────────────────────────────────────────
   if (effectivePath === "/seller" || effectivePath.startsWith("/seller/")) {
     // Public seller pages — no auth required
     if (isSellerPublicPath(effectivePath)) {
-      return rewroteForSubdomain ? NextResponse.rewrite(url) : NextResponse.next();
+      if (shouldRewrite) {
+        const nextUrl = request.nextUrl.clone();
+        nextUrl.pathname = effectivePath;
+        const reqHeaders = new Headers(request.headers);
+        reqHeaders.set("x-seller-internal-rewrite", "1");
+        return NextResponse.rewrite(nextUrl, { request: { headers: reqHeaders } });
+      }
+      return NextResponse.next();
     }
 
     // Protected seller routes (dashboard, onboarding, etc.)
@@ -105,11 +117,19 @@ export default function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    return rewroteForSubdomain ? NextResponse.rewrite(url) : NextResponse.next();
+    if (shouldRewrite) {
+      const nextUrl = request.nextUrl.clone();
+      nextUrl.pathname = effectivePath;
+      const reqHeaders = new Headers(request.headers);
+      reqHeaders.set("x-seller-internal-rewrite", "1");
+      return NextResponse.rewrite(nextUrl, { request: { headers: reqHeaders } });
+    }
+
+    return NextResponse.next();
   }
 
   // ──────────────────────────────────────────────────
-  // Admin portal
+  // Admin Portal Guard
   // ──────────────────────────────────────────────────
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     if (pathname === "/admin/login") {
@@ -126,7 +146,7 @@ export default function proxy(request: NextRequest) {
   }
 
   // ──────────────────────────────────────────────────
-  // Customer portal — allow all root paths without auth
+  // Customer portal — allow all root paths
   // ──────────────────────────────────────────────────
   return NextResponse.next();
 }

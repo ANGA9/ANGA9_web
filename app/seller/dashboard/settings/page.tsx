@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { sellerFetch } from "@/lib/api";
-import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock, Eye, EyeOff, Circle } from "lucide-react";
+import { Loader2, Save, Bell, Mail, Package, CreditCard, ShieldCheck, Truck, CheckCircle2, Lock, Eye, EyeOff, Circle, LogOut } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -53,7 +53,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 }
 
 export default function SettingsPage() {
-  const { loading: authLoading, getToken } = useAuth();
+  const { loading: authLoading, getToken, logout } = useAuth();
   const [prefs, setPrefs] = useState<NotifPref>(DEFAULTS);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -311,6 +311,15 @@ export default function SettingsPage() {
               {saving ? "Saving..." : "Save Preferences"}
             </button>
             {saved && <p className="text-center text-[14px] text-green-600 font-bold mt-4">Preferences saved successfully!</p>}
+
+            <button
+              onClick={logout}
+              type="button"
+              className="w-full mt-4 inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-bold transition-all border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 active:scale-[0.98]"
+            >
+              <LogOut className="w-4 h-4" />
+              Log Out of Store
+            </button>
           </div>
         </div>
 
@@ -336,6 +345,21 @@ export default function SettingsPage() {
                   <span className="text-[13px] font-bold">Saved successfully!</span>
                 </div>
               )}
+            </div>
+
+            <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-[16px] font-bold text-gray-900 mb-1">Account Session</h3>
+              <p className="text-[14px] text-gray-500 font-medium mb-4">
+                Sign out of your merchant account on this device.
+              </p>
+              <button
+                onClick={logout}
+                type="button"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-[14px] font-bold transition-all border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 active:scale-[0.98]"
+              >
+                <LogOut className="w-4 h-4" />
+                Log Out of Store
+              </button>
             </div>
           </div>
         </div>

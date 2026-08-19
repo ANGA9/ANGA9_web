@@ -24,9 +24,13 @@ const NAV = [
   { label: "Data & Privacy", href: "/seller/dashboard/privacy", icon: ShieldCheck },
 ];
 
+import { useAuth } from "@/lib/AuthContext";
+import { LogOut } from "lucide-react";
+
 export default function SellerSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const onSub = useSellerSubdomain();
+  const { logout } = useAuth();
   
   const isActive = (href: string) => {
     const target = sellerHref(href, onSub);
@@ -74,14 +78,25 @@ export default function SellerSidebar({ open, onClose }: { open: boolean; onClos
           })}
         </nav>
         
-        <div className="p-5 border-t border-gray-100 bg-gray-50/50 mt-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-sm">
-              <Store className="w-5 h-5" />
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50 mt-auto space-y-3">
+          <button
+            onClick={() => {
+              onClose();
+              logout();
+            }}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Log Out</span>
+          </button>
+
+          <div className="flex items-center gap-3 pt-2 border-t border-gray-200/60">
+            <div className="w-9 h-9 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-sm">
+              <Store className="w-4 h-4" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[14px] font-bold text-gray-900">ANGA9 Hub</span>
-              <span className="text-[14px] font-medium text-gray-500">v2.1.0 Beta</span>
+              <span className="text-[13px] font-bold text-gray-900">ANGA9 Hub</span>
+              <span className="text-[12px] font-medium text-gray-500">v2.1.0 Beta</span>
             </div>
           </div>
         </div>

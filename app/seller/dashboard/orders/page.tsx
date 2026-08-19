@@ -7,6 +7,9 @@ import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
+import { useAuth } from "@/lib/AuthContext";
+import { useBrand } from "@/lib/BrandContext";
+
 interface OrderItem {
   id: string;
   order_id: string;
@@ -50,6 +53,8 @@ function formatINR(value: number) {
 }
 
 export default function OrdersPage() {
+  const { dbUser } = useAuth();
+  const { activeBrandId } = useBrand();
   const [allOrders, setAllOrders] = useState<SellerOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -61,13 +66,77 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [activeBrandId, dbUser?.id]);
 
   async function fetchOrders() {
     try {
       setLoading(true);
-      const res = await api.get<{ orders: SellerOrder[] }>("/api/orders/seller");
-      const orders = res.orders || [];
+      const params = new URLSearchParams();
+      params.set("limit", "100");
+      if (activeBrandId) params.set("seller_id", activeBrandId);
+
+      const res = await api.get<{ orders: SellerOrder[] }>(`/api/orders/seller?${params.toString()}`);
+      let orders = res?.orders || [];
+
+      // If orders array is empty or limited, perform direct query fallback
+      if (orders.length === 0 && dbUser?.id) {
+        try {
+          const supabase = getSupabaseBrowserClient();
+          const targetSellerId = activeBrandId || dbUser.id;
+
+          const { data: childUsers } = await supabase
+            .from("users")
+            .select("id")
+            .or(`id.eq.${targetSellerId},parent_user_id.eq.${targetSellerId}`);
+
+          const sellerIds = childUsers && childUsers.length > 0
+            ? childUsers.map((u) => u.id)
+            : [targetSellerId];
+
+          const { data: sellerItems } = await supabase
+            .from("order_items")
+            .select("order_id")
+            .in("seller_id", sellerIds);
+
+          const orderIds = [...new Set((sellerItems || []).map((i) => i.order_id).filter(Boolean))];
+
+          if (orderIds.length > 0) {
+            const { data: directOrders } = await supabase
+              .from("orders")
+              .select("*")
+              .in("id", orderIds)
+              .order("placed_at", { ascending: false })
+              .limit(100);
+
+            if (directOrders && directOrders.length > 0) {
+              const { data: directItems } = await supabase
+                .from("order_items")
+                .select("*")
+                .in("order_id", directOrders.map((o) => o.id))
+                .in("seller_id", sellerIds);
+
+              const itemsByOrder = new Map<string, OrderItem[]>();
+              (directItems || []).forEach((item: any) => {
+                if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);
+                itemsByOrder.get(item.order_id)!.push(item);
+              });
+
+              orders = directOrders.map((o) => ({
+                id: o.id,
+                order_number: o.order_number,
+                status: o.status,
+                placed_at: o.placed_at,
+                items: itemsByOrder.get(o.id) || [],
+              }));
+            }
+          }
+        } catch {
+          // Graceful fallback
+        }
+      }
+
+      // Sort by newest placed date first
+      orders.sort((a, b) => new Date(b.placed_at).getTime() - new Date(a.placed_at).getTime());
 
       // Collect product IDs that don't have images attached yet
       const missingProductIds = [

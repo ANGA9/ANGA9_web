@@ -6,6 +6,10 @@ import Link from "next/link";
 import { IndianRupee, ShoppingCart, Package, Plus, Clock, CheckCircle2, Store, Loader2, ArrowRight, TrendingUp, AlertCircle, RefreshCw } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
+import { useBrand } from "@/lib/BrandContext";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
+
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 type VStatus = "unverified" | "pending" | "verified" | "rejected";
 
@@ -14,7 +18,7 @@ interface RecentOrder {
   order_number: string;
   status: string;
   placed_at: string;
-  items: { id: string; product_name: string; quantity: number; total_price: number; status: string; product_image?: string }[];
+  items: { id: string; product_id?: string; product_name: string; quantity: number; total_price: number; status: string; product_image?: string }[];
 }
 
 interface AnalyticsData {
@@ -68,6 +72,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Tooltip
 
 export default function DashboardHome() {
   const { loading: authLoading, getToken, dbUser } = useAuth();
+  const { activeBrandId } = useBrand();
   const [status, setStatus] = useState<VStatus | null>(null);
   const [bizName, setBizName] = useState("");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
@@ -94,10 +99,10 @@ export default function DashboardHome() {
           }
         }
 
+        const sid = dbUser ? (activeBrandId || effectiveSellerId(dbUser.id)) : "";
+
         try {
-          if (dbUser) {
-            // seller_id must follow the active brand, not just the logged-in user.
-            const sid = effectiveSellerId(dbUser.id);
+          if (sid) {
             const prodRes = await sellerFetch(`${API}/api/products?seller_id=${sid}&status=active&limit=1`);
             if (prodRes.ok) {
               const d = await prodRes.json();
@@ -107,17 +112,116 @@ export default function DashboardHome() {
         } catch { /* ignore */ }
 
         try {
-          const orderRes = await sellerFetch(`${API}/api/orders/seller`);
+          const orderUrl = sid ? `${API}/api/orders/seller?limit=50&seller_id=${sid}` : `${API}/api/orders/seller?limit=50`;
+          const orderRes = await sellerFetch(orderUrl);
+          let orders: RecentOrder[] = [];
+          let totalCount = 0;
+
           if (orderRes.ok) {
             const d = await orderRes.json();
-            const orders: RecentOrder[] = d.orders || [];
-            setRecentOrders(orders.slice(0, 5));
-            const pendingCount = orders.filter((o: RecentOrder) => {
-              const s = o.items[0]?.status || o.status;
-              return s === "confirmed" || s === "processing" || s === "pending";
-            }).length;
-            setStats(prev => ({ ...prev, pendingOrders: pendingCount, totalOrders: d.total ?? orders.length }));
+            orders = d.orders || [];
+            totalCount = d.total ?? orders.length;
           }
+
+          // Direct Supabase fallback if needed
+          if (orders.length === 0 && dbUser?.id) {
+            try {
+              const supabase = getSupabaseBrowserClient();
+              const targetSellerId = activeBrandId || dbUser.id;
+
+              const { data: childUsers } = await supabase
+                .from("users")
+                .select("id")
+                .or(`id.eq.${targetSellerId},parent_user_id.eq.${targetSellerId}`);
+
+              const sellerIds = childUsers && childUsers.length > 0 ? childUsers.map(u => u.id) : [targetSellerId];
+
+              const { data: sellerItems } = await supabase
+                .from("order_items")
+                .select("order_id")
+                .in("seller_id", sellerIds);
+
+              const orderIds = [...new Set((sellerItems || []).map(i => i.order_id).filter(Boolean))];
+
+              if (orderIds.length > 0) {
+                totalCount = orderIds.length;
+                const { data: directOrders } = await supabase
+                  .from("orders")
+                  .select("*")
+                  .in("id", orderIds)
+                  .order("placed_at", { ascending: false })
+                  .limit(10);
+
+                if (directOrders && directOrders.length > 0) {
+                  const { data: directItems } = await supabase
+                    .from("order_items")
+                    .select("*")
+                    .in("order_id", directOrders.map(o => o.id))
+                    .in("seller_id", sellerIds);
+
+                  const itemsByOrder = new Map<string, any[]>();
+                  (directItems || []).forEach((item: any) => {
+                    if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);
+                    itemsByOrder.get(item.order_id)!.push(item);
+                  });
+
+                  orders = directOrders.map(o => ({
+                    id: o.id,
+                    order_number: o.order_number,
+                    status: o.status,
+                    placed_at: o.placed_at,
+                    items: itemsByOrder.get(o.id) || [],
+                  }));
+                }
+              }
+            } catch { /* ignore */ }
+          }
+
+          // Sort descending by placed_at
+          orders.sort((a, b) => new Date(b.placed_at).getTime() - new Date(a.placed_at).getTime());
+
+          // Enrich missing product images
+          const missingProductIds = [
+            ...new Set(
+              orders
+                .flatMap(o => o.items || [])
+                .filter(i => !i.product_image && i.product_id)
+                .map(i => i.product_id as string)
+            ),
+          ];
+
+          if (missingProductIds.length > 0) {
+            try {
+              const supabase = getSupabaseBrowserClient();
+              const { data: prods } = await supabase
+                .from("products")
+                .select("id, images")
+                .in("id", missingProductIds);
+
+              const imgMap = new Map<string, string>();
+              for (const p of prods || []) {
+                const imgs = (p.images || (p as any).image_urls) as string[] | null;
+                if (imgs && imgs.length > 0) imgMap.set(p.id, imgs[0]);
+              }
+
+              if (imgMap.size > 0) {
+                orders.forEach(o => {
+                  (o.items || []).forEach(item => {
+                    if (!item.product_image && item.product_id && imgMap.has(item.product_id)) {
+                      item.product_image = imgMap.get(item.product_id);
+                    }
+                  });
+                });
+              }
+            } catch { /* ignore */ }
+          }
+
+          setRecentOrders(orders.slice(0, 5));
+          const pendingCount = orders.filter((o: RecentOrder) => {
+            const s = o.items[0]?.status || o.status;
+            return s === "confirmed" || s === "processing" || s === "pending";
+          }).length;
+          setStats(prev => ({ ...prev, pendingOrders: pendingCount, totalOrders: totalCount }));
         } catch { /* ignore */ }
 
         try {
@@ -130,7 +234,7 @@ export default function DashboardHome() {
       } catch { /* ignore */ }
       setLoaded(true);
     })();
-  }, [authLoading, getToken, period, dbUser]);
+  }, [authLoading, getToken, period, dbUser, activeBrandId]);
 
   if (authLoading || !loaded) {
     return (
@@ -447,7 +551,11 @@ export default function DashboardHome() {
                             <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 overflow-hidden">
                               {o.items[0]?.product_image ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={o.items[0].product_image} alt="" className="w-full h-full object-cover" />
+                                <img 
+                                  src={cdnUrl(o.items[0].product_image)} 
+                                  alt="" 
+                                  className="w-full h-full object-cover" 
+                                />
                               ) : (
                                 <Package className="w-5 h-5 text-gray-400" />
                               )}

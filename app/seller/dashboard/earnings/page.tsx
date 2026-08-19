@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { useBrand } from "@/lib/BrandContext";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { cdnUrl } from "@/lib/utils";
 import { Loader2, IndianRupee, Clock, CheckCircle2, Wallet, ArrowRight, FileText, TrendingUp, ChevronLeft, ChevronRight, PackageOpen } from "lucide-react";
 import Link from "next/link";
 
@@ -18,7 +21,7 @@ interface EarningRecord {
   amount: number;
   status: string;
   created_at: string;
-  order_items?: { product_name: string; quantity: number; order_id?: string; product_image?: string };
+  order_items?: { product_name: string; quantity: number; order_id?: string; product_id?: string; product_image?: string };
 }
 
 function formatINR(v: number) {
@@ -33,6 +36,7 @@ const statusCfg: Record<string, { bg: string; text: string; label: string; borde
 };
 
 export default function EarningsPage() {
+  const { activeBrandId } = useBrand();
   const [summary, setSummary] = useState<EarningSummary | null>(null);
   const [history, setHistory] = useState<EarningRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,17 +46,51 @@ export default function EarningsPage() {
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const [s, h] = await Promise.all([
           api.get<EarningSummary>("/api/seller/earnings", { silent: true }),
           api.get<{ data: EarningRecord[]; total: number; limit: number }>(`/api/seller/earnings/history?page=${page}&limit=10`, { silent: true }),
         ]);
         setSummary(s);
-        setHistory(h?.data || []);
+        const records = h?.data || [];
+
+        // Enrich missing product images
+        const missingProductIds = [
+          ...new Set(
+            records
+              .map((r) => r.order_items?.product_id)
+              .filter((id): id is string => Boolean(id))
+          ),
+        ];
+
+        if (missingProductIds.length > 0) {
+          try {
+            const supabase = getSupabaseBrowserClient();
+            const { data: prods } = await supabase
+              .from("products")
+              .select("id, images")
+              .in("id", missingProductIds);
+
+            const imgMap = new Map<string, string>();
+            for (const p of prods || []) {
+              const imgs = (p.images || (p as any).image_urls) as string[] | null;
+              if (imgs && imgs.length > 0) imgMap.set(p.id, imgs[0]);
+            }
+
+            records.forEach((r) => {
+              if (r.order_items && !r.order_items.product_image && r.order_items.product_id && imgMap.has(r.order_items.product_id)) {
+                r.order_items.product_image = imgMap.get(r.order_items.product_id);
+              }
+            });
+          } catch { /* ignore */ }
+        }
+
+        setHistory(records);
         setTotalPages(Math.ceil((h?.total || 0) / (h?.limit || 10)));
       } catch { /* ignore */ }
       setLoading(false);
     })();
-  }, [page]);
+  }, [page, activeBrandId]);
 
   const cards = [
     { label: "Total Earnings", value: summary?.total || 0, borderColor: "border-l-[#1A6FD4]", icon: <TrendingUp className="w-5 h-5 text-gray-400" /> },
@@ -157,7 +195,11 @@ export default function EarningsPage() {
                             <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
                               {e.order_items?.product_image ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={e.order_items.product_image} alt="" className="w-full h-full object-cover" />
+                                <img 
+                                  src={cdnUrl(e.order_items.product_image)} 
+                                  alt="" 
+                                  className="w-full h-full object-cover" 
+                                />
                               ) : (
                                 <PackageOpen className="w-4 h-4 text-gray-400" />
                               )}

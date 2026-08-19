@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
 import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
-import { Plus, Tag, Search, Calendar, Clock, Loader2, X, ChevronDown, Check } from "lucide-react";
+import { cdnUrl } from "@/lib/utils";
+import { Plus, Tag, Search, Calendar, Clock, Loader2, X, ChevronDown, Check, Package } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -180,8 +181,22 @@ export default function SellerDealsPage() {
                   return (
                     <tr key={deal.id} className="hover:bg-gray-50/50 transition-colors group">
                       <td className="px-6 py-4">
-                        <div className="font-bold text-[14px] text-gray-900 line-clamp-2 pr-4">
-                          {deal.products?.name || "Unknown Product"}
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                            {deal.products?.images && deal.products.images.length > 0 ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img 
+                                src={cdnUrl(deal.products.images[0])} 
+                                alt="" 
+                                className="w-full h-full object-cover" 
+                              />
+                            ) : (
+                              <Package className="w-5 h-5 text-gray-400" />
+                            )}
+                          </div>
+                          <span className="font-bold text-[14px] text-gray-900 line-clamp-2 pr-2">
+                            {deal.products?.name || "Unknown Product"}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">

@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useBrand } from "@/lib/BrandContext";
 import { sellerFetch, effectiveSellerId } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 import Link from "next/link";
 import { Plus, Loader2, Package, Pencil, Search, ChevronLeft, ChevronRight, Filter, AlertCircle, Eye, Upload, Edit3, Award } from "lucide-react";
 
@@ -47,8 +49,9 @@ const STATUS_LABEL: Record<string, string> = {
   rejected: "Rejected",
 };
 
-export default function ProductsPage() {
+export default function SellerProductsPage() {
   const { loading: authLoading, getToken, dbUser } = useAuth();
+  const { activeBrandId } = useBrand();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -68,8 +71,9 @@ export default function ProductsPage() {
       const statuses = statusFilter === "all"
         ? "active,pending_review,draft,archived,rejected"
         : statusFilter;
+      const sid = activeBrandId || effectiveSellerId(dbUser.id);
       const params = new URLSearchParams({
-        seller_id: effectiveSellerId(dbUser.id),
+        seller_id: sid,
         status: statuses,
         limit: String(limit),
         offset: String((page - 1) * limit),
@@ -83,7 +87,7 @@ export default function ProductsPage() {
       }
     } catch { /* ignore */ }
     setLoading(false);
-  }, [authLoading, dbUser, getToken, page, statusFilter, search]);
+  }, [authLoading, dbUser, activeBrandId, getToken, page, statusFilter, search]);
 
   useEffect(() => {
     fetchProducts();
@@ -273,7 +277,11 @@ export default function ProductsPage() {
                         {p.images && p.images.length > 0 ? (
                           <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-200 shrink-0">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={p.images[0]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            <img 
+                              src={cdnUrl(p.images[0])} 
+                              alt="" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                            />
                           </div>
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200">

@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 import Link from "next/link";
-import { Loader2, Star, MessageSquare, ArrowLeft, Filter, Search } from "lucide-react";
+import { Loader2, Star, MessageSquare, ArrowLeft, Filter, Search, Package } from "lucide-react";
 
 interface Product {
   seller_id: string;
   name: string;
-  image_urls: string[];
+  images?: string[];
+  image_urls?: string[];
 }
 
 interface Review {
@@ -131,15 +133,15 @@ export default function SellerReviewsPage() {
 
               <div className="mt-auto pt-4 border-t border-gray-100 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
-                  {r.products?.image_urls?.[0] ? (
+                  {(r.products?.images?.[0] || r.products?.image_urls?.[0]) ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img 
-                      src={r.products.image_urls[0].startsWith('http') ? r.products.image_urls[0] : `${process.env.NEXT_PUBLIC_CDN_URL || ''}${r.products.image_urls[0]}`} 
+                      src={cdnUrl(r.products.images?.[0] || r.products.image_urls?.[0] || '')} 
                       alt="" 
                       className="w-full h-full object-cover" 
                     />
                   ) : (
-                    <span className="text-gray-300 font-bold text-xs">IMG</span>
+                    <Package className="w-5 h-5 text-gray-300" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">

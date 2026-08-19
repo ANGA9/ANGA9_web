@@ -10,6 +10,7 @@ import {
   type StorefrontUpdate,
 } from "@/lib/sellersApi";
 import { api } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 interface SellerProfile {
@@ -211,13 +212,21 @@ export default function SellerStorefrontEditor() {
                 {bannerUrl ? (
                   <div className="mt-4 rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group bg-white">
                     <div className="h-32 md:h-48 w-full relative">
-                      <img src={bannerUrl} alt="Banner preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img 
+                        src={cdnUrl(bannerUrl)} 
+                        alt="Banner preview" 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                     </div>
                     <div className="absolute bottom-4 left-6 flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-white p-1 shadow-md shrink-0">
                         {logoUrl ? (
-                          <img src={logoUrl} alt="Logo" className="w-full h-full rounded-full object-cover" />
+                          <img 
+                            src={cdnUrl(logoUrl)} 
+                            alt="Logo" 
+                            className="w-full h-full rounded-full object-cover" 
+                          />
                         ) : (
                           <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
                             <Store className="w-6 h-6 text-gray-400" />

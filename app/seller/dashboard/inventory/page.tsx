@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useBrand } from "@/lib/BrandContext";
 import { sellerFetch, effectiveSellerId } from "@/lib/api";
+import { cdnUrl } from "@/lib/utils";
 import { Loader2, Package, AlertTriangle, XCircle, ChevronLeft, ChevronRight, Pencil, Check, X, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -35,6 +37,7 @@ function formatINR(v: number) {
 
 export default function InventoryPage() {
   const { loading: authLoading, getToken, dbUser } = useAuth();
+  const { activeBrandId } = useBrand();
   const [allRows, setAllRows] = useState<InventoryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -47,7 +50,7 @@ export default function InventoryPage() {
 
   useEffect(() => {
     if (!authLoading && dbUser) fetchInventory();
-  }, [authLoading, dbUser]);
+  }, [authLoading, dbUser, activeBrandId]);
 
   async function fetchInventory() {
     if (!dbUser) return;
@@ -55,8 +58,9 @@ export default function InventoryPage() {
       const token = await getToken();
       if (!token) return;
 
+      const sid = activeBrandId || effectiveSellerId(dbUser.id);
       const params = new URLSearchParams({
-        seller_id: effectiveSellerId(dbUser.id),
+        seller_id: sid,
         status: "active,pending_review,draft,archived,rejected",
         limit: "200",
       });
@@ -271,8 +275,12 @@ export default function InventoryPage() {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                               <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden border border-gray-200 shrink-0 hidden sm:flex items-center justify-center">
                                 {row.product.images && row.product.images.length > 0 ? (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img src={row.product.images[0]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  /* eslint-disable-next-line @next/next/no-img-element */
+                                  <img 
+                                    src={cdnUrl(row.product.images[0])} 
+                                    alt="" 
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                                  />
                                 ) : (
                                   <Package className="w-5 h-5 text-gray-400" />
                                 )}

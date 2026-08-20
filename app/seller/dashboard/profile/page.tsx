@@ -19,7 +19,7 @@ function maskValue(val: string) {
 }
 
 export default function ProfilePage() {
-  const { loading: authLoading, getToken } = useAuth();
+  const { loading: authLoading, getToken, logout } = useAuth();
   const [form, setForm] = useState({
     store_name: "", business_name: "", business_type: "", business_category: "",
     store_description: "", address_line1: "", city: "", state: "", pincode: "",

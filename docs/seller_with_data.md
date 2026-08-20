@@ -80,3 +80,5 @@
 | 6 | Save button on mobile for long edit forms | ✅ | Mobile save buttons implemented on Profile, Storefront, and Product forms. |
 | 7 | Toggle switch accessibility labels | ✅ | Added "On" / "Off" text labels on Settings toggles. |
 | 8 | Typography minimum 14px standard | ✅ | Replaced all 11px/12px/13px micro-text with 14px minimum across all pages. |
+
+now another newer reel idea i want from you in 10 sec which will be generated entrely bny gemini , so i need a very detailed prompt  , which has been not used since and revolve around our app / business model and in english subtitle and english dialgoye fast pacing and in the end with an anga9 logo wihich i will provide in the chat itself 

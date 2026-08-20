@@ -44,8 +44,9 @@ import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import EmailOtpVerifyModal from "@/components/account/EmailOtpVerifyModal";
-import KycProgressCard from "@/components/account/KycProgressCard";
-import KycView from "@/components/account/KycView";
+import BusinessProfileCard from "@/components/account/BusinessProfileCard";
+import BusinessProfileView from "@/components/account/BusinessProfileView";
+import { Building2 } from "lucide-react";
 
 interface Address {
   id: string;
@@ -71,7 +72,7 @@ const navItems = [
   { label: "Profile", icon: User },
   { label: "My Orders", icon: Package },
   { label: "Addresses", icon: MapPin },
-  { label: "KYC Verification", icon: ShieldCheck },
+  { label: "Business Profile", icon: Building2 },
   { label: "Settings", icon: Settings },
 ];
 
@@ -903,7 +904,7 @@ export default function CustomerAccountPage() {
                   <MenuItem icon={Bell} label="My Alerts" onClick={() => router.push('/account/alerts')} />
                   <MenuItem icon={Coins} label="My Coins" badge={coinBalance != null && coinBalance > 0 ? coinBalance : undefined} onClick={() => router.push('/account/coins')} />
                   <MenuItem icon={MapPin} label="Addresses" onClick={() => { setActiveNav("Addresses"); setMobileMenuOpen(false); }} />
-                  <MenuItem icon={ShieldCheck} label="KYC Verification" onClick={() => { setActiveNav("KYC Verification"); setMobileMenuOpen(false); }} />
+                  <MenuItem icon={Building2} label="Business Profile & GST" badge="18% GST" onClick={() => { setActiveNav("Business Profile"); setMobileMenuOpen(false); }} />
                 </div>
               </div>
             )}
@@ -1042,12 +1043,12 @@ export default function CustomerAccountPage() {
               <div className="p-4">
                 {activeNav === "Profile" && (
                   <>
-                    <KycProgressCard />
+                    <BusinessProfileCard onOpenBusinessTab={() => setActiveNav("Business Profile")} />
                     {profileUI}
                   </>
                 )}
-                {activeNav === "KYC Verification" && (
-                  <KycView />
+                {activeNav === "Business Profile" && (
+                  <BusinessProfileView />
                 )}
 
               </div>
@@ -1180,12 +1181,12 @@ export default function CustomerAccountPage() {
             <div className="flex-1 min-w-0">
               {activeNav === "Profile" && (
                 <>
-                  <KycProgressCard />
+                  <BusinessProfileCard onOpenBusinessTab={() => setActiveNav("Business Profile")} />
                   {profileUI}
                 </>
               )}
-              {activeNav === "KYC Verification" && (
-                <KycView />
+              {activeNav === "Business Profile" && (
+                <BusinessProfileView />
               )}
 
               {activeNav === "Addresses" && (showForm ? addressFormUI : addressBookUI)}

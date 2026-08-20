@@ -94,14 +94,25 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
         Proceed to Checkout
       </Button>
 
+      {/* Flipkart-style 18% GST Invoicing note */}
+      <div className="mt-4 p-3 bg-blue-50/70 border border-blue-100 rounded-xl text-[12px] text-gray-700 flex items-start gap-2">
+        <span className="text-base leading-none">🏢</span>
+        <div>
+          <span className="font-bold text-gray-900">Buying for business? </span>
+          <span>Claim up to 18% GST Input Credit with your GST invoice. </span>
+          <Link href="/account/business" className="text-[#1A6FD4] font-bold hover:underline">
+            Add GSTIN →
+          </Link>
+        </div>
+      </div>
+
       <Link
         href="/"
-        className="mt-4 block text-center text-sm font-bold transition-opacity hover:opacity-80"
+        className="mt-3 block text-center text-sm font-bold transition-opacity hover:opacity-80"
         style={{ color: t.bluePrimary }}
       >
-        Continue Shopping
+        ← Continue Shopping
       </Link>
     </div>
   );
 }
-

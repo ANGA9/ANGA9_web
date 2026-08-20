@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import BusinessProfileView from "@/components/account/BusinessProfileView";
 
-export default function KycPage() {
+export default function BusinessProfilePage() {
   return (
     <main className="w-full mx-auto max-w-5xl px-3 sm:px-6 md:px-8 pt-0 md:py-10 bg-white md:bg-transparent min-h-screen">
       {/* Mobile header */}

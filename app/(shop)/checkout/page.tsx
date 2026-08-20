@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket, LocateFixed, Banknote } from "lucide-react";
+import { ShieldCheck, Truck, Loader2, CreditCard, PackageOpen, MapPin, ChevronDown, ChevronRight, AlertTriangle, ArrowLeft, Plus, X, Save, CheckCircle2, Ticket, LocateFixed, Banknote, Building2 } from "lucide-react";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -101,6 +101,25 @@ export default function CheckoutPage() {
   const [receiverPhone, setReceiverPhone] = useState("");
   const [savingAddress, setSavingAddress] = useState(false);
   const [detectingLocation, setDetectingLocation] = useState(false);
+
+  // Business Profile & GST Invoicing state
+  const [businessProfile, setBusinessProfile] = useState<{ business_name?: string; gstin?: string } | null>(null);
+  const [useGstInvoice, setUseGstInvoice] = useState(true);
+
+  // Load customer business profile for GST invoicing
+  useEffect(() => {
+    async function loadBusinessProfile() {
+      try {
+        const res = await api.get<{ business_name?: string; gstin?: string }>("/api/users/kyc", { silent: true });
+        if (res?.gstin && res?.business_name) {
+          setBusinessProfile(res);
+        }
+      } catch {
+        // Not configured is fine
+      }
+    }
+    loadBusinessProfile();
+  }, []);
 
   // Validate cart against actual product status in Supabase
   useEffect(() => {
@@ -893,13 +912,64 @@ export default function CheckoutPage() {
                         {itemError}
                       </div>
                     )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          {/* GST Invoicing / Business Profile Section (Flipkart style) */}
+          <div
+            className="rounded-xl border p-4 sm:p-5 bg-white shadow-sm"
+            style={{ borderColor: t.border }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#1A6FD4] flex items-center justify-center shrink-0 mt-0.5">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h4 className="text-[15px] font-bold text-gray-900">
+                      GST Invoicing & 18% Tax Credit
+                    </h4>
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-blue-100 text-[#1A6FD4] px-2 py-0.5 rounded-full">
+                      Optional B2B
+                    </span>
                   </div>
-                );
-              })}
+                  {businessProfile?.gstin ? (
+                    <div className="mt-1.5 text-[13px] text-gray-600">
+                      <p className="font-semibold text-gray-800">
+                        Billing to: {businessProfile.business_name}
+                      </p>
+                      <p className="font-mono text-gray-500 text-[12px]">
+                        GSTIN: {businessProfile.gstin}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[13px] text-gray-500 font-medium mt-1">
+                      Buying for your company or store?{" "}
+                      <Link href="/account/business" className="text-[#1A6FD4] font-bold hover:underline">
+                        Add GSTIN to claim 18% GST Input Credit →
+                      </Link>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {businessProfile?.gstin && (
+                <label className="flex items-center gap-2 cursor-pointer shrink-0 mt-1">
+                  <input
+                    type="checkbox"
+                    checked={useGstInvoice}
+                    onChange={(e) => setUseGstInvoice(e.target.checked)}
+                    className="w-4 h-4 rounded text-[#1A6FD4] focus:ring-[#1A6FD4] cursor-pointer"
+                  />
+                  <span className="text-[13px] font-bold text-gray-700">Apply GST</span>
+                </label>
+              )}
             </div>
           </div>
-
-          {/* Removed inline payment method picker, now opens as a modal from the right column */}
         </div>
 
         {/* Order summary — right column (matches CartSummary style) */}

@@ -106,6 +106,10 @@ export default function CheckoutPage() {
   const [businessProfile, setBusinessProfile] = useState<{ business_name?: string; gstin?: string } | null>(null);
   const [useGstInvoice, setUseGstInvoice] = useState(true);
 
+  // Test payment whitelist (restricted exclusively to test phone number)
+  const userPhone = (dbUser?.phone || user?.phone || (user?.user_metadata as any)?.phone || "").replace(/\D/g, "");
+  const isTestPaymentAllowed = userPhone === "9876543210" || userPhone.endsWith("9876543210");
+
   // Load customer business profile for GST invoicing
   useEffect(() => {
     async function loadBusinessProfile() {
@@ -468,7 +472,11 @@ export default function CheckoutPage() {
     // onDismiss/onFailed need this to restore.
     cartSnapshotRef.current = items.map((it) => ({ productId: it.productId, qty: it.qty }));
     setLastFailed(null);
-    pay(method, opts);
+    const effectiveOpts = {
+      ...opts,
+      isTest: Boolean(opts?.isTest && isTestPaymentAllowed),
+    };
+    pay(method, effectiveOpts);
   };
 
   const pickerDisabled = placing || cartBlocked || validating || !hasAddress;
@@ -1188,18 +1196,20 @@ export default function CheckoutPage() {
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
                   </button>
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" }, { isTest: true });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    Test Payment (Razorpay)
-                  </button>
+                  {isTestPaymentAllowed && (
+                    <button
+                      onClick={() => {
+                        if (cartBlocked) return;
+                        if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                        handlePickerSelect({ kind: "all" }, { isTest: true });
+                      }}
+                      disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                      className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      Test Payment (Razorpay)
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -1257,18 +1267,20 @@ export default function CheckoutPage() {
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
                   </button>
-                  <button
-                    onClick={() => {
-                      if (cartBlocked) return;
-                      if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
-                      handlePickerSelect({ kind: "all" }, { isTest: true });
-                    }}
-                    disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    Test Payment (Razorpay)
-                  </button>
+                  {isTestPaymentAllowed && (
+                    <button
+                      onClick={() => {
+                        if (cartBlocked) return;
+                        if (!hasAddress && !loadingAddresses) return toast.error("Please add a delivery address first");
+                        handlePickerSelect({ kind: "all" }, { isTest: true });
+                      }}
+                      disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
+                      className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100"
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      Test Payment (Razorpay)
+                    </button>
+                  )}
                 </div>
               )}
             </div>

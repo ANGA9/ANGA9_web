@@ -45,14 +45,15 @@ interface SearchProduct {
   rating?: number;
   review_count?: number;
 }
-interface FilterFacets {
-  categories: { id: string; name: string; count: number }[];
+interface SearchFilters {
+  categories: { id?: string; name: string; count: number }[];
   price_range: { min: number; max: number };
   sellers: { name: string; count: number }[];
 }
 interface SearchResponse {
   data: SearchProduct[]; total: number; page: number;
   limit: number; totalPages: number;
+  filters?: SearchFilters;
 }
 
 const SORT_OPTIONS = [

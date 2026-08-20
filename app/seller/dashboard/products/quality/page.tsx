@@ -6,6 +6,7 @@ import { sellerFetch, effectiveSellerId } from "@/lib/api";
 import Link from "next/link";
 import { Loader2, ArrowLeft, Award, AlertTriangle, CheckCircle2, ChevronRight, Target } from "lucide-react";
 import toast from "react-hot-toast";
+import { cdnUrl } from "@/lib/utils";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 

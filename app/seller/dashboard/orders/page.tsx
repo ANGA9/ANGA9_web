@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ShoppingCart, Loader2, Package, Truck, CheckCircle2, Eye, Search, ChevronLeft, ChevronRight, Inbox } from "lucide-react";
+import { ShoppingCart, Loader2, Package, Truck, CheckCircle2, Eye, Search, ChevronLeft, ChevronRight, Inbox, Store } from "lucide-react";
 import { api } from "@/lib/api";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { cdnUrl } from "@/lib/utils";
@@ -54,7 +54,10 @@ function formatINR(value: number) {
 
 export default function OrdersPage() {
   const { dbUser } = useAuth();
-  const { activeBrandId } = useBrand();
+  const { brands, activeBrandId } = useBrand();
+  const activeBrand = brands.find((b) => b.id === activeBrandId) || brands[0];
+  const activeBrandName = activeBrand?.seller_profiles?.store_name || activeBrand?.full_name || "Selected Brand";
+
   const [allOrders, setAllOrders] = useState<SellerOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -73,16 +76,20 @@ export default function OrdersPage() {
       setLoading(true);
       const params = new URLSearchParams();
       params.set("limit", "100");
-      if (activeBrandId) params.set("seller_id", activeBrandId);
+      const targetSellerId = activeBrandId || dbUser?.id;
+      if (targetSellerId) params.set("seller_id", targetSellerId);
 
-      const res = await api.get<{ orders: SellerOrder[] }>(`/api/orders/seller?${params.toString()}`);
+      const res = await api.get<{ orders: SellerOrder[] }>(
+        `/api/orders/seller?${params.toString()}`,
+        { silent: true }
+      ).catch(() => null);
+
       let orders = res?.orders || [];
 
-      // If orders array is empty or limited, perform direct query fallback
-      if (orders.length === 0 && dbUser?.id) {
+      // If backend returned empty or 403, fallback to direct Supabase query
+      if (orders.length === 0 && targetSellerId) {
         try {
           const supabase = getSupabaseBrowserClient();
-          const targetSellerId = activeBrandId || dbUser.id;
 
           const { data: childUsers } = await supabase
             .from("users")
@@ -131,7 +138,7 @@ export default function OrdersPage() {
             }
           }
         } catch {
-          // Graceful fallback
+          // Graceful fallback without crashing
         }
       }
 
@@ -180,7 +187,7 @@ export default function OrdersPage() {
 
       setAllOrders(orders);
     } catch {
-      toast.error("Failed to load orders");
+      setAllOrders([]);
     } finally {
       setLoading(false);
     }
@@ -241,13 +248,38 @@ export default function OrdersPage() {
         </div>
       </div>
 
+      {/* ── Brand Context Banner ── */}
+      {activeBrand && (
+        <div className="mb-6 rounded-2xl bg-[#F8FBFF] border border-blue-100 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#1A6FD4] flex items-center justify-center shrink-0">
+              <Store className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-[14px] font-bold text-gray-900">
+                Viewing store: <span className="text-[#1A6FD4]">{activeBrandName}</span>
+              </p>
+              <p className="text-[12px] text-gray-500 font-medium">
+                Showing orders placed specifically for products listed under this brand.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/seller/dashboard/products"
+            className="inline-flex items-center justify-center gap-1 text-[13px] font-bold text-[#1A6FD4] hover:underline whitespace-nowrap"
+          >
+            Manage Products →
+          </Link>
+        </div>
+      )}
+
       {/* ── Mobile Header ── */}
       <div className="md:hidden flex flex-col gap-1 mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-[24px] font-bold tracking-tight text-gray-900">Orders</h1>
           <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-[14px] font-bold">{allOrders.length}</span>
         </div>
-        <p className="text-[14px] text-gray-500 font-medium">Manage your fulfillment.</p>
+        <p className="text-[14px] text-gray-500 font-medium">Manage your fulfillment for {activeBrandName}.</p>
       </div>
 
       {/* ── Filters Bar ── */}
@@ -303,18 +335,28 @@ export default function OrdersPage() {
           ))}
         </div>
       ) : paginated.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 px-4 text-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50/50">
-          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm border border-gray-100">
-            <Inbox className="h-10 w-10 text-gray-300" />
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50/50">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm border border-gray-100">
+            <Inbox className="h-8 w-8 text-gray-300" />
           </div>
-          <h3 className="text-[18px] font-bold text-gray-900 mb-2">
-            {search || statusFilter !== "all" ? "No orders found" : "No orders yet"}
+          <h3 className="text-[18px] font-bold text-gray-900 mb-1.5">
+            {search || statusFilter !== "all" 
+              ? "No matching orders found" 
+              : `No orders yet for ${activeBrandName}`}
           </h3>
-          <p className="max-w-md text-[14px] font-medium text-gray-500 leading-relaxed">
+          <p className="max-w-md text-[14px] font-medium text-gray-500 leading-relaxed mb-5">
             {search || statusFilter !== "all"
-              ? "Try adjusting your filters or searching for a different order ID."
-              : "When customers purchase your products, their orders will appear here for you to fulfill."}
+              ? "Try adjusting your search query or status filter."
+              : `When customers purchase products from ${activeBrandName}, their orders will appear here.`}
           </p>
+          {!search && statusFilter === "all" && (
+            <Link
+              href="/seller/dashboard/products"
+              className="px-5 py-2.5 rounded-xl bg-[#1A6FD4] text-white text-[13px] font-bold hover:bg-[#1559B3] shadow-sm transition-all"
+            >
+              Add Products for this Brand
+            </Link>
+          )}
         </div>
       ) : (
         <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">

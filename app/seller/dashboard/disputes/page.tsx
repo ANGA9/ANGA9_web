@@ -5,6 +5,8 @@ import { Loader2, CheckCircle2, ShieldAlert, X, MessageSquare, AlertTriangle, Me
 import { disputesApi, Dispute, DisputeStatus } from "@/lib/disputesApi";
 import toast from "react-hot-toast";
 
+import { useBrand } from "@/lib/BrandContext";
+
 const STATUS_TABS: { key: DisputeStatus | "all"; label: string }[] = [
   { key: "all", label: "All Disputes" },
   { key: "open", label: "Action Required" },
@@ -13,6 +15,10 @@ const STATUS_TABS: { key: DisputeStatus | "all"; label: string }[] = [
 ];
 
 export default function SellerDisputesPage() {
+  const { brands, activeBrandId } = useBrand();
+  const activeBrand = brands.find((b) => b.id === activeBrandId) || brands[0];
+  const activeBrandName = activeBrand?.seller_profiles?.store_name || activeBrand?.full_name || "Selected Brand";
+
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDispute, setSelectedDispute] = useState<Dispute | null>(null);
@@ -27,10 +33,11 @@ export default function SellerDisputesPage() {
       setLoading(true);
       const res = await disputesApi.sellerList({
         status: statusFilter === "all" ? undefined : statusFilter,
+        seller_id: activeBrandId || undefined,
       });
       setDisputes(res.data);
-    } catch (err) {
-      toast.error("Failed to load disputes");
+    } catch {
+      setDisputes([]);
     } finally {
       setLoading(false);
     }
@@ -38,7 +45,7 @@ export default function SellerDisputesPage() {
 
   useEffect(() => {
     load();
-  }, [statusFilter]);
+  }, [statusFilter, activeBrandId]);
 
   const handleRespond = async (e: React.FormEvent) => {
     e.preventDefault();

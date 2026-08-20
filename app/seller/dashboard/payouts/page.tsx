@@ -34,7 +34,13 @@ const statusCfg: Record<string, { bg: string; text: string; label: string; borde
   failed: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200", label: "Failed" },
 };
 
+import { useBrand } from "@/lib/BrandContext";
+
 export default function PayoutsPage() {
+  const { brands, activeBrandId } = useBrand();
+  const activeBrand = brands.find((b) => b.id === activeBrandId) || brands[0];
+  const activeBrandName = activeBrand?.seller_profiles?.store_name || activeBrand?.full_name || "Selected Brand";
+
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [summary, setSummary] = useState<EarningSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,9 +53,10 @@ export default function PayoutsPage() {
 
   const fetchData = async () => {
     try {
+      const q = activeBrandId ? `?seller_id=${activeBrandId}` : "";
       const [p, s] = await Promise.all([
-        api.get<{ data: Payout[] }>("/api/seller/payouts", { silent: true }),
-        api.get<EarningSummary>("/api/seller/earnings", { silent: true }),
+        api.get<{ data: Payout[] }>(`/api/seller/payouts${q}`, { silent: true }),
+        api.get<EarningSummary>(`/api/seller/earnings${q}`, { silent: true }),
       ]);
       setPayouts(p?.data || []);
       setSummary(s);
@@ -57,7 +64,9 @@ export default function PayoutsPage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { 
+    fetchData(); 
+  }, [activeBrandId]);
 
   const handleRequestPayout = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -75,15 +84,16 @@ export default function PayoutsPage() {
 
     setRequesting(true);
     try {
-      await api.post("/api/seller/payouts/request", { amount: amt });
+      const q = activeBrandId ? `?seller_id=${activeBrandId}` : "";
+      await api.post(`/api/seller/payouts/request${q}`, { amount: amt });
       toast.success("Payout requested successfully", {
         style: { borderRadius: '16px', background: '#333', color: '#fff' }
       });
       setShowModal(false);
       setCustomAmount("");
       fetchData();
-    } catch {
-      toast.error("Failed to request payout", { style: { borderRadius: '16px' } });
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to request payout", { style: { borderRadius: '16px' } });
     }
     setRequesting(false);
   };

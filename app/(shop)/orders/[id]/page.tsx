@@ -51,6 +51,7 @@ export default function OrderDisputePage() {
   const [dispute, setDispute] = useState<Dispute | null>(null);
 
   // Form state
+  const [selectedItemId, setSelectedItemId] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<DisputeType>("return");
@@ -73,6 +74,9 @@ export default function OrderDisputePage() {
           disputesApi.getDisputesForOrder(id).catch(() => ({ items: [] })),
         ]);
         setOrder(orderRes);
+        if (orderRes?.items?.[0]?.id) {
+          setSelectedItemId(orderRes.items[0].id);
+        }
         if (disputeRes.items && disputeRes.items.length > 0) {
           setDispute(disputeRes.items[0]);
         }
@@ -87,7 +91,14 @@ export default function OrderDisputePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!order?.items?.[0]) return;
+    if (!order?.items || order.items.length === 0) return;
+    const targetItemId = selectedItemId || order.items[0].id;
+    const selectedItem = order.items.find(i => i.id === targetItemId) || order.items[0];
+
+    if (!selectedItem) {
+      toast.error("Please select an item");
+      return;
+    }
     if (reason.trim().length < 5) {
       toast.error("Reason must be at least 5 characters");
       return;
@@ -96,9 +107,9 @@ export default function OrderDisputePage() {
     try {
       setSubmitting(true);
       const res = await disputesApi.raiseDispute(id, {
-        order_item_id: order.items[0].id,
+        order_item_id: selectedItem.id,
         type,
-        requested_qty: requestedQty,
+        requested_qty: Math.min(requestedQty, selectedItem.quantity || 1),
         reason_code: reasonCode,
         resolution_mode: resolutionMode,
         reason: reason.trim(),
@@ -108,15 +119,15 @@ export default function OrderDisputePage() {
       
       // Check PDC eligibility
       try {
-        const pdcRes = await pdcApi.checkEligibility(order.id, order.items[0].id, requestedQty);
+        const pdcRes = await pdcApi.checkEligibility(order.id, selectedItem.id, requestedQty);
         if (pdcRes.eligible) {
           setPdcEligibility(pdcRes);
           setShowPdcModal(true);
         } else {
-          toast.success("Issue reported successfully");
+          toast.success("Issue reported to seller successfully");
         }
       } catch (err) {
-        toast.success("Issue reported successfully"); // fallback
+        toast.success("Issue reported to seller successfully");
       }
       
     } catch (err: any) {
@@ -206,8 +217,8 @@ export default function OrderDisputePage() {
     );
   }
 
-  const isDelivered = order.status === "delivered";
-  const item = order.items?.[0];
+  const isCancelled = order.status === "cancelled";
+  const selectedItem = order.items?.find((i) => i.id === selectedItemId) || order.items?.[0];
 
   return (
     <>
@@ -238,15 +249,14 @@ export default function OrderDisputePage() {
               <button 
                 onClick={handleAcceptPdc}
                 disabled={pdcAccepting}
-                className="w-full relative overflow-hidden group p-4 rounded-xl font-bold flex flex-col items-center justify-center transition-all disabled:opacity-70 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white p-4 rounded-xl font-bold flex flex-col items-center justify-center shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
               >
-                {pdcAccepting ? (
-                  <Loader2 className="w-6 h-6 animate-spin my-2" />
-                ) : (
-                  <>
-                    <span className="text-lg">Get ₹{pdcEligibility.total_coins} now as ANGA9 Coins</span>
-                    <span className="text-xs text-gray-400 font-normal mt-1">(Includes ₹{pdcEligibility.bonus_coins} bonus • Expires in 90 days)</span>
-                  </>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">Accept ₹{pdcEligibility.total_coins} Coins</span>
+                </div>
+                <span className="text-xs text-amber-100 font-normal mt-0.5">Credited immediately to wallet (includes 5% bonus)</span>
+                {pdcAccepting && (
+                  <Loader2 className="w-4 h-4 animate-spin text-white mt-1" />
                 )}
               </button>
 
@@ -285,19 +295,19 @@ export default function OrderDisputePage() {
           </div>
         </div>
 
-        {item && (
-          <div className="p-5 flex items-start gap-4">
+        {order.items?.map((it) => (
+          <div key={it.id} className="p-5 flex items-start gap-4 border-b border-gray-100 last:border-b-0">
             <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden shrink-0">
-              {item.product_image && (
-                <img src={item.product_image} alt={item.product_name} className="w-full h-full object-cover" />
+              {it.product_image && (
+                <img src={it.product_image} alt={it.product_name} className="w-full h-full object-cover" />
               )}
             </div>
-            <div>
-              <h3 className="font-bold text-gray-900 text-sm md:text-base leading-tight mb-1">{item.product_name}</h3>
-              <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-gray-900 text-sm md:text-base leading-tight mb-1">{it.product_name}</h3>
+              <p className="text-sm text-gray-500">Qty: {it.quantity}</p>
             </div>
           </div>
-        )}
+        ))}
       </div>
 
       {dispute ? (
@@ -330,7 +340,7 @@ export default function OrderDisputePage() {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 text-sm">Under Review</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">The seller or admin is reviewing your request.</p>
+                  <p className="text-xs text-gray-500 mt-0.5">The seller is reviewing your request.</p>
                 </div>
               </div>
 
@@ -349,67 +359,22 @@ export default function OrderDisputePage() {
             </div>
           </div>
 
-          <div className="space-y-6 pt-6 border-t border-gray-100">
-            <div className="flex gap-4">
-              <div className="w-8 flex flex-col items-center">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                  <Info className="w-4 h-4 text-blue-600" />
-                </div>
-                <div className="w-0.5 h-full bg-gray-200 my-2" />
-              </div>
-              <div className="pb-6">
-                <p className="text-sm font-bold text-gray-900 mb-1">Issue Reported ({DISPUTE_TYPE_LABELS[dispute.type]})</p>
-                {dispute.requested_qty && <p className="text-sm font-semibold text-amber-700 mt-1">Quantity: {dispute.requested_qty}</p>}
-                {dispute.resolution_mode && (
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mt-1">
-                    Requested: {dispute.resolution_mode.replace('_', ' ')}
-                  </p>
-                )}
-                {dispute.refund_amount != null && dispute.refund_amount > 0 && (
-                  <p className="text-sm font-bold text-gray-900 mt-1">Est. Refund: ₹{dispute.refund_amount}</p>
-                )}
-                <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 mt-2">
-                  {dispute.reason_code && <span className="font-bold block mb-1 border-b pb-1 border-gray-200">{REASON_CODES.find(r => r.id === dispute.reason_code)?.label || dispute.reason_code}</span>}
-                  "{dispute.reason}"
-                </p>
-                <p className="text-xs text-gray-400 mt-2">{new Date(dispute.created_at).toLocaleString()}</p>
-              </div>
+          <div className="border-t border-gray-100 pt-4 space-y-3">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Issue Type</span>
+              <span className="font-bold text-gray-900">{DISPUTE_TYPE_LABELS[dispute.type] || dispute.type}</span>
             </div>
-
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500">Reason</span>
+              <span className="font-medium text-gray-900">{dispute.reason}</span>
+            </div>
             {dispute.seller_response && (
-              <div className="flex gap-4">
-                <div className="w-8 flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                    <MessageSquare className="w-4 h-4 text-amber-600" />
-                  </div>
-                  {(dispute.admin_resolution || dispute.status.startsWith('resolved')) && (
-                    <div className="w-0.5 h-full bg-gray-200 my-2" />
-                  )}
-                </div>
-                <div className="pb-6">
-                  <p className="text-sm font-bold text-gray-900 mb-1">Seller Responded</p>
-                  <p className="text-sm text-gray-600 bg-amber-50/50 p-3 rounded-lg border border-amber-100 mt-2">"{dispute.seller_response}"</p>
-                  <p className="text-xs text-gray-400 mt-2">{new Date(dispute.seller_responded_at!).toLocaleString()}</p>
-                </div>
-              </div>
-            )}
-
-            {(dispute.admin_resolution || dispute.status.startsWith('resolved')) && (
-              <div className="flex gap-4">
-                <div className="w-8 flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900 mb-1">Resolved ({dispute.status.replace('resolved_', '').toUpperCase()})</p>
-                  {dispute.admin_resolution && (
-                    <p className="text-sm text-gray-600 bg-green-50 p-3 rounded-lg border border-green-100 mt-2">"{dispute.admin_resolution}"</p>
-                  )}
-                  {dispute.admin_resolved_at && (
-                    <p className="text-xs text-gray-400 mt-2">{new Date(dispute.admin_resolved_at).toLocaleString()}</p>
-                  )}
-                </div>
+              <div className="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Seller Response</p>
+                <p className="text-sm text-gray-800">"{dispute.seller_response}"</p>
+                {dispute.seller_responded_at && (
+                  <p className="text-xs text-gray-400 mt-1">{new Date(dispute.seller_responded_at).toLocaleDateString()}</p>
+                )}
               </div>
             )}
           </div>
@@ -418,13 +383,33 @@ export default function OrderDisputePage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
           <h2 className="text-lg font-black text-gray-900 mb-4">Report an Issue</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {order.items && order.items.length > 1 && (
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">Select Product with Issue</label>
+                <select
+                  value={selectedItemId}
+                  onChange={(e) => {
+                    setSelectedItemId(e.target.value);
+                    setRequestedQty(1);
+                  }}
+                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
+                >
+                  {order.items.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.product_name} (Qty: {it.quantity})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Issue Type</label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value as DisputeType)}
-                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
                 >
                   {Object.entries(DISPUTE_TYPE_LABELS).map(([k, v]) => (
                     <option key={k} value={k}>{v}</option>
@@ -436,9 +421,9 @@ export default function OrderDisputePage() {
                 <select
                   value={requestedQty}
                   onChange={(e) => setRequestedQty(parseInt(e.target.value, 10))}
-                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                  className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
                 >
-                  {Array.from({ length: item?.quantity || 1 }).map((_, i) => (
+                  {Array.from({ length: selectedItem?.quantity || 1 }).map((_, i) => (
                     <option key={i+1} value={i+1}>{i+1}</option>
                   ))}
                 </select>
@@ -450,7 +435,7 @@ export default function OrderDisputePage() {
               <select
                 value={reasonCode}
                 onChange={(e) => setReasonCode(e.target.value)}
-                className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                className="w-full rounded-xl border-gray-200 border p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
               >
                 {REASON_CODES.map(r => (
                   <option key={r.id} value={r.id}>{r.label}</option>
@@ -481,7 +466,7 @@ export default function OrderDisputePage() {
                 minLength={5}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder="Please describe the issue in detail..."
+                placeholder="Please describe the issue in detail (at least 5 characters)..."
                 className="w-full rounded-xl border-gray-200 border p-3 text-sm h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
               />
             </div>
@@ -496,28 +481,28 @@ export default function OrderDisputePage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl font-bold transition-colors flex justify-center items-center gap-2 text-sm disabled:opacity-70 bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                className="flex-1 py-3 rounded-xl font-bold transition-colors flex justify-center items-center gap-2 text-sm disabled:opacity-70 bg-[#1A6FD4] text-white hover:bg-[#1559B3]"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                Submit Report
+                Submit Report to Seller
               </button>
             </div>
           </form>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
-          {isDelivered ? (
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center shadow-sm">
+          {!isCancelled ? (
             <>
               <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-8 h-8 text-red-500" />
               </div>
               <h2 className="text-lg font-black text-gray-900 mb-2">Have a problem with this order?</h2>
               <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-                If your item is damaged, defective, or not as described, you can report an issue to the seller.
+                If your item is damaged, defective, or not as described, you can report an issue directly to the seller.
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-colors bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-colors bg-[#1A6FD4] text-white hover:bg-[#1559B3] shadow-sm"
               >
                 <AlertTriangle className="w-4 h-4" />
                 Report Issue
@@ -525,7 +510,7 @@ export default function OrderDisputePage() {
             </>
           ) : (
             <div className="py-8">
-              <p className="text-gray-500">You can report issues after the order has been delivered.</p>
+              <p className="text-gray-500">This order has been cancelled.</p>
             </div>
           )}
         </div>

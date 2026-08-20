@@ -48,8 +48,8 @@ export default function EarningsPage() {
       try {
         setLoading(true);
         const [s, h] = await Promise.all([
-          api.get<EarningSummary>("/api/seller/earnings", { silent: true }),
-          api.get<{ data: EarningRecord[]; total: number; limit: number }>(`/api/seller/earnings/history?page=${page}&limit=10`, { silent: true }),
+          api.get<EarningSummary>(`/api/seller/earnings${activeBrandId ? `?seller_id=${activeBrandId}` : ''}`, { silent: true }),
+          api.get<{ data: EarningRecord[]; total: number; limit: number }>(`/api/seller/earnings/history?page=${page}&limit=10${activeBrandId ? `&seller_id=${activeBrandId}` : ''}`, { silent: true }),
         ]);
         setSummary(s);
         const records = h?.data || [];

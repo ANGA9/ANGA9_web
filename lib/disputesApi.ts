@@ -64,11 +64,12 @@ export const disputesApi = {
     api.get<{ items: Dispute[] }>(`/api/orders/${orderId}/dispute`),
 
   // Seller
-  sellerList: (params?: { page?: number; limit?: number; status?: DisputeStatus }) => {
+  sellerList: (params?: { page?: number; limit?: number; status?: DisputeStatus; seller_id?: string }) => {
     const q = new URLSearchParams();
     if (params?.page) q.set("page", String(params.page));
     if (params?.limit) q.set("limit", String(params.limit));
     if (params?.status) q.set("status", params.status);
+    if (params?.seller_id) q.set("seller_id", params.seller_id);
     return api.get<DisputeListResponse>(`/api/seller/orders/disputes?${q.toString()}`);
   },
   sellerRespond: (orderId: string, disputeId: string, payload: SellerRespondBody) =>

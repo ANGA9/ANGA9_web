@@ -12,9 +12,11 @@ import {
   Star,
   StarOff,
   Archive,
+  ArchiveRestore,
   Percent,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { cdnUrl } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -137,16 +139,26 @@ export default function AdminProductsPage() {
     setActionLoading(null);
   };
 
-  const archiveProduct = async (id: string) => {
+  const toggleArchiveProduct = async (id: string, currentStatus: string) => {
     setActionLoading(id);
+    const newStatus = currentStatus === "archived" ? "active" : "archived";
     try {
-      await api.patch(`/api/products/${id}`, { status: "archived" });
+      try {
+        if (newStatus === "archived") {
+          await api.patch(`/api/admin/products/${id}/archive`, {});
+        } else {
+          await api.patch(`/api/admin/products/${id}/unarchive`, {});
+        }
+      } catch {
+        await api.patch(`/api/products/${id}`, { status: newStatus });
+      }
+
       setProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, status: "archived" } : p))
+        prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
       );
-      toast.success("Product archived");
-    } catch {
-      toast.error("Failed to archive product");
+      toast.success(newStatus === "archived" ? "Product archived from storefront" : "Product restored to active");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update product status");
     }
     setActionLoading(null);
   };
@@ -198,65 +210,63 @@ export default function AdminProductsPage() {
           <h1 className="text-[32px] font-medium text-gray-900 tracking-tight">Products Registry</h1>
           <p className="text-[15px] text-gray-500 font-medium">{total} product{total !== 1 ? "s" : ""} on platform</p>
         </div>
+      </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-          {/* Status Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-white border border-gray-200 rounded-2xl shadow-sm w-full sm:w-auto overflow-x-auto no-scrollbar">
-            {STATUS_TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => handleTabChange(tab.key)}
-                className={`whitespace-nowrap px-4 py-2 rounded-xl text-[14px] font-bold transition-all ${
-                  statusFilter === tab.key
-                    ? "bg-[#8B5CF6] text-white shadow-md shadow-purple-500/20"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+      {/* ── Tabs & Search ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0" style={{ scrollbarWidth: "none" }}>
+          {STATUS_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => handleTabChange(tab.key)}
+              className={`px-4 py-2 rounded-xl text-[13px] font-bold transition-all whitespace-nowrap ${
+                statusFilter === tab.key
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Search */}
-          <div className="relative w-full sm:w-[280px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 md:w-64">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search products..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="w-full h-11 pl-10 pr-16 bg-white border border-gray-200 rounded-2xl text-[14px] font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
+              className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-[13px] bg-white outline-none focus:border-gray-900 transition-colors"
             />
-            <button
-              onClick={handleSearch}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 px-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-[13px] font-bold transition-colors"
-            >
-              Go
-            </button>
           </div>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 rounded-xl bg-gray-900 text-white text-[13px] font-bold hover:bg-gray-800 transition-colors shrink-0"
+          >
+            Search
+          </button>
         </div>
       </div>
 
-      {/* ── Content ── */}
-      {loading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-10 h-10 animate-spin text-[#8B5CF6]" />
-        </div>
-      ) : products.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm flex flex-col items-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-            <Package className="w-10 h-10 text-gray-300" />
+      {/* ── Products Table ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+        {loading ? (
+          <div className="py-20 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            <p className="text-[13px] font-medium text-gray-400">Loading products...</p>
           </div>
-          <h2 className="text-[20px] font-bold text-gray-900 mb-2">No Products Found</h2>
-          <p className="text-[15px] text-gray-500 font-medium">
-            {search ? "Try adjusting your search query." : "There are no products matching this filter."}
-          </p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+        ) : products.length === 0 ? (
+          <div className="py-20 flex flex-col items-center justify-center text-center p-4">
+            <Package className="w-12 h-12 text-gray-300 mb-3" />
+            <p className="text-[15px] font-bold text-gray-900">No products found</p>
+            <p className="text-[13px] text-gray-400 mt-1">Try adjusting your filters or search query.</p>
+          </div>
+        ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[1000px]">
+            <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50/50 border-b border-gray-100">
                   <th className="px-6 py-4 text-[13px] font-bold text-gray-500 uppercase tracking-wider w-[25%]">Product</th>
@@ -276,7 +286,7 @@ export default function AdminProductsPage() {
                         <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
                           {p.image ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                            <img src={cdnUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
                           ) : (
                             <Package className="w-6 h-6 text-gray-400" />
                           )}
@@ -354,16 +364,24 @@ export default function AdminProductsPage() {
                         >
                           {actionLoading === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : p.is_featured ? <StarOff className="w-4 h-4" /> : <Star className="w-4 h-4" />}
                         </button>
-                        {p.status !== "archived" && (
-                          <button
-                            onClick={() => archiveProduct(p.id)}
-                            disabled={actionLoading === p.id}
-                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                            title="Archive product"
-                          >
-                            {actionLoading === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Archive className="w-4 h-4" />}
-                          </button>
-                        )}
+                        <button
+                          onClick={() => toggleArchiveProduct(p.id, p.status)}
+                          disabled={actionLoading === p.id}
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 ${
+                            p.status === "archived"
+                              ? "hover:bg-green-50 text-green-600"
+                              : "hover:bg-red-50 text-gray-400 hover:text-red-500"
+                          }`}
+                          title={p.status === "archived" ? "Restore / Unarchive Product" : "Archive product"}
+                        >
+                          {actionLoading === p.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : p.status === "archived" ? (
+                            <ArchiveRestore className="w-4 h-4" />
+                          ) : (
+                            <Archive className="w-4 h-4" />
+                          )}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -371,35 +389,35 @@ export default function AdminProductsPage() {
               </tbody>
             </table>
           </div>
+        )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/50">
-              <span className="text-[13px] font-medium text-gray-500">
-                Showing <span className="font-bold text-gray-900">{(page - 1) * limit + 1}</span>-
-                <span className="font-bold text-gray-900">{Math.min(page * limit, total)}</span> of <span className="font-bold text-gray-900">{total}</span>
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page <= 1}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
-                >
-                  <ChevronLeft className="w-4 h-4" /> Prev
-                </button>
-                <div className="w-10 text-center text-[13px] font-black text-gray-900">{page}</div>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page >= totalPages}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
-                >
-                  Next <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+            <span className="text-[13px] font-medium text-gray-500">
+              Showing <span className="font-bold text-gray-900">{(page - 1) * limit + 1}</span>-
+              <span className="font-bold text-gray-900">{Math.min(page * limit, total)}</span> of <span className="font-bold text-gray-900">{total}</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
+              >
+                <ChevronLeft className="w-4 h-4" /> Prev
+              </button>
+              <div className="w-10 text-center text-[13px] font-black text-gray-900">{page}</div>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:hover:bg-white transition-all shadow-sm"
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
 
       {/* Commission Modal */}
       {editingCommission && (

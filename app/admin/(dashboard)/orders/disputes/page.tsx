@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Search, Filter, AlertTriangle, ShieldAlert, CheckCircle2, X } from "lucide-react";
+import { Loader2, Search, Filter, AlertTriangle, ShieldAlert, CheckCircle2, X, Image as ImageIcon } from "lucide-react";
 import { disputesApi, Dispute, DisputeStatus } from "@/lib/disputesApi";
 import toast from "react-hot-toast";
+import { cdnUrl, parseImageArray } from "@/lib/utils";
 
 export default function AdminDisputesPage() {
   const [disputes, setDisputes] = useState<Dispute[]>([]);
@@ -203,6 +204,23 @@ export default function AdminDisputesPage() {
                     {selectedDispute.reason_code && <span className="font-bold not-italic block mb-2">{selectedDispute.reason_code}</span>}
                     "{selectedDispute.reason}"
                   </div>
+
+                  {(() => {
+                    const evidence = parseImageArray(selectedDispute.evidence_images);
+                    if (evidence.length === 0) return null;
+                    return (
+                      <div className="mt-4">
+                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Evidence Attached:</span>
+                        <div className="flex gap-2 flex-wrap">
+                          {evidence.map((imgUrl, i) => (
+                            <a key={i} href={cdnUrl(imgUrl)} target="_blank" rel="noreferrer" className="w-16 h-16 rounded-xl border border-gray-200 overflow-hidden bg-gray-50 hover:opacity-80 transition-opacity">
+                              <img src={cdnUrl(imgUrl)} alt="" className="w-full h-full object-cover" />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div className="space-y-2">

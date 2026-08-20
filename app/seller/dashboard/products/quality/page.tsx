@@ -152,7 +152,7 @@ export default function CatalogQualityPage() {
                         <div className="w-14 h-14 rounded-xl border border-gray-200 overflow-hidden bg-gray-100 shrink-0">
                           {p.images && p.images[0] ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                            <img src={cdnUrl(p.images[0])} alt="" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-gray-400" /></div>
                           )}

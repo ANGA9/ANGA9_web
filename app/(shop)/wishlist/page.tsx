@@ -13,6 +13,7 @@ import { useState } from "react";
 import { EmptyWishlistIllustration } from "@/components/shared/EmptyWishlistIllustration";
 import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
+import { getProductImage } from "@/lib/utils";
 
 export default function CustomerWishlistPage() {
   const { items, loading, removeItem, clearWishlist } = useWishlist();
@@ -32,7 +33,7 @@ export default function CustomerWishlistPage() {
     originalPrice: item.base_price,
     price: item.sale_price ?? item.base_price,
     minOrder: `${item.min_order_qty || 1} ${item.unit || 'pc'}${(item.min_order_qty || 1) > 1 ? "s" : ""}`,
-    imageUrl: item.images?.[0] || undefined,
+    imageUrl: getProductImage(item),
   }));
 
   if (loading) {

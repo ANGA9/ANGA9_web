@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useWishlist } from "@/lib/WishlistContext";
 import { useCart } from "@/lib/CartContext";
 
+import { cdnUrl } from "@/lib/utils";
+
 export interface Product {
   id: string;
   name: string;
@@ -110,7 +112,8 @@ export default function ProductCard({
     setAdding(false);
   };
 
-  const showImage = product.imageUrl && !imgError;
+  const resolvedImg = cdnUrl(product.imageUrl);
+  const showImage = resolvedImg && !imgError;
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.10)]">
@@ -122,7 +125,7 @@ export default function ProductCard({
         >
           {showImage ? (
             <img
-              src={product.imageUrl}
+              src={resolvedImg}
               alt={product.name}
               onError={() => setImgError(true)}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

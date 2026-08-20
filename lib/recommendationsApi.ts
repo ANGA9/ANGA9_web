@@ -54,6 +54,8 @@ export const recommendationsApi = {
   }
 };
 
+import { getProductImage } from "@/lib/utils";
+
 /** Helper to map backend product to UI ProductCard shape */
 function mapToProducts(items: any[]): Product[] {
   if (!Array.isArray(items)) return [];
@@ -66,6 +68,6 @@ function mapToProducts(items: any[]): Product[] {
     price: p.sale_price ?? p.base_price ?? p.price ?? 0,
     minOrder: `${p.min_order_qty || 1} ${p.unit || 'unit'}${p.min_order_qty > 1 ? "s" : ""}`,
     badge: undefined,
-    imageUrl: p.images?.[0] || p.image_url || undefined,
+    imageUrl: getProductImage(p),
   }));
 }

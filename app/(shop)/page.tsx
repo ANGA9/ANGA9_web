@@ -19,7 +19,7 @@ import ProductCard, { type Product } from "@/components/customer/ProductCard";
 import SearchFilterStrip from "@/components/customer/SearchFilterStrip";
 import RecentlyViewed from "@/components/customer/RecentlyViewed";
 import { api } from "@/lib/api";
-import { cdnUrl } from "@/lib/utils";
+import { cdnUrl, getProductImage } from "@/lib/utils";
 import { useCategories } from "@/lib/useCategories";
 import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
@@ -71,7 +71,7 @@ function toCardProduct(p: ApiProduct, categoryName?: string): Product {
     price: p.sale_price ?? p.base_price,
     minOrder: `${p.min_order_qty} ${p.unit}${p.min_order_qty > 1 ? "s" : ""}`,
     badge: undefined,
-    imageUrl: p.images?.[0] || undefined,
+    imageUrl: getProductImage(p),
   };
 }
 

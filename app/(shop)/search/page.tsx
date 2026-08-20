@@ -26,17 +26,27 @@ import EmptyState from "@/components/shared/EmptyState";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
 import ProductRail from "@/components/customer/ProductRail";
 import { Zap } from "lucide-react";
+import { getProductImage } from "@/lib/utils";
 
 /* ─── Types ─── */
 interface SearchProduct {
-  id: string; name: string; slug: string; seller_id: string;
-  category_id?: string; description?: string; base_price: number;
-  sale_price?: number | null; min_order_qty: number; unit: string;
-  status: string; images: string[]; tags: string[];
-  category_name?: string; seller_name?: string;
+  id: string;
+  name: string;
+  slug: string;
+  base_price: number;
+  sale_price?: number | null;
+  min_order_qty?: number;
+  unit?: string;
+  images?: string[];
+  seller_id?: string;
+  seller_name?: string;
+  category_id?: string;
+  category_name?: string;
+  rating?: number;
+  review_count?: number;
 }
-interface SearchFilters {
-  categories: { name: string; count: number }[];
+interface FilterFacets {
+  categories: { id: string; name: string; count: number }[];
   price_range: { min: number; max: number };
   sellers: { name: string; count: number }[];
 }
@@ -65,7 +75,7 @@ function toCardProduct(p: SearchProduct): Product {
     originalPrice: p.base_price,
     price: p.sale_price ?? p.base_price,
     minOrder: p.min_order_qty ? `${p.min_order_qty} ${p.unit || "unit"}${p.min_order_qty > 1 ? "s" : ""}` : "Not specified",
-    imageUrl: p.images?.[0] || undefined,
+    imageUrl: getProductImage(p),
   };
 }
 

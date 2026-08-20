@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import ProductCard, { type Product } from "@/components/customer/ProductCard";
+import { getProductImage } from "@/lib/utils";
 
 interface SearchProduct {
   id: string;
@@ -24,6 +25,7 @@ interface SearchProduct {
   status: string;
   images: string[];
   tags: string[];
+  created_at: string;
   category_name?: string;
   seller_name?: string;
 }
@@ -59,7 +61,7 @@ function toCardProduct(p: SearchProduct): Product {
     minOrder: p.min_order_qty
       ? `${p.min_order_qty} ${p.unit || "unit"}${p.min_order_qty > 1 ? "s" : ""}`
       : "Not specified",
-    imageUrl: p.images?.[0] || undefined,
+    imageUrl: getProductImage(p),
   };
 }
 

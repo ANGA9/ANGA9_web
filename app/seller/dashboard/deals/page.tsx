@@ -397,7 +397,7 @@ function CreateDealModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                             <div className="flex items-center gap-3 text-left">
                               <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
                                 {p.images && p.images[0] ? (
-                                  <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                                  <img src={cdnUrl(p.images[0])} alt="" className="w-full h-full object-cover" />
                                 ) : (
                                   <Tag className="w-5 h-5 text-gray-400" />
                                 )}

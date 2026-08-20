@@ -25,6 +25,7 @@ import { dealsApi, type Deal } from "@/lib/dealsApi";
 import DealTimer from "@/components/customer/DealTimer";
 import DealAlerts from "@/components/customer/DealAlerts";
 import { Button } from "@/components/ui/button";
+import { cdnUrl, parseImageArray } from "@/lib/utils";
 
 
 // Mirrors VARIANT_FIELDS in product-service (no name/is_active columns in DB)
@@ -370,10 +371,10 @@ export default function ProductDetailPage() {
         {/* ══════════ LEFT: Media Gallery ══════════ */}
         {(() => {
           const allMedia = [
-            ...(product.images || []),
-            ...(product.videos || []),
-          ];
-          const currentUrl = allMedia[selectedImage] || "";
+            ...parseImageArray(product.images || (product as any).image_urls),
+            ...parseImageArray(product.videos),
+          ].map(url => cdnUrl(url)).filter(Boolean);
+          const currentUrl = allMedia[selectedImage] || allMedia[0] || "";
           const currentIsVideo = isVideoUrl(currentUrl);
 
           return (

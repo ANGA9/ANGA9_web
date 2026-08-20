@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Lock } from "lucide-react";
+import { Lock, ChevronRight } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
@@ -94,16 +94,22 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
         Proceed to Checkout
       </Button>
 
-      {/* Flipkart-style 18% GST Invoicing note */}
-      <div className="mt-4 p-3 bg-blue-50/70 border border-blue-100 rounded-xl text-[12px] text-gray-700 flex items-start gap-2">
-        <span className="text-base leading-none">🏢</span>
-        <div>
-          <span className="font-bold text-gray-900">Buying for business? </span>
-          <span>Claim up to 18% GST Input Credit with your GST invoice. </span>
-          <Link href="/account/business" className="text-[#1A6FD4] font-bold hover:underline">
-            Add GSTIN →
-          </Link>
+      {/* Minimalist 18% GST Invoicing Tag */}
+      <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#1A6FD4] font-bold text-[11px] uppercase tracking-wider shrink-0">
+            GST Invoice
+          </span>
+          <span className="text-gray-500 font-medium truncate text-[12px]">
+            Save 18% with GST credit
+          </span>
         </div>
+        <Link
+          href="/account/business"
+          className="text-[#1A6FD4] font-bold hover:underline shrink-0 text-[12px] flex items-center gap-0.5 transition-colors"
+        >
+          Add GSTIN <ChevronRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
 
       <Link

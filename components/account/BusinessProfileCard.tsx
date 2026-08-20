@@ -88,23 +88,23 @@ export default function BusinessProfileCard({ onOpenBusinessTab }: BusinessProfi
 
   // Flipkart-style lightweight prompt banner to claim 18% GST Input Tax Credit
   return (
-    <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-[#F0F7FF] via-[#F8FBFF] to-white p-4 sm:p-5 mb-6 shadow-sm relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100/50 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
-      
-      <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between relative z-10">
+    <div className="rounded-2xl border border-blue-100 bg-[#F8FBFF] p-4 sm:p-5 mb-6 shadow-sm relative overflow-hidden group">
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-[#1A6FD4] text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-xl bg-[#1A6FD4] text-white flex items-center justify-center shrink-0 shadow-sm">
             <Building2 className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-[15px] font-bold text-gray-900 flex items-center gap-1.5">
+              <h3 className="text-[15px] font-bold text-gray-900">
                 Claim 18% GST Input Tax Credit
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
               </h3>
+              <span className="text-[11px] font-bold uppercase tracking-wider bg-blue-100 text-[#1A6FD4] px-2 py-0.5 rounded-md">
+                18% ITC
+              </span>
             </div>
             <p className="text-[13px] text-gray-600 font-medium mt-0.5 max-w-xl">
-              Buying for your shop or business? Add your GSTIN to get official B2B tax invoices & save up to 18% on your purchases.
+              Buying for your business? Add your GSTIN to receive B2B tax invoices & claim GST input credit.
             </p>
           </div>
         </div>

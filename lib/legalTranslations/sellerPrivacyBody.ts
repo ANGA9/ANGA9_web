@@ -137,13 +137,14 @@ const en: Record<SellerPrivacySectionKey, PrivacySectionContent> = {
   s6: [
     {
       kind: "p",
-      text: "In compliance with Google Play Developer Policy and the DPDP Act 2023, ANGA9 provides sellers with full control over their account data and the right to request store deletion:",
+      text: "At ANGA9, we respect your privacy and data autonomy. Sellers have the full freedom to delete their account and associated personal/business data whenever they desire. In compliance with Google Play Developer Policy and the DPDP Act 2023, you can request and execute account/data deletion through either of the following channels:",
     },
     {
       kind: "ul",
       items: [
-        "**How to Request Account Deletion:** Sellers can initiate store deletion directly within the ANGA9 Seller App by navigating to **Profile > Settings > Delete Account**, or by sending an official written request from their registered email to **privacy@anga9.com**.",
-        "**Post-Request Process:** Upon receiving a verified deletion request, all active product listings are delisted, ongoing orders are fulfilled, outstanding payouts are cleared, and seller logins are disabled.",
+        "**Method 1: Instant In-App Deletion:** Open the **ANGA9 Seller App** -> Tap the **Left Menu (☰)** -> Click **Data & Privacy** -> Tap **Delete Seller Account** and confirm by typing `DELETE`.",
+        "**Method 2: Web Deletion Request Form:** Submit an online request directly through our [Seller Data Deletion Portal](/seller/data-deletion), or send a formal deletion request from your registered mobile number/email to [team.anga9@gmail.com](mailto:team.anga9@gmail.com).",
+        "**Post-Request Lifecycle:** Upon verification, all active product listings are delisted, ongoing orders are fulfilled, outstanding payouts are cleared, and seller logins are disabled.",
         "**Statutory Retention:** As mandated by Indian Tax Laws (GST Act, Income Tax Act) and the Companies Act 2013, financial transaction logs, tax invoices, GST e-way bills, and payout ledgers are retained securely for a statutory period of 8 years, after which they are permanently purged.",
       ],
     },
@@ -180,7 +181,8 @@ const en: Record<SellerPrivacySectionKey, PrivacySectionContent> = {
       kind: "ul",
       items: [
         "**Grievance Officer:** Legal & Compliance Cell, ANGA9 Wholesale Technologies Pvt. Ltd.",
-        "**Official Email:** [grievance@anga9.com](mailto:grievance@anga9.com) / [privacy@anga9.com](mailto:privacy@anga9.com)",
+        "**Official Email:** [team.anga9@gmail.com](mailto:team.anga9@gmail.com) / [support@anga9.com](mailto:support@anga9.com)",
+        "**Online Data Deletion URL:** [https://anga9.com/seller/data-deletion](/seller/data-deletion)",
         "**Registered Address:** ANGA9 Wholesale Technologies Pvt. Ltd., Tech Park Road, Whitefield, Bengaluru, Karnataka 560066, India.",
         "**Grievance Redressal Timeline:** Acknowledgment within 24 hours; complete resolution within 15 working days.",
       ],

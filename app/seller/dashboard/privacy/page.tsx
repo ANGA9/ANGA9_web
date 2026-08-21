@@ -172,7 +172,7 @@ export default function SellerPrivacyPage() {
               Tax invoices and statutory financial transaction records are retained for 8 years as required by Indian GST and commercial regulations.
             </p>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
@@ -181,6 +181,13 @@ export default function SellerPrivacyPage() {
                 <Trash2 className="w-4 h-4" />
                 Delete Seller Account
               </button>
+              <Link
+                href="/seller/data-deletion"
+                target="_blank"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 active:scale-95 transition-all flex items-center justify-center gap-2 text-[14px]"
+              >
+                Data Deletion Web Portal & Policy <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </div>

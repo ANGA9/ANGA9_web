@@ -19,6 +19,7 @@ import {
   X,
   User,
   Store,
+  Trash2,
 } from "lucide-react";
 import LanguageSelector from "./LanguageSelector";
 import { useLang, LANGUAGES } from "@/lib/i18n";
@@ -28,6 +29,7 @@ import { getChrome } from "@/lib/legalTranslations";
 const NAV = [
   { href: "/terms", label: "Terms of Use", icon: FileText },
   { href: "/privacy", label: "Privacy Policy", icon: Shield },
+  { href: "/delete-account", label: "Account & Data Deletion", icon: Trash2 },
   { href: "/shipping-policy", label: "Shipping Policy", icon: Truck },
   { href: "/returns", label: "Returns & Refunds", icon: RotateCcw },
   { href: "/cancellation", label: "Cancellation Policy", icon: XCircle },

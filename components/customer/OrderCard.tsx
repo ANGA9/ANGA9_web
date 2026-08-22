@@ -34,28 +34,40 @@ export interface Order {
 
 function formatINR(value: number) {
   return "₹" + value.toLocaleString("en-IN");
+}export interface InvoiceOption {
+  id?: string;
+  invoiceNumber: string;
+  invoiceType?: string;
+  sellerId?: string | null;
+  sellerName?: string;
+  url: string;
+  grandTotal?: number;
 }
 
 export default function OrderCard({ order, onCancelled }: { order: Order; onCancelled?: (id: string) => void }) {
   const [downloading, setDownloading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [invoices, setInvoices] = useState<InvoiceOption[]>([]);
   const [refundMode, setRefundMode] = useState<"bank" | "coins">("bank");
 
   const canCancel = order.status === "Processing" &&
-    ["placed", "confirmed", "processing"].includes(order.rawStatus || "");
+    order.rawDate &&
+    (Date.now() - new Date(order.rawDate).getTime()) < 24 * 60 * 60 * 1000;
 
-  // Est delivery: +5 days from order date for ALL active orders
-  const orderDateMs = Date.parse(order.date);
+  // Est delivery: +5 days from order date
+  const orderDateMs = Date.parse(order.date || order.rawDate || "");
   const estDeliveryStr = !isNaN(orderDateMs)
     ? new Date(orderDateMs + 5 * 86400000).toLocaleDateString("en-IN", { month: "short", day: "numeric" })
     : "TBD";
 
   const handleCancel = async () => {
     if (!order.internalId || cancelling) return;
-    setCancelling(true);
     try {
-      await api.post(`/api/orders/${order.internalId}/cancel`, { 
+      setCancelling(true);
+      await api.patch(`/api/orders/${order.internalId}/status`, { 
+        status: "cancelled", 
         reason: "Cancelled by customer",
         refundMode 
       });
@@ -73,8 +85,19 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     if (!order.internalId || downloading) return;
     try {
       setDownloading(true);
-      const res = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
-      if (res.url) window.open(res.url, "_blank");
+      const res = await api.get<{ invoices?: InvoiceOption[]; url?: string }>(`/api/orders/${order.internalId}/invoices`);
+      const list = res.invoices || (res.url ? [{ invoiceNumber: `INV-${order.id}`, url: res.url }] : []);
+      
+      if (list.length === 1 && list[0].url) {
+        window.open(list[0].url, "_blank");
+      } else if (list.length > 1) {
+        setInvoices(list);
+        setShowInvoiceModal(true);
+      } else {
+        // Fallback to legacy single invoice endpoint
+        const single = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
+        if (single.url) window.open(single.url, "_blank");
+      }
     } catch {
       toast.error("Failed to download invoice. Please try again.");
     } finally {
@@ -324,6 +347,82 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
           </div>
         </div>
       )}
+
+      {/* ══════════ Multi-Seller Invoice Download Modal ══════════ */}
+      {showInvoiceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#1A6FD4]">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-[17px] font-bold text-gray-900">Tax Invoices</h3>
+                  <p className="text-[12px] text-gray-500">Select store invoice to download</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowInvoiceModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2.5 mb-6 max-h-[60vh] overflow-y-auto">
+              {invoices.map((inv, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3.5 rounded-2xl border border-gray-100 bg-[#FAFBFC] hover:bg-blue-50/50 hover:border-blue-200 transition-all"
+                >
+                  <div className="min-w-0 pr-3">
+                    <p className="text-[14px] font-bold text-gray-900 truncate">
+                      {inv.sellerName || 'Store Tax Invoice'}
+                    </p>
+                    <p className="text-[12px] font-mono text-gray-500 truncate">
+                      {inv.invoiceNumber}
+                    </p>
+                    {inv.grandTotal ? (
+                      <p className="text-[12px] font-semibold text-gray-700 mt-0.5">
+                        {formatINR(inv.grandTotal)}
+                      </p>
+                    ) : null}
+                  </div>
+                  <button
+                    onClick={() => window.open(inv.url, "_blank")}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1A6FD4] text-white text-[13px] font-bold hover:bg-[#1559B3] active:scale-95 transition-all shadow-sm shadow-[#1A6FD4]/20"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>PDF</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  invoices.forEach(inv => {
+                    if (inv.url) window.open(inv.url, "_blank");
+                  });
+                }}
+                className="flex-1 py-3 rounded-xl bg-blue-50 text-[#1A6FD4] text-[14px] font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                <span>Download All</span>
+              </button>
+              <button
+                onClick={() => setShowInvoiceModal(false)}
+                className="py-3 px-5 rounded-xl border border-gray-200 text-[14px] font-bold text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
+

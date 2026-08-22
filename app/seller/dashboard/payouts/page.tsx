@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Wallet, ArrowLeft, IndianRupee, Landmark, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { Loader2, Wallet, ArrowLeft, IndianRupee, Landmark, CheckCircle2, AlertCircle, X, FileText, Download } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -48,8 +48,24 @@ export default function PayoutsPage() {
   const [showModal, setShowModal] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const available = summary?.available || 0;
+
+  const handleDownloadCommissionInvoice = async (payoutId: string) => {
+    if (downloadingId) return;
+    try {
+      setDownloadingId(payoutId);
+      const res = await api.get<{ url: string }>(`/api/seller/payouts/${payoutId}/commission-invoice`);
+      if (res.url) {
+        window.open(res.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to download commission invoice", { style: { borderRadius: '16px' } });
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -266,6 +282,17 @@ export default function PayoutsPage() {
                             className="text-[14px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-1"
                           >
                             {cancellingId === p.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Cancel
+                          </button>
+                        )}
+                        {p.status === "completed" && (
+                          <button
+                            onClick={() => handleDownloadCommissionInvoice(p.id)}
+                            disabled={downloadingId === p.id}
+                            className="text-[13px] font-semibold text-[#1A6FD4] hover:text-[#1559B3] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                            title="Download Commission & TCS Tax Invoice"
+                          >
+                            {downloadingId === p.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
+                            <span>Invoice</span>
                           </button>
                         )}
                       </td>

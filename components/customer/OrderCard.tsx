@@ -452,19 +452,16 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
 
             <div className="flex gap-3">
               <button
-                onClick={() => {
-                  invoices.forEach((inv, i) => {
-                    if (inv.url) {
-                      setTimeout(() => {
-                        triggerDownload(inv.url, `${inv.invoiceNumber || `Invoice-${i + 1}`}.pdf`);
-                      }, i * 300);
-                    }
-                  });
-                }}
-                className="flex-1 py-3 rounded-xl bg-blue-50 text-[#1A6FD4] text-[14px] font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
+                onClick={handleDownloadAll}
+                disabled={downloadingAll}
+                className="flex-1 py-3 rounded-xl bg-blue-50 text-[#1A6FD4] text-[14px] font-bold hover:bg-blue-100 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
               >
-                <Download className="w-4 h-4" />
-                <span>Download All</span>
+                {downloadingAll ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                <span>{downloadingAll ? "Downloading..." : "Download All"}</span>
               </button>
               <button
                 onClick={() => setShowInvoiceModal(false)}

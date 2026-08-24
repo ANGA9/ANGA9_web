@@ -112,20 +112,9 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     if (!order.internalId || downloading) return;
     try {
       setDownloading(true);
-      const res = await api.get<{ invoices?: InvoiceOption[]; url?: string }>(`/api/orders/${order.internalId}/invoices`);
-      const list = res.invoices || (res.url ? [{ invoiceNumber: `INV-${order.id}`, url: res.url }] : []);
-      
-      if (list.length === 1 && list[0].url) {
-        const safeName = `${(list[0].invoiceNumber || 'Invoice').replace(/\//g, '-')}.pdf`;
-        await triggerDownload(list[0].url, safeName);
-      } else if (list.length > 1) {
-        setInvoices(list);
-        setShowInvoiceModal(true);
-      } else {
-        // Fallback to legacy single invoice endpoint
-        const single = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
-        if (single.url) await triggerDownload(single.url, `Invoice-${order.id}.pdf`);
-      }
+      // Clean direct download from Amazon-style /documents/download route
+      const cleanDownloadUrl = `/documents/download/${order.internalId}/invoice.pdf`;
+      await triggerDownload(cleanDownloadUrl, "invoice.pdf");
     } catch {
       toast.error("Failed to download invoice. Please try again.");
     } finally {

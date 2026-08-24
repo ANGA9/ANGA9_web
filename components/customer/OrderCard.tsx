@@ -81,15 +81,31 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     }
   };
 
-  const triggerDownload = (url: string, filename?: string) => {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename || `Invoice-${order.id}.pdf`;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const [downloadingAll, setDownloadingAll] = useState(false);
+
+  const triggerDownload = async (url: string, filename?: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename ? filename.replace(/[/\\?%*:|"<>]/g, '-') : `Invoice-${order.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 30000);
+    } catch {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename || `Invoice-${order.id}.pdf`;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   const handleDownloadInvoice = async () => {
@@ -100,19 +116,42 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
       const list = res.invoices || (res.url ? [{ invoiceNumber: `INV-${order.id}`, url: res.url }] : []);
       
       if (list.length === 1 && list[0].url) {
-        triggerDownload(list[0].url, `${list[0].invoiceNumber || 'Invoice'}.pdf`);
+        const safeName = `${(list[0].invoiceNumber || 'Invoice').replace(/\//g, '-')}.pdf`;
+        await triggerDownload(list[0].url, safeName);
       } else if (list.length > 1) {
         setInvoices(list);
         setShowInvoiceModal(true);
       } else {
         // Fallback to legacy single invoice endpoint
         const single = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
-        if (single.url) triggerDownload(single.url, `Invoice-${order.id}.pdf`);
+        if (single.url) await triggerDownload(single.url, `Invoice-${order.id}.pdf`);
       }
     } catch {
       toast.error("Failed to download invoice. Please try again.");
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadAll = async () => {
+    if (downloadingAll) return;
+    try {
+      setDownloadingAll(true);
+      for (let i = 0; i < invoices.length; i++) {
+        const inv = invoices[i];
+        if (inv.url) {
+          const safeName = inv.invoiceNumber ? `${inv.invoiceNumber.replace(/\//g, '-')}.pdf` : `Invoice-${i + 1}.pdf`;
+          await triggerDownload(inv.url, safeName);
+          if (i < invoices.length - 1) {
+            await new Promise((r) => setTimeout(r, 600));
+          }
+        }
+      }
+      toast.success(`Downloaded all ${invoices.length} invoices 🎉`);
+    } catch {
+      toast.error("Failed to download all invoices.");
+    } finally {
+      setDownloadingAll(false);
     }
   };
 

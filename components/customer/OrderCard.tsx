@@ -81,6 +81,17 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
     }
   };
 
+  const triggerDownload = (url: string, filename?: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename || `Invoice-${order.id}.pdf`;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const handleDownloadInvoice = async () => {
     if (!order.internalId || downloading) return;
     try {
@@ -89,14 +100,14 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
       const list = res.invoices || (res.url ? [{ invoiceNumber: `INV-${order.id}`, url: res.url }] : []);
       
       if (list.length === 1 && list[0].url) {
-        window.open(list[0].url, "_blank");
+        triggerDownload(list[0].url, `${list[0].invoiceNumber || 'Invoice'}.pdf`);
       } else if (list.length > 1) {
         setInvoices(list);
         setShowInvoiceModal(true);
       } else {
         // Fallback to legacy single invoice endpoint
         const single = await api.get<{ url: string }>(`/api/orders/${order.internalId}/invoice`);
-        if (single.url) window.open(single.url, "_blank");
+        if (single.url) triggerDownload(single.url, `Invoice-${order.id}.pdf`);
       }
     } catch {
       toast.error("Failed to download invoice. Please try again.");
@@ -390,7 +401,7 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
                     ) : null}
                   </div>
                   <button
-                    onClick={() => window.open(inv.url, "_blank")}
+                    onClick={() => triggerDownload(inv.url, `${inv.invoiceNumber || 'Invoice'}.pdf`)}
                     className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1A6FD4] text-white text-[13px] font-bold hover:bg-[#1559B3] active:scale-95 transition-all shadow-sm shadow-[#1A6FD4]/20"
                   >
                     <Download className="w-3.5 h-3.5" />
@@ -403,8 +414,12 @@ export default function OrderCard({ order, onCancelled }: { order: Order; onCanc
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  invoices.forEach(inv => {
-                    if (inv.url) window.open(inv.url, "_blank");
+                  invoices.forEach((inv, i) => {
+                    if (inv.url) {
+                      setTimeout(() => {
+                        triggerDownload(inv.url, `${inv.invoiceNumber || `Invoice-${i + 1}`}.pdf`);
+                      }, i * 300);
+                    }
                   });
                 }}
                 className="flex-1 py-3 rounded-xl bg-blue-50 text-[#1A6FD4] text-[14px] font-bold hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"

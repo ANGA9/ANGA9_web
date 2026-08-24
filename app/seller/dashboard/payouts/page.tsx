@@ -58,7 +58,14 @@ export default function PayoutsPage() {
       setDownloadingId(payoutId);
       const res = await api.get<{ url: string }>(`/api/seller/payouts/${payoutId}/commission-invoice`);
       if (res.url) {
-        window.open(res.url, "_blank");
+        const a = document.createElement("a");
+        a.href = res.url;
+        a.download = `Commission-Invoice-${payoutId}.pdf`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to download commission invoice", { style: { borderRadius: '16px' } });

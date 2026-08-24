@@ -22,7 +22,18 @@ import toast from "react-hot-toast";
 
 // ── Types ──────────────────────────────────────────────────────────
 
-type Reason = "refund" | "first_order_bonus" | "referral" | "order_redeemed" | "admin_adjust";
+type Reason =
+  | "refund"
+  | "first_order_bonus"
+  | "referral"
+  | "order_redeemed"
+  | "admin_adjust"
+  | "partial_defect_compensation"
+  | "pdc_compensation"
+  | "loyalty_earn"
+  | "cashback"
+  | "order_cancellation"
+  | (string & {});
 
 interface LedgerEntry {
   id: string;
@@ -68,6 +79,22 @@ function reasonMeta(entry: LedgerEntry) {
       return { label: "Used on order", icon: PackageOpen, color: "text-blue-600", bg: "bg-blue-50" };
     case "admin_adjust":
       return { label: entry.delta > 0 ? "Account credit" : "Account adjustment", icon: ShieldCheck, color: "text-gray-700", bg: "bg-gray-100" };
+    case "partial_defect_compensation":
+    case "pdc_compensation":
+      return { label: "Quality Issue Compensation", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50" };
+    case "loyalty_earn":
+      return { label: "Order reward coins", icon: CoinsIcon, color: "text-purple-600", bg: "bg-purple-50" };
+    case "cashback":
+      return { label: "Cashback coins", icon: Gift, color: "text-emerald-600", bg: "bg-emerald-50" };
+    case "order_cancellation":
+      return { label: "Cancelled order refund", icon: RotateCcw, color: "text-emerald-600", bg: "bg-emerald-50" };
+    default:
+      return {
+        label: entry.note || (entry.delta > 0 ? "Coins earned" : "Coins used"),
+        icon: CoinsIcon,
+        color: entry.delta > 0 ? "text-emerald-600" : "text-gray-700",
+        bg: entry.delta > 0 ? "bg-emerald-50" : "bg-gray-100",
+      };
   }
 }
 

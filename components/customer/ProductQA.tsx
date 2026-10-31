@@ -122,7 +122,7 @@ export default function ProductQA({ productId }: { productId: string }) {
             <input
               type="text"
               placeholder="Have a question about this product?"
-              className="w-full h-12 md:h-14 px-4 md:px-5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none text-[15px] placeholder-gray-500 font-medium"
+              className="w-full h-12 md:h-14 px-4 md:px-5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-[#1A6FD4] focus:ring-4 focus:ring-[#1A6FD4]/10 transition-all outline-none text-[15px] placeholder-gray-500 font-medium"
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
               disabled={submittingQ}

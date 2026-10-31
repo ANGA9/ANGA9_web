@@ -699,7 +699,7 @@ export default function CustomerTopNav() {
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className="flex items-center gap-2 font-medium transition-colors hover:text-[#4338CA]"
+              className="flex items-center gap-2 font-medium transition-colors hover:text-[#1A6FD4]"
               style={{ color: t.textSecondary, fontSize: '16px' }}
             >
               <div className="relative">
@@ -707,7 +707,7 @@ export default function CustomerTopNav() {
                 {wishlistCount > 0 && (
                   <span
                     className="absolute -top-1.5 -right-2.5 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                    style={{ background: "#4338CA", color: "#FFFFFF" }}
+                    style={{ background: "#1A6FD4", color: "#FFFFFF" }}
                   >
                     {wishlistCount > 99 ? "99+" : wishlistCount}
                   </span>

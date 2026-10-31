@@ -44,7 +44,7 @@ const EMPTY_FORM: Omit<Address, "id" | "is_default"> = {
   pincode: "",
 };
 
-const inputCls = "h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-[14px] placeholder:text-gray-400 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 transition-all shadow-sm";
+const inputCls = "h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-[14px] placeholder:text-gray-400 focus:border-[#1A6FD4] focus:outline-none focus:ring-1 focus:ring-[#1A6FD4] transition-all shadow-sm";
 
 function formatINR(value: number) {
   return "\u20B9" + value.toLocaleString("en-IN");
@@ -607,7 +607,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={handleDetectLocation}
               disabled={detectingLocation}
-              className="h-12 w-full md:w-auto px-6 flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-600 bg-white text-[14px] font-bold text-indigo-600 hover:bg-indigo-50 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm whitespace-nowrap"
+              className="h-12 w-full md:w-auto px-6 flex items-center justify-center gap-2 rounded-xl border-2 border-[#1A6FD4] bg-white text-[14px] font-bold text-[#1A6FD4] hover:bg-blue-50 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-wait shadow-sm whitespace-nowrap"
             >
               {detectingLocation ? (
                 <>
@@ -676,7 +676,7 @@ export default function CheckoutPage() {
           <button
             onClick={handleSaveAddress}
             disabled={savingAddress}
-            className="px-8 py-3 rounded-xl text-[14px] font-bold disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white border-2 border-transparent"
+            className="px-8 py-3 rounded-xl text-[14px] font-bold disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 shadow-md bg-[#1A6FD4] hover:bg-[#1559B3] text-white border-2 border-transparent"
           >
             {savingAddress && <Loader2 className="w-4 h-4 animate-spin" />}
             <Save className="w-4 h-4" />
@@ -1180,7 +1180,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "all" }, { isTest: false });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 border-2 border-transparent text-white"
+                    className="w-full h-[52px] rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-[#1A6FD4] hover:bg-[#1559B3] border-2 border-transparent text-white"
                   >
                     Pay Online
                   </button>

@@ -264,7 +264,7 @@ export default function LocationMapPicker({
             type="button"
             onClick={handleConfirm}
             disabled={!detected || confirming || geocoding}
-            className="flex-1 px-6 py-2.5 rounded-xl bg-white border-2 border-indigo-600 text-[14px] font-bold text-indigo-600 hover:bg-indigo-50 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-2.5 rounded-xl bg-white border-2 border-[#1A6FD4] text-[14px] font-bold text-[#1A6FD4] hover:bg-blue-50 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {confirming ? (
               <Loader2 className="w-4 h-4 animate-spin" />

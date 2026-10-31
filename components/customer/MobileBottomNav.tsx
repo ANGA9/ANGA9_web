@@ -105,7 +105,7 @@ export default function MobileBottomNav() {
             ? pathname === "/"
             : pathname?.startsWith(tab.href);
 
-        const activeColor = "#4F46E5"; // Indigo 600
+        const activeColor = "#1A6FD4"; // Royal Blue
         const inactiveColor = "#6B7280"; // Gray 500
 
         return (

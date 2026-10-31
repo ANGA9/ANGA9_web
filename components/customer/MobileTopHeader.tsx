@@ -359,7 +359,7 @@ function MobileTopHeaderContent() {
           <Link href="/wishlist" className="relative">
             <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white">
                 {wishlistCount > 99 ? "99+" : wishlistCount}
               </span>
             )}
@@ -367,7 +367,7 @@ function MobileTopHeaderContent() {
           <Link href="/cart" className="relative">
             <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white">
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
@@ -445,7 +445,7 @@ function MobileTopHeaderContent() {
                 router.push("/search/explore?voice=1");
               }}
               aria-label="Voice search"
-              className="p-1.5 rounded-full text-[#4338CA] hover:bg-gray-100 transition-colors active:scale-95"
+              className="p-1.5 rounded-full text-[#1A6FD4] hover:bg-gray-100 transition-colors active:scale-95"
             >
               <Mic className="w-[18px] h-[18px]" />
             </button>

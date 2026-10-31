@@ -5,7 +5,7 @@ import { ArrowUpDown, SlidersHorizontal, X, Check, Search } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCategories } from "@/lib/useCategories";
 
-const APPLY_INDIGO = "#4338CA";
+const APPLY_INDIGO = "#1A6FD4";
 const BOTTOM_NAV_OFFSET = "calc(56px + env(safe-area-inset-bottom, 0px))";
 
 interface SearchFilterStripProps {
@@ -305,7 +305,7 @@ export default function SearchFilterStrip({
                     value={filterSearch}
                     onChange={(e) => setFilterSearch(e.target.value)}
                     placeholder={`Search in ${activeFilterTab.toLowerCase()}...`}
-                    className="w-full pl-9 pr-10 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors focus:ring-2 focus:ring-[#4338CA]/20 focus:border-[#4338CA]"
+                    className="w-full pl-9 pr-10 py-2.5 bg-gray-50 border rounded-xl text-sm md:text-base outline-none transition-colors focus:ring-2 focus:ring-[#1A6FD4]/20 focus:border-[#1A6FD4]"
                     style={{ borderColor: t.border }}
                   />
                   {filterSearch && (

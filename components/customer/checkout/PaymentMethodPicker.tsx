@@ -86,7 +86,7 @@ function Row({ icon, title, subtitle, onClick, disabled, isLoading, failedNote, 
       {trailing}
       <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-50 group-hover:bg-white group-hover:shadow-sm transition-all ring-1 ring-gray-100">
         {isLoading ? (
-          <Loader2 className="w-4 h-4 text-[#4338CA] animate-spin" />
+          <Loader2 className="w-4 h-4 text-[#1A6FD4] animate-spin" />
         ) : (
           <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
         )}

@@ -158,7 +158,7 @@ export default function SearchFilterStrip({
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
               <div>
-                <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
+                <h3 className="font-display font-semibold text-[18px] sm:text-[20px] md:text-[22px] text-[#1A1A2E] tracking-tight leading-tight">
                   Sort By
                 </h3>
               </div>
@@ -226,7 +226,7 @@ export default function SearchFilterStrip({
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
               <div>
-                <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
+                <h3 className="font-display font-semibold text-[18px] sm:text-[20px] md:text-[22px] text-[#1A1A2E] tracking-tight leading-tight">
                   Categories
                 </h3>
               </div>
@@ -269,11 +269,11 @@ export default function SearchFilterStrip({
                   >
                     <span>{cat.name}</span>
                     <div
-                      className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                        isSelected ? "bg-[#1A6FD4] border-[#1A6FD4]" : "border-gray-300 bg-white"
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        isSelected ? "border-[#1A6FD4] bg-[#1A6FD4]" : "border-gray-300 bg-white"
                       }`}
                     >
-                      {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
                   </button>
                 );
@@ -302,7 +302,7 @@ export default function SearchFilterStrip({
           >
             <MobileGrabber />
             <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
-              <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
+              <h3 className="font-display font-semibold text-[18px] sm:text-[20px] md:text-[22px] text-[#1A1A2E] tracking-tight leading-tight">
                 Filters
               </h3>
               <button
@@ -338,7 +338,7 @@ export default function SearchFilterStrip({
               </div>
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 bg-white">
-                <h4 className="font-semibold text-base md:text-lg text-gray-900 mb-3">{activeFilterTab}</h4>
+                <h4 className="font-display font-semibold text-[18px] sm:text-[20px] text-[#1A1A2E] tracking-tight leading-tight mb-3">{activeFilterTab}</h4>
                 <div className="relative mb-4">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                   <input
@@ -371,8 +371,8 @@ export default function SearchFilterStrip({
                     if (visibleItems.length === 0) return null;
                     return (
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 pb-1 border-b border-gray-100">
-                          {activeFilterTab} Subcategories
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 pb-1 border-b border-gray-100">
+                          Subcategories
                         </p>
                         <div className="space-y-1.5">
                           {visibleItems.map((item) => {

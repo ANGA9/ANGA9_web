@@ -634,51 +634,63 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Desktop Action Buttons */}
-          <div className="hidden md:flex gap-3">
+          <div className="hidden md:flex gap-3 items-center">
             <Button
               variant="secondary-cta"
-              size="lg"
-              className="flex-1 w-full"
+              className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-50"
               onClick={handleAddToCart}
               disabled={adding || stock.status === "out"}
             >
-              {adding ? <Loader2 className="size-6 animate-spin" /> : added ? <Check className="size-6" /> : <ShoppingCart className="size-6" />}
+              {adding ? (
+                <Loader2 className="size-5 animate-spin text-[#1A6FD4]" />
+              ) : added ? (
+                <Check className="size-5 text-green-600" />
+              ) : (
+                <ShoppingCart className="size-5 text-[#1A6FD4]" />
+              )}
               {adding ? "Adding..." : added ? "Added!" : stock.status === "out" ? "Out of Stock" : "Add to Cart"}
             </Button>
 
             <Button
               variant="cta"
-              size="lg"
-              className="flex-1 w-full"
-              onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
+              className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-[0_4px_16px_rgba(26,111,212,0.28)] hover:shadow-[0_6px_20px_rgba(26,111,212,0.35)] transition-all duration-150 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:shadow-none"
+              onClick={async () => {
+                if (stock.status !== "out") {
+                  await handleAddToCart();
+                  router.push('/cart');
+                }
+              }}
               disabled={adding || stock.status === "out"}
             >
-              <Zap className="size-6" /> Buy Now
+              <Zap className="size-5 fill-current" /> Buy Now
             </Button>
 
             <Button
               variant="outline"
-              size="icon-lg"
-              className="w-14 shrink-0 rounded-[10px] border border-gray-800"
+              className="size-[52px] shrink-0 rounded-xl border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50/80 active:scale-[0.95] transition-all duration-150 flex items-center justify-center shadow-xs disabled:opacity-50"
               onClick={handleWishlistToggle}
               disabled={togglingWishlist}
               aria-label="Toggle wishlist"
             >
               {togglingWishlist ? (
-                <Loader2 className="size-6 animate-spin text-gray-400" />
+                <Loader2 className="size-5 animate-spin text-gray-400" />
               ) : (
-                <Heart className="size-6" strokeWidth={1.5} style={{ color: isSaved ? "#DC2626" : "#000000" }} fill={isSaved ? "#DC2626" : "transparent"} />
+                <Heart
+                  className="size-5 transition-transform group-hover/button:scale-110"
+                  strokeWidth={1.8}
+                  style={{ color: isSaved ? "#DC2626" : "#4B5563" }}
+                  fill={isSaved ? "#DC2626" : "transparent"}
+                />
               )}
             </Button>
 
             <Button
               variant="outline"
-              size="icon-lg"
               onClick={handleShare}
-              className="w-14 shrink-0 rounded-[10px] border border-gray-800"
+              className="size-[52px] shrink-0 rounded-xl border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50/80 active:scale-[0.95] transition-all duration-150 flex items-center justify-center shadow-xs"
               aria-label="Share product"
             >
-              <Share2 className="size-6 text-black" strokeWidth={1.5} />
+              <Share2 className="size-5 text-gray-700 hover:text-gray-900 transition-colors" strokeWidth={1.8} />
             </Button>
           </div>
 

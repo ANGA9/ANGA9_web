@@ -17,8 +17,8 @@ const buttonVariants = cva(
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        cta: "bg-[#1A6FD4] text-white hover:bg-[#1559B3] active:translate-y-px border-2 border-transparent shadow-sm",
-        "secondary-cta": "border-2 border-[#1A6FD4] bg-background text-[#1A6FD4] hover:bg-blue-50 active:translate-y-px shadow-sm",
+        cta: "bg-[#1A6FD4] text-white hover:bg-[#1558B0] active:scale-[0.98] border border-transparent shadow-[0_4px_14px_rgba(26,111,212,0.25)] transition-all font-semibold",
+        "secondary-cta": "border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] shadow-xs transition-all font-semibold",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -256,11 +256,11 @@ export default function ProductCard({
           <div className="mt-auto flex items-end justify-between gap-2">
             <div>
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="font-bold tracking-tight" style={{ color: t.textPrimary, fontSize: "19px" }}>
+                <span className="font-bold tracking-tight" style={{ color: t.textPrimary, fontSize: "18px" }}>
                   {formatINR(product.price)}
                 </span>
                 {product.originalPrice > product.price && (
-                  <span className="line-through" style={{ color: t.textSecondary, fontSize: "13px" }}>
+                  <span className="line-through" style={{ color: t.textSecondary, fontSize: "12px" }}>
                     {formatINR(product.originalPrice)}
                   </span>
                 )}

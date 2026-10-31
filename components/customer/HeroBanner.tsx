@@ -69,7 +69,7 @@ const DEFAULT_SLIDES = [
 ];
 
 export default function HeroBanner() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" }, [
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
     Autoplay({ delay: 5000, stopOnInteraction: true }),
   ]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -137,7 +137,7 @@ export default function HeroBanner() {
             <div
               key={slide.id}
               onClick={() => handleSlideClick(slide)}
-              className="flex-[0_0_100%] min-w-0 relative px-1 cursor-pointer"
+              className="flex-[0_0_88%] sm:flex-[0_0_92%] md:flex-[0_0_100%] min-w-0 relative px-1 sm:px-1.5 cursor-pointer"
             >
                 <div className="relative w-full aspect-[11/5] md:aspect-[5/2] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
                   <Image

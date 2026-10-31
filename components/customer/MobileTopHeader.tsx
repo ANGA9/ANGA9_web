@@ -70,20 +70,20 @@ function MobileTopHeaderContent() {
   const [detectedLocality, setDetectedLocality] = useState("");
   const [isClosingSheet, setIsClosingSheet] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
-  const SEARCH_PLACEHOLDERS = [
-    "Search for formal shirts",
-    "Search for accessories",
-    "Search for home decor",
-    "Search for footwear",
-    "Search for kitchenware",
+  const SEARCH_WORDS = [
+    "accessories",
+    "formal shirts",
+    "home decor",
+    "footwear",
+    "kitchenware",
   ];
 
   useEffect(() => {
     const id = setInterval(() => {
-      setPlaceholderIdx((i) => (i + 1) % SEARCH_PLACEHOLDERS.length);
+      setPlaceholderIdx((i) => (i + 1) % SEARCH_WORDS.length);
     }, 2200);
     return () => clearInterval(id);
-  }, [SEARCH_PLACEHOLDERS.length]);
+  }, [SEARCH_WORDS.length]);
 
   const pincodeInputRef = useRef<HTMLInputElement>(null);
 
@@ -392,7 +392,7 @@ function MobileTopHeaderContent() {
             100% { transform: translateY(0); opacity: 1; }
           }
         `}</style>
-        <div className="relative flex items-center bg-white rounded-full shadow-sm border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all">
+        <div className="relative flex items-center bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all">
           <button
             type="button"
             onClick={() => {
@@ -407,19 +407,22 @@ function MobileTopHeaderContent() {
               <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
             </div>
             <div className="relative flex-1 min-w-0 h-[22px]">
-              <div className="pointer-events-none absolute inset-0 overflow-hidden text-[15px] text-[#6B7280]">
+              <div className="pointer-events-none absolute inset-0 flex items-center text-[14.5px] text-[#6B7280]">
                 {isPending ? (
-                  <span className="absolute inset-0 flex items-center font-medium" style={{ color: "#6B7280" }}>
-                    Loading{loadingDots}
-                  </span>
+                  <span className="font-medium text-[#6B7280]">Loading{loadingDots}</span>
                 ) : (
-                  <span
-                    key={placeholderIdx}
-                    className="absolute inset-0 flex items-center truncate"
-                    style={{ animation: "searchHintIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
-                  >
-                    {SEARCH_PLACEHOLDERS[placeholderIdx]} ...
-                  </span>
+                  <>
+                    <span className="shrink-0 select-none text-[#6B7280]">Search for&nbsp;</span>
+                    <div className="relative flex-1 min-w-0 h-[22px] overflow-hidden">
+                      <span
+                        key={placeholderIdx}
+                        className="absolute inset-0 flex items-center truncate text-[#374151] font-medium"
+                        style={{ animation: "searchHintIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                      >
+                        &apos;{SEARCH_WORDS[placeholderIdx]}&apos;
+                      </span>
+                    </div>
+                  </>
                 )}
               </div>
             </div>

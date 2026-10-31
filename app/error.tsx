@@ -45,7 +45,7 @@ export default function Error({
           type="button"
           onClick={() => unstable_retry()}
           style={{
-            background: "#4338CA",
+            background: "#1A6FD4",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 8,

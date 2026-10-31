@@ -133,7 +133,7 @@ function AlertCard({ alert, type, onDelete }: { alert: AlertItem, type: "price" 
       </Link>
       
       <div className="flex-1 min-w-0">
-        <Link href={`/products/${alert.products.id}`} className="block text-[15px] font-bold text-gray-900 truncate hover:text-[#4338CA]">
+        <Link href={`/products/${alert.products.id}`} className="block text-[15px] font-bold text-gray-900 truncate hover:text-[#1A6FD4]">
           {alert.products.name}
         </Link>
         <div className="text-sm mt-1 text-gray-500 flex items-center gap-2">

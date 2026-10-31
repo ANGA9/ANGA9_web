@@ -1191,7 +1191,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "cod" });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50"
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-[#1A6FD4] border-2 border-[#1A6FD4] hover:bg-blue-50"
                   >
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
@@ -1262,7 +1262,7 @@ export default function CheckoutPage() {
                       handlePickerSelect({ kind: "cod" });
                     }}
                     disabled={cartBlocked || (!hasAddress && !loadingAddresses)}
-                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50"
+                    className="w-full h-[52px] gap-2 rounded-xl text-[16px] font-bold shadow-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-white text-[#1A6FD4] border-2 border-[#1A6FD4] hover:bg-blue-50"
                   >
                     <Banknote className="w-5 h-5" />
                     Cash on Delivery
@@ -1306,7 +1306,7 @@ export default function CheckoutPage() {
             hasAddress && !cartBlocked ? (
               <button 
                 onClick={() => handlePickerSelect({ kind: "all" }, { isTest: false })}
-                className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-indigo-600 hover:bg-indigo-700 text-white whitespace-nowrap"
+                className="h-12 px-6 rounded-xl text-[14px] font-bold shadow-sm active:scale-95 transition-all bg-[#1A6FD4] hover:bg-[#1559B3] text-white whitespace-nowrap"
               >
                 Pay Online
               </button>

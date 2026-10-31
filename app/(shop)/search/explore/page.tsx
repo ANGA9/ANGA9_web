@@ -46,7 +46,7 @@ interface Suggestion {
   base_price: number;
 }
 
-const ACCENT = "#4338CA";
+const ACCENT = "#1A6FD4";
 const TRENDING_PAGE_SIZE = 12;
 
 function toCardProduct(p: SearchProduct): Product {
@@ -413,8 +413,8 @@ function ExploreContent() {
               onClick={() => listening ? stopListening() : startListening()}
               className="shrink-0 flex items-center justify-center w-7 h-7 rounded-full transition-all active:scale-90 mr-1"
               style={{
-                background: listening ? "#4338CA" : "transparent",
-                color: listening ? "white" : "#4338CA"
+                background: listening ? "#1A6FD4" : "transparent",
+                color: listening ? "white" : "#1A6FD4"
               }}
             >
               {listening
@@ -427,9 +427,9 @@ function ExploreContent() {
 
         {/* Listening indicator bar */}
         {listening && (
-          <div className="flex items-center gap-2 px-4 py-2 border-t" style={{ borderColor: t.border, background: "#F5F3FF" }}>
+          <div className="flex items-center gap-2 px-4 py-2 border-t" style={{ borderColor: t.border, background: "#EFF6FF" }}>
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4338CA] opacity-75" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A6FD4] opacity-75" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4338CA]" />
             </span>
             <p className="text-[13px] font-semibold text-[#4338CA] flex-1">

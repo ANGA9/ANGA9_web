@@ -65,7 +65,7 @@ const SORT_OPTIONS = [
   { value: "discount", label: "% Below MRP" },
 ];
 
-const ACCENT = "#4338CA";
+const ACCENT = "#1A6FD4";
 const BOTTOM_NAV_H = "calc(56px + env(safe-area-inset-bottom, 0px))";
 
 function toCardProduct(p: SearchProduct): Product {
@@ -243,10 +243,10 @@ function SearchPageContent() {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <input type="number" placeholder="Min" value={localMinPrice} onChange={(e) => setLocalMinPrice(e.target.value)}
-                className="w-full h-10 rounded-xl border px-3 text-sm outline-none focus:border-[#4338CA] focus:ring-2 focus:ring-[#4338CA]/10" style={{ borderColor: t.border }} />
+                className="w-full h-10 rounded-xl border px-3 text-sm outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10" style={{ borderColor: t.border }} />
               <span className="text-sm shrink-0" style={{ color: t.textMuted }}>to</span>
               <input type="number" placeholder="Max" value={localMaxPrice} onChange={(e) => setLocalMaxPrice(e.target.value)}
-                className="w-full h-10 rounded-xl border px-3 text-sm outline-none focus:border-[#4338CA] focus:ring-2 focus:ring-[#4338CA]/10" style={{ borderColor: t.border }} />
+                className="w-full h-10 rounded-xl border px-3 text-sm outline-none focus:border-[#1A6FD4] focus:ring-2 focus:ring-[#1A6FD4]/10" style={{ borderColor: t.border }} />
             </div>
             <button onClick={applyPrice} className="w-full h-9 rounded-xl text-xs font-bold transition-colors hover:opacity-90" style={{ background: "#EEF2FF", color: ACCENT }}>Apply</button>
           </div>
@@ -330,7 +330,7 @@ function SearchPageContent() {
             >
               <Heart className="w-[20px] h-[20px] text-[#4B5563]" />
               {wishlistCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white shadow-sm border border-white">
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white shadow-sm border border-white">
                   {wishlistCount > 99 ? "99+" : wishlistCount}
                 </span>
               )}
@@ -342,7 +342,7 @@ function SearchPageContent() {
             >
               <ShoppingCart className="w-[20px] h-[20px] text-[#4B5563]" />
               {cartCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#4338CA] text-white shadow-sm border border-white">
+                <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[9px] font-bold bg-[#1A6FD4] text-white shadow-sm border border-white">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}

@@ -147,14 +147,14 @@ export default function HelpCenterPage() {
           </h2>
           <Link
             href="/help/tickets/new"
-            className="flex items-center gap-4 rounded-2xl p-5 md:p-6 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer bg-white border-2 border-indigo-600 text-indigo-700 hover:bg-indigo-50"
+            className="flex items-center gap-4 rounded-2xl p-5 md:p-6 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer bg-white border-2 border-[#1A6FD4] text-[#1A6FD4] hover:bg-blue-50"
           >
-            <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
-              <Plus className="h-6 w-6 text-indigo-700" />
+            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300 shrink-0">
+              <Plus className="h-6 w-6 text-[#1A6FD4]" />
             </div>
             <div>
               <div className="text-[16px] md:text-[17px] font-bold tracking-tight mb-0.5">Raise a new ticket</div>
-              <div className="text-[13px] text-indigo-500/80 font-medium leading-tight">Get help directly from our team.</div>
+              <div className="text-[13px] text-blue-600/80 font-medium leading-tight">Get help directly from our team.</div>
             </div>
           </Link>
           <Link

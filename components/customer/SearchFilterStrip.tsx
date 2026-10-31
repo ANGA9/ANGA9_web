@@ -149,45 +149,65 @@ export default function SearchFilterStrip({
       {activeModal === "sort" && (
         <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
+            className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[400px] sheet-panel ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-3xl md:rounded-2xl flex flex-col max-h-[75dvh] md:max-h-[82vh] w-full md:w-[420px] shadow-2xl border border-gray-100 sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
-            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>
-                Sort By
-              </h3>
-              <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
+            <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
+              <div>
+                <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
+                  Sort By
+                </h3>
+              </div>
+              <button
+                onClick={handleClose}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-2 md:p-3 overflow-y-auto overscroll-contain">
-              {SORT_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setDraftSort(opt.value)}
-                  className="w-full flex items-center justify-between p-4 md:p-3 md:rounded-xl text-base hover:bg-gray-50 transition-colors"
-                  style={{ color: t.textPrimary }}
-                >
-                  {opt.label}
-                  <div
-                    className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
-                    style={{ borderColor: draftSort === opt.value ? APPLY_INDIGO : t.border }}
+            <div className="p-3 md:p-4 overflow-y-auto overscroll-contain space-y-1.5">
+              {SORT_OPTIONS.map((opt) => {
+                const isSelected = draftSort === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setDraftSort(opt.value)}
+                    className={`w-full flex items-center justify-between px-4 py-3 md:py-2.5 rounded-xl text-sm md:text-base transition-all ${
+                      isSelected
+                        ? "bg-blue-50/70 text-[#1A6FD4] font-semibold border border-blue-100"
+                        : "text-gray-700 hover:bg-gray-50 border border-transparent font-medium"
+                    }`}
                   >
-                    {draftSort === opt.value && (
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: APPLY_INDIGO }} />
-                    )}
-                  </div>
-                </button>
-              ))}
+                    <span>{opt.label}</span>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        isSelected ? "border-[#1A6FD4] bg-[#1A6FD4]" : "border-gray-300 bg-white"
+                      }`}
+                    >
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             <ApplyFooter
               countLabel={null}
               label="Apply"
               onApply={handleApplySort}
+              onClear={
+                draftSort !== "relevance"
+                  ? () => {
+                      setDraftSort("relevance");
+                      updateUrl({ sort: "" });
+                      handleClose();
+                    }
+                  : undefined
+              }
+              clearLabel="Reset"
             />
           </div>
         </div>
@@ -197,54 +217,74 @@ export default function SearchFilterStrip({
       {activeModal === "category" && (
         <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
+            className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[70dvh] md:max-h-[80vh] w-full md:w-[500px] sheet-panel ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-3xl md:rounded-2xl flex flex-col max-h-[75dvh] md:max-h-[82vh] w-full md:w-[460px] shadow-2xl border border-gray-100 sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
-            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>
-                Categories
-              </h3>
-              <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
+            <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
+              <div>
+                <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
+                  Categories
+                </h3>
+              </div>
+              <button
+                onClick={handleClose}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 space-y-4">
-              {TOP_LEVEL_CATEGORIES.map((cat) => (
-                <label key={cat.slug} className="flex items-center gap-3 py-2 cursor-pointer group">
-                  <div className="relative flex items-center justify-center">
-                    <input
-                      type="checkbox"
-                      checked={categoryParam === cat.slug}
-                      onChange={() => {
-                        updateUrl({ category: categoryParam === cat.slug ? "" : cat.slug });
-                      }}
-                      className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
-                      style={{
-                        borderColor: categoryParam === cat.slug ? APPLY_INDIGO : t.border,
-                        background: categoryParam === cat.slug ? APPLY_INDIGO : "transparent",
-                      }}
-                    />
-                    {categoryParam === cat.slug && (
-                      <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />
-                    )}
-                  </div>
-                  <span
-                    className="text-sm md:text-base group-hover:text-black transition-colors"
-                    style={{ color: t.textSecondary }}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-4 space-y-1.5">
+              {/* All Categories Option */}
+              <button
+                type="button"
+                onClick={() => updateUrl({ category: "" })}
+                className={`w-full flex items-center justify-between px-4 py-3 md:py-2.5 rounded-xl text-sm md:text-base transition-all ${
+                  !categoryParam
+                    ? "bg-blue-50/70 text-[#1A6FD4] font-semibold border border-blue-100"
+                    : "text-gray-700 hover:bg-gray-50 border border-transparent font-medium"
+                }`}
+              >
+                <span>All Categories</span>
+                {!categoryParam && <Check className="w-4 h-4 text-[#1A6FD4]" />}
+              </button>
+
+              {TOP_LEVEL_CATEGORIES.map((cat) => {
+                const isSelected = categoryParam === cat.slug;
+                return (
+                  <button
+                    key={cat.slug}
+                    type="button"
+                    onClick={() => {
+                      updateUrl({ category: isSelected ? "" : cat.slug });
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-3 md:py-2.5 rounded-xl text-sm md:text-base transition-all ${
+                      isSelected
+                        ? "bg-blue-50/70 text-[#1A6FD4] font-semibold border border-blue-100"
+                        : "text-gray-700 hover:bg-gray-50 border border-transparent font-medium"
+                    }`}
                   >
-                    {cat.name}
-                  </span>
-                </label>
-              ))}
+                    <span>{cat.name}</span>
+                    <div
+                      className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                        isSelected ? "bg-[#1A6FD4] border-[#1A6FD4]" : "border-gray-300 bg-white"
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             <ApplyFooter
-              countLabel="1000+ Products"
+              countLabel={null}
               label="Apply"
               onApply={handleClose}
+              onClear={categoryParam ? () => updateUrl({ category: "" }) : undefined}
+              clearLabel="Clear"
             />
           </div>
         </div>
@@ -254,24 +294,27 @@ export default function SearchFilterStrip({
       {activeModal === "filters" && (
         <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center pointer-events-none">
           <div
-            className={`absolute inset-0 bg-black/40 pointer-events-auto ${overlayAnimClass}`}
+            className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-auto ${overlayAnimClass}`}
             onClick={handleClose}
           />
           <div
-            className={`relative pointer-events-auto bg-white rounded-t-2xl md:rounded-2xl flex flex-col max-h-[75dvh] md:h-[600px] md:max-h-[80vh] w-full md:w-[700px] sheet-panel ${sheetAnimClass}`}
+            className={`relative pointer-events-auto bg-white rounded-t-3xl md:rounded-2xl flex flex-col max-h-[78dvh] md:h-[580px] md:max-h-[82vh] w-full md:w-[720px] shadow-2xl border border-gray-100 sheet-panel ${sheetAnimClass}`}
           >
             <MobileGrabber />
-            <div className="shrink-0 flex items-center justify-between p-4 md:p-5 border-b">
-              <h3 className="font-bold text-base md:text-lg uppercase tracking-wide" style={{ color: t.textPrimary }}>
+            <div className="shrink-0 flex items-center justify-between px-5 py-4 md:py-4.5 border-b border-gray-100">
+              <h3 className="font-semibold text-base md:text-lg text-gray-900 tracking-tight" style={{ color: t.textPrimary }}>
                 Filters
               </h3>
-              <button onClick={handleClose} className="hover:bg-gray-100 p-1.5 rounded-full transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
+              <button
+                onClick={handleClose}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
             <div className="flex-1 flex overflow-hidden">
               {/* Sidebar */}
-              <div className="w-[140px] md:w-[200px] bg-[#F4F4F8] md:bg-gray-50 overflow-y-auto overscroll-contain border-r border-[#E8EEF4]">
+              <div className="w-[130px] md:w-[190px] bg-gray-50/80 overflow-y-auto overscroll-contain border-r border-gray-200/80 p-2 space-y-1">
                 {FILTER_TABS.map((tab) => {
                   const isActive = tab === activeFilterTab;
                   return (
@@ -282,13 +325,11 @@ export default function SearchFilterStrip({
                         setActiveFilterTab(tab);
                         setFilterSearch("");
                       }}
-                      className={`w-full text-left p-3 md:px-4 md:py-3 text-xs md:text-sm cursor-pointer transition-colors uppercase tracking-wide ${
-                        isActive ? "bg-white border-l-4 font-semibold" : "text-gray-600 hover:bg-gray-100"
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs md:text-sm font-medium transition-all ${
+                        isActive
+                          ? "bg-white text-[#1A6FD4] font-semibold shadow-xs border-l-3 border-[#1A6FD4]"
+                          : "text-gray-600 hover:bg-gray-100/70"
                       }`}
-                      style={{
-                        borderLeftColor: isActive ? APPLY_INDIGO : "transparent",
-                        color: isActive ? APPLY_INDIGO : undefined,
-                      }}
                     >
                       {tab}
                     </button>
@@ -297,8 +338,8 @@ export default function SearchFilterStrip({
               </div>
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-6 bg-white">
-                <h4 className="font-bold text-base md:text-lg mb-4">{activeFilterTab}</h4>
-                <div className="relative mb-5">
+                <h4 className="font-semibold text-base md:text-lg text-gray-900 mb-3">{activeFilterTab}</h4>
+                <div className="relative mb-4">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                   <input
                     type="text"
@@ -319,7 +360,7 @@ export default function SearchFilterStrip({
                     </button>
                   )}
                 </div>
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {(() => {
                     const tab = categoriesTree.find(t => t.name === activeFilterTab);
                     if (!tab) return null;
@@ -330,40 +371,36 @@ export default function SearchFilterStrip({
                     if (visibleItems.length === 0) return null;
                     return (
                       <div>
-                        <p
-                          className="text-xs font-bold uppercase tracking-[0.04em] pb-1.5 mb-2.5 border-b"
-                          style={{ color: APPLY_INDIGO, borderColor: APPLY_INDIGO }}
-                        >
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 pb-1 border-b border-gray-100">
                           {activeFilterTab} Subcategories
                         </p>
-                        <div className="space-y-2">
-                          {visibleItems.map((item) => (
-                            <label key={item.slug} className="flex items-center gap-3 py-1 cursor-pointer group">
-                              <div className="relative flex items-center justify-center">
-                                <input
-                                  type="checkbox"
-                                  checked={categoryParam === item.slug}
-                                  onChange={() => {
-                                    updateUrl({ category: categoryParam === item.slug ? "" : item.slug });
-                                  }}
-                                  className="w-5 h-5 rounded border-gray-300 appearance-none border-2 transition-colors cursor-pointer"
-                                  style={{
-                                    borderColor: categoryParam === item.slug ? APPLY_INDIGO : t.border,
-                                    background: categoryParam === item.slug ? APPLY_INDIGO : "transparent",
-                                  }}
-                                />
-                                {categoryParam === item.slug && (
-                                  <Check className="w-3.5 h-3.5 text-white absolute pointer-events-none" />
-                                )}
-                              </div>
-                              <span
-                                className="text-sm md:text-base group-hover:text-black transition-colors"
-                                style={{ color: t.textSecondary }}
+                        <div className="space-y-1.5">
+                          {visibleItems.map((item) => {
+                            const isSelected = categoryParam === item.slug;
+                            return (
+                              <button
+                                key={item.slug}
+                                type="button"
+                                onClick={() => {
+                                  updateUrl({ category: isSelected ? "" : item.slug });
+                                }}
+                                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all ${
+                                  isSelected
+                                    ? "bg-blue-50/70 text-[#1A6FD4] font-semibold border border-blue-100"
+                                    : "text-gray-700 hover:bg-gray-50 border border-transparent font-medium"
+                                }`}
                               >
-                                {item.name}
-                              </span>
-                            </label>
-                          ))}
+                                <span>{item.name}</span>
+                                <div
+                                  className={`w-4.5 h-4.5 rounded border flex items-center justify-center transition-all ${
+                                    isSelected ? "bg-[#1A6FD4] border-[#1A6FD4]" : "border-gray-300 bg-white"
+                                  }`}
+                                >
+                                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     );
@@ -375,9 +412,11 @@ export default function SearchFilterStrip({
               </div>
             </div>
             <ApplyFooter
-              countLabel="1000+ Products"
+              countLabel={null}
               label="Apply Filters"
               onApply={handleClose}
+              onClear={categoryParam ? () => updateUrl({ category: "" }) : undefined}
+              clearLabel="Clear All"
             />
           </div>
         </div>
@@ -388,8 +427,8 @@ export default function SearchFilterStrip({
 
 function MobileGrabber() {
   return (
-    <div className="md:hidden flex justify-center pt-2 pb-1">
-      <span className="block w-10 h-1 rounded-full bg-gray-300" />
+    <div className="md:hidden flex justify-center pt-3 pb-1">
+      <span className="block w-12 h-1.5 rounded-full bg-gray-300" />
     </div>
   );
 }
@@ -398,18 +437,33 @@ function ApplyFooter({
   countLabel,
   label,
   onApply,
+  onClear,
+  clearLabel = "Clear",
 }: {
-  countLabel: string | null;
+  countLabel?: string | null;
   label: string;
   onApply: () => void;
+  onClear?: () => void;
+  clearLabel?: string;
 }) {
   return (
-    <div className="shrink-0 p-4 md:p-5 border-t bg-gray-50 md:bg-white md:rounded-b-2xl flex items-center justify-between">
-      <span className="text-sm md:text-base font-medium text-gray-500">{countLabel ?? ""}</span>
+    <div className="shrink-0 px-5 py-3.5 md:px-6 md:py-4 border-t border-gray-100 bg-white md:rounded-b-2xl flex items-center justify-between gap-3">
+      <div>
+        {onClear ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors px-1 py-1"
+          >
+            {clearLabel}
+          </button>
+        ) : countLabel ? (
+          <span className="text-xs md:text-sm font-medium text-gray-500">{countLabel}</span>
+        ) : null}
+      </div>
       <button
         onClick={onApply}
-        className="px-8 py-2.5 rounded-lg font-bold text-sm md:text-base shadow-sm bg-white border-2 hover:bg-gray-50 transition-all active:scale-95"
-        style={{ borderColor: APPLY_INDIGO, color: APPLY_INDIGO }}
+        className="px-7 py-2.5 rounded-xl font-semibold text-sm md:text-base shadow-sm bg-[#1A6FD4] hover:bg-[#1558B0] text-white transition-all active:scale-95"
       >
         {label}
       </button>

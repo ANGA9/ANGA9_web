@@ -130,8 +130,8 @@ export default function RecentlyViewed({ excludeId }: Props) {
         .rv-title {
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           font-size: 18px;
-          font-weight: 800;
-          letter-spacing: -0.025em;
+          font-weight: 500;
+          letter-spacing: normal;
           color: #1A1A2E;
         }
         @media (min-width: 640px) {

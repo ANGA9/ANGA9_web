@@ -521,7 +521,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
               <h2
-                className="font-display text-[18px] sm:text-[22px] md:text-[24px] font-bold md:font-extrabold tracking-tight text-[#1A1A2E]"
+                className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] tracking-normal text-[#1A1A2E]"
                 style={{ color: "#1A1A2E" }}
               >
                 Recent Searches
@@ -571,7 +571,7 @@ function ExploreContent() {
           <div className="px-4 flex items-center gap-2 mb-2.5">
 
             <h2
-              className="font-display text-[18px] sm:text-[22px] md:text-[24px] font-bold md:font-extrabold tracking-tight text-[#1A1A2E]"
+              className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] tracking-normal text-[#1A1A2E]"
               style={{ color: "#1A1A2E" }}
             >
               Recently Viewed
@@ -653,7 +653,7 @@ function ExploreContent() {
       <section className="pt-4 pb-10">
         <div className="px-4 flex items-center gap-2 mb-3">
           <h2
-            className="font-display text-[18px] sm:text-[22px] md:text-[24px] font-bold md:font-extrabold tracking-tight text-[#1A1A2E]"
+            className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] tracking-normal text-[#1A1A2E]"
           >
             Trending Products
           </h2>

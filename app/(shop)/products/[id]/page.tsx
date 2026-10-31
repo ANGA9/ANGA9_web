@@ -684,7 +684,7 @@ export default function ProductDetailPage() {
 
           {/* Description */}
           <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
-            <h2 className="font-display font-bold md:font-extrabold text-[18px] sm:text-[20px] md:text-[22px] tracking-tight mb-3 text-[#1A1A2E]">Description</h2>
+            <h2 className="font-display font-medium text-[18px] sm:text-[20px] md:text-[22px] tracking-normal mb-3 text-[#1A1A2E]">Description</h2>
             {product.description ? (
               <div className="text-sm md:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                 {descriptionLong && !descExpanded ? (

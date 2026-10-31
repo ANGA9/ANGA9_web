@@ -51,7 +51,7 @@ export default function ProductRail({ title, products, icon: Icon, iconColor = "
       {/* Header */}
       <div className={`flex items-center justify-between mb-4 ${compact ? "px-4 md:px-0" : "px-3 sm:px-8"}`}>
         <div className="flex items-center gap-2">
-          <h2 className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] text-[#1A1A2E] tracking-normal leading-tight">
+          <h2 className="font-display font-semibold text-[18px] sm:text-[22px] md:text-[24px] text-[#1A1A2E] tracking-tight leading-tight">
             {title}
           </h2>
         </div>

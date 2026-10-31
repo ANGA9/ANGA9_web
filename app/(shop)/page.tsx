@@ -319,7 +319,7 @@ export default function CustomerHomePage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
           <div className="flex items-center gap-2">
             <h2
-              className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] text-[#1A1A2E] tracking-normal leading-tight"
+              className="font-display font-semibold text-[18px] sm:text-[22px] md:text-[24px] text-[#1A1A2E] tracking-tight leading-tight"
             >
               Trending Now
             </h2>

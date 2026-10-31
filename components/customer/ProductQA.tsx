@@ -110,7 +110,7 @@ export default function ProductQA({ productId }: { productId: string }) {
     <section className="mt-12 md:mt-16 border-t pt-8 md:pt-10" style={{ borderColor: t.border }}>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
         <div>
-          <h2 className="font-display font-medium text-[18px] sm:text-[22px] md:text-[24px] tracking-normal" style={{ color: t.textPrimary }}>
+          <h2 className="font-display font-semibold text-[18px] sm:text-[22px] md:text-[24px] tracking-tight" style={{ color: t.textPrimary }}>
             Customer Questions & Answers
           </h2>
         </div>

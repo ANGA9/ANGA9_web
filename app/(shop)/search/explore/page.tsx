@@ -522,8 +522,8 @@ function ExploreContent() {
             <div className="flex items-center gap-2">
               <History className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
               <h2
-                className="text-[12px] font-bold uppercase tracking-wider"
-                style={{ color: t.textSecondary }}
+                className="text-[18px] font-bold text-[#1A1A2E]"
+                style={{ color: "#1A1A2E" }}
               >
                 Recent Searches
               </h2>
@@ -570,10 +570,10 @@ function ExploreContent() {
       {recentlyViewed.length > 0 && (
         <section className="pt-4 pb-2">
           <div className="px-4 flex items-center gap-2 mb-2.5">
-            <Clock className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
+
             <h2
-              className="text-[12px] font-bold uppercase tracking-wider"
-              style={{ color: t.textSecondary }}
+              className="text-[18px] font-bold text-[#1A1A2E]"
+              style={{ color: "#1A1A2E" }}
             >
               Recently Viewed
             </h2>

@@ -239,8 +239,9 @@ export default function ProductCard({
             className="font-normal mb-1.5 pr-7 md:pr-8 overflow-hidden"
             style={{
               color: t.textPrimary,
-              fontSize: "15px",
-              lineHeight: 1.4,
+              fontSize: "14px",
+              fontWeight: 500,
+              lineHeight: 1.3,
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",

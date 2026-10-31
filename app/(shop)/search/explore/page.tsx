@@ -430,9 +430,9 @@ function ExploreContent() {
           <div className="flex items-center gap-2 px-4 py-2 border-t" style={{ borderColor: t.border, background: "#EFF6FF" }}>
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A6FD4] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4338CA]" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1A6FD4]" />
             </span>
-            <p className="text-[13px] font-semibold text-[#4338CA] flex-1">
+            <p className="text-[13px] font-semibold text-[#1A6FD4] flex-1">
               {voiceTranscript ? `"${voiceTranscript}"` : "Listening… speak now"}
             </p>
             <button

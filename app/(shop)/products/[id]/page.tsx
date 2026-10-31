@@ -732,25 +732,36 @@ export default function ProductDetailPage() {
       </div>
 
       {/* ══════════ MOBILE STICKY CTA BAR (<md) ══════════ */}
-      <div className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white rounded-t-2xl border-t border-x border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
-        <div className="px-4 py-2.5 flex gap-1.5 items-center w-full">
+      <div className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white/95 backdrop-blur-md rounded-t-2xl border-t border-x border-gray-100 shadow-[0_-6px_24px_rgba(0,0,0,0.06)]">
+        <div className="px-4 py-3 flex gap-2.5 items-center w-full">
           <Button
             variant="secondary-cta"
-            className="w-1/2 h-[42px] text-[14px]"
+            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
             onClick={handleAddToCart}
             disabled={adding || stock.status === "out"}
           >
-            {adding ? <Loader2 className="w-[18px] h-[18px] animate-spin" /> : added ? <Check className="w-[18px] h-[18px]" /> : <ShoppingCart className="w-[18px] h-[18px]" />}
-            {adding ? "Adding" : added ? "Added" : "Add to Cart"}
+            {adding ? (
+              <Loader2 className="w-[18px] h-[18px] animate-spin text-[#1A6FD4]" />
+            ) : added ? (
+              <Check className="w-[18px] h-[18px] text-green-600" />
+            ) : (
+              <ShoppingCart className="w-[18px] h-[18px] text-[#1A6FD4]" />
+            )}
+            {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
           </Button>
 
           <Button
             variant="cta"
-            className="w-1/2 h-[42px] text-[14px]"
-            onClick={async () => { if (stock.status !== "out") { await handleAddToCart(); router.push('/cart'); } }}
+            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-[0_4px_14px_rgba(26,111,212,0.28)] transition-all duration-150 flex items-center justify-center gap-2 disabled:opacity-50 disabled:shadow-none"
+            onClick={async () => {
+              if (stock.status !== "out") {
+                await handleAddToCart();
+                router.push('/cart');
+              }
+            }}
             disabled={adding || stock.status === "out"}
           >
-            <Zap className="w-[18px] h-[18px]" /> Buy Now
+            <Zap className="w-[18px] h-[18px] fill-current" /> Buy Now
           </Button>
         </div>
       </div>

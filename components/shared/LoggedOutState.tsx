@@ -21,8 +21,7 @@ export function LoggedOutState({
       <p className="text-[13px] md:text-[15px] mb-5 max-w-[280px] mx-auto" style={{ color: t.textMuted }}>{desc}</p>
       <button
         onClick={() => openLoginSheet()}
-        className="rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50 inline-block"
-        style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+        className="rounded-full px-10 py-3 text-[15px] font-semibold text-white transition-all active:scale-95 shadow-md hover:bg-blue-700 inline-block bg-[#2563EB]"
       >
         Login
       </button>

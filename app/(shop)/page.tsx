@@ -318,10 +318,9 @@ export default function CustomerHomePage() {
       <section className="px-3 sm:px-8" style={{ marginTop: 24 }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-[18px] h-[18px] sm:w-[22px] sm:h-[22px]" style={{ color: '#1A6FD4' }} strokeWidth={2} />
             <h2
               className="font-bold"
-              style={{ color: "#1A1A2E", fontSize: '20px' }}
+              style={{ color: "#1A1A2E", fontSize: "18px" }}
             >
               Trending Now
             </h2>

@@ -62,7 +62,6 @@ export default function RecentlyViewed({ excludeId }: Props) {
       {/* Header */}
       <div className="rv-header">
         <div className="rv-header-left">
-          <Clock className="rv-header-icon" strokeWidth={2} />
           <h2 className="rv-title">Recently Viewed</h2>
         </div>
 
@@ -129,12 +128,13 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
 
         .rv-title {
-          font-size: 20px;
+          font-size: 18px;
           font-weight: 700;
           color: #1A1A2E;
         }
         @media (min-width: 640px) {
-          .rv-title { font-size: 20px; }
+          .rv-title {
+          font-size: 18px; }
         }
 
         /* Desktop nav arrows */

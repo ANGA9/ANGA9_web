@@ -134,7 +134,13 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
         @media (min-width: 640px) {
           .rv-title {
-          font-size: 18px; }
+            font-size: 22px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .rv-title {
+            font-size: 24px;
+          }
         }
 
         /* Desktop nav arrows */
@@ -296,8 +302,8 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
 
         .rv-card-name {
-          font-size: 12.5px;
-          font-weight: 600;
+          font-size: 13px;
+          font-weight: 500;
           color: ${t.textPrimary};
           line-height: 1.35;
           display: -webkit-box;
@@ -307,7 +313,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           margin-bottom: 6px;
         }
         @media (min-width: 640px) {
-          .rv-card-name { font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
+          .rv-card-name { font-size: 15px; margin-bottom: 8px; line-height: 1.4; }
         }
 
         .rv-card-price-row {
@@ -322,12 +328,12 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
 
         .rv-card-price {
-          font-size: 14px;
-          font-weight: 800;
+          font-size: 16px;
+          font-weight: 700;
           color: ${t.textPrimary};
         }
         @media (min-width: 640px) {
-          .rv-card-price { font-size: 16px; }
+          .rv-card-price { font-size: 20px; }
         }
 
         .rv-card-orig-price {
@@ -336,7 +342,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
           text-decoration: line-through;
         }
         @media (min-width: 640px) {
-          .rv-card-orig-price { font-size: 12px; }
+          .rv-card-orig-price { font-size: 13px; }
         }
 
         .rv-card-discount {

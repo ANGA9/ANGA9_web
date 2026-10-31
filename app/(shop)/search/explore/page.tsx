@@ -520,9 +520,8 @@ function ExploreContent() {
         <section className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
-              <History className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
               <h2
-                className="text-[18px] font-bold text-[#1A1A2E]"
+                className="text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#1A1A2E]"
                 style={{ color: "#1A1A2E" }}
               >
                 Recent Searches
@@ -572,7 +571,7 @@ function ExploreContent() {
           <div className="px-4 flex items-center gap-2 mb-2.5">
 
             <h2
-              className="text-[18px] font-bold text-[#1A1A2E]"
+              className="text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#1A1A2E]"
               style={{ color: "#1A1A2E" }}
             >
               Recently Viewed
@@ -653,10 +652,8 @@ function ExploreContent() {
       {/* ── Section 3: Trending Products (infinite scroll) ── */}
       <section className="pt-4 pb-10">
         <div className="px-4 flex items-center gap-2 mb-3">
-          <TrendingUp className="w-[15px] h-[15px]" style={{ color: t.textSecondary }} />
           <h2
-            className="text-[12px] font-bold uppercase tracking-wider"
-            style={{ color: t.textSecondary }}
+            className="text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#1A1A2E]"
           >
             Trending Products
           </h2>

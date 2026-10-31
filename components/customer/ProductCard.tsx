@@ -236,12 +236,9 @@ export default function ProductCard({
 
           {/* Product name — 2-line clamp */}
           <h3
-            className="font-normal mb-1.5 pr-7 md:pr-8 overflow-hidden"
+            className="font-medium text-[14px] md:text-[15px] leading-snug mb-1.5 pr-7 md:pr-8 overflow-hidden"
             style={{
               color: t.textPrimary,
-              fontSize: "14px",
-              fontWeight: 500,
-              lineHeight: 1.3,
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
@@ -256,18 +253,18 @@ export default function ProductCard({
           <div className="mt-auto flex items-end justify-between gap-2">
             <div>
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="font-bold tracking-tight" style={{ color: t.textPrimary, fontSize: "18px" }}>
+                <span className="font-bold tracking-tight text-[18px] md:text-[20px]" style={{ color: t.textPrimary }}>
                   {formatINR(product.price)}
                 </span>
                 {product.originalPrice > product.price && (
-                  <span className="line-through" style={{ color: t.textSecondary, fontSize: "12px" }}>
+                  <span className="line-through text-[12px] md:text-[13px]" style={{ color: t.textSecondary }}>
                     {formatINR(product.originalPrice)}
                   </span>
                 )}
               </div>
               {/* Absolute savings indicator */}
               {absoluteSaving > 0 && (
-                <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
+                <p className="text-[11px] md:text-[12px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
                   Save {formatINR(absoluteSaving)}
                 </p>
               )}

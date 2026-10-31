@@ -495,7 +495,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Name */}
-          <h1 className="font-normal leading-tight mb-3 text-lg md:text-xl" style={{ color: t.textPrimary }}>
+          <h1 className="font-medium leading-tight mb-3 text-[18px] sm:text-[22px] md:text-[24px]" style={{ color: t.textPrimary }}>
             {product.name}
           </h1>
 
@@ -684,7 +684,7 @@ export default function ProductDetailPage() {
 
           {/* Description */}
           <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
-            <h2 className="font-semibold text-base mb-3" style={{ color: t.textPrimary }}>Description</h2>
+            <h2 className="font-bold text-[18px] sm:text-[20px] md:text-[22px] mb-3 text-[#1A1A2E]">Description</h2>
             {product.description ? (
               <div className="text-sm md:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                 {descriptionLong && !descExpanded ? (

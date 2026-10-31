@@ -528,8 +528,7 @@ function SearchPageContent() {
                 {suggestions.length > 0 && (
                   <div className="mt-8 md:mt-10 px-1.5 md:px-0">
                     <div className="flex items-center gap-2 mb-3">
-                      <Sparkles className="w-4 h-4" style={{ color: ACCENT }} />
-                      <h2 className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider" style={{ color: t.textSecondary }}>
+                      <h2 className="text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#1A1A2E]">
                         You might also like
                       </h2>
                     </div>
@@ -565,8 +564,7 @@ function SearchPageContent() {
                 {suggestions.length > 0 && (
                   <div className="mt-6 px-1.5 md:px-0">
                     <div className="flex items-center gap-2 mb-3">
-                      <Sparkles className="w-4 h-4" style={{ color: ACCENT }} />
-                      <h2 className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider" style={{ color: t.textSecondary }}>Trending products</h2>
+                      <h2 className="text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#1A1A2E]">Trending products</h2>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-5">
                       {suggestions.map((p) => <ProductCard key={p.id} product={p} />)}

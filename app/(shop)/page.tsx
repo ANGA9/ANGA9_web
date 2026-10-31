@@ -319,15 +319,13 @@ export default function CustomerHomePage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
           <div className="flex items-center gap-2">
             <h2
-              className="font-bold"
-              style={{ color: "#1A1A2E", fontSize: "18px" }}
+              className="font-bold text-[18px] sm:text-[22px] md:text-[24px] text-[#1A1A2E] leading-tight"
             >
               Trending Now
             </h2>
           </div>
           <button
-            className="font-medium transition-opacity hover:opacity-80"
-            style={{ color: "#1A6FD4", fontSize: '14px' }}
+            className="font-medium sm:font-semibold text-[13px] sm:text-[15px] text-[#1A6FD4] transition-opacity hover:opacity-80"
           >
             View All
           </button>

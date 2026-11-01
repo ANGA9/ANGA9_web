@@ -21,7 +21,7 @@ export default function EmptyState({
   accentColor = "#4338CA",
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-4 md:py-8 px-4 bg-white rounded-xl border-none col-span-12 w-full text-center">
+    <div className="flex flex-col items-center justify-center min-h-[55vh] py-8 px-4 bg-white rounded-xl border-none col-span-12 w-full text-center flex flex-col items-center justify-center">
       {illustration ? (
         illustration
       ) : Icon ? (
@@ -34,13 +34,22 @@ export default function EmptyState({
         </p>
       )}
       {actionLabel && onAction && (
-        <button
-          onClick={onAction}
-          className="mt-4 md:mt-5 rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50"
-          style={{ borderColor: accentColor, color: accentColor }}
-        >
-          {actionLabel}
-        </button>
+        actionLabel.toLowerCase() === "login" ? (
+          <button
+            onClick={onAction}
+            className="mt-5 rounded-full px-10 py-3 text-[15px] font-semibold text-white transition-all active:scale-95 shadow-md hover:bg-blue-700 inline-block bg-[#2563EB]"
+          >
+            {actionLabel}
+          </button>
+        ) : (
+          <button
+            onClick={onAction}
+            className="mt-4 md:mt-5 rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50"
+            style={{ borderColor: accentColor, color: accentColor }}
+          >
+            {actionLabel}
+          </button>
+        )
       )}
     </div>
   );

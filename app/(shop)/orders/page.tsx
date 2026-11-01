@@ -370,7 +370,7 @@ function OrdersContent() {
             };
             const { title, desc } = emptyConfig;
             return (
-              <div className="flex flex-col items-center justify-center pt-4 pb-16 md:pt-4 md:pb-24 text-center px-4">
+              <div className="flex flex-col items-center justify-center min-h-[60vh] md:min-h-[68vh] text-center px-4">
                 <EmptyOrdersIllustration />
                 <h3 className="text-[17px] md:text-[20px] font-semibold mb-2 mt-2" style={{ color: t.textPrimary }}>{title}</h3>
                 <p className="text-[13px] md:text-[15px] mb-5 max-w-[280px]" style={{ color: t.textMuted }}>{desc}</p>

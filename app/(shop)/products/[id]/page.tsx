@@ -653,7 +653,7 @@ export default function ProductDetailPage() {
 
             <Button
               variant="cta"
-              className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-[0_4px_16px_rgba(26,111,212,0.28)] hover:shadow-[0_6px_20px_rgba(26,111,212,0.35)] transition-all duration-150 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:shadow-none"
+              className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-none hover:shadow-none transition-all duration-150 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:shadow-none"
               onClick={async () => {
                 if (stock.status !== "out") {
                   await handleAddToCart();
@@ -764,7 +764,7 @@ export default function ProductDetailPage() {
 
           <Button
             variant="cta"
-            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-[0_4px_14px_rgba(26,111,212,0.28)] transition-all duration-150 flex items-center justify-center gap-2 disabled:opacity-50 disabled:shadow-none"
+            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-none transition-all duration-150 flex items-center justify-center gap-2 disabled:opacity-50 disabled:shadow-none"
             onClick={async () => {
               if (stock.status !== "out") {
                 await handleAddToCart();

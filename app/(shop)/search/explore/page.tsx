@@ -483,7 +483,6 @@ function ExploreContent() {
           </div>
         </div>
       )}
-      </div>
 
       {/* ── Autocomplete results (shown while typing) ── */}
       {query.trim().length > 0 && (

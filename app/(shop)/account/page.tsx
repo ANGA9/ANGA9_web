@@ -857,49 +857,31 @@ export default function CustomerAccountPage() {
 
             {!isLoggedIn ? (
               <div className="w-full bg-white">
-                {/* ── Guest Login Prompt ── */}
-                <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100 bg-white">
-                  <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">
-                    Log in for exclusive wholesale offers
-                  </p>
+                {/* ── Guest Login Prompt Card ── */}
+                <div className="mx-4 mt-3 bg-white rounded-2xl border border-gray-200/80 p-4 flex items-center justify-between shadow-sm">
+                  <div>
+                    <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">
+                      Log in for exclusive wholesale offers
+                    </p>
+                    <p className="text-[12px] text-gray-500 mt-0.5">
+                      Access bulk tier rates &amp; GST tax invoices
+                    </p>
+                  </div>
                   <button
                     onClick={() => openLoginSheet()}
-                    className="px-5 py-2 rounded-full bg-[#1A6FD4] text-white text-[13.5px] font-bold active:scale-95 transition-all shadow-sm shrink-0 ml-3"
+                    className="px-5 py-2.5 rounded-full bg-[#1A6FD4] text-white text-[13px] font-bold active:scale-95 transition-all shadow-sm shrink-0 ml-3"
                   >
                     Log In
                   </button>
                 </div>
 
-                {/* ── SETTINGS & HELP ── */}
-                <div className="pt-4 pb-1">
-                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    Settings &amp; Help
-                  </h2>
-                </div>
-                <div className="divide-y divide-gray-100 border-b border-gray-100">
+                {/* ── Swiggy-style Single Rounded Options Card ── */}
+                <div className="mx-4 mt-3 mb-8 bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden divide-y divide-gray-100">
                   <MenuItem icon={Bell} label="Notification Settings" onClick={() => openLoginSheet()} />
                   <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
                   <MenuItem icon={ShieldCheck} label="Data & Privacy" onClick={() => router.push('/account/privacy')} />
-                </div>
-
-                {/* ── FEEDBACK & INFORMATION ── */}
-                <div className="pt-5 pb-1">
-                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    Feedback &amp; Information
-                  </h2>
-                </div>
-                <div className="divide-y divide-gray-100 border-b border-gray-100">
                   <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
                   <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
-                </div>
-
-                {/* ── MORE FROM ANGA9 ── */}
-                <div className="pt-5 pb-1">
-                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    More from ANGA9
-                  </h2>
-                </div>
-                <div className="divide-y divide-gray-100 border-b border-gray-100">
                   <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
                   <MenuItem icon={Smartphone} label="Download App" href="https://play.google.com/store/apps/details?id=com.anga9.customer" external />
                 </div>

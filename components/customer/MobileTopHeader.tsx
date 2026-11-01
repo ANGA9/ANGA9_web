@@ -15,10 +15,10 @@ import { cdnUrl } from "@/lib/utils";
 import NotificationBell from "@/components/shared/NotificationBell";
 
 const MOBILE_TABS: { key: string; label: string; accent: string; gradientFrom: string; gradientVia: string }[] = [
-  { key: "ALL",          label: "ALL",          accent: "#1A6FD4", gradientFrom: "#CDE0FF", gradientVia: "#EAF2FF" },
-  { key: "FASHION",      label: "FASHION",      accent: "#E0598B", gradientFrom: "#FDE8EF", gradientVia: "#FFF2F6" },
-  { key: "ACCESSORIES",  label: "ACCESSORIES",  accent: "#8B5CF6", gradientFrom: "#EDE9FE", gradientVia: "#F5F3FF" },
-  { key: "HOME LIVING",  label: "HOME LIVING",  accent: "#2E9D6A", gradientFrom: "#E2F6EC", gradientVia: "#F0FAF5" },
+  { key: "ALL",          label: "ALL",          accent: "#1A6FD4", gradientFrom: "#BAD8FF", gradientVia: "#E2EFFF" },
+  { key: "FASHION",      label: "FASHION",      accent: "#E0598B", gradientFrom: "#F9BFD4", gradientVia: "#FDE2EC" },
+  { key: "ACCESSORIES",  label: "ACCESSORIES",  accent: "#8B5CF6", gradientFrom: "#D7CBFD", gradientVia: "#ECE5FE" },
+  { key: "HOME LIVING",  label: "HOME LIVING",  accent: "#2E9D6A", gradientFrom: "#C0EDD5", gradientVia: "#E1F7EC" },
 ];
 
 export default function MobileTopHeader() {

@@ -360,9 +360,9 @@ function ExploreContent() {
 
   return (
     <div className="min-h-[100dvh]" style={{ background: t.bgPage }}>
-      {/* ── Top bar with search ── */}
+      {/* ── Top bar with search & standalone mic ── */}
       <div className="sticky top-0 z-40 bg-white border-b" style={{ borderColor: t.border }}>
-        <div className="flex items-center gap-2 px-3 py-2.5">
+        <div className="flex items-center gap-2.5 px-3 py-2.5">
           <button
             type="button"
             aria-label="Back to home"
@@ -371,6 +371,7 @@ function ExploreContent() {
           >
             <ArrowLeft className="w-5 h-5 text-[#1A1A2E]" />
           </button>
+          
           <div
             className="flex-1 flex items-center gap-2 bg-[#F4F6FB] rounded-full px-4 h-10 border border-black/[0.15] focus-within:border-black/60 focus-within:bg-white transition-all duration-150"
             style={{ outline: "none" }}
@@ -403,46 +404,85 @@ function ExploreContent() {
                 <X className="w-4 h-4" />
               </button>
             )}
+          </div>
 
-            <div className="w-px h-5 bg-gray-300 mx-1" />
+          {/* Standalone Circular Mic Button */}
+          <button
+            type="button"
+            aria-label={listening ? "Stop listening" : "Voice search"}
+            onClick={() => listening ? stopListening() : startListening()}
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full transition-all active:scale-95"
+            style={{
+              background: listening ? "#1A6FD4" : "#F4F6FB",
+              color: listening ? "white" : "#1A6FD4",
+              border: "1px solid rgba(0,0,0,0.12)"
+            }}
+          >
+            {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
 
-            {/* Mic button inside search bar */}
-            <button
-              type="button"
-              aria-label={listening ? "Stop listening" : "Voice search"}
-              onClick={() => listening ? stopListening() : startListening()}
-              className="shrink-0 flex items-center justify-center w-7 h-7 rounded-full transition-all active:scale-90 mr-1"
-              style={{
-                background: listening ? "#1A6FD4" : "transparent",
-                color: listening ? "white" : "#1A6FD4"
-              }}
-            >
-              {listening
-                ? <MicOff className="w-4 h-4" />
-                : <Mic className="w-4 h-4" />
-              }
-            </button>
+      {/* ── Google-style Voice Search Dialogue Box ── */}
+      {listening && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300">
+          <div className="w-full sm:w-[440px] bg-white rounded-t-[32px] sm:rounded-[32px] shadow-2xl p-6 flex flex-col items-center animate-in fade-in slide-in-from-bottom-6 duration-200">
+            {/* Header */}
+            <div className="w-full flex items-center justify-between mb-2">
+              <span className="text-[13px] font-bold text-[#1A6FD4] uppercase tracking-wider">
+                Listening…
+              </span>
+              <button
+                type="button"
+                onClick={stopListening}
+                aria-label="Close voice search"
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Live speech transcription text (auto-types in real time) */}
+            <div className="w-full min-h-[76px] flex items-center justify-center px-4 my-2 text-center">
+              <p className="text-[20px] sm:text-[22px] font-bold text-[#1A1A2E] leading-snug">
+                {voiceTranscript ? (
+                  `"${voiceTranscript}"`
+                ) : (
+                  <span className="text-gray-400 font-normal text-[16px]">
+                    Say something like &quot;Formal shirts&quot; or &quot;Sarees&quot;...
+                  </span>
+                )}
+              </p>
+            </div>
+
+            {/* Google-style Audio Waves / Pulsing Mic */}
+            <div className="my-6 relative flex items-center justify-center">
+              <span className="absolute w-28 h-28 rounded-full bg-blue-100 animate-ping opacity-60" />
+              <span className="absolute w-20 h-20 rounded-full bg-blue-200 opacity-50" />
+              
+              <button
+                type="button"
+                onClick={stopListening}
+                className="relative z-10 w-16 h-16 rounded-full bg-[#1A6FD4] flex items-center justify-center text-white shadow-lg shadow-blue-500/30 active:scale-95 transition-transform"
+              >
+                <Mic className="w-7 h-7" />
+              </button>
+            </div>
+
+            {/* Google-style 4 animated colored sound dots */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#4285F4] animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#EA4335] animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC05] animate-bounce" style={{ animationDelay: '300ms' }} />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#34A853] animate-bounce" style={{ animationDelay: '450ms' }} />
+            </div>
+
+            <p className="text-[12px] text-gray-400 text-center">
+              Tap the microphone to cancel
+            </p>
           </div>
         </div>
-
-        {/* Listening indicator bar */}
-        {listening && (
-          <div className="flex items-center gap-2 px-4 py-2 border-t" style={{ borderColor: t.border, background: "#EFF6FF" }}>
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A6FD4] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1A6FD4]" />
-            </span>
-            <p className="text-[13px] font-semibold text-[#1A6FD4] flex-1">
-              {voiceTranscript ? `"${voiceTranscript}"` : "Listening… speak now"}
-            </p>
-            <button
-              onClick={stopListening}
-              className="text-[11px] font-bold text-[#6B7280] hover:text-gray-900"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+      )}
       </div>
 
       {/* ── Autocomplete results (shown while typing) ── */}

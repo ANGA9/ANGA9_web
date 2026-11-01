@@ -384,76 +384,73 @@ function MobileTopHeaderContent() {
         </div>
       </div>
 
-      {/* ── Row 3: Elevated Search Bar (taps open /search/explore) ── */}
-      <div className="px-4 py-2 pb-4">
+      {/* ── Row 3: Elevated Search Bar + Standalone Circular Mic ── */}
+      <div className="px-4 py-2 pb-4 flex items-center gap-2.5">
         <style>{`
           @keyframes searchHintIn {
             0% { transform: translateY(100%); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
           }
         `}</style>
-        <div className="relative flex items-center bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all">
-          <button
-            type="button"
-            onClick={() => {
-              startTransition(() => {
-                router.push("/search/explore");
-              });
-            }}
-            aria-label="Open search"
-            className="flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-l-full text-left bg-transparent"
-          >
-            <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
-              <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
-            </div>
-            <div className="relative flex-1 min-w-0 h-[22px]">
-              <div className="pointer-events-none absolute inset-0 flex items-center text-[14.5px] text-[#6B7280]">
-                {isPending ? (
-                  <span className="font-medium text-[#6B7280]">Loading{loadingDots}</span>
-                ) : (
-                  <>
-                    <span className="shrink-0 select-none text-[#6B7280]">Search for&nbsp;</span>
-                    <div className="relative flex-1 min-w-0 h-[22px] overflow-hidden">
-                      <span
-                        key={placeholderIdx}
-                        className="absolute inset-0 flex items-center truncate text-[#374151] font-medium"
-                        style={{ animation: "searchHintIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
-                      >
-                        &apos;{SEARCH_WORDS[placeholderIdx]}&apos;
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-            <Search className="w-[18px] h-[18px] text-[#4B5563] shrink-0 ml-1" />
-          </button>
 
-          <div className="shrink-0 flex items-center pr-3">
-            <div className="w-px h-5 bg-gray-200 mx-2" />
-            {/* Mic button — right inside of search bar */}
-            <button
-              type="button"
-              onClick={() => {
-                const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-                if (SR) {
-                  const rec = new SR();
-                  rec.lang = "en-IN";
-                  rec.continuous = false;
-                  rec.interimResults = true;
-                  rec.maxAlternatives = 1;
-                  (window as any)._globalVoiceRec = rec;
-                  try { rec.start(); } catch {}
-                }
-                router.push("/search/explore?voice=1");
-              }}
-              aria-label="Voice search"
-              className="p-1.5 rounded-full text-[#1A6FD4] hover:bg-gray-100 transition-colors active:scale-95"
-            >
-              <Mic className="w-[18px] h-[18px]" />
-            </button>
+        {/* Search Pill */}
+        <button
+          type="button"
+          onClick={() => {
+            startTransition(() => {
+              router.push("/search/explore");
+            });
+          }}
+          aria-label="Open search"
+          className="flex-1 relative flex items-center gap-2.5 px-4 h-[48px] bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 transition-all text-left"
+        >
+          <div className="shrink-0 flex items-center justify-center w-[26px] h-[26px] rounded-full overflow-hidden border border-gray-100 shadow-sm bg-white">
+            <Image src={logoo} alt="Logo" width={26} height={26} className="object-cover" />
           </div>
-        </div>
+          <div className="relative flex-1 min-w-0 h-[22px]">
+            <div className="pointer-events-none absolute inset-0 flex items-center text-[14.5px] text-[#6B7280]">
+              {isPending ? (
+                <span className="font-medium text-[#6B7280]">Loading{loadingDots}</span>
+              ) : (
+                <>
+                  <span className="shrink-0 select-none text-[#6B7280]">Search for&nbsp;</span>
+                  <div className="relative flex-1 min-w-0 h-[22px] overflow-hidden">
+                    <span
+                      key={placeholderIdx}
+                      className="absolute inset-0 flex items-center truncate text-[#374151] font-medium"
+                      style={{ animation: "searchHintIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                    >
+                      &apos;{SEARCH_WORDS[placeholderIdx]}&apos;
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          <Search className="w-[18px] h-[18px] text-[#4B5563] shrink-0" />
+        </button>
+
+        {/* Standalone Circular Mic Button */}
+        <button
+          type="button"
+          onClick={() => {
+            const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            if (SR) {
+              const rec = new SR();
+              rec.lang = "en-IN";
+              rec.continuous = false;
+              rec.interimResults = true;
+              rec.maxAlternatives = 1;
+              (window as any)._globalVoiceRec = rec;
+              try { rec.start(); } catch {}
+            }
+            router.push("/search/explore?voice=1");
+          }}
+          aria-label="Voice search"
+          className="shrink-0 flex items-center justify-center w-[48px] h-[48px] rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#1A1A2E]/15 hover:border-[#1A1A2E]/40 text-[#1A6FD4] active:scale-95 transition-all"
+        >
+          <Mic className="w-[20px] h-[20px]" />
+        </button>
       </div>
 
       {/* ── Row 4: Folder Tabs (hidden on search results) ── */}

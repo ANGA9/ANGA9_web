@@ -9,10 +9,10 @@ import { useAuth } from "@/lib/AuthContext";
 import { LoggedOutState } from "@/components/shared/LoggedOutState";
 
 const TOP_CATEGORIES = [
-  { label: "Orders",    icon: Package,     bg: "#FEF3C780", fg: "#000000", category: "Order issue" },
-  { label: "Returns",   icon: RefreshCcw,  bg: "#FFEDD580", fg: "#000000", category: "Refund/return" },
-  { label: "Payments",  icon: CreditCard,  bg: "#ECFDF599", fg: "#000000", category: "Payment" },
-  { label: "Account",   icon: UserCircle,  bg: "#EDE9FE80", fg: "#000000", category: "Account" },
+  { label: "Orders",    icon: Package,     bg: "#EFF6FF", fg: "#1A6FD4", category: "Order issue" },
+  { label: "Returns",   icon: RefreshCcw,  bg: "#EFF6FF", fg: "#1A6FD4", category: "Refund/return" },
+  { label: "Payments",  icon: CreditCard,  bg: "#EFF6FF", fg: "#1A6FD4", category: "Payment" },
+  { label: "Account",   icon: UserCircle,  bg: "#EFF6FF", fg: "#1A6FD4", category: "Account" },
 ];
 
 export default function HelpCenterPage() {

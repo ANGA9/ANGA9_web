@@ -155,6 +155,7 @@ function OrdersContent() {
       </header>
 
       {/* ── Mobile Filter Strip (Segmented Control Style) ── */}
+      {user && (
       <div className="md:hidden w-full bg-white border-b sticky top-14 z-30 px-3 py-2" style={{ borderColor: t.border }}>
         <div className="flex items-center border border-gray-200 bg-white w-full overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.06)] rounded-xl">
           {/* SORT BUTTON (Using native select) */}
@@ -199,6 +200,7 @@ function OrdersContent() {
           </div>
         </div>
       </div>
+      )}
 
       <div className="px-4 md:px-0 pt-4 md:pt-0">
       {showSuccess && (
@@ -385,8 +387,7 @@ function OrdersContent() {
                 ) : (
                   <button
                     onClick={() => openLoginSheet()}
-                    className="rounded-full md:rounded-xl px-8 py-3 md:px-10 md:py-3.5 text-[15px] md:text-[16px] font-semibold md:font-bold transition-all active:scale-95 shadow-sm md:shadow-md bg-white border-2 hover:bg-gray-50 inline-block"
-                    style={{ borderColor: t.primaryCta, color: t.primaryCta }}
+                    className="rounded-full px-10 py-3 text-[15px] font-bold text-white bg-[#1A6FD4] hover:bg-blue-700 transition-all active:scale-95 shadow-md inline-block"
                   >
                     Login
                   </button>

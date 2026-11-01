@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Mail, Phone, ShieldCheck, Store, Download } from "lucide-react";
@@ -131,10 +131,9 @@ export default function CustomerLoginPage() {
   }
 
   /* ─── OTP verify ─── */
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault();
+  async function triggerVerify(code: string) {
+    if (loading) return;
     setError("");
-    const code = otp.join("");
     if (code.length !== 6) {
       setError("Please enter the 6-digit OTP");
       return;
@@ -176,6 +175,41 @@ export default function CustomerLoginPage() {
     }
   }
 
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    triggerVerify(otp.join(""));
+  }
+
+  // WebOTP API — auto-detect & auto-capture incoming SMS OTP on mobile browsers
+  useEffect(() => {
+    if (step !== "otp") return;
+    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
+
+    const ac = new AbortController();
+    (navigator as any).credentials
+      ?.get({
+        otp: { transport: ["sms"] },
+        signal: ac.signal,
+      })
+      .then((content: any) => {
+        if (content?.code) {
+          const clean = content.code.replace(/\D/g, "").slice(0, 6);
+          if (clean.length === 6) {
+            const digits = clean.split("");
+            setOtp(digits);
+            toast.success("OTP auto-captured!", { icon: "⚡" });
+            triggerVerify(clean);
+          }
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      ac.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, phone]);
+
   /* ─── OTP input helpers ─── */
   function handleOtpChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
@@ -191,9 +225,14 @@ export default function CustomerLoginPage() {
           }
         });
         setOtp(next);
-        const parent = e.target.parentElement;
-        const targetInput = parent?.children[maxIndex] as HTMLInputElement;
-        targetInput?.focus();
+        const full = next.join("");
+        if (full.length === 6) {
+          triggerVerify(full);
+        } else {
+          const parent = e.target.parentElement;
+          const targetInput = parent?.children[maxIndex] as HTMLInputElement;
+          targetInput?.focus();
+        }
         return;
       }
       value = value.slice(-1);
@@ -202,7 +241,11 @@ export default function CustomerLoginPage() {
     const next = [...otp];
     next[index] = value;
     setOtp(next);
-    if (value && index < 5) {
+
+    const full = next.join("");
+    if (full.length === 6) {
+      triggerVerify(full);
+    } else if (value && index < 5) {
       const parent = e.target.parentElement;
       const nextInput = parent?.children[index + 1] as HTMLInputElement;
       if (nextInput) {

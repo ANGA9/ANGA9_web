@@ -93,7 +93,6 @@ export default function LoginSheet() {
 
     setLoading(true);
     try {
-      // Test numbers are registered server-side in Supabase (Auth → Providers → Phone)
       const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
       if (otpErr) throw otpErr;
       setStep("otp");
@@ -145,10 +144,9 @@ export default function LoginSheet() {
   }
 
   /* ─── OTP verify ─── */
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault();
+  async function triggerVerify(code: string) {
+    if (loading) return;
     setError("");
-    const code = otp.join("");
     if (code.length !== 6) {
       setError("Please enter the 6-digit OTP");
       return;
@@ -180,6 +178,43 @@ export default function LoginSheet() {
     }
   }
 
+  async function handleVerify(e: React.FormEvent) {
+    e.preventDefault();
+    triggerVerify(otp.join(""));
+  }
+
+  // WebOTP API — auto-detect & auto-capture incoming SMS OTP on mobile browsers
+  useEffect(() => {
+    if (step !== "otp") return;
+    if (typeof window === "undefined" || !("OTPCredential" in window)) return;
+
+    const ac = new AbortController();
+    (navigator as any).credentials
+      ?.get({
+        otp: { transport: ["sms"] },
+        signal: ac.signal,
+      })
+      .then((content: any) => {
+        if (content?.code) {
+          const clean = content.code.replace(/\D/g, "").slice(0, 6);
+          if (clean.length === 6) {
+            const digits = clean.split("");
+            setOtp(digits);
+            toast.success("OTP auto-captured!", { icon: "⚡" });
+            triggerVerify(clean);
+          }
+        }
+      })
+      .catch(() => {
+        // AbortError is expected when component unmounts or user dismisses
+      });
+
+    return () => {
+      ac.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, phone]);
+
   /* ─── OTP input helpers ─── */
   function handleOtpChange(index: number, value: string) {
     if (value.length > 1) {
@@ -190,8 +225,13 @@ export default function LoginSheet() {
           if (index + i < 6) next[index + i] = d;
         });
         setOtp(next);
-        const focusIdx = Math.min(index + digits.length, 5);
-        document.getElementById(`sheet-otp-${focusIdx}`)?.focus();
+        const full = next.join("");
+        if (full.length === 6) {
+          triggerVerify(full);
+        } else {
+          const focusIdx = Math.min(index + digits.length, 5);
+          document.getElementById(`sheet-otp-${focusIdx}`)?.focus();
+        }
         return;
       }
       value = value.slice(-1);
@@ -200,7 +240,11 @@ export default function LoginSheet() {
     const next = [...otp];
     next[index] = value;
     setOtp(next);
-    if (value && index < 5) {
+
+    const full = next.join("");
+    if (full.length === 6) {
+      triggerVerify(full);
+    } else if (value && index < 5) {
       const el = document.getElementById(`sheet-otp-${index + 1}`);
       if (el) {
         el.focus();
@@ -374,6 +418,7 @@ export default function LoginSheet() {
                       id={`sheet-otp-${i}`}
                       type="text"
                       inputMode="numeric"
+                      autoComplete={i === 0 ? "one-time-code" : "off"}
                       maxLength={6}
                       value={d}
                       onChange={(e) => handleOtpChange(i, e.target.value)}

@@ -857,130 +857,51 @@ export default function CustomerAccountPage() {
 
             {!isLoggedIn ? (
               <div className="w-full bg-white">
-                {/* ── B2B Wholesale Portal Banner ── */}
-                <div className="p-5 border-b border-gray-100 bg-[#F8FAFC]">
-                  <div className="inline-flex items-center gap-1.5 mb-2 bg-blue-50 border border-blue-100/60 px-2.5 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
-                    <span className="text-[11px] font-bold tracking-wider uppercase text-[#2563EB]">
-                      B2B Wholesale Portal
-                    </span>
-                  </div>
-                  <h2 className="text-[17px] font-bold text-gray-900 leading-snug">
-                    Access Verified Wholesale Pricing
-                  </h2>
-                  <p className="text-[13px] text-gray-500 mt-1 mb-4 leading-relaxed">
-                    Sign in with your phone or email to place bulk orders, view tier rates, and receive GST tax invoices.
+                {/* ── Guest Login Prompt ── */}
+                <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100 bg-white">
+                  <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">
+                    Log in for exclusive wholesale offers
                   </p>
                   <button
                     onClick={() => openLoginSheet()}
-                    className="w-full py-3 rounded-xl text-[14.5px] font-bold text-white transition-all active:scale-[0.98] shadow-sm bg-[#2563EB] hover:bg-blue-700 flex items-center justify-center gap-2"
+                    className="px-5 py-2 rounded-full bg-[#1A6FD4] text-white text-[13.5px] font-bold active:scale-95 transition-all shadow-sm shrink-0 ml-3"
                   >
-                    Log In / Register
+                    Log In
                   </button>
                 </div>
 
-                {/* ── Flat Hairline B2B Menu List (No Boxes) ── */}
+                {/* ── SETTINGS & HELP ── */}
+                <div className="pt-4 pb-1">
+                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    Settings &amp; Help
+                  </h2>
+                </div>
                 <div className="divide-y divide-gray-100 border-b border-gray-100">
-                  <button
-                    onClick={() => router.push('/orders')}
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                        <Package className="w-5 h-5 text-[#2563EB]" />
-                      </div>
-                      <div>
-                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Orders &amp; Quotations</p>
-                        <p className="text-[12px] text-gray-500 mt-0.5">Track shipments, reorders &amp; invoice history</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </button>
+                  <MenuItem icon={Bell} label="Notification Settings" onClick={() => openLoginSheet()} />
+                  <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
+                  <MenuItem icon={ShieldCheck} label="Data & Privacy" onClick={() => router.push('/account/privacy')} />
+                </div>
 
-                  <button
-                    onClick={() => openLoginSheet()}
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                        <Building2 className="w-5 h-5 text-amber-600" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">GST &amp; Business KYC</p>
-                          <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">18% ITC</span>
-                        </div>
-                        <p className="text-[12px] text-gray-500 mt-0.5">Register business GSTIN for tax credits</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </button>
+                {/* ── FEEDBACK & INFORMATION ── */}
+                <div className="pt-5 pb-1">
+                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    Feedback &amp; Information
+                  </h2>
+                </div>
+                <div className="divide-y divide-gray-100 border-b border-gray-100">
+                  <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
+                  <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
+                </div>
 
-                  <button
-                    onClick={() => router.push('/help')}
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                        <Headset className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Help Center &amp; Buyer Support</p>
-                        <p className="text-[12px] text-gray-500 mt-0.5">Dedicated enterprise support &amp; resolution</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </button>
-
-                  <button
-                    onClick={() => router.push('/faq')}
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                        <HelpCircle className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">FAQs &amp; Bulk Ordering</p>
-                        <p className="text-[12px] text-gray-500 mt-0.5">MOQ guidelines, shipping &amp; payments</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </button>
-
-                  <button
-                    onClick={() => router.push('/terms')}
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                        <FileText className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Terms, Policies &amp; Invoicing</p>
-                        <p className="text-[12px] text-gray-500 mt-0.5">B2B commercial trade terms</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </button>
-
-                  <a
-                    href="https://seller.anga9.com/sell-on-anga9"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                        <Store className="w-5 h-5 text-[#2563EB]" />
-                      </div>
-                      <div>
-                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Sell on ANGA9</p>
-                        <p className="text-[12px] text-gray-500 mt-0.5">Become a verified manufacturer / supplier</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
-                  </a>
+                {/* ── MORE FROM ANGA9 ── */}
+                <div className="pt-5 pb-1">
+                  <h2 className="px-5 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    More from ANGA9
+                  </h2>
+                </div>
+                <div className="divide-y divide-gray-100 border-b border-gray-100">
+                  <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
+                  <MenuItem icon={Smartphone} label="Download App" href="https://play.google.com/store/apps/details?id=com.anga9.customer" external />
                 </div>
               </div>
             ) : (
@@ -1061,8 +982,9 @@ export default function CustomerAccountPage() {
               </button>
             )}
             </div>
-          </div>
-        ) : (
+          )}
+        </div>
+      ) : (
           // --- Mobile Drill-down View ---
           <div className="w-full flex flex-col min-h-screen bg-white">
             <header className="flex items-center justify-between px-4 h-14 bg-white border-b border-gray-100 sticky top-0 z-40">

@@ -855,46 +855,158 @@ export default function CustomerAccountPage() {
               </h1>
             </header>
 
-            <div className="px-4 pt-4 flex flex-col gap-3">
-
             {!isLoggedIn ? (
-              <div className="bg-white rounded-xl p-5 flex items-center justify-between shadow-sm border border-gray-200">
-                <span className="text-[15px] font-bold text-gray-900 w-2/3 leading-snug">
-                  Log in for exclusive wholesale offers
-                </span>
-                <Link
-                  href="/login"
-                  className="flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold transition-all shadow-sm active:scale-95"
-                  style={{ background: accentBlue, color: "#FFFFFF" }}
-                >
-                  Log In
-                </Link>
+              <div className="w-full bg-white">
+                {/* ── B2B Wholesale Portal Banner ── */}
+                <div className="p-5 border-b border-gray-100 bg-[#F8FAFC]">
+                  <div className="inline-flex items-center gap-1.5 mb-2 bg-blue-50 border border-blue-100/60 px-2.5 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
+                    <span className="text-[11px] font-bold tracking-wider uppercase text-[#2563EB]">
+                      B2B Wholesale Portal
+                    </span>
+                  </div>
+                  <h2 className="text-[17px] font-bold text-gray-900 leading-snug">
+                    Access Verified Wholesale Pricing
+                  </h2>
+                  <p className="text-[13px] text-gray-500 mt-1 mb-4 leading-relaxed">
+                    Sign in with your phone or email to place bulk orders, view tier rates, and receive GST tax invoices.
+                  </p>
+                  <button
+                    onClick={() => openLoginSheet()}
+                    className="w-full py-3 rounded-xl text-[14.5px] font-bold text-white transition-all active:scale-[0.98] shadow-sm bg-[#2563EB] hover:bg-blue-700 flex items-center justify-center gap-2"
+                  >
+                    Log In / Register
+                  </button>
+                </div>
+
+                {/* ── Flat Hairline B2B Menu List (No Boxes) ── */}
+                <div className="divide-y divide-gray-100 border-b border-gray-100">
+                  <button
+                    onClick={() => router.push('/orders')}
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                        <Package className="w-5 h-5 text-[#2563EB]" />
+                      </div>
+                      <div>
+                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Orders &amp; Quotations</p>
+                        <p className="text-[12px] text-gray-500 mt-0.5">Track shipments, reorders &amp; invoice history</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </button>
+
+                  <button
+                    onClick={() => openLoginSheet()}
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                        <Building2 className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">GST &amp; Business KYC</p>
+                          <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">18% ITC</span>
+                        </div>
+                        <p className="text-[12px] text-gray-500 mt-0.5">Register business GSTIN for tax credits</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/help')}
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                        <Headset className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Help Center &amp; Buyer Support</p>
+                        <p className="text-[12px] text-gray-500 mt-0.5">Dedicated enterprise support &amp; resolution</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/faq')}
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                        <HelpCircle className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">FAQs &amp; Bulk Ordering</p>
+                        <p className="text-[12px] text-gray-500 mt-0.5">MOQ guidelines, shipping &amp; payments</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/terms')}
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                        <FileText className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Terms, Policies &amp; Invoicing</p>
+                        <p className="text-[12px] text-gray-500 mt-0.5">B2B commercial trade terms</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </button>
+
+                  <a
+                    href="https://seller.anga9.com/sell-on-anga9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-between px-5 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                        <Store className="w-5 h-5 text-[#2563EB]" />
+                      </div>
+                      <div>
+                        <p className="text-[14.5px] font-semibold text-gray-900 leading-tight">Sell on ANGA9</p>
+                        <p className="text-[12px] text-gray-500 mt-0.5">Become a verified manufacturer / supplier</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </a>
+                </div>
               </div>
             ) : (
-              <button 
-                onClick={() => { setActiveNav("Profile"); setIsEditingProfile(true); setMobileMenuOpen(false); }}
-                className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-gray-200 active:scale-[0.98] transition-all text-left w-full"
-              >
-                <div
-                  className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full text-[22px] font-black text-white shadow-inner relative"
-                  style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
+              <div className="px-4 pt-4 flex flex-col gap-3">
+                <button 
+                  onClick={() => { setActiveNav("Profile"); setIsEditingProfile(true); setMobileMenuOpen(false); }}
+                  className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-gray-200 active:scale-[0.98] transition-all text-left w-full"
                 >
-                  {initials}
-                  {/* Edit pencil overlay */}
-                  <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-                    <Pencil className="w-2.5 h-2.5 text-gray-600" />
+                  <div
+                    className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full text-[22px] font-black text-white shadow-inner relative"
+                    style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
+                  >
+                    {initials}
+                    {/* Edit pencil overlay */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+                      <Pencil className="w-2.5 h-2.5 text-gray-600" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
-                  <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail || displayPhone || ""}</p>
-                  <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>{dbUser?.full_name ? "Edit profile →" : "Complete your profile →"}</p>
-                </div>
-                <ChevronRight className="w-6 h-6 text-gray-300" />
-              </button>
-            )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
+                    <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail || displayPhone || ""}</p>
+                    <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>{dbUser?.full_name ? "Edit profile →" : "Complete your profile →"}</p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-gray-300" />
+                </button>
 
-            {isLoggedIn && (
               <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
                 <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                   <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">My Account</h2>
@@ -907,7 +1019,6 @@ export default function CustomerAccountPage() {
                   <MenuItem icon={Building2} label="Business Profile & GST" badge="18% GST" onClick={() => { setActiveNav("Business Profile"); setMobileMenuOpen(false); }} />
                 </div>
               </div>
-            )}
 
             <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
               <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">

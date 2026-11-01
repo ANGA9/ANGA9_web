@@ -21,7 +21,7 @@ export default function EmptyState({
   accentColor = "#4338CA",
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[55vh] py-8 px-4 bg-white rounded-xl border-none col-span-12 w-full text-center flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-[55vh] py-8 px-4 bg-white rounded-xl border-none col-span-12 w-full text-center">
       {illustration ? (
         illustration
       ) : Icon ? (

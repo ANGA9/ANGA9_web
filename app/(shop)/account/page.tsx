@@ -38,6 +38,7 @@ import { getBrowserPosition, reverseGeocode, type DetectedAddress } from "@/lib/
 import StreetAddressAutocomplete from "@/components/customer/checkout/StreetAddressAutocomplete";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useAuth } from "@/lib/AuthContext";
+import { useLoginSheet } from "@/lib/LoginSheetContext";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { api } from "@/lib/api";
 import { authApi } from "@/lib/authApi";
@@ -163,6 +164,7 @@ export default function CustomerAccountPage() {
   const [activeNav, setActiveNav] = useState("Profile");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const { user, dbUser, loading, logout, refreshUser } = useAuth();
+  const { open: openLoginSheet } = useLoginSheet();
   const supabase = getSupabaseBrowserClient();
 
   const [addresses, setAddresses] = useState<Address[]>([]);

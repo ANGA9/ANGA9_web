@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Mail, Phone, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Phone, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
 import { useLoginSheet } from "@/lib/LoginSheetContext";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
-import { authApi } from "@/lib/authApi";
 import toast from "react-hot-toast";
 
-type Tab = "email" | "phone";
 type Step = "input" | "otp" | "success";
 
 export default function LoginSheet() {
@@ -18,9 +15,7 @@ export default function LoginSheet() {
   const { user } = useAuth();
 
   const [visible, setVisible] = useState(false);
-  const [tab, setTab] = useState<Tab>("phone");
   const [step, setStep] = useState<Step>("input");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
@@ -45,7 +40,9 @@ export default function LoginSheet() {
   useEffect(() => {
     if (user && isOpen && step === "otp") {
       setStep("success");
-      toast.success("Login successful! Welcome to ANGA9", { icon: <CheckCircle2 size={18} color="#059669" /> });
+      toast.success("Login successful! Welcome to ANGA9", {
+        icon: <CheckCircle2 size={18} color="#059669" />,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isOpen, step]);
@@ -65,62 +62,12 @@ export default function LoginSheet() {
     setVisible(false);
     setTimeout(() => {
       close();
-      setTab("email");
       setStep("input");
-      setEmail("");
       setPhone("");
       setOtp(["", "", "", "", "", ""]);
       setError("");
       setLoading(false);
     }, 300);
-  }
-
-  function switchTab(t: Tab) {
-    setTab(t);
-    setStep("input");
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-  }
-
-  /* ─── Email submit ─── */
-  async function handleEmailSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Phase 8 prevention: if this email is already linked to a phone-first
-      // account, steering the user back to their phone avoids creating a
-      // duplicate auth.users row on first email login from a new device.
-      const check = await authApi.checkIdentity({ email: trimmed });
-      if (check.exists && check.created_via === "phone" && check.hint) {
-        setError(
-          `This email is linked to an account registered with phone +91 ${check.hint}. Please log in with your phone number instead.`
-        );
-        setLoading(false);
-        return;
-      }
-
-      const { error: otpErr } = await supabase.auth.signInWithOtp({ email: trimmed });
-      if (otpErr) throw otpErr;
-      setStep("otp");
-      startResendTimer(60);
-      toast.success("OTP sent to your email!", { icon: <Mail size={18} color="#1A6FD4" /> });
-    } catch (err: any) {
-      console.error("Email OTP error:", err);
-      if (err.message?.includes("rate limit")) {
-        setError("Too many attempts. Please try again later.");
-      } else {
-        setError(err.message || "Failed to send OTP.");
-      }
-    } finally {
-      setLoading(false);
-    }
   }
 
   /* ─── Phone submit ─── */
@@ -135,8 +82,7 @@ export default function LoginSheet() {
 
     setLoading(true);
     try {
-      // Test numbers are registered server-side in Supabase (Auth → Providers →
-      // Phone → "Test Phone Numbers and OTPs") and flow through this same call.
+      // Test numbers are registered server-side in Supabase (Auth → Providers → Phone)
       const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
       if (otpErr) throw otpErr;
       setStep("otp");
@@ -154,7 +100,7 @@ export default function LoginSheet() {
     }
   }
 
-  function startResendTimer(seconds = 60) {
+  function startResendTimer(seconds = 30) {
     setResendTimer(seconds);
     setCanResend(false);
     const interval = setInterval(() => {
@@ -174,11 +120,11 @@ export default function LoginSheet() {
     setError("");
     setLoading(true);
     try {
-      const { error: otpErr } = tab === "email"
-        ? await supabase.auth.signInWithOtp({ email: email.trim() })
-        : await supabase.auth.signInWithOtp({ phone: normalizeIndianPhone(phone)! });
+      const normalized = normalizeIndianPhone(phone);
+      if (!normalized) return;
+      const { error: otpErr } = await supabase.auth.signInWithOtp({ phone: normalized });
       if (otpErr) throw otpErr;
-      startResendTimer(tab === "phone" ? 30 : 60);
+      startResendTimer(30);
       toast.success("OTP resent successfully!");
     } catch (err: any) {
       setError(err.message || "Failed to resend OTP");
@@ -199,28 +145,18 @@ export default function LoginSheet() {
 
     setLoading(true);
     try {
-      if (tab === "email") {
-        const { error: verifyErr } = await supabase.auth.verifyOtp({
-          email: email.trim(),
-          token: code,
-          type: "email",
-        });
-        if (verifyErr) throw verifyErr;
-      } else {
-        const normalized = normalizeIndianPhone(phone);
-        if (!normalized) {
-          setError("Invalid phone number. Please go back and re-enter.");
-          return;
-        }
-
-        const { error: verifyErr } = await supabase.auth.verifyOtp({
-          phone: normalized,
-          token: code,
-          type: "sms",
-        });
-        if (verifyErr) throw verifyErr;
+      const normalized = normalizeIndianPhone(phone);
+      if (!normalized) {
+        setError("Invalid phone number. Please go back and re-enter.");
+        return;
       }
-      // Auth state change will trigger the success effect above
+
+      const { error: verifyErr } = await supabase.auth.verifyOtp({
+        phone: normalized,
+        token: code,
+        type: "sms",
+      });
+      if (verifyErr) throw verifyErr;
     } catch (err: any) {
       console.error("OTP verify error:", err);
       if (err.message?.includes("expired")) {
@@ -288,17 +224,16 @@ export default function LoginSheet() {
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 md:hidden transition-opacity duration-300"
-        style={{ background: `rgba(0,0,0,${visible ? 0.4 : 0})` }}
+        style={{ background: `rgba(0,0,0,${visible ? 0.45 : 0})` }}
         onClick={handleClose}
       />
 
-      {/* Sheet — sits above the bottom nav bar */}
+      {/* Sheet anchored at bottom */}
       <div
-        className="fixed left-0 right-0 z-50 md:hidden bg-white rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
+        className="fixed left-0 right-0 bottom-0 z-50 md:hidden bg-white rounded-t-[28px] shadow-[0_-8px_40px_rgba(0,0,0,0.14)] transition-transform duration-300 ease-out"
         style={{
-          bottom: "calc(56px + env(safe-area-inset-bottom, 0px))",
-          maxHeight: "min(90dvh, calc(100dvh - 56px - env(safe-area-inset-bottom, 0px)))",
           transform: visible ? "translateY(0)" : "translateY(100%)",
+          paddingBottom: "max(2.5rem, calc(env(safe-area-inset-bottom, 0px) + 1.5rem))",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -307,144 +242,92 @@ export default function LoginSheet() {
           <div className="w-10 h-1 rounded-full bg-gray-300" />
         </div>
 
-        <div className="px-6 pb-6 pt-2 overflow-y-auto" style={{ maxHeight: "calc(min(90dvh, calc(100dvh - 56px - env(safe-area-inset-bottom, 0px))) - 28px)" }}>
-
+        <div className="px-6 pb-2 pt-2">
           {/* ── Success State ── */}
           {step === "success" && (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center animate-[scaleIn_0.3s_ease-out]">
-                <CheckCircle2 className="w-10 h-10 text-green-500" />
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center animate-[scaleIn_0.3s_ease-out]">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
               </div>
-              <p className="text-lg md:text-xl font-semibold text-[#1A1A2E] mt-4">Login Successful!</p>
-              <p className="text-sm md:text-base text-[#4B5563] mt-1">Welcome to ANGA9</p>
+              <p className="text-lg font-bold text-[#111827] mt-3">Login Successful!</p>
+              <p className="text-sm text-[#6B7280] mt-1">Welcome to ANGA9</p>
             </div>
           )}
 
-          {/* ── Input Step ── */}
+          {/* ── Input Step (Phone Only, Compact B2B) ── */}
           {step === "input" && (
             <>
-              <div className="mb-4">
-                <h2 className="text-xl md:text-2xl font-bold text-[#1A1A2E]">Login or Sign Up</h2>
-                <p className="text-sm md:text-base text-[#4B5563] mt-1">Enter your email or phone to continue</p>
+              <div className="mb-5">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#111827] tracking-tight">Continue with</h2>
+                  <img
+                    src="/anga9-logo.png"
+                    alt="anga9"
+                    className="h-6 w-auto object-contain -mb-0.5"
+                  />
+                </div>
+                <p className="text-[13px] text-[#6B7280] mt-1">
+                  Enter your mobile number to access wholesale pricing
+                </p>
               </div>
 
-              {/* Tabs */}
-              <div className="flex border-b border-[#E8EEF4] mb-4">
-                <button
-                  type="button"
-                  onClick={() => switchTab("phone")}
-                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
-                    tab === "phone"
-                      ? "border-[#1A6FD4] text-[#1A6FD4]"
-                      : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
-                  }`}
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  Phone
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchTab("email")}
-                  className={`flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base font-semibold transition-all border-b-2 ${
-                    tab === "email"
-                      ? "border-[#1A6FD4] text-[#1A6FD4]"
-                      : "border-transparent text-[#9CA3AF] hover:text-[#4B5563]"
-                  }`}
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  Email
-                </button>
-              </div>
+              <form onSubmit={handlePhoneSubmit} className="space-y-4">
+                <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden h-[50px]">
+                  <span className="flex items-center text-sm font-bold text-[#111827] pl-4 pr-2.5 select-none">
+                    +91
+                  </span>
+                  <div className="w-px h-5 bg-[#D0E3F7]" />
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
+                    maxLength={14}
+                    autoFocus
+                    placeholder="Enter 10-digit mobile number"
+                    className="flex-1 text-[15px] font-medium outline-none bg-transparent py-3 px-3 text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
+                  />
+                </div>
 
-              {/* Email form */}
-              {tab === "email" && (
-                <form onSubmit={handleEmailSubmit} className="space-y-4">
-                  <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-                    <span className="flex items-center pl-4 pr-2">
-                      <Mail className="w-4 h-4 text-[#9CA3AF]" />
-                    </span>
-                    <div className="w-px h-6 bg-[#D0E3F7]" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      autoFocus
-                      placeholder="Enter your email"
-                      className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-                    />
+                {error && (
+                  <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
+                    <p className="text-xs text-red-600">{error}</p>
                   </div>
+                )}
 
-                  {error && (
-                    <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
-                      <p className="text-xs md:text-sm text-red-600">{error}</p>
-                    </div>
+                <button
+                  type="submit"
+                  disabled={loading || phone.replace(/\D/g, "").length < 10}
+                  className="flex h-[48px] w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#155bb5]"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">{spinner} Sending OTP...</span>
+                  ) : (
+                    "Continue"
                   )}
+                </button>
 
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
+                <p className="text-[11.5px] text-[#9CA3AF] text-center leading-relaxed pt-2 pb-6 mb-2">
+                  By continuing, you agree to our{" "}
+                  <a
+                    href="https://anga9.com/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#1A6FD4] underline underline-offset-2 hover:text-[#155bb5]"
                   >
-                    {loading ? (
-                      <span className="flex items-center gap-2">{spinner} Sending...</span>
-                    ) : (
-                      "Request OTP"
-                    )}
-                  </button>
-
-                  <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
-                    By continuing, you agree to ANGA9&apos;s{" "}
-                    <a href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Terms</a> &{" "}
-                    <a href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Privacy Policy</a>
-                  </p>
-                </form>
-              )}
-
-              {/* Phone form */}
-              {tab === "phone" && (
-                <form onSubmit={handlePhoneSubmit} className="space-y-4">
-                  <div className="flex items-center rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus-within:border-[#1A6FD4] focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-                    <span className="flex items-center text-sm font-semibold text-[#4B5563] pl-4 pr-2 select-none">
-                      +91
-                    </span>
-                    <div className="w-px h-6 bg-[#D0E3F7]" />
-                    <input
-                      type="tel"
-                      inputMode="numeric"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/[^\d\s]/g, ""))}
-                      maxLength={14}
-                      autoFocus
-                      placeholder="Enter phone number"
-                      className="flex-1 text-sm outline-none bg-transparent py-3.5 px-3 text-[#1A1A2E] placeholder:text-[#9CA3AF]"
-                    />
-                  </div>
-
-                  {error && (
-                    <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
-                      <p className="text-xs md:text-sm text-red-600">{error}</p>
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
+                    Terms of Service
+                  </a>{" "}
+                  &{" "}
+                  <a
+                    href="https://anga9.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#1A6FD4] underline underline-offset-2 hover:text-[#155bb5]"
                   >
-                    {loading ? (
-                      <span className="flex items-center gap-2">{spinner} Sending...</span>
-                    ) : (
-                      "Request OTP"
-                    )}
-                  </button>
-
-                  <p className="text-xs md:text-sm text-[#9CA3AF] text-center leading-relaxed">
-                    By continuing, you agree to ANGA9&apos;s{" "}
-                    <a href="https://www.anga9.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Terms</a> &{" "}
-                    <a href="https://www.anga9.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1A6FD4]">Privacy Policy</a>
-                  </p>
-                </form>
-              )}
+                    Privacy Policy
+                  </a>
+                </p>
+              </form>
             </>
           )}
 
@@ -453,28 +336,26 @@ export default function LoginSheet() {
             <>
               <button
                 type="button"
-                onClick={() => { setStep("input"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                className="flex items-center gap-1.5 text-sm md:text-base font-medium text-[#1A6FD4] mb-4"
+                onClick={() => {
+                  setStep("input");
+                  setOtp(["", "", "", "", "", ""]);
+                  setError("");
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1A6FD4] mb-3"
               >
-                <ArrowLeft className="w-4 h-4" />
-                {tab === "email" ? "Change email" : "Change number"}
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Change mobile number
               </button>
 
-              <div className="flex items-center gap-2 rounded-lg bg-[#EAF2FF] px-3 py-2 mb-3">
-                {tab === "email" ? (
-                  <Mail className="w-4 h-4 text-[#1A6FD4] shrink-0" />
-                ) : (
-                  <Phone className="w-4 h-4 text-[#1A6FD4] shrink-0" />
-                )}
-                <p className="text-sm text-[#4B5563] truncate">
-                  OTP sent to <span className="font-semibold text-[#1A1A2E]">
-                    {tab === "email" ? email : `+91 ${phone}`}
-                  </span>
+              <div className="flex items-center gap-2 rounded-xl bg-[#EFF6FF] px-3.5 py-2.5 mb-4 border border-[#DBEAFE]">
+                <Phone className="w-4 h-4 text-[#1A6FD4] shrink-0" />
+                <p className="text-xs text-[#374151]">
+                  OTP sent to <span className="font-bold text-[#111827]">+91 {phone}</span>
                 </p>
               </div>
 
-              <form onSubmit={handleVerify} className="space-y-3">
-                <div className="flex justify-center gap-1.5 sm:gap-2">
+              <form onSubmit={handleVerify} className="space-y-4">
+                <div className="flex justify-center gap-2">
                   {otp.map((d, i) => (
                     <input
                       key={i}
@@ -487,35 +368,35 @@ export default function LoginSheet() {
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       onFocus={(e) => e.target.select()}
                       autoFocus={i === 0}
-                      className="flex-1 h-12 max-w-[48px] rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-xl font-bold text-[#1A1A2E] outline-none transition-all shadow-sm"
+                      className="w-11 h-12 rounded-xl border border-[#D0E3F7] bg-[#F8FBFF] focus:border-[#1A6FD4] focus:ring-2 focus:ring-blue-100 text-center text-lg font-bold text-[#111827] outline-none transition-all shadow-sm"
                     />
                   ))}
                 </div>
 
                 {error && (
                   <div className="rounded-lg bg-red-50 border border-red-100 px-3 py-2">
-                    <p className="text-xs md:text-sm text-red-600">{error}</p>
+                    <p className="text-xs text-red-600">{error}</p>
                   </div>
                 )}
 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none bg-[#1A6FD4] border-2 border-transparent text-white hover:bg-[#155bb5]"
+                  disabled={loading || otp.join("").length !== 6}
+                  className="flex h-[48px] w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold shadow-sm transition-all hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none bg-[#1A6FD4] text-white hover:bg-[#155bb5]"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">{spinner} Verifying...</span>
                   ) : (
                     <>
-                      <ShieldCheck className="w-4.5 h-4.5" />
-                      Verify & Login
+                      <ShieldCheck className="w-4 h-4" />
+                      Verify & Continue
                     </>
                   )}
                 </button>
 
-                <div className="mt-3 text-center">
-                  <p className="text-xs text-[#4B5563]">
-                    Didn&apos;t receive the code?{" "}
+                <div className="text-center pt-2 pb-6 mb-2">
+                  <p className="text-xs text-[#6B7280]">
+                    Didn&apos;t receive OTP?{" "}
                     {canResend ? (
                       <button
                         type="button"
@@ -526,8 +407,8 @@ export default function LoginSheet() {
                         Resend OTP
                       </button>
                     ) : (
-                      <span className="font-medium text-gray-400">
-                        Resend in <span className="font-bold text-gray-600">{resendTimer}s</span>
+                      <span className="font-medium text-[#9CA3AF]">
+                        Resend in <span className="font-bold text-[#4B5563]">{resendTimer}s</span>
                       </span>
                     )}
                   </p>

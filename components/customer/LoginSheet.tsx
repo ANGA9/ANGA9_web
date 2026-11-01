@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Phone, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { normalizeIndianPhone } from "@/lib/phone";
@@ -22,8 +22,19 @@ export default function LoginSheet() {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
 
   const supabase = getSupabaseBrowserClient();
+
+  // Auto-focus phone input and trigger mobile keyboard
+  useEffect(() => {
+    if (isOpen && step === "input") {
+      const timer = setTimeout(() => {
+        phoneInputRef.current?.focus();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, step]);
 
   // Slide-in animation
   useEffect(() => {
@@ -267,7 +278,7 @@ export default function LoginSheet() {
                   />
                 </div>
                 <p className="text-[13px] text-[#6B7280] mt-1">
-                  Enter your mobile number to access wholesale pricing
+                  Enter your mobile number to access wholesale deals
                 </p>
               </div>
 
@@ -278,6 +289,7 @@ export default function LoginSheet() {
                   </span>
                   <div className="w-px h-5 bg-[#D0E3F7]" />
                   <input
+                    ref={phoneInputRef}
                     type="tel"
                     inputMode="numeric"
                     value={phone}

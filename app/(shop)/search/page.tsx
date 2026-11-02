@@ -460,7 +460,7 @@ function SearchPageContent() {
         </div>
 
         {/* ── Mobile Sort/Category/Filters bar (Modern Home Page Style) ── */}
-        <div className="md:hidden sticky top-[56px] z-30 bg-white/95 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-gray-100">
+        <div className="md:hidden sticky top-[56px] z-30 bg-white/95 backdrop-blur-sm px-3 pt-2 pb-2 border-t border-b border-gray-200">
           <div className="flex items-center border border-gray-200/90 bg-white w-full overflow-hidden shadow-sm rounded-xl">
             <button
               onClick={() => openSheet("sort")}
@@ -469,17 +469,6 @@ function SearchPageContent() {
             >
               <ArrowUpDown className="w-4 h-4 text-gray-500" />
               Sort
-            </button>
-            <button
-              onClick={() => openSheet("category")}
-              className="flex-1 flex items-center justify-center gap-1 py-2.5 text-[13px] font-bold border-r border-gray-200/80 active:bg-gray-50 transition-colors"
-              style={{ color: categoryParam ? ACCENT : t.textPrimary }}
-            >
-              Category
-              <span className="text-[10px] ml-0.5 text-gray-400">▼</span>
-              {categoryParam && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1A6FD4] ml-1" />
-              )}
             </button>
             <button
               onClick={() => openSheet("filters")}

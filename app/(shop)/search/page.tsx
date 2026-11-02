@@ -80,7 +80,7 @@ function toCardProduct(p: SearchProduct): Product {
   };
 }
 
-type SheetKind = "sort" | "filters" | null;
+type SheetKind = "sort" | "filters" | "category" | null;
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
@@ -414,22 +414,37 @@ function SearchPageContent() {
           )}
         </div>
 
-        {/* ── Mobile Sort/Filter bar ── */}
-        <div className="md:hidden sticky top-[56px] z-30 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-          <div className="flex items-center border-b border-gray-100">
-            <button onClick={() => openSheet("sort")}
-              className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-bold border-r border-gray-100 active:bg-gray-50 transition-colors"
-              style={{ color: t.textPrimary }}>
-              <ArrowUpDown className="w-4 h-4" style={{ color: t.textSecondary }} />
+        {/* ── Mobile Sort/Category/Filters bar (Modern Home Page Style) ── */}
+        <div className="md:hidden sticky top-[56px] z-30 bg-white/95 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-gray-100">
+          <div className="flex items-center border border-gray-200/90 bg-white w-full overflow-hidden shadow-sm rounded-xl">
+            <button
+              onClick={() => openSheet("sort")}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-bold border-r border-gray-200/80 active:bg-gray-50 transition-colors"
+              style={{ color: t.textPrimary }}
+            >
+              <ArrowUpDown className="w-4 h-4 text-gray-500" />
               Sort
             </button>
-            <button onClick={() => openSheet("filters")}
-              className="flex-1 flex items-center justify-center gap-2 py-3 text-[13px] font-bold active:bg-gray-50 transition-colors relative"
-              style={{ color: hasActiveFilters ? ACCENT : t.textPrimary }}>
+            <button
+              onClick={() => openSheet("category")}
+              className="flex-1 flex items-center justify-center gap-1 py-2.5 text-[13px] font-bold border-r border-gray-200/80 active:bg-gray-50 transition-colors"
+              style={{ color: categoryParam ? ACCENT : t.textPrimary }}
+            >
+              Category
+              <span className="text-[10px] ml-0.5 text-gray-400">▼</span>
+              {categoryParam && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1A6FD4] ml-1" />
+              )}
+            </button>
+            <button
+              onClick={() => openSheet("filters")}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-bold active:bg-gray-50 transition-colors relative"
+              style={{ color: hasActiveFilters ? ACCENT : t.textPrimary }}
+            >
               <SlidersHorizontal className="w-4 h-4" style={{ color: hasActiveFilters ? ACCENT : t.textSecondary }} />
               Filters
               {hasActiveFilters && (
-                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full text-white" style={{ background: ACCENT }}>
+                <span className="ml-1 px-1.5 py-0.2 text-[10px] font-bold rounded-full text-white" style={{ background: ACCENT }}>
                   {[categoryParam, minPriceParam || maxPriceParam].filter(Boolean).length}
                 </span>
               )}
@@ -437,7 +452,7 @@ function SearchPageContent() {
           </div>
           {/* Active filter chips on mobile */}
           {hasActiveFilters && (
-            <div className="flex items-center gap-2 flex-wrap px-3 py-2">
+            <div className="flex items-center gap-2 flex-wrap pt-2">
               {categoryParam && (
                 <button onClick={() => updateUrl({ category: "" })}
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
@@ -613,6 +628,44 @@ function SearchPageContent() {
                 style={{ background: ACCENT }}>
                 Apply
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════ CATEGORY BOTTOM SHEET ══════ */}
+      {activeSheet === "category" && (
+        <div className="fixed inset-0 z-[9998] flex flex-col justify-end md:justify-center md:items-center">
+          <div className={`absolute inset-0 bg-black/40 ${overlayAnim}`} onClick={closeSheet} />
+          <div className={`relative bg-white rounded-t-3xl md:rounded-2xl flex flex-col max-h-[75dvh] w-full md:w-[420px] ${sheetAnim}`}
+            style={{ marginBottom: BOTTOM_NAV_H, boxShadow: "0 -4px 24px rgba(0,0,0,0.1)" }}>
+            <div className="md:hidden flex justify-center pt-3 pb-1"><span className="block w-10 h-1 rounded-full bg-gray-300" /></div>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-bold text-[15px] uppercase tracking-wide" style={{ color: t.textPrimary }}>Select Category</h3>
+              <button onClick={closeSheet} className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+            <div className="p-2 overflow-y-auto overscroll-contain flex-1 divide-y divide-gray-50">
+              <button
+                onClick={() => { updateUrl({ category: "" }); closeSheet(); }}
+                className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-[14px] font-medium hover:bg-gray-50 transition-colors"
+                style={{ color: !categoryParam ? ACCENT : t.textPrimary, fontWeight: !categoryParam ? 700 : 500 }}
+              >
+                <span>All Categories</span>
+                {!categoryParam && <div className="w-2 h-2 rounded-full bg-[#1A6FD4]" />}
+              </button>
+              {(filters?.categories || []).map((c) => (
+                <button
+                  key={c.name}
+                  onClick={() => { updateUrl({ category: c.name }); closeSheet(); }}
+                  className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-[14px] font-medium hover:bg-gray-50 transition-colors"
+                  style={{ color: categoryParam.toLowerCase() === c.name.toLowerCase() ? ACCENT : t.textPrimary, fontWeight: categoryParam.toLowerCase() === c.name.toLowerCase() ? 700 : 500 }}
+                >
+                  <span>{c.name}</span>
+                  <span className="text-[12px] text-gray-400 font-normal">({c.count})</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>

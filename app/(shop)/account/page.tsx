@@ -108,22 +108,20 @@ function MenuItem({
 }) {
   const content = (
     <>
-      <div className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center shrink-0 group-hover:bg-gray-100 transition-colors">
-        <Icon className="w-[18px] h-[18px] text-gray-700" />
-      </div>
-      <span className="ml-4 text-[15px] font-semibold text-gray-800 flex-1 text-left">
+      <Icon className="w-5 h-5 text-[#1F2937] shrink-0" />
+      <span className="ml-3.5 text-[14.5px] font-medium text-gray-900 flex-1 text-left">
         {label}
       </span>
       {badge && (
-        <span className="mr-3 text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center bg-white border-2 border-red-500 text-red-500 hover:bg-red-50">
+        <span className="mr-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#1A6FD4] border border-blue-100">
           {badge}
         </span>
       )}
-      <ChevronRight className="w-5 h-5 text-gray-400" />
+      <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
     </>
   );
 
-  const className = "flex items-center w-full bg-white px-5 py-4 hover:bg-gray-50 transition-colors relative active:bg-gray-100 group border-b border-gray-50 last:border-b-0";
+  const className = "flex items-center w-full bg-white px-4 py-3.5 hover:bg-gray-50/80 transition-colors relative active:bg-gray-100 group";
 
   if (href) {
     if (external) {
@@ -889,83 +887,63 @@ export default function CustomerAccountPage() {
                 </div>
               </div>
             ) : (
-              <div className="px-4 pt-4 flex flex-col gap-3">
+              <div className="px-4 pt-4 flex flex-col gap-3.5">
+                {/* ── Top Profile Box Card (Identical to fragment_profile.xml) ── */}
                 <button 
                   onClick={() => { setActiveNav("Profile"); setIsEditingProfile(true); setMobileMenuOpen(false); }}
-                  className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-gray-200 active:scale-[0.98] transition-all text-left w-full"
+                  className="bg-white rounded-2xl p-4 flex items-center gap-3.5 shadow-sm border border-gray-200/80 active:scale-[0.98] transition-all text-left w-full"
                 >
                   <div
-                    className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full text-[22px] font-black text-white shadow-inner relative"
+                    className="flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-full text-[20px] font-black text-white shadow-inner relative"
                     style={{ background: "linear-gradient(135deg, #2874f0 0%, #1A6FD4 100%)" }}
                   >
-                    {initials}
-                    {/* Edit pencil overlay */}
-                    <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-                      <Pencil className="w-2.5 h-2.5 text-gray-600" />
+                    {user?.user_metadata?.avatar_url ? (
+                      <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                    ) : (
+                      initials
+                    )}
+                    {/* Edit pencil overlay badge */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#1A6FD4] border-2 border-white flex items-center justify-center shadow-sm">
+                      <Pencil className="w-2.5 h-2.5 text-white" />
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[18px] font-black text-gray-900 truncate tracking-tight">{displayName}</p>
-                    <p className="text-[13px] font-medium text-gray-500 truncate mt-0.5">{displayEmail || displayPhone || ""}</p>
-                    <p className="text-[11px] font-semibold mt-1" style={{ color: "#1A6FD4" }}>{dbUser?.full_name ? "Edit profile →" : "Complete your profile →"}</p>
+                    <p className="text-[16px] font-bold text-[#111827] truncate tracking-tight">{displayName}</p>
+                    {displayEmail && <p className="text-[13px] font-normal text-[#6B7280] truncate mt-0.5">{displayEmail}</p>}
+                    {displayPhone && <p className="text-[13px] font-normal text-[#6B7280] truncate mt-0.5">{displayPhone}</p>}
+                    <p className="text-[12px] font-bold mt-1 text-[#1A6FD4]">{dbUser?.full_name ? "Edit profile →" : "Complete your profile →"}</p>
                   </div>
-                  <ChevronRight className="w-6 h-6 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
                 </button>
 
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-                <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                  <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">My Account</h2>
-                </div>
-                <div className="flex flex-col">
+                {/* ── Boxed Card 1: My Account & Orders ── */}
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200/80 divide-y divide-gray-100">
                   <MenuItem icon={Package} label="My Orders" onClick={() => router.push('/orders')} />
                   <MenuItem icon={Bell} label="My Alerts" onClick={() => router.push('/account/alerts')} />
                   <MenuItem icon={Coins} label="My Coins" badge={coinBalance != null && coinBalance > 0 ? coinBalance : undefined} onClick={() => router.push('/account/coins')} />
                   <MenuItem icon={MapPin} label="Addresses" onClick={() => { setActiveNav("Addresses"); setMobileMenuOpen(false); }} />
-                  <MenuItem icon={Building2} label="Business Profile & GST" badge="18% GST" onClick={() => { setActiveNav("Business Profile"); setMobileMenuOpen(false); }} />
+                  <MenuItem icon={Building2} label="Business Profile" badge="18% GST" onClick={() => { setActiveNav("Business Profile"); setMobileMenuOpen(false); }} />
                 </div>
-              </div>
 
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Settings & Help</h2>
-              </div>
-              <div className="flex flex-col">
-                <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} onClick={() => router.push('/notifications')} />
-                <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
-                <MenuItem icon={ShieldCheck} label="Data & Privacy" onClick={() => router.push('/account/privacy')} />
-              </div>
-            </div>
+                {/* ── Boxed Card 2: Settings & Help ── */}
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200/80 divide-y divide-gray-100">
+                  <MenuItem icon={Bell} label="Notification Settings" badge={unreadNotificationsCount > 0 ? unreadNotificationsCount : undefined} onClick={() => router.push('/notifications')} />
+                  <MenuItem icon={Headset} label="Help Center" onClick={() => router.push('/help')} />
+                  <MenuItem icon={ShieldCheck} label="Data & Privacy" onClick={() => router.push('/account/privacy')} />
+                  <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
+                  <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
+                  <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
+                </div>
 
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">Feedback & Information</h2>
+                {/* ── Log Out Button ── */}
+                <button
+                  onClick={logout}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 py-3.5 text-[15px] font-bold text-red-600 transition-all active:scale-[0.98] mt-1 mb-8"
+                >
+                  <LogOut className="h-[18px] w-[18px]" />
+                  Log Out
+                </button>
               </div>
-              <div className="flex flex-col">
-                <MenuItem icon={FileText} label="Terms, Policies and Licenses" href="/terms" />
-                <MenuItem icon={HelpCircle} label="Browse FAQs" href="/faq" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-wider">More from ANGA9</h2>
-              </div>
-              <div className="flex flex-col">
-                <MenuItem icon={Store} label="Sell on ANGA9" href="https://seller.anga9.com/sell-on-anga9" external />
-                <MenuItem icon={Smartphone} label="Download App" href="https://play.google.com/store/apps/details?id=com.anga9.customer" external />
-              </div>
-            </div>
-
-            {isLoggedIn && (
-              <button
-                onClick={logout}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-red-100 bg-red-50 py-4 text-[15px] font-bold text-red-600 transition-all active:scale-[0.98] mt-2 mb-8"
-              >
-                <LogOut className="h-[18px] w-[18px]" />
-                Log Out
-              </button>
-            )}
-            </div>
           )}
         </div>
       ) : (

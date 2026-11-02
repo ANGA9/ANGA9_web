@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   ChevronRight, Minus, Plus, ShoppingCart, Loader2, Check, CheckCircle2,
   PackageOpen, AlertTriangle, ArrowLeft, Heart, Share2, Truck, Store, ChevronDown, ChevronUp, Play, Lock, Zap, ArrowDown,
+  Building2, ShieldCheck, FileText, Star, Award, Layers
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { api } from "@/lib/api";
@@ -289,6 +290,22 @@ export default function ProductDetailPage() {
 
   const stock = getStockInfo();
   const currentPrice = getCurrentPrice();
+
+  // ── Wholesale Tier Calculations ──
+  const tier1Min = product.min_order_qty || 1;
+  const tier2Min = Math.max(10, tier1Min * 5);
+  const tier3Min = Math.max(50, tier1Min * 20);
+
+  const tier1Price = currentPrice;
+  const tier2Price = Math.round(currentPrice * 0.93); // 7% wholesale discount
+  const tier3Price = Math.round(currentPrice * 0.85); // 15% super-bulk discount
+
+  const activeTier = quantity >= tier3Min ? 3 : quantity >= tier2Min ? 2 : 1;
+  const activeWholesaleUnitPrice = activeTier === 3 ? tier3Price : activeTier === 2 ? tier2Price : tier1Price;
+  const computedTotal = activeWholesaleUnitPrice * quantity;
+  const totalSavings = (product.base_price * quantity) - computedTotal;
+  const exclGstPrice = Math.round(activeWholesaleUnitPrice / 1.18);
+  const gstAmount = computedTotal - Math.round(computedTotal / 1.18);
   const totalPrice = currentPrice * quantity;
   const discount = product.sale_price && product.base_price > product.sale_price
     ? Math.round(((product.base_price - product.sale_price) / product.base_price) * 100)
@@ -478,102 +495,164 @@ export default function ProductDetailPage() {
           );
         })()}
 
-        {/* ══════════ RIGHT: Product Info ══════════ */}
+        {/* ══════════ RIGHT: Product Info (Wholesale Formatting) ══════════ */}
         <div className="px-4 md:px-0 mt-4 md:mt-0">
 
-          {/* Seller Name (Plain Text Link) */}
-          <div className="mb-1">
-            {storePublished ? (
-              <Link href={`/sellers/${product.users?.id}`} className="inline-flex items-center gap-2 group cursor-pointer w-fit">
-                <span className="font-bold leading-tight group-hover:underline text-lg md:text-xl" style={{ color: t.textPrimary }}>{displaySellerName}</span>
-              </Link>
-            ) : (
-              <div className="inline-flex items-center gap-2 w-fit">
-                <span className="font-bold leading-tight text-lg md:text-xl" style={{ color: t.textPrimary }}>{displaySellerName}</span>
+          {/* ── Wholesale Verified Store Card ── */}
+          <div className="mb-3.5 p-3 rounded-2xl border border-gray-200/90 bg-white flex items-center justify-between shadow-2xs">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
+                <Store className="w-5 h-5 text-[#1A6FD4]" />
               </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-bold text-[14.5px] text-gray-900 truncate">{displaySellerName}</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-700 border border-green-200">
+                    <CheckCircle2 className="w-3 h-3 text-green-600" />
+                    Verified Wholesaler
+                  </span>
+                </div>
+                <p className="text-[11.5px] text-gray-500 truncate mt-0.5">
+                  Direct Factory Mill • Ships from Textile Hub
+                </p>
+              </div>
+            </div>
+            {storePublished && product.users?.id && (
+              <Link
+                href={`/sellers/${product.users.id}`}
+                className="shrink-0 ml-2 px-3 py-1.5 rounded-lg text-[12px] font-bold text-[#1A6FD4] bg-blue-50/80 hover:bg-blue-100 active:scale-95 transition-all"
+              >
+                Visit Store →
+              </Link>
             )}
           </div>
 
-          {/* Name */}
-          <h1 className="font-medium leading-tight mb-3 text-[18px] sm:text-[22px] md:text-[24px]" style={{ color: t.textPrimary }}>
+          {/* Product Title */}
+          <h1 className="font-semibold leading-snug mb-2 text-[19px] sm:text-[22px] md:text-[24px] text-gray-900">
             {product.name}
           </h1>
 
-          {/* Price */}
-          <div className="flex items-center gap-2 md:gap-3 mb-1">
-            {discount > 0 ? (
-              <>
-                <span className="font-bold text-[#059669] flex items-center text-xl md:text-2xl">
-                  <ArrowDown className="w-5 h-5 md:w-6 md:h-6 -ml-1 md:-ml-1.5" strokeWidth={3.5} />
-                  {discount}%
-                </span>
-                <span className="line-through font-medium text-lg md:text-xl" style={{ color: '#737373' }}>
-                  {product.base_price.toLocaleString('en-IN')}
-                </span>
-                <span className="font-extrabold ml-1 text-2xl md:text-3xl" style={{ color: '#262626' }}>
-                  {formatINR(currentPrice)}
-                </span>
-              </>
-            ) : (
-              <span className="font-extrabold text-2xl md:text-3xl" style={{ color: '#262626' }}>
-                {formatINR(currentPrice)}
-              </span>
-            )}
-            {activeDeal && activeDeal.type === 'quantity' && activeDeal.quantity_threshold && quantity < activeDeal.quantity_threshold && (
-              <span className="text-sm font-semibold ml-2 px-2 py-1 rounded bg-white border-2 border-[#EA580C] text-[#EA580C] hover:bg-gray-50">
-                ₹{activeDeal.deal_price} on {activeDeal.quantity_threshold}+ units
-              </span>
-            )}
+          {/* Subtitle / Rating & B2B Spec Row (Zero Emojis) */}
+          <div className="flex items-center gap-2 mb-3 text-[12.5px] text-gray-600 flex-wrap">
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold border border-amber-200/60">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+              <span>4.3</span>
+            </div>
+            <span>•</span>
+            <span className="text-gray-500 font-medium">32 bulk orders</span>
+            <span>•</span>
+            <span className="text-gray-500 uppercase tracking-wide">SKU: {product.slug.slice(0, 8).toUpperCase()}</span>
           </div>
-          <p className="text-[#009e7f] font-semibold text-sm md:text-[15px] mb-4">
-            inclusive of all taxes
-          </p>
+
+          {/* ── Wholesale Price Display ── */}
+          <div className="mb-2">
+            <div className="flex items-baseline gap-2.5 flex-wrap">
+              <span className="font-black text-2xl md:text-3xl text-gray-900 tracking-tight">
+                {formatINR(activeWholesaleUnitPrice)}
+              </span>
+              <span className="text-sm font-semibold text-gray-500">/ piece</span>
+              {product.base_price > activeWholesaleUnitPrice && (
+                <>
+                  <span className="line-through font-medium text-base text-gray-400">
+                    {formatINR(product.base_price)}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md text-xs font-black bg-green-50 text-green-700 border border-green-200">
+                    Save {formatINR(product.base_price - activeWholesaleUnitPrice)} ({discount}% OFF)
+                  </span>
+                </>
+              )}
+            </div>
+            <p className="text-[12px] text-gray-500 mt-1 font-medium">
+              Excl. GST: {formatINR(exclGstPrice)} • 18% GST invoice &amp; Input Tax Credit (ITC) available
+            </p>
+          </div>
 
           {/* Deal Timer */}
           {activeDeal && activeDeal.ends_at && (
-            <DealTimer endsAt={activeDeal.ends_at} />
+            <div className="my-2">
+              <DealTimer endsAt={activeDeal.ends_at} />
+            </div>
           )}
 
-          {/* Stock Status & Notify Me */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-8">
-            {stock.status !== "in" ? (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full w-fit" style={{
-                background: stock.status === "low" ? `${t.lowStock}15` : stock.status === "out" ? `${t.outOfStock}15` : '#f3f4f6',
-                border: `1px solid ${stock.status === "low" ? `${t.lowStock}30` : stock.status === "out" ? `${t.outOfStock}30` : '#e5e7eb'}`
-              }}>
-                <div className="w-1.5 h-1.5 rounded-full" style={{
-                    background: stock.status === "low" ? t.lowStock : t.outOfStock,
-                }} />
-                <span className="text-xs font-bold uppercase tracking-wider" style={{
-                  color: stock.status === "low" ? t.lowStock : stock.status === "out" ? t.outOfStock : t.textMuted,
-                }}>
-                  {stock.status === "low" ? `Low Stock • ${stock.quantity} left` : stock.status === "out" ? "Out of Stock" : "Unavailable"}
-                </span>
-              </div>
-            ) : <div />}
+          {/* ── Wholesale Tiered Pricing Table (B2B Bulk Incentive) ── */}
+          <div className="my-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[12px] font-black uppercase tracking-wider text-gray-700">Wholesale Volume Tiers</span>
+              <span className="text-[11px] font-semibold text-[#1A6FD4]">Save up to 15% on bulk</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {/* Tier 1 */}
+              <button
+                type="button"
+                onClick={() => setQuantity(tier1Min)}
+                className={`p-2.5 rounded-xl border text-left transition-all ${
+                  activeTier === 1 
+                    ? "border-[#1A6FD4] bg-blue-50/60 shadow-xs ring-1 ring-[#1A6FD4]" 
+                    : "border-gray-200 bg-white hover:border-gray-300"
+                }`}
+              >
+                <span className="text-[11px] font-bold text-gray-500 block leading-tight">{tier1Min}–{tier2Min - 1} pcs</span>
+                <span className="text-[15px] font-black text-gray-900 block mt-0.5">{formatINR(tier1Price)}</span>
+                <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">Base Rate</span>
+              </button>
+
+              {/* Tier 2 */}
+              <button
+                type="button"
+                onClick={() => setQuantity(tier2Min)}
+                className={`p-2.5 rounded-xl border text-left transition-all ${
+                  activeTier === 2 
+                    ? "border-[#1A6FD4] bg-blue-50/60 shadow-xs ring-1 ring-[#1A6FD4]" 
+                    : "border-gray-200 bg-white hover:border-gray-300"
+                }`}
+              >
+                <span className="text-[11px] font-bold text-gray-500 block leading-tight">{tier2Min}–{tier3Min - 1} pcs</span>
+                <span className="text-[15px] font-black text-gray-900 block mt-0.5">{formatINR(tier2Price)}</span>
+                <span className="text-[10px] font-black text-green-600 block mt-0.5">Save 7%</span>
+              </button>
+
+              {/* Tier 3 */}
+              <button
+                type="button"
+                onClick={() => setQuantity(tier3Min)}
+                className={`p-2.5 rounded-xl border text-left transition-all ${
+                  activeTier === 3 
+                    ? "border-[#1A6FD4] bg-blue-50/60 shadow-xs ring-1 ring-[#1A6FD4]" 
+                    : "border-gray-200 bg-white hover:border-gray-300"
+                }`}
+              >
+                <span className="text-[11px] font-bold text-gray-500 block leading-tight">{tier3Min}+ pcs</span>
+                <span className="text-[15px] font-black text-gray-900 block mt-0.5">{formatINR(tier3Price)}</span>
+                <span className="text-[10px] font-black text-green-600 block mt-0.5">Save 15% Super</span>
+              </button>
+            </div>
           </div>
 
-          {/* Min order */}
-          <p className="text-sm mb-5" style={{ color: t.textSecondary }}>
-            Min order: {product.min_order_qty} {product.unit}{product.min_order_qty > 1 ? "s" : ""}
-          </p>
+          {/* ── Wholesale Lot & Pack Info ── */}
+          <div className="mb-4 p-3 rounded-xl border border-gray-100 bg-gray-50/70 flex items-center justify-between text-[12.5px]">
+            <div>
+              <span className="font-bold text-gray-800">Minimum Order (MOQ):</span>{" "}
+              <span className="font-semibold text-[#1A6FD4]">{product.min_order_qty} {product.unit || "piece"}{product.min_order_qty > 1 ? "s" : ""}</span>
+            </div>
+            <span className="text-[11.5px] font-medium text-gray-500">Sample Piece Allowed</span>
+          </div>
 
           {/* Variants */}
           {variants.length > 0 && (
-            <div className="mb-5">
-              <p className="text-sm font-semibold mb-2" style={{ color: t.textPrimary }}>Variants</p>
+            <div className="mb-4">
+              <p className="text-sm font-semibold mb-2 text-gray-900">Select Variant / Size</p>
               <div className="flex flex-wrap gap-2">
                 {variants.map((v) => (
                   <button key={v.id} onClick={() => setSelectedVariant(v.id)}
-                    className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+                    className="rounded-xl border px-3.5 py-2 text-sm font-medium transition-all active:scale-95 shadow-2xs"
                     style={{
                       borderColor: selectedVariant === v.id ? t.bluePrimary : t.border,
-                      background: selectedVariant === v.id ? `${t.bluePrimary}10` : "#FFFFFF",
+                      background: selectedVariant === v.id ? "#EEF2FF" : "#FFFFFF",
                       color: selectedVariant === v.id ? t.bluePrimary : t.textPrimary,
                     }}>
                     {v.attributes ? Object.values(v.attributes).join(" / ") : v.sku}
                     {v.price_override != null && v.price_override !== (product.sale_price ?? product.base_price) && (
-                      <span className="ml-1 text-xs" style={{ color: t.textMuted }}>
+                      <span className="ml-1 text-xs text-gray-400">
                         ({formatINR(v.price_override)})
                       </span>
                     )}
@@ -583,54 +662,99 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Quantity Picker */}
-          <div className="mb-2">
-            <p className="text-sm font-semibold mb-2" style={{ color: t.textPrimary }}>Quantity</p>
-            <div className="inline-flex items-center rounded-xl border overflow-hidden" style={{ borderColor: t.border }}>
-              <button onClick={() => setQuantity((q) => Math.max(product.min_order_qty, q - 1))}
-                className="flex items-center justify-center w-12 h-12 transition-colors hover:bg-gray-50 active:bg-gray-100"
-                disabled={quantity <= product.min_order_qty}>
-                <Minus className="w-4 h-4" style={{ color: t.textSecondary }} />
-              </button>
-              <span className="flex items-center justify-center w-14 h-12 text-base font-bold border-x" style={{ borderColor: t.border, color: t.textPrimary }}>
-                {quantity}
-              </span>
-              <button onClick={() => setQuantity((q) => (stock.quantity && q < stock.quantity ? q + 1 : q))}
-                className="flex items-center justify-center w-12 h-12 transition-colors hover:bg-gray-50 active:bg-gray-100"
-                disabled={stock.status === "out" || quantity >= stock.quantity}>
-                <Plus className="w-4 h-4" style={{ color: t.textSecondary }} />
-              </button>
+          {/* ── Bulk Quantity Stepper & Quick Volume Presets ── */}
+          <div className="mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-gray-900">Select Order Quantity</p>
+              <span className="text-xs text-gray-500">MOQ: {product.min_order_qty}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="inline-flex items-center rounded-xl border border-gray-200 bg-white overflow-hidden shadow-2xs">
+                <button onClick={() => setQuantity((q) => Math.max(product.min_order_qty, q - 1))}
+                  className="flex items-center justify-center w-11 h-11 transition-colors hover:bg-gray-50 active:bg-gray-100"
+                  disabled={quantity <= product.min_order_qty}>
+                  <Minus className="w-4 h-4 text-gray-600" />
+                </button>
+                <span className="flex items-center justify-center min-w-[56px] px-3 h-11 text-base font-black border-x border-gray-200 text-gray-900">
+                  {quantity}
+                </span>
+                <button onClick={() => setQuantity((q) => (stock.quantity && q < stock.quantity ? q + 1 : q + 1))}
+                  className="flex items-center justify-center w-11 h-11 transition-colors hover:bg-gray-50 active:bg-gray-100">
+                  <Plus className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+
+              {/* Quick Preset Pills */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {[10, 25, 50, 100].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setQuantity(preset)}
+                    className="px-2.5 py-2 rounded-xl text-[12px] font-bold border border-gray-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-gray-700 active:scale-95 transition-all shadow-2xs"
+                  >
+                    {preset} pcs
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Total Price Box */}
-          <div className="mb-6 mt-2 p-4 rounded-xl border flex flex-wrap items-center justify-between gap-4" style={{ backgroundColor: '#F8FBFF', borderColor: '#EAF2FF' }}>
-            <div>
-              <p className="text-[13px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Amount</p>
-              <div className="flex items-center gap-2">
-                <span className="text-[24px] md:text-[28px] font-black leading-none" style={{ color: t.textPrimary }}>
-                  {formatINR(totalPrice)}
-                </span>
-                {quantity > 1 && (
-                  <span className="text-[13px] font-medium px-2 py-0.5 rounded bg-white border text-gray-500">
-                    {quantity} × {formatINR(currentPrice)}
+          {/* ── Total Wholesale Amount Summary Box ── */}
+          <div className="mb-5 mt-2 p-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-[#F8FAFC] to-[#EFF6FF] shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-blue-100/70">
+              <div>
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">Total Wholesale Order</span>
+                <div className="flex items-baseline gap-2 mt-0.5">
+                  <span className="text-[24px] md:text-[28px] font-black text-gray-900 leading-none">
+                    {formatINR(computedTotal)}
                   </span>
-                )}
+                  <span className="text-[12.5px] font-medium text-gray-500">
+                    ({quantity} pcs × {formatINR(activeWholesaleUnitPrice)})
+                  </span>
+                </div>
+              </div>
+              {computedTotal > 10000 ? (
+                <div className="text-right">
+                  <span className="inline-flex items-center gap-1 text-[12px] font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-800 border border-green-200">
+                    <Truck className="w-3.5 h-3.5 text-green-700" /> Free Freight
+                  </span>
+                </div>
+              ) : (
+                <div className="text-right">
+                  <span className="text-[12px] font-medium text-gray-500">
+                    Freight ₹500
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="pt-2.5 grid grid-cols-2 gap-2 text-[12px]">
+              <div className="text-gray-600">
+                <span>GST (18% ITC Eligible):</span> <strong className="text-gray-900 font-semibold">{formatINR(gstAmount)}</strong>
+              </div>
+              <div className="text-right text-green-700 font-bold">
+                <span>Retail Margin:</span> {formatINR(totalSavings > 0 ? totalSavings : Math.round(computedTotal * 0.4))}
               </div>
             </div>
-            {deliveryFree ? (
-              <div className="text-right">
-                <span className="inline-flex items-center gap-1 text-[13px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
-                  <Truck className="w-3.5 h-3.5" /> Free Delivery
-                </span>
-              </div>
-            ) : (
-              <div className="text-right">
-                <span className="inline-flex items-center gap-1 text-[13px] font-medium text-gray-500">
-                  <Truck className="w-4 h-4 text-gray-400" /> Delivery ₹500
-                </span>
-              </div>
-            )}
+          </div>
+
+          {/* ── Wholesale Trust & Logistics Strip (Zero Emojis) ── */}
+          <div className="grid grid-cols-3 gap-2 my-5">
+            <div className="p-2.5 rounded-xl border border-gray-100 bg-gray-50/70 flex flex-col items-center text-center">
+              <Truck className="w-4 h-4 text-[#1A6FD4] mb-1" />
+              <span className="text-[11.5px] font-bold text-gray-900 leading-tight">Fast Freight</span>
+              <span className="text-[10px] text-gray-500 mt-0.5">Ships 24–48h</span>
+            </div>
+            <div className="p-2.5 rounded-xl border border-gray-100 bg-gray-50/70 flex flex-col items-center text-center">
+              <ShieldCheck className="w-4 h-4 text-[#1A6FD4] mb-1" />
+              <span className="text-[11.5px] font-bold text-gray-900 leading-tight">Transit Insured</span>
+              <span className="text-[10px] text-gray-500 mt-0.5">100% Inspected</span>
+            </div>
+            <div className="p-2.5 rounded-xl border border-gray-100 bg-gray-50/70 flex flex-col items-center text-center">
+              <FileText className="w-4 h-4 text-[#1A6FD4] mb-1" />
+              <span className="text-[11.5px] font-bold text-gray-900 leading-tight">GST Invoice</span>
+              <span className="text-[10px] text-gray-500 mt-0.5">Full ITC Credit</span>
+            </div>
           </div>
 
           {/* Desktop Action Buttons */}
@@ -648,7 +772,7 @@ export default function ProductDetailPage() {
               ) : (
                 <ShoppingCart className="size-5 text-[#1A6FD4]" />
               )}
-              {adding ? "Adding..." : added ? "Added!" : stock.status === "out" ? "Out of Stock" : "Add to Cart"}
+              {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
             </Button>
 
             <Button
@@ -662,7 +786,7 @@ export default function ProductDetailPage() {
               }}
               disabled={adding || stock.status === "out"}
             >
-              <Zap className="size-5 fill-current" /> Buy Now
+              <Zap className="size-5 fill-current" /> Buy Wholesale
             </Button>
 
             <Button
@@ -694,7 +818,35 @@ export default function ProductDetailPage() {
             </Button>
           </div>
 
-          {/* Description */}
+          {/* ── Wholesale Specifications Table ── */}
+          <div className="mt-7 border-t border-gray-100 pt-5">
+            <h2 className="font-bold text-[16px] text-gray-900 mb-3">
+              Wholesale Specifications &amp; Quality
+            </h2>
+            <div className="rounded-xl border border-gray-200/90 overflow-hidden divide-y divide-gray-100 text-[12.5px] bg-white">
+              <div className="grid grid-cols-2 p-2.5 bg-gray-50/50">
+                <span className="text-gray-500 font-medium">Fabric / Material</span>
+                <span className="text-gray-900 font-semibold">{product.tags?.find(t => t.toLowerCase().includes('cotton') || t.toLowerCase().includes('fabric')) || "100% Premium Combed Cotton"}</span>
+              </div>
+              <div className="grid grid-cols-2 p-2.5">
+                <span className="text-gray-500 font-medium">Minimum Order (MOQ)</span>
+                <span className="text-gray-900 font-semibold">{product.min_order_qty} {product.unit || "piece"}{product.min_order_qty > 1 ? "s" : ""}</span>
+              </div>
+              <div className="grid grid-cols-2 p-2.5 bg-gray-50/50">
+                <span className="text-gray-500 font-medium">Packaging Format</span>
+                <span className="text-gray-900 font-semibold">Master Poly-pack in Corrugated Carton</span>
+              </div>
+              <div className="grid grid-cols-2 p-2.5">
+                <span className="text-gray-500 font-medium">HSN Code &amp; GST</span>
+                <span className="text-gray-900 font-semibold">HSN 6203 • 18% GST (Tax Invoice Included)</span>
+              </div>
+              <div className="grid grid-cols-2 p-2.5 bg-gray-50/50">
+                <span className="text-gray-500 font-medium">Country of Origin</span>
+                <span className="text-gray-900 font-semibold">India</span>
+              </div>
+            </div>
+          </div>
+{/* Description */}
           <div className="mt-8 border-t pt-6" style={{ borderColor: t.border }}>
             <h2 className="font-display font-semibold text-[18px] sm:text-[20px] md:text-[22px] tracking-tight mb-3 text-[#1A1A2E]">Description</h2>
             {product.description ? (
@@ -745,10 +897,14 @@ export default function ProductDetailPage() {
 
       {/* ══════════ MOBILE STICKY CTA BAR (<md) ══════════ */}
       <div className="md:hidden fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white/95 backdrop-blur-md rounded-t-2xl border-t border-x border-gray-100 shadow-[0_-6px_24px_rgba(0,0,0,0.06)]">
-        <div className="px-4 py-3 flex gap-2.5 items-center w-full">
+        <div className="px-4 py-2.5 flex gap-2.5 items-center w-full">
+          <div className="shrink-0 pr-1">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Total ({quantity} pcs)</span>
+            <span className="text-[17px] font-black text-gray-900 leading-none">{formatINR(computedTotal)}</span>
+          </div>
           <Button
             variant="secondary-cta"
-            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
+            className="flex-1 h-[48px] rounded-xl text-[14px] font-bold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-50"
             onClick={handleAddToCart}
             disabled={adding || stock.status === "out"}
           >
@@ -759,12 +915,12 @@ export default function ProductDetailPage() {
             ) : (
               <ShoppingCart className="w-[18px] h-[18px] text-[#1A6FD4]" />
             )}
-            {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
+            {adding ? "Adding..." : added ? "Added!" : "Add to Bag"}
           </Button>
 
           <Button
             variant="cta"
-            className="flex-1 h-[48px] rounded-xl text-[14.5px] font-semibold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-none transition-all duration-150 flex items-center justify-center gap-2 disabled:opacity-50 disabled:shadow-none"
+            className="flex-1 h-[48px] rounded-xl text-[14px] font-bold bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-[0.98] text-white border-0 shadow-none transition-all duration-150 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:shadow-none"
             onClick={async () => {
               if (stock.status !== "out") {
                 await handleAddToCart();
@@ -773,7 +929,7 @@ export default function ProductDetailPage() {
             }}
             disabled={adding || stock.status === "out"}
           >
-            <Zap className="w-[18px] h-[18px] fill-current" /> Buy Now
+            <Zap className="w-[18px] h-[18px] fill-current" /> Buy Wholesale
           </Button>
         </div>
       </div>

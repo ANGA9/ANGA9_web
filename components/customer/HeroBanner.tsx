@@ -12,57 +12,43 @@ import { useRouter } from "next/navigation";
 const DEFAULT_SLIDES = [
   {
     id: "1",
-    image: cdnUrl("/banners/ban1.png"),
-    title: "Festive Ethnic Edit - Sarees & Kurtas from ₹999",
+    image: "/banners/banner1.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 1",
     seller: "vostro",
-    searchQuery: "sarees kurtas",
+    searchQuery: "sarees",
   },
   {
     id: "2",
-    image: cdnUrl("/banners/ban2.png"),
-    title: "Elevate Your Style - Menswear from ₹799",
+    image: "/banners/banner2.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 2",
     seller: "rebecca",
     searchQuery: "menswear",
   },
   {
     id: "3",
-    image: cdnUrl("/banners/ban3.png"),
-    title: "Fun Fits for Little Ones - Kids Fashion from ₹299",
+    image: "/banners/banner3.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 3",
     seller: "vostro",
     searchQuery: "kids fashion",
   },
   {
     id: "4",
-    image: cdnUrl("/banners/ban4.png"),
-    title: "Train Harder Look Better - Activewear from ₹599",
+    image: "/banners/banner4.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 4",
     seller: "sport-flex",
     searchQuery: "activewear",
   },
   {
     id: "5",
-    image: cdnUrl("/banners/ban5.png"),
-    title: "Sleep in Pure Luxury - Bed Linen from ₹899",
+    image: "/banners/banner5.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 5",
     seller: "rebecca",
     searchQuery: "bed linen",
   },
   {
     id: "6",
-    image: cdnUrl("/banners/ban6.png"),
-    title: "Spa Comfort at Home - Bath Linen from ₹449",
-    seller: "vostro",
-    searchQuery: "bath linen",
-  },
-  {
-    id: "7",
-    image: cdnUrl("/banners/ban7.png"),
-    title: "Transform Your Living Space - Rugs & Curtains from ₹1299",
-    seller: "rebecca",
-    searchQuery: "rugs curtains",
-  },
-  {
-    id: "8",
-    image: cdnUrl("/banners/ban8.png"),
-    title: "Style Every Corner - Living Decor from ₹349",
+    image: "/banners/banner6.jpeg",
+    title: "ANGA9 Wholesale B2B Deal 6",
     seller: "home-decor-inc",
     searchQuery: "living decor",
   },
@@ -92,7 +78,7 @@ export default function HeroBanner() {
     fetchAds();
   }, []);
 
-  const currentSlides = ads.length > 0 ? ads : DEFAULT_SLIDES;
+  const currentSlides = (ads.length > 0 && ads.some(a => a.banner_url && !a.banner_url.includes("/banners/ban"))) ? ads : DEFAULT_SLIDES;
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -137,14 +123,17 @@ export default function HeroBanner() {
             <div
               key={slide.id}
               onClick={() => handleSlideClick(slide)}
-              className="flex-[0_0_88%] sm:flex-[0_0_92%] md:flex-[0_0_100%] min-w-0 relative px-1 sm:px-1.5 cursor-pointer"
+              className="flex-[0_0_92%] sm:flex-[0_0_94%] md:flex-[0_0_100%] min-w-0 relative px-1 sm:px-1.5 cursor-pointer"
             >
-                <div className="relative w-full aspect-[11/5] md:aspect-[5/2] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]">
+                <div 
+                  className="relative w-full aspect-[640/430] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]"
+                  style={{ aspectRatio: "640 / 430" }}
+                >
                   <Image
                     src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as typeof DEFAULT_SLIDES[0]).image}
                     alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
                     fill
-                    className={`object-cover transition-transform duration-700 ease-out`}
+                    className="object-contain w-full h-full transition-transform duration-700 ease-out"
                     priority={index === 0}
                     unoptimized={true}
                   />

@@ -96,6 +96,8 @@ function SearchPageContent() {
   const pageParam = parseInt(searchParams.get("page") || "1", 10);
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [mobilePage, setMobilePage] = useState(1);
+  const [loadingMoreMobile, setLoadingMoreMobile] = useState(false);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -174,6 +176,7 @@ function SearchPageContent() {
           return card;
         });
         setProducts(mapped);
+        setMobilePage(1);
         setTotal(searchRes?.total ?? 0);
         setTotalPages(searchRes?.totalPages ?? 0);
         if (filtersRes && !filters) setFilters(filtersRes);
@@ -200,6 +203,48 @@ function SearchPageContent() {
     fetchResults();
     return () => { cancelled = true; };
   }, [query, categoryParam, sortParam, minPriceParam, maxPriceParam, pageParam, filters]);
+
+  // Mobile endless scrolling observer
+  useEffect(() => {
+    const sentinel = document.getElementById("mobile-search-sentinel");
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        if (loading || loadingMoreMobile) return;
+        if (mobilePage >= totalPages) return;
+
+        const nextPage = mobilePage + 1;
+        setLoadingMoreMobile(true);
+        try {
+          const params = new URLSearchParams();
+          if (query) params.set("q", query);
+          if (categoryParam) params.set("category", categoryParam);
+          if (sortParam && sortParam !== "relevance") params.set("sort", sortParam);
+          if (minPriceParam) params.set("minPrice", minPriceParam);
+          if (maxPriceParam) params.set("maxPrice", maxPriceParam);
+          params.set("page", String(nextPage));
+          params.set("limit", "12");
+
+          const res = await api.get<SearchResponse>(`/api/search?${params.toString()}`);
+          if (res?.data && res.data.length > 0) {
+            const mapped = res.data.map(toCardProduct);
+            setProducts((prev) => [...prev, ...mapped]);
+            setMobilePage(nextPage);
+          }
+        } catch {
+          // ignore
+        } finally {
+          setLoadingMoreMobile(false);
+        }
+      },
+      { rootMargin: "300px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loading, loadingMoreMobile, mobilePage, totalPages, query, categoryParam, sortParam, minPriceParam, maxPriceParam]);
 
   // Sheet helpers
   const openSheet = (kind: SheetKind) => {

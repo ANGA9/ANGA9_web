@@ -89,7 +89,7 @@ export default function CartSummary({ subtotal }: CartSummaryProps) {
         variant="cta"
         size="lg"
         onClick={handleCheckout}
-        className="mt-8 flex w-full h-[52px] text-[18px] font-black"
+        className="mt-8 flex w-full h-[48px] rounded-xl text-[15px] font-bold bg-[#1A6FD4] hover:bg-[#1558B0] text-white shadow-none transition-all flex items-center justify-center gap-1.5"
       >
         Proceed to Checkout
       </Button>

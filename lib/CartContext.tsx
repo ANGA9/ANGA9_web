@@ -77,17 +77,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const refreshCart = useCallback(async () => {
-    if (!user) {
-      setItems([]);
-      setCount(0);
-      setLoading(false);
-      return;
-    }
     try {
       setLoading(true);
-      const data = await api.get<{ items: CartItem[]; count: number }>("/api/cart");
-      setItems(data.items);
-      setCount(data.count);
+      let data: { items?: any[]; count?: number } | null = null;
+      if (user) {
+        data = await api.get<{ items: any[]; count: number }>("/api/cart");
+      } else {
+        const sessionId = getGuestSessionId();
+        if (sessionId) {
+          data = await api.get<{ items: any[]; count: number }>(`/api/cart/guest?sessionId=${sessionId}`);
+        }
+      }
+      if (data?.items) {
+        const normalized: CartItem[] = data.items.map((it: any) => ({
+          ...it,
+          productId: it.productId || it.product_id || it.id || "",
+          qty: it.qty ?? it.quantity ?? 1,
+        }));
+        setItems(normalized);
+        setCount(data.count ?? normalized.length);
+      } else {
+        setItems([]);
+        setCount(0);
+      }
     } catch {
       // silently fail
     } finally {
@@ -112,6 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (sessionId) {
         await api.post("/api/cart/guest/items", { sessionId, productId, qty, variantId }, { silent: true });
         toast.success("Added to cart");
+        await refreshCart();
       }
       return;
     }

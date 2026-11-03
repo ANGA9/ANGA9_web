@@ -48,7 +48,11 @@ export default function ProductCard({
   const [imgError, setImgError] = useState(false);
 
   const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
-  const cartItem = cart.items.find((item) => item.productId === product.id);
+  const cartItem = cart.items.find((item: any) => {
+    const itemPid = String(item.productId || item.product_id || item.id || "").trim().toLowerCase();
+    const pid = String(product.id || "").trim().toLowerCase();
+    return itemPid && pid && itemPid === pid;
+  });
   const cartQty = cartItem ? (cartItem.qty || 1) : 0;
   const isAddedToCart = cartQty > 0;
 
@@ -280,7 +284,7 @@ export default function ProductCard({
       {/* Universal "Add to Bag" button / Live Stepper */}
       <div className="px-3 md:px-4 pb-3 md:pb-4 pt-3 mt-auto bg-white border-t border-transparent">
         {cartQty > 0 ? (
-          <div className="w-full h-[32px] flex items-center justify-between rounded border border-gray-900 bg-gray-50/80 px-1 overflow-hidden">
+          <div className="w-full h-[36px] flex items-center justify-between rounded-lg border border-[#1A6FD4] bg-[#F8FAFC] px-1 overflow-hidden shadow-xs">
             <button
               type="button"
               onClick={(e) => {
@@ -292,11 +296,11 @@ export default function ProductCard({
                   cart.updateQty(product.id, cartQty - 1);
                 }
               }}
-              className="w-8 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+              className="w-9 h-full flex items-center justify-center font-bold text-lg text-[#1A6FD4] hover:bg-blue-100/50 active:scale-95 transition-all select-none"
             >
               −
             </button>
-            <span className="font-bold text-xs text-gray-900 px-2 select-none">{cartQty}</span>
+            <span className="font-bold text-[12px] md:text-[13px] text-[#1A1A2E] px-1 select-none">{cartQty} in Bag</span>
             <button
               type="button"
               onClick={(e) => {
@@ -304,7 +308,7 @@ export default function ProductCard({
                 e.stopPropagation();
                 cart.updateQty(product.id, cartQty + 1);
               }}
-              className="w-8 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+              className="w-9 h-full flex items-center justify-center font-bold text-lg text-[#1A6FD4] hover:bg-blue-100/50 active:scale-95 transition-all select-none"
             >
               +
             </button>
@@ -313,7 +317,7 @@ export default function ProductCard({
           <button
             onClick={handleAddToCart}
             disabled={adding}
-            className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded border border-black text-black bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
+            className="w-full h-[36px] flex items-center justify-center gap-1.5 rounded-lg border border-gray-900 text-gray-900 bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
           >
             {adding ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

@@ -326,7 +326,7 @@ export default function CustomerCartPage() {
 
 
             <div className="mt-4 mb-4 px-4 md:px-0">
-              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+              <div id="price-details-section" className="bg-gray-50 rounded-xl p-5 border border-gray-200">
                 <h3 className="text-[15px] font-black text-gray-900 mb-4 uppercase tracking-wider">
                   Price Details
                 </h3>
@@ -387,12 +387,16 @@ export default function CustomerCartPage() {
             </div>
 
             {/* Sticky Bottom Order Bar (Positioned above MobileBottomNav) */}
-            <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 animate-in slide-in-from-bottom duration-500">
-
+            <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] animate-in slide-in-from-bottom duration-500">
               <div className="px-4 py-3 flex gap-4 items-center">
-                <div className="hidden xs:flex flex-col">
+                <div
+                  onClick={() => {
+                    document.getElementById("price-details-section")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="flex flex-col cursor-pointer shrink-0"
+                >
                   <span className="text-[18px] font-black text-gray-900 leading-none">{formatINR(total)}</span>
-                  <span className="text-[12px] font-bold text-[#1A6FD4] mt-0.5">VIEW DETAILS</span>
+                  <span className="text-[11px] font-bold text-[#1A6FD4] mt-1 uppercase tracking-wide">VIEW DETAILS</span>
                 </div>
                 
                 <Button
@@ -400,14 +404,14 @@ export default function CustomerCartPage() {
                   size="lg"
                   disabled={isPlacingOrder}
                   onClick={handleProceedToCheckout}
-                  className="flex-1 h-[52px] text-[18px] font-black gap-3 w-full"
+                  className="flex-1 h-[48px] rounded-xl text-[15px] font-bold bg-[#1A6FD4] hover:bg-[#1558B0] text-white shadow-none transition-all flex items-center justify-center gap-1.5"
                 >
                   {isPlacingOrder ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     <>
                       <span>Place Order</span>
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-4 h-4" />
                     </>
                   )}
                 </Button>

@@ -98,9 +98,6 @@ export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const cart = useCart();
-  const { addItem, count: cartCount } = cart;
-  const cartItem = cart.items.find(i => i.productId === (product?.id || params?.id));
-  const cartItemQty = cartItem ? (cartItem.qty || 1) : 0;
   const wishlist = useWishlist();
   const { user } = useAuth();
   const { open: openLoginSheet } = useLoginSheet();
@@ -122,7 +119,10 @@ export default function ProductDetailPage() {
   const [descExpanded, setDescExpanded] = useState(false);
   const { addItem: addRecentlyViewed } = useRecentlyViewed();
 
-  const productId = params.id;
+  const productId = params?.id;
+  const { addItem, count: cartCount } = cart;
+  const cartItem = cart?.items?.find(i => i.productId === (product?.id || productId));
+  const cartItemQty = cartItem ? (cartItem.qty || 1) : 0;
 
   // Fix: scroll to top on navigation
   useEffect(() => {
@@ -947,6 +947,7 @@ export default function ProductDetailPage() {
               <button
                 type="button"
                 onClick={() => {
+                  if (!product) return;
                   if (cartItemQty <= 1) {
                     cart.removeItem(product.id);
                   } else {
@@ -961,6 +962,7 @@ export default function ProductDetailPage() {
               <button
                 type="button"
                 onClick={() => {
+                  if (!product) return;
                   cart.updateQty(product.id, cartItemQty + 1);
                 }}
                 className="w-10 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"

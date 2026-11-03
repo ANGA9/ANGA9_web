@@ -37,9 +37,14 @@ export default function Error({
       <h2 style={{ fontSize: 22, fontWeight: 600, color: "#1A1A2E", marginBottom: 8 }}>
         Something went wrong
       </h2>
-      <p style={{ fontSize: 14, color: "#5B6B7C", marginBottom: 20, maxWidth: 420 }}>
+      <p style={{ fontSize: 14, color: "#5B6B7C", marginBottom: 16, maxWidth: 420 }}>
         We hit an unexpected error. You can try again, or refresh the page.
       </p>
+      {error?.message && (
+        <p style={{ fontSize: 12, color: "#EF4444", marginBottom: 20, maxWidth: 440, wordBreak: "break-word" }}>
+          {error.message}
+        </p>
+      )}
       <div style={{ display: "flex", gap: 12 }}>
         <button
           type="button"

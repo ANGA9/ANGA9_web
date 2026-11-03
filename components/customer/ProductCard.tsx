@@ -281,43 +281,59 @@ export default function ProductCard({
         </div>
       </Link>
 
-      {/* Universal "Add to Bag" button / Live Stepper */}
+      {/* Universal "Add to Bag" button / Split [ - 1 + ] and [ Go to Cart ] */}
       <div className="px-3 md:px-4 pb-3 md:pb-4 pt-3 mt-auto bg-white border-t border-transparent">
         {cartQty > 0 ? (
-          <div className="w-full h-[36px] flex items-center justify-between rounded-lg border border-[#1A6FD4] bg-[#F8FAFC] px-1 overflow-hidden shadow-xs">
+          <div className="w-full h-[36px] flex items-center gap-1.5">
+            {/* Left Stepper: [- 1 +] */}
+            <div className="flex-1 h-full flex items-center justify-between rounded border border-gray-900 bg-gray-50/90 px-0.5 overflow-hidden">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (cartQty <= 1) {
+                    cart.removeItem(product.id);
+                  } else {
+                    cart.updateQty(product.id, cartQty - 1);
+                  }
+                }}
+                className="w-7 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+              >
+                −
+              </button>
+              <span className="font-black text-xs md:text-sm text-gray-900 px-1 select-none">{cartQty}</span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cart.updateQty(product.id, cartQty + 1);
+                }}
+                className="w-7 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+              >
+                +
+              </button>
+            </div>
+
+            {/* Right Button: Go to Cart */}
             <button
               type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                if (cartQty <= 1) {
-                  cart.removeItem(product.id);
-                } else {
-                  cart.updateQty(product.id, cartQty - 1);
-                }
+                router.push("/cart");
               }}
-              className="w-9 h-full flex items-center justify-center font-bold text-lg text-[#1A6FD4] hover:bg-blue-100/50 active:scale-95 transition-all select-none"
+              className="flex-1 h-full flex items-center justify-center rounded bg-[#1A6FD4] hover:bg-[#1558B0] active:scale-95 text-white text-[11px] font-bold tracking-tight transition-all shadow-xs"
             >
-              −
-            </button>
-            <span className="font-bold text-[12px] md:text-[13px] text-[#1A1A2E] px-1 select-none">{cartQty} in Bag</span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                cart.updateQty(product.id, cartQty + 1);
-              }}
-              className="w-9 h-full flex items-center justify-center font-bold text-lg text-[#1A6FD4] hover:bg-blue-100/50 active:scale-95 transition-all select-none"
-            >
-              +
+              Go to Cart
             </button>
           </div>
         ) : (
           <button
             onClick={handleAddToCart}
             disabled={adding}
-            className="w-full h-[36px] flex items-center justify-center gap-1.5 rounded-lg border border-gray-900 text-gray-900 bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
+            className="w-full h-[36px] flex items-center justify-center gap-1.5 rounded border border-gray-900 text-gray-900 bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
           >
             {adding ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

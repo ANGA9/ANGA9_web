@@ -778,6 +778,7 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!product) return;
                     if (cartItemQty <= 1) {
                       cart.removeItem(product.id);
                     } else {
@@ -792,6 +793,7 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!product) return;
                     cart.updateQty(product.id, cartItemQty + 1);
                   }}
                   className="w-12 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"

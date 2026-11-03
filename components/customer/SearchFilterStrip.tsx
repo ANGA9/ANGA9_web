@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { ArrowUpDown, SlidersHorizontal, X, Check, Search } from "lucide-react";
+import { ArrowUpDown, SlidersHorizontal, X, Check, Search, ChevronDown } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { useCategories } from "@/lib/useCategories";
 
@@ -119,6 +119,14 @@ export default function SearchFilterStrip({
           >
             <ArrowUpDown className="w-4 h-4 md:w-5 md:h-5" style={{ color: t.textSecondary }} />
             Sort
+          </button>
+          <button
+            onClick={() => openModal("category")}
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 md:py-4 text-sm md:text-base font-semibold border-r border-gray-200 hover:bg-gray-50 transition-colors"
+            style={{ color: t.textPrimary }}
+          >
+            Category
+            <ChevronDown className="w-4 h-4" style={{ color: t.textSecondary }} />
           </button>
           <button
             onClick={() => openModal("filters")}

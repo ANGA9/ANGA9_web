@@ -48,7 +48,9 @@ export default function ProductCard({
   const [imgError, setImgError] = useState(false);
 
   const isSaved = wishlist.hasItem(product.id) || showWishlistHeart;
-  const isAddedToCart = cart.items.some((item) => item.productId === product.id);
+  const cartItem = cart.items.find((item) => item.productId === product.id);
+  const cartQty = cartItem ? (cartItem.qty || 1) : 0;
+  const isAddedToCart = cartQty > 0;
 
   const discount =
     product.originalPrice > product.price && product.originalPrice > 0
@@ -275,23 +277,51 @@ export default function ProductCard({
         </div>
       </Link>
 
-      {/* Universal "Add to Bag" button */}
+      {/* Universal "Add to Bag" button / Live Stepper */}
       <div className="px-3 md:px-4 pb-3 md:pb-4 pt-3 mt-auto bg-white border-t border-transparent">
-        <button
-          onClick={handleAddToCart}
-          disabled={adding}
-          className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded border border-black text-black bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
-        >
-          {adding ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          ) : isAddedToCart ? (
-            <>
-              Added <Check className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={3} />
-            </>
-          ) : (
-            "Add to Bag"
-          )}
-        </button>
+        {cartQty > 0 ? (
+          <div className="w-full h-[32px] flex items-center justify-between rounded border border-gray-900 bg-gray-50/80 px-1 overflow-hidden">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (cartQty <= 1) {
+                  cart.removeItem(product.id);
+                } else {
+                  cart.updateQty(product.id, cartQty - 1);
+                }
+              }}
+              className="w-8 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+            >
+              −
+            </button>
+            <span className="font-bold text-xs text-gray-900 px-2 select-none">{cartQty}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                cart.updateQty(product.id, cartQty + 1);
+              }}
+              className="w-8 h-full flex items-center justify-center font-bold text-base text-gray-900 hover:bg-gray-200 active:scale-95 transition-all select-none"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            disabled={adding}
+            className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded border border-black text-black bg-white hover:bg-gray-50 active:scale-95 transition-all text-[11px] md:text-xs font-bold uppercase tracking-wider"
+          >
+            {adding ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              "Add to Bag"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

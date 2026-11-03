@@ -97,7 +97,10 @@ function isVideoUrl(url: string): boolean {
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { addItem, count: cartCount } = useCart();
+  const cart = useCart();
+  const { addItem, count: cartCount } = cart;
+  const cartItem = cart.items.find(i => i.productId === (product?.id || params?.id));
+  const cartItemQty = cartItem ? (cartItem.qty || 1) : 0;
   const wishlist = useWishlist();
   const { user } = useAuth();
   const { open: openLoginSheet } = useLoginSheet();
@@ -759,21 +762,47 @@ export default function ProductDetailPage() {
 
           {/* Desktop Action Buttons */}
           <div className="hidden md:flex gap-3 items-center">
-            <Button
-              variant="secondary-cta"
-              className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-50"
-              onClick={handleAddToCart}
-              disabled={adding || stock.status === "out"}
-            >
-              {adding ? (
-                <Loader2 className="size-5 animate-spin text-[#1A6FD4]" />
-              ) : added ? (
-                <Check className="size-5 text-green-600" />
-              ) : (
-                <ShoppingCart className="size-5 text-[#1A6FD4]" />
-              )}
-              {adding ? "Adding..." : added ? "Added!" : "Add to Cart"}
-            </Button>
+            {cartItemQty > 0 ? (
+              <div className="flex-1 h-[52px] rounded-xl border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] flex items-center justify-between px-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (cartItemQty <= 1) {
+                      cart.removeItem(product.id);
+                    } else {
+                      cart.updateQty(product.id, cartItemQty - 1);
+                    }
+                  }}
+                  className="w-12 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"
+                >
+                  −
+                </button>
+                <span className="font-bold text-[#1A1A2E] text-base select-none">{cartItemQty} in Bag</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    cart.updateQty(product.id, cartItemQty + 1);
+                  }}
+                  className="w-12 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <Button
+                variant="secondary-cta"
+                className="flex-1 h-[52px] rounded-xl text-[15.5px] font-semibold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2.5 shadow-xs disabled:opacity-50"
+                onClick={handleAddToCart}
+                disabled={adding || stock.status === "out"}
+              >
+                {adding ? (
+                  <Loader2 className="size-5 animate-spin text-[#1A6FD4]" />
+                ) : (
+                  <ShoppingCart className="size-5 text-[#1A6FD4]" />
+                )}
+                {adding ? "Adding..." : "Add to Bag"}
+              </Button>
+            )}
 
             <Button
               variant="cta"
@@ -902,21 +931,47 @@ export default function ProductDetailPage() {
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Total ({quantity} pcs)</span>
             <span className="text-[17px] font-black text-gray-900 leading-none">{formatINR(computedTotal)}</span>
           </div>
-          <Button
-            variant="secondary-cta"
-            className="flex-1 h-[48px] rounded-xl text-[14px] font-bold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-50"
-            onClick={handleAddToCart}
-            disabled={adding || stock.status === "out"}
-          >
-            {adding ? (
-              <Loader2 className="w-[18px] h-[18px] animate-spin text-[#1A6FD4]" />
-            ) : added ? (
-              <Check className="w-[18px] h-[18px] text-green-600" />
-            ) : (
-              <ShoppingCart className="w-[18px] h-[18px] text-[#1A6FD4]" />
-            )}
-            {adding ? "Adding..." : added ? "Added!" : "Add to Bag"}
-          </Button>
+          {cartItemQty > 0 ? (
+            <div className="flex-1 h-[48px] rounded-xl border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] flex items-center justify-between px-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (cartItemQty <= 1) {
+                    cart.removeItem(product.id);
+                  } else {
+                    cart.updateQty(product.id, cartItemQty - 1);
+                  }
+                }}
+                className="w-10 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"
+              >
+                −
+              </button>
+              <span className="font-bold text-[#1A1A2E] text-sm select-none">{cartItemQty} in Bag</span>
+              <button
+                type="button"
+                onClick={() => {
+                  cart.updateQty(product.id, cartItemQty + 1);
+                }}
+                className="w-10 h-full flex items-center justify-center text-xl font-bold text-[#1A6FD4] hover:bg-blue-100/50 rounded-lg active:scale-90 transition-all select-none"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <Button
+              variant="secondary-cta"
+              className="flex-1 h-[48px] rounded-xl text-[14px] font-bold border-[1.5px] border-[#1A6FD4] bg-[#F8FAFC] text-[#1A6FD4] hover:bg-blue-50/70 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-50"
+              onClick={handleAddToCart}
+              disabled={adding || stock.status === "out"}
+            >
+              {adding ? (
+                <Loader2 className="w-[18px] h-[18px] animate-spin text-[#1A6FD4]" />
+              ) : (
+                <ShoppingCart className="w-[18px] h-[18px] text-[#1A6FD4]" />
+              )}
+              {adding ? "Adding..." : "Add to Bag"}
+            </Button>
+          )}
 
           <Button
             variant="cta"

@@ -133,23 +133,34 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
       setError(null);
-      const [productRes, inventoryRes, similarRes, alsoBoughtRes, dealsRes] = await Promise.all([
-        api.get<{ product: ProductDetail }>(`/api/products/${productId}`),
-        api.get<InventoryItem[]>(`/api/inventory/${productId}`, { silent: true }),
-        recommendationsApi.getSimilar(productId),
-        recommendationsApi.getAlsoBought(productId),
-        dealsApi.getDeals({ product_id: productId, active_only: true }).catch(() => []),
-      ]);
+      const productRes = await api.get<{ product: ProductDetail }>(`/api/products/${productId}`);
       setProduct(productRes.product);
-      setInventory(inventoryRes || []);
-      setSimilarProducts(similarRes);
-      setAlsoBoughtProducts(alsoBoughtRes);
-      setActiveDeal(dealsRes?.[0] || null);
       
       if (productRes.product.product_variants?.length) {
         setSelectedVariant(productRes.product.product_variants[0].id);
       }
       setQuantity(productRes.product.min_order_qty || 1);
+
+      // Auxiliary calls — failure in secondary rails must NEVER crash the product page
+      Promise.allSettled([
+        api.get<InventoryItem[]>(`/api/inventory/${productId}`, { silent: true }),
+        recommendationsApi.getSimilar(productId),
+        recommendationsApi.getAlsoBought(productId),
+        dealsApi.getDeals({ product_id: productId, active_only: true }),
+      ]).then(([invResult, simResult, alsoResult, dealsResult]) => {
+        if (invResult.status === 'fulfilled' && invResult.value) {
+          setInventory(invResult.value);
+        }
+        if (simResult.status === 'fulfilled' && simResult.value) {
+          setSimilarProducts(simResult.value);
+        }
+        if (alsoResult.status === 'fulfilled' && alsoResult.value) {
+          setAlsoBoughtProducts(alsoResult.value);
+        }
+        if (dealsResult.status === 'fulfilled' && dealsResult.value) {
+          setActiveDeal(dealsResult.value?.[0] || null);
+        }
+      });
     } catch {
       setError("Failed to load product. It may not exist or has been removed.");
     } finally {

@@ -29,14 +29,18 @@ export interface DealFilters {
 }
 
 export const dealsApi = {
-  async getDeals(filters?: DealFilters) {
-    const params = new URLSearchParams();
-    if (filters?.product_id) params.set("product_id", filters.product_id);
-    if (filters?.active_only !== undefined) params.set("active_only", String(filters.active_only));
+  async getDeals(filters?: DealFilters): Promise<Deal[]> {
+    try {
+      const params = new URLSearchParams();
+      if (filters?.product_id) params.set("product_id", filters.product_id);
+      if (filters?.active_only !== undefined) params.set("active_only", String(filters.active_only));
 
-    const path = `/api/deals${params.toString() ? `?${params.toString()}` : ""}`;
-    const res = await api.get<{ deals: Deal[] }>(path);
-    return res.deals;
+      const path = `/api/deals${params.toString() ? `?${params.toString()}` : ""}`;
+      const res = await api.get<{ deals: Deal[] }>(path, { silent: true });
+      return res?.deals || [];
+    } catch {
+      return [];
+    }
   },
 
   async subscribePriceAlert(productId: string, targetPrice: number) {

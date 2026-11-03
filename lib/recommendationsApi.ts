@@ -11,7 +11,8 @@ export const recommendationsApi = {
   getAlsoBought: async (productId: string): Promise<Product[]> => {
     try {
       const res = await api.get<any[]>(`/api/recommendations/also-bought/${productId}`, { silent: true });
-      return mapToProducts(res.map(r => r.product));
+      if (!Array.isArray(res)) return [];
+      return mapToProducts(res.map(r => r?.product).filter(Boolean));
     } catch {
       return [];
     }
@@ -20,6 +21,7 @@ export const recommendationsApi = {
   getSimilar: async (productId: string): Promise<Product[]> => {
     try {
       const res = await api.get<any[]>(`/api/recommendations/similar/${productId}`, { silent: true });
+      if (!Array.isArray(res)) return [];
       return mapToProducts(res);
     } catch {
       return [];
@@ -29,6 +31,9 @@ export const recommendationsApi = {
   getHomeRails: async (): Promise<HomeRails> => {
     try {
       const res = await api.get<Array<{ title: string; type: string; items: any[] }>>("/api/recommendations/home-rails", { silent: true });
+      if (!Array.isArray(res)) {
+        return { recentlyViewed: [], wishlistBased: [], trending: [] };
+      }
       
       const recentlyViewed = res.find(r => r.type === 'recently_viewed')?.items || [];
       const wishlistBased = res.find(r => r.type === 'wishlist')?.items || [];

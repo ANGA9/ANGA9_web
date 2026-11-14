@@ -205,10 +205,10 @@ export default function ProductCard({
               aria-label="Toggle wishlist"
             >
               {togglingWishlist ? (
-                <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" style={{ color: "#9CA3AF" }} />
+                <Loader2 className="w-4 h-4 md:w-6 md:h-6 animate-spin" style={{ color: "#9CA3AF" }} />
               ) : (
                 <Heart
-                  className="w-4 h-4 md:w-5 md:h-5 transition-colors"
+                  className="w-4 h-4 md:w-6 md:h-6 transition-colors"
                   style={{ color: isSaved ? "#DC2626" : "#9CA3AF" }}
                   fill={isSaved ? "#DC2626" : "transparent"}
                 />
@@ -259,18 +259,18 @@ export default function ProductCard({
           <div className="mt-auto flex items-end justify-between gap-2">
             <div>
               <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="font-bold tracking-tight text-[18px] md:text-[20px]" style={{ color: t.textPrimary }}>
+                <span className="font-bold tracking-tight text-[18px] md:text-[23px]" style={{ color: t.textPrimary }}>
                   {formatINR(product.price)}
                 </span>
                 {product.originalPrice > product.price && (
-                  <span className="line-through text-[12px] md:text-[13px]" style={{ color: t.textSecondary }}>
+                  <span className="line-through text-[12px] md:text-[14.5px]" style={{ color: t.textSecondary }}>
                     {formatINR(product.originalPrice)}
                   </span>
                 )}
               </div>
               {/* Absolute savings indicator */}
               {absoluteSaving > 0 && (
-                <p className="text-[11px] md:text-[12px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
+                <p className="text-[11px] md:text-[14px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
                   Save {formatINR(absoluteSaving)}
                 </p>
               )}

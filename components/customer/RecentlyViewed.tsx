@@ -58,7 +58,7 @@ export default function RecentlyViewed({ excludeId }: Props) {
   };
 
   return (
-    <section className="rv-section">
+    <section className={`rv-section ${visible.length <= 5 ? "md:hidden desktop-hidden" : ""}`}>
       {/* Header */}
       <div className="rv-header">
         <div className="rv-header-left">
@@ -101,6 +101,11 @@ export default function RecentlyViewed({ excludeId }: Props) {
         }
         @media (min-width: 640px) {
           .rv-section { padding: 0 40px; margin: 48px 0 32px; }
+        }
+        @media (min-width: 768px) {
+          .rv-section.desktop-hidden {
+            display: none !important;
+          }
         }
 
         .rv-header {

@@ -13,6 +13,7 @@ const DEFAULT_SLIDES = [
   {
     id: "1",
     image: "/banners/banner1.jpeg",
+    desktopImage: "/banner_desktop/banner1.jpeg",
     title: "ANGA9 Wholesale B2B Deal 1",
     seller: "vostro",
     searchQuery: "sarees",
@@ -20,6 +21,7 @@ const DEFAULT_SLIDES = [
   {
     id: "2",
     image: "/banners/banner2.jpeg",
+    desktopImage: "/banner_desktop/banner2.jpeg",
     title: "ANGA9 Wholesale B2B Deal 2",
     seller: "rebecca",
     searchQuery: "menswear",
@@ -27,6 +29,7 @@ const DEFAULT_SLIDES = [
   {
     id: "3",
     image: "/banners/banner3.jpeg",
+    desktopImage: "/banner_desktop/banner3.jpeg",
     title: "ANGA9 Wholesale B2B Deal 3",
     seller: "vostro",
     searchQuery: "kids fashion",
@@ -34,6 +37,7 @@ const DEFAULT_SLIDES = [
   {
     id: "4",
     image: "/banners/banner4.jpeg",
+    desktopImage: "/banner_desktop/banner4.jpeg",
     title: "ANGA9 Wholesale B2B Deal 4",
     seller: "sport-flex",
     searchQuery: "activewear",
@@ -41,6 +45,7 @@ const DEFAULT_SLIDES = [
   {
     id: "5",
     image: "/banners/banner5.jpeg",
+    desktopImage: "/banner_desktop/banner5.jpeg",
     title: "ANGA9 Wholesale B2B Deal 5",
     seller: "rebecca",
     searchQuery: "bed linen",
@@ -48,6 +53,7 @@ const DEFAULT_SLIDES = [
   {
     id: "6",
     image: "/banners/banner6.jpeg",
+    desktopImage: "/banner_desktop/banner6.jpeg",
     title: "ANGA9 Wholesale B2B Deal 6",
     seller: "home-decor-inc",
     searchQuery: "living decor",
@@ -125,13 +131,30 @@ export default function HeroBanner() {
               onClick={() => handleSlideClick(slide)}
               className="flex-[0_0_92%] sm:flex-[0_0_94%] md:flex-[0_0_100%] min-w-0 relative px-1 sm:px-1.5 cursor-pointer"
             >
+                {/* Mobile View: Aspect 640/430 with untouched mobile banner */}
                 <div 
-                  className="relative w-full aspect-[640/430] overflow-hidden rounded-2xl md:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]"
+                  className="block md:hidden relative w-full aspect-[640/430] overflow-hidden rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]"
                   style={{ aspectRatio: "640 / 430" }}
                 >
                   <Image
-                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as typeof DEFAULT_SLIDES[0]).image}
-                    alt={(slide as AdCampaign).headline || (slide as typeof DEFAULT_SLIDES[0]).title}
+                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as any).image}
+                    alt={(slide as AdCampaign).headline || (slide as any).title}
+                    fill
+                    className="object-contain w-full h-full transition-transform duration-700 ease-out"
+                    priority={index === 0}
+                    unoptimized={true}
+                  />
+                  <span className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-md text-black border border-black/80 text-[10px] font-bold uppercase px-2 py-1 rounded shadow-sm">AD</span>
+                </div>
+
+                {/* Desktop View: Aspect 16/9 with 1600x900 widescreen desktop banner */}
+                <div 
+                  className="hidden md:block relative w-full aspect-[16/9] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]"
+                  style={{ aspectRatio: "16 / 9" }}
+                >
+                  <Image
+                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : ((slide as any).desktopImage || (slide as any).image)}
+                    alt={(slide as AdCampaign).headline || (slide as any).title}
                     fill
                     className="object-contain w-full h-full transition-transform duration-700 ease-out"
                     priority={index === 0}

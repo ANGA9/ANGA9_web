@@ -148,13 +148,19 @@ export default function HeroBanner() {
 
   return (
     <div className="w-full pb-6 pt-2">
-      <div className="relative w-full px-4 md:px-0 group max-w-[1280px] mx-auto overflow-hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y">
+      <div className="relative w-full px-4 sm:px-8 lg:px-12 group max-w-[1400px] mx-auto overflow-hidden" ref={emblaRef}>
+        <div className="flex touch-pan-y -mx-1.5 sm:-mx-2 md:-mx-3">
           {currentSlides.map((slide, index) => (
             <div
               key={slide.id}
-              onClick={() => handleSlideClick(slide)}
-              className="flex-[0_0_92%] sm:flex-[0_0_94%] md:flex-[0_0_100%] min-w-0 relative px-1 sm:px-1.5 cursor-pointer"
+              onClick={() => {
+                if (emblaApi && index !== selectedIndex) {
+                  emblaApi.scrollTo(index);
+                } else {
+                  handleSlideClick(slide);
+                }
+              }}
+              className="flex-[0_0_92%] sm:flex-[0_0_94%] md:flex-[0_0_80%] lg:flex-[0_0_82%] min-w-0 relative px-1.5 sm:px-2 md:px-3 cursor-pointer"
             >
                 {/* Mobile View: Aspect 640/430 with untouched mobile banner */}
                 <div 
@@ -174,7 +180,9 @@ export default function HeroBanner() {
 
                 {/* Desktop View: Aspect 16/9 with 1600x900 widescreen desktop banner */}
                 <div 
-                  className="hidden md:block relative w-full aspect-[16/9] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC]"
+                  className={`hidden md:block relative w-full aspect-[16/9] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC] transition-opacity duration-300 ${
+                    index === selectedIndex ? "opacity-100" : "opacity-85 hover:opacity-100"
+                  }`}
                   style={{ aspectRatio: "16 / 9" }}
                 >
                   <Image
@@ -194,14 +202,14 @@ export default function HeroBanner() {
 
         <button
           onClick={handlePrev}
-          className="hidden md:flex absolute top-1/2 left-6 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/90 hover:bg-white active:bg-gray-100 shadow-md border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          className="hidden md:flex absolute top-1/2 left-8 lg:left-14 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
           aria-label="Previous banner"
         >
           <ChevronLeft className="w-5 h-5 text-gray-800" strokeWidth={2.5} />
         </button>
         <button
           onClick={handleNext}
-          className="hidden md:flex absolute top-1/2 right-6 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/90 hover:bg-white active:bg-gray-100 shadow-md border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          className="hidden md:flex absolute top-1/2 right-8 lg:right-14 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
           aria-label="Next banner"
         >
           <ChevronRight className="w-5 h-5 text-gray-800" strokeWidth={2.5} />

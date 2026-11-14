@@ -323,7 +323,12 @@ export default function CustomerTopNav() {
   }, [moreOpen]);
 
   return (
-    <header className="sticky top-0 z-40 w-full" style={{ background: `linear-gradient(to bottom, ${t.bgBlueTint}, ${t.bgCard})` }}>
+    <header
+      className="w-full"
+      style={{
+        background: "linear-gradient(to bottom, #D6E6FA 0%, #E8F1FD 40%, #F6FAFE 75%, #FFFFFF 100%)",
+      }}
+    >
 
       {/* ── Row 1: full-width bg band ── */}
       <div className="w-full border-b" style={{ borderColor: t.border }}>
@@ -338,19 +343,24 @@ export default function CustomerTopNav() {
             className="shrink-0 flex items-center gap-2.5"
             style={{ minWidth: "fit-content" }}
           >
+            <div
+              className="w-[36px] h-[36px] rounded-[8px] overflow-hidden flex items-center justify-center shrink-0 shadow-xs"
+              style={{ borderRadius: 8 }}
+            >
+              <Image
+                src="/final_logo1.png"
+                alt="ANGA9 Icon"
+                width={36}
+                height={36}
+                priority
+                className="w-full h-full object-cover"
+              />
+            </div>
             <Image
-              src={cdnUrl("/logoo.png")}
-              alt="ANGA9 Icon"
-              width={34}
-              height={34}
-              priority
-              style={{ objectFit: "contain" }}
-            />
-            <Image
-              src={cdnUrl("/anga9-logo.png")}
+              src="/anga9-logo.png"
               alt="ANGA9"
               width={105}
-              height={34}
+              height={36}
               priority
               style={{ objectFit: "contain" }}
             />
@@ -581,9 +591,9 @@ export default function CustomerTopNav() {
               style={{
                 height: 44,
                 borderRadius: 8,
-                border: "2px solid #1A6FD4",
+                border: "2px solid #0F4C9C",
                 boxShadow: isSearchFocused
-                  ? "0 0 0 2px rgba(26, 111, 212, 0.18)"
+                  ? "0 0 0 2px rgba(15, 76, 156, 0.18)"
                   : "none",
               }}
             >
@@ -591,7 +601,7 @@ export default function CustomerTopNav() {
               <button
                 type="button"
                 onClick={handleSearchSubmit}
-                className="pl-3.5 pr-2.5 h-full flex items-center justify-center text-gray-500 hover:text-[#1A6FD4] transition-colors cursor-pointer"
+                className="pl-3.5 pr-2.5 h-full flex items-center justify-center text-gray-500 hover:text-[#0F4C9C] transition-colors cursor-pointer"
                 aria-label="Search"
               >
                 <Search style={{ width: 19, height: 19 }} />
@@ -624,7 +634,7 @@ export default function CustomerTopNav() {
                   <div className="relative min-w-[220px] h-[24px] overflow-hidden">
                     <span
                       key={placeholderIdx}
-                      className="absolute inset-0 flex items-center truncate text-[#1A6FD4] font-normal"
+                      className="absolute inset-0 flex items-center truncate text-[#0F4C9C] font-normal"
                       style={{ animation: "searchHintIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
                     >
                       &quot;{SEARCH_WORDS[placeholderIdx]}&quot;

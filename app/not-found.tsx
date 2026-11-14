@@ -19,7 +19,7 @@ export default function NotFound() {
         <WishlistProvider>
           <div className="min-h-screen flex flex-col" style={{ background: t.bgPage }}>
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
-            <div className="hidden md:block">
+            <div className="hidden md:block sticky top-0 z-40 bg-white">
               <CustomerTopNav />
               <CategoryStrip />
             </div>

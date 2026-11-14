@@ -86,9 +86,13 @@ function getMobileBanner(slide: any, index: number): string {
 }
 
 export default function HeroBanner() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
-    Autoplay({ delay: 5000, stopOnInteraction: true }),
-  ]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: (viewSize, snapSize) => (viewSize - snapSize) * 0.28,
+    },
+    [Autoplay({ delay: 5000, stopOnInteraction: true })]
+  );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [ads, setAds] = useState<AdCampaign[]>([]);
   const [loading, setLoading] = useState(true);
@@ -160,7 +164,7 @@ export default function HeroBanner() {
                   handleSlideClick(slide);
                 }
               }}
-              className="flex-[0_0_92%] sm:flex-[0_0_94%] md:flex-[0_0_80%] lg:flex-[0_0_82%] min-w-0 relative px-1.5 sm:px-2 md:px-3 cursor-pointer"
+              className="flex-[0_0_88%] sm:flex-[0_0_90%] md:flex-[0_0_78%] lg:flex-[0_0_80%] min-w-0 relative px-1.5 sm:px-2 md:px-3 cursor-pointer"
             >
                 {/* Mobile View: Aspect 640/430 with untouched mobile banner */}
                 <div 
@@ -202,14 +206,14 @@ export default function HeroBanner() {
 
         <button
           onClick={handlePrev}
-          className="hidden md:flex absolute top-1/2 left-8 lg:left-14 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          className="hidden md:flex absolute top-1/2 left-3 lg:left-5 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
           aria-label="Previous banner"
         >
           <ChevronLeft className="w-5 h-5 text-gray-800" strokeWidth={2.5} />
         </button>
         <button
           onClick={handleNext}
-          className="hidden md:flex absolute top-1/2 right-8 lg:right-14 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+          className="hidden md:flex absolute top-1/2 right-3 lg:right-5 -translate-y-1/2 z-20 items-center justify-center rounded-full bg-white/95 hover:bg-white active:bg-gray-100 shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-gray-100 w-11 h-11 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
           aria-label="Next banner"
         >
           <ChevronRight className="w-5 h-5 text-gray-800" strokeWidth={2.5} />

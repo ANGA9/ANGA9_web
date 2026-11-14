@@ -75,6 +75,23 @@ export default function CustomerTopNav() {
 
   const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
 
+  const SEARCH_WORDS = [
+    "accessories",
+    "formal shirts",
+    "home decor",
+    "footwear",
+    "kitchenware",
+  ];
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPlaceholderIdx((i) => (i + 1) % SEARCH_WORDS.length);
+    }, 2200);
+    return () => clearInterval(id);
+  }, [SEARCH_WORDS.length]);
+
   useEffect(() => {
     // Fetch popular tags on mount
     api.get<{ tags?: string[] }>("/api/search/filters", { silent: true })
@@ -318,14 +335,22 @@ export default function CustomerTopNav() {
           {/* Logo */}
           <Link
             href="/"
-            className="shrink-0"
+            className="shrink-0 flex items-center gap-2.5"
             style={{ minWidth: "fit-content" }}
           >
             <Image
+              src={cdnUrl("/logoo.png")}
+              alt="ANGA9 Icon"
+              width={34}
+              height={34}
+              priority
+              style={{ objectFit: "contain" }}
+            />
+            <Image
               src={cdnUrl("/anga9-logo.png")}
-              alt="ANGA"
-              width={110}
-              height={36}
+              alt="ANGA9"
+              width={105}
+              height={34}
               priority
               style={{ objectFit: "contain" }}
             />
@@ -544,63 +569,93 @@ export default function CustomerTopNav() {
             style={{ flex: 1, maxWidth: 700 }}
             ref={searchRef}
           >
-            <input
-              type="text"
-              placeholder="Search products, sellers..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
-              onFocus={() => setShowSuggestions(true)}
-              className="w-full outline-none transition-colors"
-              style={{
-                background: "#FFFFFF",
-                border: `1.5px solid ${t.bluePrimary}`,
-                borderRadius: 4,
-                padding: "12px 84px 12px 16px",
-                fontSize: '16px',
-                color: t.textPrimary,
-                lineHeight: "1.4",
-              }}
-            />
-            {/* Clear button (X) */}
-            {searchQuery && (
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSuggestions([]);
-                }}
-                className="absolute top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center"
-                style={{ right: 54, color: t.textMuted }}
-                aria-label="Clear search"
-              >
-                <X style={{ width: 18, height: 18 }} />
-              </button>
-            )}
+            <style>{`
+              @keyframes searchHintIn {
+                0% { transform: translateY(100%); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+              }
+            `}</style>
 
-            {/* Icon with left-border separator */}
-            <button
-              onClick={handleSearchSubmit}
-              className="absolute top-1/2 -translate-y-1/2 flex items-center cursor-pointer"
+            <div
+              className="relative flex items-center w-full transition-all duration-200 bg-white"
               style={{
-                right: 0,
-                height: "100%",
-                paddingLeft: 10,
-                paddingRight: 12,
-                borderLeft: "1.5px solid #E8EEF4",
-                color: t.bluePrimary,
+                height: 44,
+                borderRadius: 8,
+                border: "2px solid #1A6FD4",
+                boxShadow: isSearchFocused
+                  ? "0 0 0 2px rgba(26, 111, 212, 0.18)"
+                  : "none",
               }}
             >
-              <Search style={{ width: 20, height: 20 }} />
-            </button>
+              {/* Left Search Icon (like Flipkart) */}
+              <button
+                type="button"
+                onClick={handleSearchSubmit}
+                className="pl-3.5 pr-2.5 h-full flex items-center justify-center text-gray-500 hover:text-[#1A6FD4] transition-colors cursor-pointer"
+                aria-label="Search"
+              >
+                <Search style={{ width: 19, height: 19 }} />
+              </button>
+
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
+                onFocus={() => {
+                  setIsSearchFocused(true);
+                  setShowSuggestions(true);
+                }}
+                onBlur={() => setIsSearchFocused(false)}
+                className="w-full h-full outline-none bg-transparent font-normal text-black"
+                style={{
+                  borderRadius: 8,
+                  paddingRight: searchQuery ? "40px" : "16px",
+                  fontSize: '17px',
+                  color: "#000000",
+                  lineHeight: "1.4",
+                }}
+              />
+
+              {/* Animated Rotating Placeholder (when searchQuery is empty) */}
+              {!searchQuery && (
+                <div className="pointer-events-none absolute left-[44px] top-1/2 -translate-y-1/2 flex items-center text-[17px] select-none">
+                  <span className="shrink-0 text-gray-700 font-normal">Search for&nbsp;</span>
+                  <div className="relative min-w-[220px] h-[24px] overflow-hidden">
+                    <span
+                      key={placeholderIdx}
+                      className="absolute inset-0 flex items-center truncate text-[#1A6FD4] font-normal"
+                      style={{ animation: "searchHintIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both" }}
+                    >
+                      &quot;{SEARCH_WORDS[placeholderIdx]}&quot;
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Clear button (X) */}
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSuggestions([]);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center text-gray-400 hover:text-gray-700"
+                  aria-label="Clear search"
+                >
+                  <X style={{ width: 18, height: 18 }} />
+                </button>
+              )}
+            </div>
 
             {/* Autocomplete dropdown */}
             {showSuggestions && (
               <div
-                className="absolute left-0 right-0 top-full mt-1 rounded-xl border overflow-hidden"
+                className="absolute left-0 right-0 top-[calc(100%+6px)] rounded-xl border overflow-hidden"
                 style={{
                   background: "#FFFFFF",
-                  borderColor: t.border,
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                  borderColor: "#1A6FD4",
+                  boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
                   zIndex: 60,
                 }}
               >

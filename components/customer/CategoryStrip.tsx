@@ -47,7 +47,7 @@ export default function CategoryStrip() {
   return (
     <>
       <div
-        className="relative z-[35] border-b"
+        className="relative z-40 border-b"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
         <div className="mx-auto relative" style={{ maxWidth: 1400, padding: "0 48px" }}>
@@ -85,10 +85,10 @@ export default function CategoryStrip() {
 
       </div>
 
-      {/* Dark overlay — z-[34] covers SearchFilterStrip (z-30) but stays below CategoryStrip (z-[35]) and CustomerTopNav (z-40) */}
+      {/* Dark overlay — covers only content below the fixed header */}
       {hoveredTab && (
         <div
-          className="fixed inset-0 z-[34]"
+          className="fixed inset-x-0 bottom-0 top-[188px] z-[34]"
           style={{ background: "rgba(0,0,0,0.45)" }}
           onMouseEnter={scheduleHide}
         />

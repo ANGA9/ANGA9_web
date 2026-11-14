@@ -324,7 +324,7 @@ export default function CustomerTopNav() {
 
   return (
     <header
-      className="w-full"
+      className="w-full relative z-40"
       style={{
         background: "linear-gradient(to bottom, #D6E6FA 0%, #E8F1FD 40%, #F6FAFE 75%, #FFFFFF 100%)",
       }}

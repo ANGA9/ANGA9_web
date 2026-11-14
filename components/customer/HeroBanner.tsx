@@ -60,6 +60,31 @@ const DEFAULT_SLIDES = [
   },
 ];
 
+function getDesktopBanner(slide: any, index: number): string {
+  if (slide.desktopImage) {
+    return slide.desktopImage;
+  }
+  if (slide.banner_url_desktop) {
+    return cdnUrl(slide.banner_url_desktop);
+  }
+  if (slide.banner_url && !slide.banner_url.includes("mobile") && !slide.banner_url.includes("/banners/ban")) {
+    return cdnUrl(slide.banner_url);
+  }
+  const bannerNum = (index % 6) + 1;
+  return `/banner_desktop/banner${bannerNum}.jpeg`;
+}
+
+function getMobileBanner(slide: any, index: number): string {
+  if (slide.banner_url) {
+    return cdnUrl(slide.banner_url);
+  }
+  if (slide.image) {
+    return slide.image;
+  }
+  const bannerNum = (index % 6) + 1;
+  return `/banners/banner${bannerNum}.jpeg`;
+}
+
 export default function HeroBanner() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
     Autoplay({ delay: 5000, stopOnInteraction: true }),
@@ -137,8 +162,8 @@ export default function HeroBanner() {
                   style={{ aspectRatio: "640 / 430" }}
                 >
                   <Image
-                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : (slide as any).image}
-                    alt={(slide as AdCampaign).headline || (slide as any).title}
+                    src={getMobileBanner(slide, index)}
+                    alt={(slide as AdCampaign).headline || (slide as any).title || "ANGA9 Mobile Banner"}
                     fill
                     className="object-contain w-full h-full transition-transform duration-700 ease-out"
                     priority={index === 0}
@@ -153,8 +178,8 @@ export default function HeroBanner() {
                   style={{ aspectRatio: "16 / 9" }}
                 >
                   <Image
-                    src={(slide as AdCampaign).banner_url ? cdnUrl((slide as AdCampaign).banner_url) : ((slide as any).desktopImage || (slide as any).image)}
-                    alt={(slide as AdCampaign).headline || (slide as any).title}
+                    src={getDesktopBanner(slide, index)}
+                    alt={(slide as AdCampaign).headline || (slide as any).title || "ANGA9 Desktop Banner"}
                     fill
                     className="object-contain w-full h-full transition-transform duration-700 ease-out"
                     priority={index === 0}

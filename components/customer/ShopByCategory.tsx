@@ -64,8 +64,8 @@ export default function ShopByCategory() {
         </Link>
       </div>
 
-      {/* 7-column category grid with unconstrained rising subjects over Royal Blue Arches */}
-      <div className="grid grid-cols-7 gap-3.5 lg:gap-5 items-end">
+      {/* 7-column category grid — squeezed closer together and sized up slightly */}
+      <div className="grid grid-cols-7 gap-3 sm:gap-4 lg:gap-6 items-end max-w-[1060px] lg:max-w-[1140px] mx-auto">
         {CATEGORIES.map((cat) => (
           <Link
             key={cat.name}
@@ -73,23 +73,25 @@ export default function ShopByCategory() {
             className="group flex flex-col items-center cursor-pointer text-center"
           >
             {/* Visual Stage: unclipped top so subjects naturally rise above the arch */}
-            <div className="relative w-full h-[146px] lg:h-[158px] flex items-end justify-center overflow-visible">
-              {/* 1. Arched dome backdrop — sits at the bottom behind the subject */}
-              <div className="absolute bottom-0 w-[100px] h-[106px] lg:w-[110px] lg:h-[116px] rounded-t-full rounded-b-2xl bg-gradient-to-b from-[#3B82F6] via-[#1D60E8] to-[#0F47A6] shadow-[0_8px_20px_rgba(29,78,216,0.22)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_14px_30px_rgba(29,78,216,0.36)]" />
+            <div className="relative w-full h-[162px] lg:h-[174px] flex items-end justify-center overflow-visible">
+              {/* 1. Arched dome backdrop — solid soft ice blue with curved bottom two corners */}
+              <div
+                className="absolute bottom-0 w-[114px] h-[118px] lg:w-[124px] lg:h-[128px] rounded-t-full rounded-b-[30px] lg:rounded-b-[34px] bg-[#EAF2FF] border border-[#D0E2FA] shadow-[0_4px_16px_rgba(26,111,212,0.08)] transition-all duration-300 group-hover:scale-105 group-hover:bg-[#DFEDFD] group-hover:border-[#BBD8F8] group-hover:shadow-[0_8px_24px_rgba(26,111,212,0.14)]"
+              />
 
-              {/* 2. Rising subject image — rises 30px–35px ABOVE the blue arch! */}
+              {/* 2. Rising subject image — generously sized up and rising ~40px ABOVE the blue arch */}
               <div className="relative z-10 w-full h-full flex items-end justify-center pb-0 transition-transform duration-300 group-hover:-translate-y-1.5 group-hover:scale-105">
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="max-h-[142px] lg:max-h-[154px] w-auto max-w-full object-contain object-bottom drop-shadow-[0_6px_10px_rgba(0,0,0,0.25)]"
+                  className="max-h-[156px] lg:max-h-[168px] w-auto max-w-full object-contain object-bottom drop-shadow-[0_6px_12px_rgba(15,23,42,0.16)]"
                   loading="lazy"
                 />
               </div>
             </div>
 
-            {/* Category Name */}
-            <span className="text-[14px] lg:text-[14.5px] font-semibold text-[#1A1A2E] group-hover:text-[#1A6FD4] transition-colors mt-3 text-center leading-snug">
+            {/* Category Name — matching product card title style (e.g. Slim Fit Chinos) */}
+            <span className="font-medium text-[14px] md:text-[15px] text-[#1A1A2E] mt-3 text-center leading-snug whitespace-nowrap">
               {cat.name}
             </span>
           </Link>

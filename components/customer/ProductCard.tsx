@@ -262,6 +262,10 @@ export default function ProductCard({
                 <span className="font-bold tracking-tight text-[18px] md:text-[23px]" style={{ color: t.textPrimary }}>
                   {formatINR(product.price)}
                 </span>
+                {/* Desktop-only wholesale '/ pc' piece indicator */}
+                <span className="hidden md:inline text-[13px] font-medium text-gray-500">
+                  / pc
+                </span>
                 {product.originalPrice > product.price && (
                   <span className="line-through text-[12px] md:text-[14.5px]" style={{ color: t.textSecondary }}>
                     {formatINR(product.originalPrice)}
@@ -270,9 +274,17 @@ export default function ProductCard({
               </div>
               {/* Absolute savings indicator */}
               {absoluteSaving > 0 && (
-                <p className="text-[11px] md:text-[14px] font-semibold mt-0.5" style={{ color: "#16A34A" }}>
-                  Save {formatINR(absoluteSaving)}
-                </p>
+                <div className="mt-0.5 md:mt-1 flex items-center gap-1.5 flex-wrap">
+                  {/* Mobile view (untouched): plain green text */}
+                  <span className="md:hidden text-[11px] font-semibold" style={{ color: "#16A34A" }}>
+                    Save {formatINR(absoluteSaving)}
+                  </span>
+                  {/* Desktop view only: high-contrast emerald badge pill with savings + % off */}
+                  <span className="hidden md:inline-flex items-center gap-1 text-[11.5px] font-bold px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/70">
+                    Save {formatINR(absoluteSaving)}
+                    {discount > 0 && <span className="font-semibold text-[#047857]">({discount}% OFF)</span>}
+                  </span>
+                </div>
               )}
             </div>
             

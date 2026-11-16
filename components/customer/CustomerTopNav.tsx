@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { detectLocationFromBrowser } from "@/lib/detectLocation";
+import LocationDrawer from "./LocationDrawer";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
@@ -59,6 +60,7 @@ export default function CustomerTopNav() {
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
+  const [locationDrawerOpen, setLocationDrawerOpen] = useState(false);
   const [ipDetectError, setIpDetectError] = useState("");
   const [ipDetectLoading, setIpDetectLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -93,47 +95,19 @@ export default function CustomerTopNav() {
   }, []);
 
   useEffect(() => {
-    const IP_CACHE_KEY = "ipLocation";
     const USER_KEY = "userPincode";
-    const TTL_MS = 24 * 60 * 60 * 1000;
-
     try {
       const userSaved = localStorage.getItem(USER_KEY);
       if (userSaved) {
         const parsed = JSON.parse(userSaved) as { city: string; pincode: string };
-        if (parsed.city && parsed.pincode) {
+        if (parsed?.city && parsed?.pincode) {
           setLocation(parsed);
           return;
         }
       }
     } catch {}
-
-    try {
-      const cached = localStorage.getItem(IP_CACHE_KEY);
-      if (cached) {
-        const parsed = JSON.parse(cached) as { city: string; pincode: string; ts: number };
-        if (Date.now() - parsed.ts < TTL_MS && parsed.city && parsed.pincode) {
-          setLocation({ city: parsed.city, pincode: parsed.pincode });
-          return;
-        }
-      }
-    } catch {}
-
-    let cancelled = false;
-    fetch("https://ipapi.co/json/")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: { city?: string; postal?: string } | null) => {
-        if (cancelled || !data?.city || !data?.postal) return;
-        const next = { city: data.city, pincode: data.postal };
-        setLocation(next);
-        try {
-          localStorage.setItem(IP_CACHE_KEY, JSON.stringify({ ...next, ts: Date.now() }));
-        } catch {}
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
+    // Do NOT auto-fetch IP location or default to South Delhi 110016.
+    // Leave location as null so "Add a location" is displayed!
   }, []);
 
   const useMyLocation = async () => {
@@ -301,30 +275,50 @@ export default function CustomerTopNav() {
 
           <div className="flex-1" />
 
-          {/* Pincode + Become a Seller + Login */}
+          {/* Location + Become a Seller + Login */}
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
+            {/* Delivery Location: Add a location OR Deliver to City, Pincode + Change location */}
             <div>
-              <button
-                onClick={useMyLocation}
-                disabled={ipDetectLoading}
-                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group select-none"
-                style={{ color: t.textSecondary, fontSize: '16px' }}
-                title="Click to detect your current location"
-              >
-                <MapPin
-                  style={{ width: 18, height: 18, color: t.bluePrimary }}
-                  className={ipDetectLoading ? "animate-spin text-[#1A6FD4]" : "group-hover:scale-105 transition-transform"}
-                />
-                <span className="truncate max-w-[280px]">
-                  {ipDetectLoading
-                    ? "Locating…"
-                    : ipDetectError
-                    ? ipDetectError
-                    : location
-                    ? `Deliver to ${location.city}${location.pincode ? `, ${location.pincode}` : ""}`
-                    : "Detect location"}
-                </span>
-              </button>
+              {!location ? (
+                <button
+                  type="button"
+                  onClick={() => setLocationDrawerOpen(true)}
+                  className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group select-none"
+                  style={{ color: t.textSecondary, fontSize: "16px" }}
+                  title="Click to add delivery location"
+                >
+                  <MapPin
+                    style={{ width: 18, height: 18, color: t.bluePrimary }}
+                    className="group-hover:scale-105 transition-transform"
+                  />
+                  <span>Add a location</span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-2 select-none">
+                  <button
+                    type="button"
+                    onClick={() => setLocationDrawerOpen(true)}
+                    className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group"
+                    style={{ color: t.textSecondary, fontSize: "16px" }}
+                    title="Click to change location"
+                  >
+                    <MapPin
+                      style={{ width: 18, height: 18, color: t.bluePrimary }}
+                      className="group-hover:scale-105 transition-transform shrink-0"
+                    />
+                    <span className="truncate max-w-[260px]">
+                      Deliver to {location.city}{location.pincode ? `, ${location.pincode}` : ""}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLocationDrawerOpen(true)}
+                    className="text-[#1A6FD4] hover:underline font-semibold text-[14px] cursor-pointer whitespace-nowrap ml-0.5"
+                  >
+                    Change location
+                  </button>
+                </div>
+              )}
             </div>
 
             <a
@@ -740,6 +734,19 @@ export default function CustomerTopNav() {
         </div>
       </div>
 
+      {/* Right-side Delivery Location Panel */}
+      <LocationDrawer
+        isOpen={locationDrawerOpen}
+        onClose={() => setLocationDrawerOpen(false)}
+        currentLocation={location}
+        onSelectLocation={(next) => {
+          setLocation(next);
+          try {
+            localStorage.setItem("userPincode", JSON.stringify(next));
+          } catch {}
+        }}
+        isLoggedIn={isLoggedIn}
+      />
     </header>
   );
 }

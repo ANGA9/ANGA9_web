@@ -151,9 +151,9 @@ export default function HeroBanner() {
   const handlePrev = () => emblaApi?.scrollPrev();
 
   return (
-    <div className="w-full pb-6 pt-2">
-      <div className="relative w-full px-4 sm:px-8 lg:px-12 group max-w-[1400px] mx-auto overflow-hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y -mx-1.5 sm:-mx-2 md:-mx-3">
+    <div className="w-full pb-4 pt-1">
+      <div className="relative w-full px-4 sm:px-6 lg:px-8 group max-w-[1120px] mx-auto overflow-hidden" ref={emblaRef}>
+        <div className="flex touch-pan-y -mx-1.5 sm:-mx-2 md:-mx-2.5">
           {currentSlides.map((slide, index) => (
             <div
               key={slide.id}
@@ -164,7 +164,7 @@ export default function HeroBanner() {
                   handleSlideClick(slide);
                 }
               }}
-              className="flex-[0_0_88%] sm:flex-[0_0_90%] md:flex-[0_0_78%] lg:flex-[0_0_80%] min-w-0 relative px-1.5 sm:px-2 md:px-3 cursor-pointer"
+              className="flex-[0_0_88%] sm:flex-[0_0_90%] md:flex-[0_0_74%] lg:flex-[0_0_72%] min-w-0 relative px-1.5 sm:px-2 md:px-2.5 cursor-pointer"
             >
                 {/* Mobile View: Aspect 640/430 with untouched mobile banner */}
                 <div 
@@ -184,7 +184,7 @@ export default function HeroBanner() {
 
                 {/* Desktop View: Aspect 16/9 with 1600x900 widescreen desktop banner */}
                 <div 
-                  className={`hidden md:block relative w-full aspect-[16/9] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC] transition-opacity duration-300 ${
+                  className={`hidden md:block relative w-full aspect-[16/9] overflow-hidden rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] isolate bg-[#F8FAFC] transition-opacity duration-300 ${
                     index === selectedIndex ? "opacity-100" : "opacity-85 hover:opacity-100"
                   }`}
                   style={{ aspectRatio: "16 / 9" }}
@@ -221,7 +221,7 @@ export default function HeroBanner() {
       </div>
 
       {/* ══════ PROGRESS BAR INDICATORS ══════ */}
-      <div className="mt-3 sm:mt-5 flex justify-center items-center gap-1.5 sm:gap-2 px-4">
+      <div className="mt-2.5 sm:mt-3 flex justify-center items-center gap-1.5 sm:gap-2 px-4">
         {currentSlides.map((_, i) => (
           <button
             key={i}

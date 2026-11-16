@@ -24,6 +24,7 @@ import { useCategories } from "@/lib/useCategories";
 import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
 import ShopByCategory from "@/components/customer/ShopByCategory";
+import PromotionalBanner from "@/components/customer/PromotionalBanner";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
 import { Heart, TrendingUp as TrendingIcon, Zap } from "lucide-react";
 
@@ -276,6 +277,9 @@ export default function CustomerHomePage() {
 
       {/* Hero */}
       <HeroBanner />
+
+      {/* Grand Dhamaka Offer Banner (Desktop View Only) */}
+      <PromotionalBanner />
 
       {/* Visual Shop by Category (Desktop View Only) */}
       <ShopByCategory />

@@ -218,6 +218,7 @@ export default function CustomerTopNav() {
       const next = await detectLocationFromBrowser();
       setIpDetected(next);
       setLocation(next);
+      setPincodeOpen(false);
       try {
         localStorage.setItem("userPincode", JSON.stringify(next));
       } catch {}
@@ -226,6 +227,7 @@ export default function CustomerTopNav() {
       if (e?.code === 1) setIpDetectError("Permission denied. Enter pincode manually.");
       else if (e?.code === 3) setIpDetectError("Location request timed out");
       else setIpDetectError(e?.message || "Could not get location");
+      setPincodeOpen(true);
     } finally {
       setIpDetectLoading(false);
     }

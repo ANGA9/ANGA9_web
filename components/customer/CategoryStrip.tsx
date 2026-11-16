@@ -47,7 +47,7 @@ export default function CategoryStrip() {
   return (
     <>
       <div
-        className="relative z-20 border-b"
+        className="relative z-40 border-b"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
         <div className="mx-auto relative" style={{ maxWidth: 1400, padding: "0 48px" }}>
@@ -89,7 +89,7 @@ export default function CategoryStrip() {
       {/* Dark overlay — covers only content below the fixed header with smooth fade-in */}
       {hoveredTab && (
         <div
-          className="fixed inset-x-0 bottom-0 top-[188px] z-[34] transition-opacity duration-200 ease-out"
+          className="fixed inset-x-0 bottom-0 top-[190px] z-30 transition-opacity duration-200 ease-out"
           style={{
             background: "rgba(0,0,0,0.45)",
             animation: "overlayFadeIn 200ms ease-out forwards",

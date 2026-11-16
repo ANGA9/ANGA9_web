@@ -4,11 +4,16 @@ type NominatimAddress = {
   postcode?: string;
   suburb?: string;
   neighbourhood?: string;
+  residential?: string;
+  subdistrict?: string;
   city_district?: string;
   city?: string;
   town?: string;
-  village?: string;
+  municipality?: string;
+  district?: string;
   state_district?: string;
+  county?: string;
+  village?: string;
   state?: string;
 };
 
@@ -108,46 +113,84 @@ async function pincodeForLocality(
 export type DetectedLocation = { city: string; pincode: string };
 
 export async function detectLocationFromBrowser(): Promise<DetectedLocation> {
-  if (typeof window === "undefined" || !("geolocation" in navigator)) {
+  if (typeof window === "undefined") {
     throw new Error("Geolocation not supported on this device");
   }
-  const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0,
-    });
-  });
-  const { latitude, longitude } = pos.coords;
-  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1&email=${encodeURIComponent(
-    NOMINATIM_CONTACT
-  )}`;
-  const res = await fetch(url, { headers: { Accept: "application/json" } });
-  const data = (await res.json()) as { address?: NominatimAddress };
-  const a = data.address;
-  const city =
-    a?.suburb ||
-    a?.neighbourhood ||
-    a?.city_district ||
-    a?.city ||
-    a?.town ||
-    a?.village ||
-    "";
-  if (!city) throw new Error("Couldn't resolve a locality. Enter manually.");
 
-  const lookupName = city.replace(/\s+(Tehsil|Block|Mandal|Taluk|Taluka)$/i, "").trim();
-  const hintDistrict = a?.city_district || a?.state_district || a?.city;
-  const hintState = a?.state;
-  const fromPostal = await pincodeForLocality(
-    lookupName,
-    latitude,
-    longitude,
-    hintState,
-    hintDistrict
-  );
-  const pin = fromPostal || a?.postcode || "";
-  if (!pin || !/^\d{6}$/.test(pin)) {
-    throw new Error("Couldn't resolve a 6-digit pincode here. Enter manually.");
+  // 1. Try High-Accuracy Browser Geolocation first
+  if ("geolocation" in navigator) {
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 12000,
+          maximumAge: 0,
+        });
+      });
+      const { latitude, longitude } = pos.coords;
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1&email=${encodeURIComponent(
+        NOMINATIM_CONTACT
+      )}`;
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      if (res.ok) {
+        const data = (await res.json()) as { address?: NominatimAddress };
+        const a = data.address;
+        // Prioritize specific district / locality (e.g. Okhla, Maheshtala, Burhanpur)
+        const rawLocality =
+          a?.suburb ||
+          a?.neighbourhood ||
+          a?.subdistrict ||
+          a?.city ||
+          a?.town ||
+          a?.municipality ||
+          a?.city_district ||
+          a?.district ||
+          a?.state_district ||
+          a?.residential ||
+          a?.village ||
+          "";
+
+        if (rawLocality) {
+          const lookupName = rawLocality
+            .replace(/\s+(Tehsil|Block|Mandal|Taluk|Taluka|District|Sub-Division|Division)$/i, "")
+            .trim();
+          let pin = (a?.postcode || "").replace(/\s+/g, "");
+          if (!/^\d{6}$/.test(pin)) {
+            const hintDistrict = a?.city_district || a?.state_district || a?.district || a?.city;
+            const hintState = a?.state;
+            const fromPostal = await pincodeForLocality(
+              lookupName,
+              latitude,
+              longitude,
+              hintState,
+              hintDistrict
+            );
+            if (fromPostal && /^\d{6}$/.test(fromPostal.trim())) {
+              pin = fromPostal.trim();
+            }
+          }
+          if (pin && /^\d{6}$/.test(pin)) {
+            return { city: lookupName, pincode: pin };
+          }
+        }
+      }
+    } catch {
+      // Fall through to IP detection fallback
+    }
   }
-  return { city: lookupName, pincode: pin };
+
+  // 2. IP Fallback if GPS is blocked or unavailable
+  try {
+    const ipRes = await fetch("https://ipapi.co/json/");
+    if (ipRes.ok) {
+      const ipData = (await ipRes.json()) as { city?: string; postal?: string; district?: string };
+      const city = ipData?.district || ipData?.city || "";
+      const pincode = (ipData?.postal || "").replace(/\s+/g, "");
+      if (city && /^\d{6}$/.test(pincode)) {
+        return { city, pincode };
+      }
+    }
+  } catch {}
+
+  throw new Error("Could not detect location. Please check browser permissions.");
 }

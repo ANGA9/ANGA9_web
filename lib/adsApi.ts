@@ -44,11 +44,11 @@ export interface RequestAdBody {
 export const adsApi = {
   // Public
   listActive: (placement: string) =>
-    api.get<{ ads: AdCampaign[] }>(`/api/products/ads/active?placement=${encodeURIComponent(placement)}`),
+    api.get<{ ads: AdCampaign[] }>(`/api/products/ads/active?placement=${encodeURIComponent(placement)}`, { silent: true }),
   recordClick: (adId: string) =>
-    api.post<{ success: boolean }>(`/api/products/ads/${adId}/click`, {}),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/click`, {}, { silent: true }),
   recordImpression: (adId: string) =>
-    api.post<{ success: boolean }>(`/api/products/ads/${adId}/impression`, {}),
+    api.post<{ success: boolean }>(`/api/products/ads/${adId}/impression`, {}, { silent: true }),
 
   // Seller
   requestAd: (payload: RequestAdBody) =>

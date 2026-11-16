@@ -103,9 +103,9 @@ export default function HeroBanner() {
     async function fetchAds() {
       try {
         const res = await adsApi.listActive('home_hero');
-        setAds(res.ads);
-      } catch (err) {
-        console.error("Failed to load hero ads:", err);
+        setAds(res?.ads || []);
+      } catch {
+        // Silently fall back to default slides
       } finally {
         setLoading(false);
       }
@@ -124,7 +124,7 @@ export default function HeroBanner() {
       const ad = ads[idx];
       if (ad && !trackedImpressions.current.has(ad.id)) {
         trackedImpressions.current.add(ad.id);
-        adsApi.recordImpression(ad.id).catch(console.error);
+        adsApi.recordImpression(ad.id).catch(() => {});
       }
     }
   }, [emblaApi, ads]);
@@ -138,7 +138,7 @@ export default function HeroBanner() {
 
   const handleSlideClick = (slide: any) => {
     if (ads.length > 0) {
-      adsApi.recordClick(slide.id).catch(console.error);
+      adsApi.recordClick(slide.id).catch(() => {});
       router.push(slide.target_url || `/products/${slide.product_id}`);
     } else {
       if (slide.seller && slide.searchQuery) {

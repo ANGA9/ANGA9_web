@@ -319,7 +319,7 @@ export default function CustomerTopNav() {
                     : ipDetectError
                     ? ipDetectError
                     : location
-                    ? `Deliver to ${location.city}, ${location.pincode}`
+                    ? `Deliver to ${location.city}${location.pincode ? `, ${location.pincode}` : ""}`
                     : "Detect location"}
                 </span>
               </button>

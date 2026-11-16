@@ -200,9 +200,16 @@ export default function ChatWidget({ surface }: ChatWidgetProps) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-24 md:bottom-6 right-4 md:right-6 p-4 rounded-full shadow-2xl text-white hover:scale-105 transition-transform z-50 ${bgColor}`}
+        className={`fixed bottom-6 right-6 p-3.5 rounded-full shadow-xl hover:shadow-2xl text-white hover:scale-105 active:scale-95 transition-all z-50 ${bgColor} flex items-center justify-center border-2 border-white/20`}
+        title="Chat with ANGA AI Assistant"
+        aria-label="Open AI Assistant"
       >
-        <MessageSquare size={28} />
+        <div className="relative flex items-center justify-center">
+          <MessageSquare className="w-6 h-6" />
+          <span className="absolute -top-2 -right-2.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-gray-900 text-[9px] font-black px-1 rounded-full shadow-xs leading-tight tracking-wider">
+            AI
+          </span>
+        </div>
       </button>
     );
   }

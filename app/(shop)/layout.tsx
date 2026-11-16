@@ -89,12 +89,10 @@ export default function CustomerShopLayout({
             {/* ══════════ MOBILE BOTTOM NAV (<md) ══════════ */}
             {!isCheckout && <MobileBottomNav />}
 
-            {/* ══════════ CHAT WIDGET — logged-in users only ══════════ */}
-            {isHomepage && !authLoading && user && (
-              <div className="block">
-                <ChatWidget surface="customer" />
-              </div>
-            )}
+            {/* ══════════ AI CHAT WIDGET — desktop view only ══════════ */}
+            <div className="hidden md:block">
+              <ChatWidget surface="customer" />
+            </div>
 
             {/* ══════════ MOBILE LOGIN SHEET ══════════ */}
             <LoginSheet />

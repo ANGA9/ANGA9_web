@@ -141,10 +141,12 @@ export default function CustomerTopNav() {
     setIpDetectLoading(true);
     try {
       const next = await detectLocationFromBrowser();
-      setLocation(next);
-      try {
-        localStorage.setItem("userPincode", JSON.stringify(next));
-      } catch {}
+      if (next && next.city) {
+        setLocation(next);
+        try {
+          localStorage.setItem("userPincode", JSON.stringify(next));
+        } catch {}
+      }
     } catch (err: unknown) {
       const e = err as { code?: number; message?: string };
       let msg = "Could not detect location";

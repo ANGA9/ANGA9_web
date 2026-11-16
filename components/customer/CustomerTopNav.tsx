@@ -21,7 +21,6 @@ import {
   History,
   X,
   RotateCw,
-  Pencil,
 } from "lucide-react";
 import { CUSTOMER_THEME as t } from "@/lib/customerTheme";
 import { detectLocationFromBrowser } from "@/lib/detectLocation";
@@ -374,13 +373,23 @@ export default function CustomerTopNav() {
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
             <div className="relative" ref={pincodeRef}>
               <button
-                onClick={() => setPincodeOpen((v) => !v)}
-                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4]"
+                onClick={useMyLocation}
+                disabled={ipDetectLoading}
+                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group"
                 style={{ color: t.textSecondary, fontSize: '16px' }}
+                title="Click to auto-detect your location"
               >
-                <MapPin style={{ width: 18, height: 18, color: t.bluePrimary }} />
-                {location ? `Deliver to ${location.city}, ${location.pincode}` : "Select Pincode"}
-                <Pencil style={{ width: 13, height: 13, color: t.bluePrimary }} />
+                <MapPin
+                  style={{ width: 18, height: 18, color: t.bluePrimary }}
+                  className={ipDetectLoading ? "animate-spin" : "group-hover:scale-105 transition-transform"}
+                />
+                <span className="truncate max-w-[280px]">
+                  {ipDetectLoading
+                    ? "Detecting location…"
+                    : location
+                    ? `Deliver to ${location.city}, ${location.pincode}`
+                    : "Detect location"}
+                </span>
               </button>
               {pincodeOpen && (
                 <div

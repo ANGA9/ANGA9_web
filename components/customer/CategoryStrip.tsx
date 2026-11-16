@@ -60,7 +60,7 @@ export default function CategoryStrip() {
                 onMouseEnter={() => showDropdown(tab)}
                 onMouseLeave={scheduleHide}
                 onClick={closeDropdown}
-                className="shrink-0 h-11 flex items-center px-4 text-sm font-medium transition-colors border-b-[3px] whitespace-nowrap uppercase"
+                className="shrink-0 h-11 flex items-center px-4 text-sm font-medium transition-all duration-200 border-b-[3px] whitespace-nowrap uppercase hover:text-[#1A6FD4]"
                 style={{
                   borderColor: hoveredTab?.slug === tab.slug ? t.bluePrimary : "transparent",
                   color: hoveredTab?.slug === tab.slug ? t.bluePrimary : t.textPrimary,
@@ -75,6 +75,7 @@ export default function CategoryStrip() {
           {/* Mega dropdown — aligned to content area */}
           {hoveredTab && (
             <MegaDropdown
+              key={hoveredTab.slug}
               tab={hoveredTab}
               onMouseEnter={cancelHide}
               onMouseLeave={scheduleHide}
@@ -85,13 +86,23 @@ export default function CategoryStrip() {
 
       </div>
 
-      {/* Dark overlay — covers only content below the fixed header */}
+      {/* Dark overlay — covers only content below the fixed header with smooth fade-in */}
       {hoveredTab && (
         <div
-          className="fixed inset-x-0 bottom-0 top-[188px] z-[34]"
-          style={{ background: "rgba(0,0,0,0.45)" }}
+          className="fixed inset-x-0 bottom-0 top-[188px] z-[34] transition-opacity duration-200 ease-out"
+          style={{
+            background: "rgba(0,0,0,0.45)",
+            animation: "overlayFadeIn 200ms ease-out forwards",
+          }}
           onMouseEnter={scheduleHide}
-        />
+        >
+          <style>{`
+            @keyframes overlayFadeIn {
+              from { opacity: 0; }
+              to   { opacity: 1; }
+            }
+          `}</style>
+        </div>
       )}
     </>
   );

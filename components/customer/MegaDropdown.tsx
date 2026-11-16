@@ -35,13 +35,17 @@ export default function MegaDropdown({
     <div
       className="absolute left-0 top-full z-50"
       style={{
-        animation: "megaFadeIn 150ms ease forwards",
+        animation: "megaFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <style>{`
         @keyframes megaFadeIn {
+          from { opacity: 0; transform: translateY(8px) scale(0.995); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes megaColFade {
           from { opacity: 0; transform: translateY(6px); }
           to   { opacity: 1; transform: translateY(0); }
         }
@@ -52,7 +56,7 @@ export default function MegaDropdown({
         style={{
           background: "#FFFFFF",
           borderColor: t.border,
-          boxShadow: "0 8px 24px rgba(0,0,0,0.07)",
+          boxShadow: "0 12px 32px rgba(0,0,0,0.09)",
           width: "max-content",
         }}
       >
@@ -62,6 +66,8 @@ export default function MegaDropdown({
             className="min-w-[160px] px-6 py-6"
             style={{
               background: idx % 2 === 1 ? t.bgBlueTint : "#FFFFFF",
+              animation: "megaColFade 220ms cubic-bezier(0.16, 1, 0.3, 1) both",
+              animationDelay: `${idx * 35}ms`,
             }}
           >
             {idx === 0 && (
@@ -72,8 +78,13 @@ export default function MegaDropdown({
                   borderBottom: `2px solid ${t.bluePrimary}`,
                 }}
               >
-                <Link href={searchHref(tab.name)} onClick={onNavigate} className="hover:underline">
+                <Link
+                  href={searchHref(tab.name)}
+                  onClick={onNavigate}
+                  className="inline-flex items-center gap-1 transition-all duration-200 ease-out hover:translate-x-1 hover:text-[#0D47A1]"
+                >
                   All {tab.name}
+                  <span className="text-xs transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                 </Link>
               </h4>
             )}
@@ -83,7 +94,7 @@ export default function MegaDropdown({
                   <Link
                     href={searchHref(item.name)}
                     onClick={onNavigate}
-                    className="block text-sm md:text-[15px] leading-[1.6] py-0.5 transition-colors hover:text-[#1A6FD4] text-left w-full"
+                    className="block text-sm md:text-[14.5px] leading-[1.6] py-1 px-2.5 -mx-2.5 rounded-md transition-all duration-200 ease-out hover:text-[#1A6FD4] hover:bg-[#1A6FD4]/[0.06] hover:translate-x-1.5 text-left w-full cursor-pointer"
                     style={{ color: t.textPrimary }}
                   >
                     {item.name}

@@ -278,11 +278,11 @@ export default function CustomerHomePage() {
       {/* Hero */}
       <HeroBanner />
 
-      {/* Grand Dhamaka Offer Banner (Desktop View Only) */}
-      <PromotionalBanner />
-
       {/* Visual Shop by Category (Desktop View Only) */}
       <ShopByCategory />
+
+      {/* Dual Promotional Banners: Grand Dhamaka Offer + Sell on ANGA9 (Side by Side) */}
+      <PromotionalBanner />
 
       {/* Flash Deals Rail */}
       {flashDeals.length > 0 && (

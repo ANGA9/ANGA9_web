@@ -89,7 +89,7 @@ export default function HeroBanner() {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
-      align: (viewSize, snapSize) => (viewSize - snapSize) * 0.28,
+      align: (viewSize, snapSize) => (viewSize - snapSize) * 0.20,
     },
     [Autoplay({ delay: 5000, stopOnInteraction: true })]
   );
@@ -152,8 +152,8 @@ export default function HeroBanner() {
 
   return (
     <div className="w-full pb-4 pt-1">
-      <div className="relative w-full px-4 sm:px-6 lg:px-8 group max-w-[1120px] mx-auto overflow-hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y -mx-1.5 sm:-mx-2 md:-mx-2.5">
+      <div className="relative w-full px-4 sm:px-8 lg:px-12 group max-w-[1400px] mx-auto overflow-hidden" ref={emblaRef}>
+        <div className="flex touch-pan-y -mx-1.5 sm:-mx-2 md:-mx-3">
           {currentSlides.map((slide, index) => (
             <div
               key={slide.id}
@@ -164,7 +164,7 @@ export default function HeroBanner() {
                   handleSlideClick(slide);
                 }
               }}
-              className="flex-[0_0_88%] sm:flex-[0_0_90%] md:flex-[0_0_74%] lg:flex-[0_0_72%] min-w-0 relative px-1.5 sm:px-2 md:px-2.5 cursor-pointer"
+              className="flex-[0_0_88%] sm:flex-[0_0_90%] md:flex-[0_0_72%] lg:flex-[0_0_65%] min-w-0 relative px-1.5 sm:px-2 md:px-3 cursor-pointer"
             >
                 {/* Mobile View: Aspect 640/430 with untouched mobile banner */}
                 <div 

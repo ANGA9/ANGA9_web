@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function PromotionalBanner() {
   return (
-    <section className="hidden md:block px-3 sm:px-6 max-w-[1240px] mx-auto" style={{ marginTop: 20, marginBottom: 24 }}>
-      <div className="grid grid-cols-2 gap-4 lg:gap-5 items-stretch">
+    <section className="hidden md:block px-3 sm:px-8 max-w-[1400px] mx-auto" style={{ marginTop: 20, marginBottom: 24 }}>
+      <div className="grid grid-cols-2 gap-4 lg:gap-6 items-stretch">
         {/* Banner 1: Grand Dhamaka Offer & Bulk Discounts (Consumer / Buyer Offer) */}
         <Link
           href="/search"

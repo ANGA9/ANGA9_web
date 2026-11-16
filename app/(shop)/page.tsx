@@ -281,8 +281,8 @@ export default function CustomerHomePage() {
       {/* Visual Shop by Category (Desktop View Only) */}
       <ShopByCategory />
 
-      {/* Dual Promotional Banners: Grand Dhamaka Offer + Sell on ANGA9 (Side by Side) */}
-      <PromotionalBanner />
+      {/* Dual Promotional Banners: Grand Dhamaka Offer + Sell on ANGA9 (Hidden for now) */}
+      {/* <PromotionalBanner /> */}
 
       {/* Flash Deals Rail */}
       {flashDeals.length > 0 && (

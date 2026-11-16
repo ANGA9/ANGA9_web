@@ -179,7 +179,7 @@ export default function ProductCard({
         </div>
 
         {/* Body */}
-        <div className="flex flex-col p-3 md:p-4 relative bg-white min-h-[105px] md:min-h-[115px]">
+        <div className="flex flex-col p-3 md:p-4 relative bg-white min-h-[105px] md:min-h-[125px] flex-1">
           {/* Wishlist / Remove controls — top-right */}
           {isWishlistContext ? (
             /* In wishlist context: always-visible red × remove button */
@@ -255,41 +255,36 @@ export default function ProductCard({
 
 
 
-          {/* Price + savings */}
-          <div className="mt-auto flex items-end justify-between gap-2">
-            <div>
-              <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="font-bold tracking-tight text-[18px] md:text-[23px]" style={{ color: t.textPrimary }}>
-                  {formatINR(product.price)}
-                </span>
-                {/* Desktop-only wholesale '/ pc' piece indicator */}
-                <span className="hidden md:inline text-[13px] font-medium text-gray-500">
-                  / pc
-                </span>
-                {product.originalPrice > product.price && (
-                  <span className="line-through text-[12px] md:text-[14.5px]" style={{ color: t.textSecondary }}>
-                    {formatINR(product.originalPrice)}
-                  </span>
-                )}
-              </div>
-              {/* Absolute savings indicator */}
-              {absoluteSaving > 0 && (
-                <div className="mt-0.5 md:mt-1 flex items-center gap-1.5 flex-wrap">
-                  {/* Mobile view (untouched): plain green text */}
-                  <span className="md:hidden text-[11px] font-semibold" style={{ color: "#16A34A" }}>
-                    Save {formatINR(absoluteSaving)}
-                  </span>
-                  {/* Desktop view only: high-contrast emerald badge pill with savings + % off */}
-                  <span className="hidden md:inline-flex items-center gap-1 text-[11.5px] font-bold px-2 py-0.5 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/70">
-                    Save {formatINR(absoluteSaving)}
-                    {discount > 0 && <span className="font-semibold text-[#047857]">({discount}% OFF)</span>}
-                  </span>
-                </div>
-              )}
-            </div>
-            
-
+          {/* Price */}
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="font-bold tracking-tight text-[18px] md:text-[23px]" style={{ color: t.textPrimary }}>
+              {formatINR(product.price)}
+            </span>
+            {/* Desktop-only wholesale '/ pc' piece indicator */}
+            <span className="hidden md:inline text-[13px] font-medium text-gray-500">
+              / pc
+            </span>
+            {product.originalPrice > product.price && (
+              <span className="line-through text-[12px] md:text-[14.5px]" style={{ color: t.textSecondary }}>
+                {formatINR(product.originalPrice)}
+              </span>
+            )}
           </div>
+
+          {/* Absolute savings indicator — pushed down towards Add to Bag button with breathing space above */}
+          {absoluteSaving > 0 && (
+            <div className="mt-auto pt-2.5 md:pt-3.5 flex items-center gap-1.5 flex-wrap">
+              {/* Mobile view (untouched): plain green text */}
+              <span className="md:hidden text-[11px] font-semibold" style={{ color: "#16A34A" }}>
+                Save {formatINR(absoluteSaving)}
+              </span>
+              {/* Desktop view only: larger high-contrast emerald badge pill closer to Add to Bag */}
+              <span className="hidden md:inline-flex items-center gap-1.5 text-[12.5px] md:text-[13px] font-bold px-2.5 py-1 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/80 shadow-[0_1px_2px_rgba(5,150,105,0.06)]">
+                Save {formatINR(absoluteSaving)}
+                {discount > 0 && <span className="font-semibold text-[#047857]">({discount}% OFF)</span>}
+              </span>
+            </div>
+          )}
         </div>
       </Link>
 

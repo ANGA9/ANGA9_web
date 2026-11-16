@@ -23,6 +23,7 @@ import { cdnUrl, getProductImage } from "@/lib/utils";
 import { useCategories } from "@/lib/useCategories";
 import { recommendationsApi, type HomeRails } from "@/lib/recommendationsApi";
 import ProductRail from "@/components/customer/ProductRail";
+import ShopByCategory from "@/components/customer/ShopByCategory";
 import { dealsApi, type Deal } from "@/lib/dealsApi";
 import { Heart, TrendingUp as TrendingIcon, Zap } from "lucide-react";
 
@@ -275,6 +276,9 @@ export default function CustomerHomePage() {
 
       {/* Hero */}
       <HeroBanner />
+
+      {/* Visual Shop by Category (Desktop View Only) */}
+      <ShopByCategory />
 
       {/* Flash Deals Rail */}
       {flashDeals.length > 0 && (

@@ -173,3 +173,4 @@ export async function GET(req: NextRequest) {
 
   return Response.json({ error: "Could not resolve locality" }, { status: 404 });
 }
+

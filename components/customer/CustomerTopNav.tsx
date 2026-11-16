@@ -59,17 +59,9 @@ export default function CustomerTopNav() {
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [location, setLocation] = useState<{ city: string; pincode: string } | null>(null);
-  const [pincodeOpen, setPincodeOpen] = useState(false);
-  const [pincodeInput, setPincodeInput] = useState("");
-  const [pincodeError, setPincodeError] = useState("");
-  const [pincodeLoading, setPincodeLoading] = useState(false);
-  const [ipDetected, setIpDetected] = useState<{ city: string; pincode: string } | null>(null);
   const [ipDetectError, setIpDetectError] = useState("");
   const [ipDetectLoading, setIpDetectLoading] = useState(false);
-  const [detectedLocality, setDetectedLocality] = useState("");
   const searchRef = useRef<HTMLDivElement>(null);
-  const pincodeRef = useRef<HTMLDivElement>(null);
-  const pincodeInputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const searchStorageKey = `recentSearches_${user?.id || 'guest'}`;
@@ -144,89 +136,27 @@ export default function CustomerTopNav() {
     };
   }, []);
 
-  const submitPincode = async (raw: string) => {
-    const pin = raw.trim();
-    if (!/^\d{6}$/.test(pin)) {
-      setPincodeError("Enter a valid 6-digit pincode");
-      return;
-    }
-    setPincodeError("");
-    setPincodeLoading(true);
-    setDetectedLocality("");
-    try {
-      // Proxied through our Next.js route — upstream's TLS cert is expired.
-      const res = await fetch(`/postal-proxy/pincode/${pin}`);
-      const data = (await res.json()) as Array<{
-        Status: string;
-        PostOffice?: Array<{ Name: string; District: string; State: string }>;
-      }>;
-      const entry = data?.[0];
-      if (entry?.Status !== "Success" || !entry.PostOffice?.length) {
-        setPincodeError("Pincode not found");
-        return;
-      }
-      const office = entry.PostOffice[0];
-      const city = office.District || office.Name;
-      const locality = office.Name;
-      const state = office.State;
-      setDetectedLocality(`${locality}, ${city}, ${state}`);
-      const next = { city, pincode: pin };
-      setLocation(next);
-      try {
-        localStorage.setItem("userPincode", JSON.stringify(next));
-      } catch {}
-      setTimeout(() => {
-        setPincodeOpen(false);
-        setPincodeInput("");
-        setDetectedLocality("");
-      }, 2000);
-    } catch {
-      setPincodeError("Could not look up pincode. Try again.");
-    } finally {
-      setPincodeLoading(false);
-    }
-  };
-
-  const handlePincodeChange = (raw: string) => {
-    const val = raw.replace(/\D/g, "").slice(0, 6);
-    setPincodeInput(val);
-    setPincodeError("");
-    setDetectedLocality("");
-    if (val.length === 6) {
-      submitPincode(val);
-    }
-  };
-
-  useEffect(() => {
-    if (!pincodeOpen) return;
-    function handleClick(e: MouseEvent) {
-      if (pincodeRef.current && !pincodeRef.current.contains(e.target as Node)) {
-        setPincodeOpen(false);
-        setPincodeError("");
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [pincodeOpen]);
-
   const useMyLocation = async () => {
     setIpDetectError("");
-    setIpDetected(null);
     setIpDetectLoading(true);
     try {
       const next = await detectLocationFromBrowser();
-      setIpDetected(next);
       setLocation(next);
-      setPincodeOpen(false);
       try {
         localStorage.setItem("userPincode", JSON.stringify(next));
       } catch {}
     } catch (err: unknown) {
       const e = err as { code?: number; message?: string };
-      if (e?.code === 1) setIpDetectError("Permission denied. Enter pincode manually.");
-      else if (e?.code === 3) setIpDetectError("Location request timed out");
-      else setIpDetectError(e?.message || "Could not get location");
-      setPincodeOpen(true);
+      let msg = "Could not detect location";
+      if (e?.code === 1) {
+        msg = "Location permission denied in browser";
+      } else if (e?.code === 3) {
+        msg = "Location request timed out";
+      } else if (e?.message) {
+        msg = e.message;
+      }
+      setIpDetectError(msg);
+      setTimeout(() => setIpDetectError(""), 4000);
     } finally {
       setIpDetectLoading(false);
     }
@@ -371,124 +301,28 @@ export default function CustomerTopNav() {
 
           {/* Pincode + Become a Seller + Login */}
           <div className="flex items-center" style={{ gap: 24, minWidth: "fit-content" }}>
-            <div className="relative" ref={pincodeRef}>
+            <div>
               <button
                 onClick={useMyLocation}
                 disabled={ipDetectLoading}
-                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group"
+                className="flex items-center gap-2 font-medium cursor-pointer transition-colors hover:text-[#1A6FD4] group select-none"
                 style={{ color: t.textSecondary, fontSize: '16px' }}
-                title="Click to auto-detect your location"
+                title="Click to detect your current location"
               >
                 <MapPin
                   style={{ width: 18, height: 18, color: t.bluePrimary }}
-                  className={ipDetectLoading ? "animate-spin" : "group-hover:scale-105 transition-transform"}
+                  className={ipDetectLoading ? "animate-spin text-[#1A6FD4]" : "group-hover:scale-105 transition-transform"}
                 />
                 <span className="truncate max-w-[280px]">
                   {ipDetectLoading
-                    ? "Detecting location…"
+                    ? "Locating…"
+                    : ipDetectError
+                    ? ipDetectError
                     : location
                     ? `Deliver to ${location.city}, ${location.pincode}`
                     : "Detect location"}
                 </span>
               </button>
-              {pincodeOpen && (
-                <div
-                  className="absolute right-0 top-[calc(100%+12px)] w-[360px] rounded-[20px] border bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] z-50 overflow-hidden flex flex-col"
-                  style={{ borderColor: t.border }}
-                >
-                  <div className="px-5 pt-5 pb-4 border-b border-gray-100">
-                    <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">
-                      Enter delivery pincode
-                    </div>
-                    <div className="text-[13px] text-gray-500">
-                      We&apos;ll show prices and shipping times for your area
-                    </div>
-                  </div>
-                  
-                  <div className="p-5 pb-6 bg-[#FAFAFA]">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      {[0, 1, 2, 3, 4, 5].map((idx) => (
-                        <input
-                          key={idx}
-                          id={`desktop-pin-${idx}`}
-                          ref={idx === 0 ? pincodeInputRef : undefined}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={1}
-                          value={pincodeInput[idx] || ""}
-                          autoFocus={idx === 0}
-                          onChange={(e) => {
-                            const digit = e.target.value.replace(/\D/g, "").slice(-1);
-                            const arr = pincodeInput.split("");
-                            arr[idx] = digit;
-                            while (arr.length < 6) arr.push("");
-                            const newVal = arr.join("").replace(/[^0-9]/g, "").slice(0, 6);
-                            handlePincodeChange(newVal);
-                            if (digit && idx < 5) {
-                              const next = document.getElementById(`desktop-pin-${idx + 1}`) as HTMLInputElement;
-                              next?.focus();
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Backspace" && !pincodeInput[idx] && idx > 0) {
-                              const prev = document.getElementById(`desktop-pin-${idx - 1}`) as HTMLInputElement;
-                              prev?.focus();
-                              const arr = pincodeInput.split("");
-                              arr[idx - 1] = "";
-                              handlePincodeChange(arr.join("").replace(/[^0-9]/g, ""));
-                            }
-                          }}
-                          className="w-11 h-14 rounded-xl border-2 text-center text-[20px] font-bold text-[#1A1A2E] outline-none transition-all focus:border-[#1A6FD4] focus:shadow-[0_0_0_3px_rgba(26,111,212,0.15)]"
-                          style={{
-                            borderColor: pincodeError ? '#DC2626' : pincodeInput[idx] ? '#1A6FD4' : '#E5E7EB',
-                            background: pincodeInput[idx] ? '#F0F6FF' : '#FFFFFF',
-                          }}
-                        />
-                      ))}
-                    </div>
-                    {pincodeLoading && (
-                      <div className="text-[12px] text-gray-500 mb-2 font-medium text-center">Looking up pincode...</div>
-                    )}
-                    {detectedLocality && (
-                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-green-50 border border-green-100 px-3 py-2.5 text-[13px] font-semibold text-green-800">
-                        <MapPin style={{ width: 14, height: 14 }} className="text-green-600 shrink-0" />
-                        <span className="truncate">{detectedLocality}</span>
-                      </div>
-                    )}
-                    <button
-                      onClick={useMyLocation}
-                      disabled={ipDetectLoading}
-                      title="Use device location (asks for permission)"
-                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 px-3 py-3 text-[14px] font-bold transition-all disabled:opacity-60 hover:bg-[#F8FBFF]"
-                      style={{ borderColor: '#E5E7EB', color: t.bluePrimary }}
-                    >
-                      <RotateCw style={{ width: 16, height: 16 }} className={ipDetectLoading ? "animate-spin" : ""} />
-                      {ipDetectLoading ? "Detecting…" : "Use my location"}
-                    </button>
-                    {pincodeError && (
-                      <div className="mt-3 text-[13px] font-medium text-center" style={{ color: t.outOfStock }}>
-                        {pincodeError}
-                      </div>
-                    )}
-                    {(ipDetected || ipDetectError || ipDetectLoading) && (
-                      <div className="mt-4 rounded-xl border p-3 text-[12.5px] bg-white shadow-sm" style={{ borderColor: t.border }}>
-                        <div className="font-bold mb-1" style={{ color: t.textSecondary }}>
-                          Detection result
-                        </div>
-                        {ipDetectLoading ? (
-                          <div style={{ color: t.textMuted }}>Checking…</div>
-                        ) : ipDetectError ? (
-                          <div style={{ color: t.outOfStock }}>{ipDetectError}</div>
-                        ) : ipDetected ? (
-                          <div style={{ color: t.textPrimary }}>
-                            {ipDetected.city}, {ipDetected.pincode}
-                          </div>
-                        ) : null}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
 
             <a

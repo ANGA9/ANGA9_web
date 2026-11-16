@@ -47,7 +47,7 @@ export default function CategoryStrip() {
   return (
     <>
       <div
-        className="relative z-40 border-b"
+        className="relative z-20 border-b"
         style={{ background: t.bgCard, borderColor: t.border }}
       >
         <div className="mx-auto relative" style={{ maxWidth: 1400, padding: "0 48px" }}>

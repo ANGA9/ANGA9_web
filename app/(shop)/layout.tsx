@@ -50,7 +50,7 @@ export default function CustomerShopLayout({
             </a>
 
             {/* ══════════ DESKTOP NAV (md+) ══════════ */}
-            <div className="hidden md:block sticky top-0 z-40 bg-white">
+            <div className="hidden md:block sticky top-0 z-50 bg-white">
               <CustomerTopNav />
               {isHomepage ? (
                 <CategoryStrip />

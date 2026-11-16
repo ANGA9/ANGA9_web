@@ -324,7 +324,7 @@ export default function CustomerTopNav() {
 
   return (
     <header
-      className="w-full relative z-40"
+      className="w-full relative z-50"
       style={{
         background: "linear-gradient(to bottom, #D6E6FA 0%, #E8F1FD 40%, #F6FAFE 75%, #FFFFFF 100%)",
       }}
@@ -815,7 +815,7 @@ export default function CustomerTopNav() {
 
             {/* More */}
             <div
-              className="relative"
+              className="relative z-50"
               ref={moreRef}
               onMouseEnter={() => setMoreOpen(true)}
               onMouseLeave={() => setMoreOpen(false)}
@@ -834,8 +834,8 @@ export default function CustomerTopNav() {
                   style={{
                     background: "#FFFFFF",
                     borderColor: t.border,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                    zIndex: 50,
+                    boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
+                    zIndex: 100,
                   }}
                 >
                   {[
